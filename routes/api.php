@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: api.php
  * Last modified: 2020.08.20 at 17:21:16
@@ -67,6 +68,7 @@ Route::middleware('auth:api')->group(function () {
         Route::prefix('driver')->group(function () {
             Route::resource('orders', 'API\OrderAPIController');
             Route::resource('notifications', 'API\NotificationAPIController');
+            Route::post('update-status', 'API\Driver\UserAPIController@updateStatus');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');

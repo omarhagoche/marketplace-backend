@@ -194,6 +194,20 @@ class UserAPIController extends Controller
         return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
     }
 
+
+    function updateStatus(Request $request)
+    {
+        $request->validate([
+            'available' => 'required|boolean',
+        ]);
+
+        $user = auth()->user();
+        $user->load('driver');
+        $user->driver->available = $request->available;
+        $user->driver->save();
+        return $this->sendResponse($user->driver->available, 'User retrieved successfully');
+    }
+
     function sendResetLinkEmail(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
