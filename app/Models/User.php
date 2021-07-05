@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: User.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -138,21 +139,21 @@ class User extends Authenticatable implements HasMedia
             } else {
                 return asset(config('medialibrary.icons_folder') . '/' . $extension . '.png');
             }
-        }else{
+        } else {
             return asset('images/avatar_default.png');
         }
     }
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
             ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
-//            ->where('custom_fields.in_table', '=', true)
-            ->select(['value','view','name'])
+            //            ->where('custom_fields.in_table', '=', true)
+            ->select(['value', 'view', 'name'])
             ->get()->toArray();
 
         return convertToAssoc($array, 'name');
@@ -188,4 +189,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(\App\Models\Cart::class, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     **/
+    public function driver()
+    {
+        return $this->hasOne(\App\Models\Driver::class, 'user_id');
+    }
 }

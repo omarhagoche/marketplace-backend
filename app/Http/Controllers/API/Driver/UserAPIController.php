@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: UserAPIController.php
  * Last modified: 2020.05.21 at 17:25:21
@@ -54,13 +55,13 @@ class UserAPIController extends Controller
                     $this->sendError('User not driver', 401);
                 }
                 $user->device_token = $request->input('device_token', '');
+                $user->load('driver');
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
-
     }
 
     /**
@@ -108,7 +109,6 @@ class UserAPIController extends Controller
             $this->sendError($e->getMessage(), 401);
         }
         return $this->sendResponse($user['name'], 'User logout successfully');
-
     }
 
     function user(Request $request)
@@ -125,32 +125,30 @@ class UserAPIController extends Controller
     function settings(Request $request)
     {
         $settings = setting()->all();
-        $settings = array_intersect_key($settings,
-            [
-                'default_tax' => '',
-                'default_currency' => '',
-                'default_currency_decimal_digits' => '',
-                'app_name' => '',
-                'currency_right' => '',
-                'enable_paypal' => '',
-                'enable_stripe' => '',
-                'enable_razorpay' => '',
-                'main_color' => '',
-                'main_dark_color' => '',
-                'second_color' => '',
-                'second_dark_color' => '',
-                'accent_color' => '',
-                'accent_dark_color' => '',
-                'scaffold_dark_color' => '',
-                'scaffold_color' => '',
-                'google_maps_key' => '',
-                'fcm_key' => '',
-                'mobile_language' => '',
-                'app_version' => '',
-                'enable_version' => '',
-                'distance_unit' => '',
-            ]
-        );
+        $settings = array_intersect_key($settings,  [
+            'default_tax' => '',
+            'default_currency' => '',
+            'default_currency_decimal_digits' => '',
+            'app_name' => '',
+            'currency_right' => '',
+            'enable_paypal' => '',
+            'enable_stripe' => '',
+            'enable_razorpay' => '',
+            'main_color' => '',
+            'main_dark_color' => '',
+            'second_color' => '',
+            'second_dark_color' => '',
+            'accent_color' => '',
+            'accent_dark_color' => '',
+            'scaffold_dark_color' => '',
+            'scaffold_color' => '',
+            'google_maps_key' => '',
+            'fcm_key' => '',
+            'mobile_language' => '',
+            'app_version' => '',
+            'enable_version' => '',
+            'distance_unit' => '',
+        ]);
 
         if (!$settings) {
             return $this->sendError('Settings not found', 401);
@@ -212,6 +210,5 @@ class UserAPIController extends Controller
                 'code' => 401,
             ], 'Reset link not sent');
         }
-
     }
 }
