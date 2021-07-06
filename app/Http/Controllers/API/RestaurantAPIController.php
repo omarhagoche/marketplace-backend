@@ -79,8 +79,7 @@ class RestaurantAPIController extends Controller
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
-        //return  RestaurantResource::make($restaurants);
-        return $this->sendResponse($restaurants->toArray(), 'Restaurants retrieved successfully');
+        return  RestaurantResource::collection($restaurants);
     }
 
     /**
