@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: UserAPIController.php
  * Last modified: 2020.06.11 at 12:09:19
@@ -58,7 +59,6 @@ class UserAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
-
     }
 
     /**
@@ -88,7 +88,6 @@ class UserAPIController extends Controller
             $defaultRoles = $this->roleRepository->findByField('default', '1');
             $defaultRoles = $defaultRoles->pluck('name')->toArray();
             $user->assignRole($defaultRoles);
-
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->sendError($e->getMessage(), 401);
@@ -110,7 +109,6 @@ class UserAPIController extends Controller
             $this->sendError($e->getMessage(), 401);
         }
         return $this->sendResponse($user['name'], 'User logout successfully');
-
     }
 
     function user(Request $request)
@@ -127,44 +125,45 @@ class UserAPIController extends Controller
     function settings(Request $request)
     {
         $settings = setting()->all();
-        $settings = array_intersect_key($settings,
-            [
-                'default_tax' => '',
-                'default_currency' => '',
-                'default_currency_decimal_digits' => '',
-                'app_name' => '',
-                'currency_right' => '',
-                'enable_paypal' => '',
-                'enable_stripe' => '',
-                'enable_razorpay' => '',
-                'main_color' => '',
-                'main_dark_color' => '',
-                'second_color' => '',
-                'second_dark_color' => '',
-                'accent_color' => '',
-                'accent_dark_color' => '',
-                'scaffold_dark_color' => '',
-                'scaffold_color' => '',
-                'google_maps_key' => '',
-                'fcm_key' => '',
-                'mobile_language' => '',
-                'app_version' => '',
-                'enable_version' => '',
-                'distance_unit' => '',
-                'home_section_1'=> '',
-                'home_section_2'=> '',
-                'home_section_3'=> '',
-                'home_section_4'=> '',
-                'home_section_5'=> '',
-                'home_section_6'=> '',
-                'home_section_7'=> '',
-                'home_section_8'=> '',
-                'home_section_9'=> '',
-                'home_section_10'=> '',
-                'home_section_11'=> '',
-                'home_section_12'=> '',
-            ]
-        );
+        $settings = array_intersect_key($settings,     [
+            'default_tax' => '',
+            'default_currency' => '',
+            'default_currency_decimal_digits' => '',
+            'app_name' => '',
+            'initial_price' => '',
+            'price_per_minute' => '',
+            'price_per_km' => '',
+            'currency_right' => '',
+            'enable_paypal' => '',
+            'enable_stripe' => '',
+            'enable_razorpay' => '',
+            'main_color' => '',
+            'main_dark_color' => '',
+            'second_color' => '',
+            'second_dark_color' => '',
+            'accent_color' => '',
+            'accent_dark_color' => '',
+            'scaffold_dark_color' => '',
+            'scaffold_color' => '',
+            'google_maps_key' => '',
+            'fcm_key' => '',
+            'mobile_language' => '',
+            'app_version' => '',
+            'enable_version' => '',
+            'distance_unit' => '',
+            'home_section_1' => '',
+            'home_section_2' => '',
+            'home_section_3' => '',
+            'home_section_4' => '',
+            'home_section_5' => '',
+            'home_section_6' => '',
+            'home_section_7' => '',
+            'home_section_8' => '',
+            'home_section_9' => '',
+            'home_section_10' => '',
+            'home_section_11' => '',
+            'home_section_12' => '',
+        ]);
 
         if (!$settings) {
             return $this->sendError('Settings not found', 401);
@@ -223,6 +222,5 @@ class UserAPIController extends Controller
         } else {
             return $this->sendError('Reset link not sent', 401);
         }
-
     }
 }
