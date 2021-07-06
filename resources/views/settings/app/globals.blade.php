@@ -62,6 +62,39 @@
                         </div>
                     </div>
 
+                    <!-- initial_price Field -->
+                    <div class="form-group row">
+                        {!! Form::label('initial_price', trans("lang.app_setting_initial_price"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::text('initial_price', setting('initial_price'),  ['class' => 'form-control','placeholder'=>  trans("lang.app_setting_initial_price_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_initial_price_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- price_per_minute Field -->
+                    <div class="form-group row">
+                        {!! Form::label('price_per_minute', trans("lang.app_setting_price_per_minute"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::text('price_per_minute', setting('price_per_minute'),  ['class' => 'form-control','placeholder'=>  trans("lang.app_setting_price_per_minute_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_price_per_minute_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- price_per_km Field -->
+                    <div class="form-group row">
+                        {!! Form::label('price_per_km', trans("lang.app_setting_price_per_km"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::text('price_per_km', setting('price_per_km'),  ['class' => 'form-control','placeholder'=>  trans("lang.app_setting_price_per_km_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_price_per_km_help") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Theme Contrast Field -->
                     <div class="form-group row ">
                         {!! Form::label('theme_contrast', trans("lang.app_setting_theme_contrast"),['class' => 'col-4 control-label text-right']) !!}
