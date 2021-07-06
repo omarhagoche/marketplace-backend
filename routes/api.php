@@ -68,6 +68,7 @@ Route::middleware('auth:api')->group(function () {
         Route::prefix('driver')->group(function () {
             Route::resource('orders', 'API\OrderAPIController');
             Route::resource('notifications', 'API\NotificationAPIController');
+            Route::get('profile', 'API\Driver\UserAPIController@profile');
             Route::post('update-status', 'API\Driver\UserAPIController@updateStatus');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');

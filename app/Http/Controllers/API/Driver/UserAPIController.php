@@ -208,6 +208,20 @@ class UserAPIController extends Controller
         return $this->sendResponse($user->driver->available, 'User retrieved successfully');
     }
 
+
+    /**
+     * Get profile of logged user
+     *
+     * @param Request $request
+     *
+     */
+    function profile(Request $request)
+    {
+        $user = auth()->user();
+        $user->load('driver');
+        return $this->sendResponse($user, 'User retrieved successfully');
+    }
+
     function sendResetLinkEmail(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
