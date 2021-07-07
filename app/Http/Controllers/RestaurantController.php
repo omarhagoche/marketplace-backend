@@ -194,7 +194,6 @@ class RestaurantController extends Controller
         $usersSelected = $restaurant->users()->pluck('users.id')->toArray();
         $driversSelected = $restaurant->drivers()->pluck('users.id')->toArray();
         $cuisinesSelected = $restaurant->cuisines()->pluck('cuisines.id')->toArray();
-        $deliveryPriceType = $restaurant->getDeliveryPriceTypeValue();
 
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
@@ -203,7 +202,7 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('restaurants.edit')->with('restaurant', $restaurant)->with('deliveryPriceType',$deliveryPriceType)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
     }
 
     /**

@@ -138,6 +138,17 @@ class Restaurant extends Model implements HasMedia
     ];
 
     /**
+     * @var array
+     */
+    private $delivery_price_types = [
+        'fixed' => 'fixed',
+        'distance' => 'distance',
+        'flexible' => 'flexible',
+    ];
+
+
+
+    /**
      * @param Media|null $media
      * @throws \Spatie\Image\Exceptions\InvalidManipulation
      */
@@ -247,30 +258,15 @@ class Restaurant extends Model implements HasMedia
         return $this->belongsToMany(\App\Models\User::class, 'driver_restaurants');
     }
 
-    public function setDeliveryPriceTypeAttribute($value): void
+    /**
+     * Get Types of delivery prices 
+     * @return array
+     */
+    public function getDeliveryPriceTypes(): array
     {
-        switch($value) {
-            case 0:
-                $this->attributes['delivery_price_type'] = 'fixed';
-                break;
-            case 1:
-                $this->attributes['delivery_price_type'] = 'distance';
-                break;
-        }
+        return $this->delivery_price_types;
     }
 
-    public function getDeliveryPriceTypeValue(): string
-    {
-        switch($this->delivery_price_type)
-        {
-            case 'fixed':
-                return '0';
-                break;
-            case 'distance':
-                return '1';
-                break;
-        }
-    }
     public function cuisines()
     {
         return $this->belongsToMany(\App\Models\Cuisine::class, 'restaurant_cuisines');

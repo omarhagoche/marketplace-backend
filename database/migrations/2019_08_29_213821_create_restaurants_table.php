@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: 2019_08_29_213821_create_restaurants_table.php
  * Last modified: 2020.05.03 at 10:56:45
@@ -33,7 +34,7 @@ class CreateRestaurantsTable extends Migration
             $table->double('admin_commission', 8, 2)->nullable()->default(0);
             $table->double('delivery_fee', 8, 2)->nullable()->default(0);
             $table->double('delivery_range', 8, 2)->nullable()->default(0);
-            $table->enum('delivery_price_type', ['fixed', 'distance'])->default('fixed');//added
+            $table->enum('delivery_price_type', ['fixed', 'distance', 'flexible'])->default('fixed'); //added
             $table->double('default_tax', 8, 2)->nullable()->default(0); // //added
             $table->boolean('closed')->nullable()->default(0); // //added
             $table->boolean('active')->nullable()->default(0); // //added

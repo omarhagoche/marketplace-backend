@@ -32,7 +32,7 @@
     <div class="form-group row ">
         {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('delivery_price_type', ['fixed','distance'], $deliveryPriceType, ['class' => 'form-control']) !!}
+            {!! Form::select('delivery_price_type', $restaurant->getDeliveryPriceTypes(),$restaurant->delivery_price_type, ['class' => 'form-control']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_price_type_help") }}</div>
         </div>
     </div>
@@ -214,22 +214,18 @@
             const elementToRemoveName = document.getElementById('delivery_fee');
 
             function hideAndRemoveName(value) {
-                switch(value) {
-                    case 0:
+                if (value == 'fixed') {
                         elementToHide.style.display = ""
                         elementToRemoveName.setAttribute('name','delivery_fee')
-                        break;
-                    case 1:
-                    case 2:
+                }else {
                         elementToHide.style.display = "none"
                         elementToRemoveName.removeAttribute('name');
-                        break;
                 }
             }
-            hideAndRemoveName(parseInt(el.value));
+            hideAndRemoveName(el.value);
 
             el.onchange = function (event) {
-                hideAndRemoveName(parseInt(el.value))
+                hideAndRemoveName(el.value)
             }
         </script>
 @endprepend
