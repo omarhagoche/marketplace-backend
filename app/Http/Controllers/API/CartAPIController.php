@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Flash;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Http\Controllers\API\Cart\Resources\Cart as CartResource;
 
 /**
  * Class CartController
@@ -41,7 +42,7 @@ class CartAPIController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $this->cartRepository->pushCriteria(new RequestCriteria($request));
             $this->cartRepository->pushCriteria(new LimitOffsetCriteria($request));
         } catch (RepositoryException $e) {
@@ -49,7 +50,7 @@ class CartAPIController extends Controller
         }
         $carts = $this->cartRepository->all();
 
-        return $this->sendResponse($carts->toArray(), 'Carts retrieved successfully');
+        return  CartResource::collection($carts);
     }
 
     /**

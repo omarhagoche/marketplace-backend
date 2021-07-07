@@ -33,17 +33,15 @@ class Restaurant extends JsonResource
 
     private function getDeliveryPriceByType($delivery_price_type)
     {
-        switch($delivery_price_type) {
+        switch ($delivery_price_type) {
             case "fixed":
                 return $this->delivery_fee;
-                break;
+            case "flexible":
+                return 'flexible';
             case "distance":
                 return RestaurantDistancePrice::collection($this->distancesPrices);
-                break;
             default:
                 return "No delivery price? that is improbable";
-                break;
         }
     }
-
 }
