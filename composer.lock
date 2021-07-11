@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dad989b20bd25babd2109ebf1fb947f0",
+    "content-hash": "abbd9cb446fedc5439e64f620a755fef",
     "packages": [
         {
             "name": "anlutro/l4-settings",
@@ -924,6 +924,76 @@
                 "trusted proxy"
             ],
             "time": "2020-02-22T01:51:47+00:00"
+        },
+        {
+            "name": "gr8shivam/laravel-sms-api",
+            "version": "3.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gr8shivam/laravel-sms-api.git",
+                "reference": "309b93b597a84bf8b1520395d0d2e639b09386d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gr8shivam/laravel-sms-api/zipball/309b93b597a84bf8b1520395d0d2e639b09386d0",
+                "reference": "309b93b597a84bf8b1520395d0d2e639b09386d0",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0|^7.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "^5.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Gr8Shivam\\SmsApi\\SmsApiServiceProvider"
+                    ],
+                    "aliases": {
+                        "SmsApi": "Gr8Shivam\\SmsApi\\SmsApiFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gr8Shivam\\SmsApi\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shivam Agarwal",
+                    "email": "gr8shivam25@gmail.com",
+                    "homepage": "https://github.com/gr8shivam",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel package to provide SMS API integration. Any SMS vendor that provides REST API can be used. SMS-API channel for Laravel notifications also included.",
+            "homepage": "https://github.com/gr8shivam/laravel-sms-api",
+            "keywords": [
+                "laravel notifications",
+                "laravel sms",
+                "laravel sms api",
+                "laravel sms notifications",
+                "laravel sms sender",
+                "laravel sms web api"
+            ],
+            "support": {
+                "issues": "https://github.com/gr8shivam/laravel-sms-api/issues",
+                "source": "https://github.com/gr8shivam/laravel-sms-api/tree/v3.0.4"
+            },
+            "time": "2021-01-06T15:39:09+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8320,10 +8390,10 @@
     ],
     "aliases": [
         {
-            "alias": "1.39.0",
-            "alias_normalized": "1.39.0.0",
+            "package": "nesbot/carbon",
             "version": "2.31.0.0",
-            "package": "nesbot/carbon"
+            "alias": "1.39.0",
+            "alias_normalized": "1.39.0.0"
         }
     ],
     "minimum-stability": "dev",
@@ -8339,5 +8409,6 @@
         "ext-curl": "*",
         "ext-json": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

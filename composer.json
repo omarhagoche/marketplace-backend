@@ -14,6 +14,7 @@
         "caouecs/laravel-lang": "~3.0",
         "doctrine/dbal": "^2.7",
         "fideloper/proxy": "^4.0",
+        "gr8shivam/laravel-sms-api": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
         "infyomlabs/adminlte-templates": "5.6.x-dev",
         "kylekatarnls/laravel-carbon-2": "^1.0.0",
