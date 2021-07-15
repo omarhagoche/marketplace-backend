@@ -660,6 +660,7 @@ function send_sms($to, $msg)
 
     if ($request->getResponseCode() != '200' || ($response && $response->code != 'ok')) {
         Log::channel('smsErrors')->error($sms_log);
+        return false;
     }
 
     return $request;
