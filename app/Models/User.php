@@ -196,4 +196,12 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(\App\Models\Driver::class, 'user_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     **/
+    public function verfication_code()
+    {
+        return $this->hasOne(\App\Models\VerficationCode::class, 'user_id');
+    }
 }

@@ -11,6 +11,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\VerficationCode;
+use Carbon\Carbon;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UploadRepository;
@@ -222,5 +224,77 @@ class UserAPIController extends Controller
         } else {
             return $this->sendError('Reset link not sent', 401);
         }
+    }
+
+
+
+    /**
+     * Send reset verfication code to start resset password.
+     *
+     * @param Request $request
+     *
+     */
+    function sendResetCodePhone(Request $request)
+    {
+        $this->validate($request, ['phone_number' => 'required|numeric']);
+
+        $user = User::where('phone_number', $request->phone_number)->firstOrFail();
+        $verfication = $user->verfication_code()->create([
+            'code' => sprintf("%06d", mt_rand(1, 999999)),
+        ]);
+        if (send_sms($user->phone_number, "رمز التحقق - $verfication->code")) {
+            return $this->sendResponse(true, 'Reset vervication code sent successfully');
+        }
+        return $this->sendResponse(false, 'Reset vervication code did not send successfully', 422);
+    }
+
+
+
+    /**
+     * Confirm reset verfication code to start resset password.
+     *
+     * @param Request $request
+     *
+     */
+    function confirmResetCodePhone(Request $request)
+    {
+        $this->validate($request, [
+            'phone_number' => 'required|numeric',
+            'code' => 'required|string|size:6',
+        ]);
+
+        $user = User::where('phone_number', $request->phone_number)->firstOrFail();
+        $verfication = $user->verfication_code()->where('code', $request->code)->first();
+        if (!$verfication) {
+            return $this->sendResponse(true, 'Invalid verfication code', 400);
+        }
+        if ($verfication->created_at->addMinutes(10) < Carbon::now()) {
+            $verfication->delete();
+            return $this->sendResponse(true, 'Verfication code expired', 400);
+        }
+        $verfication->token = str_random(128);
+        $verfication->save();
+
+        return  ['token' => $verfication->token];
+    }
+
+
+    /**
+     * Reset password after verfication done.
+     *
+     * @param Request $request
+     *
+     */
+    function ResetPassword(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|string|min:64|max:256',
+            'password' => 'required|string|min:6|max:32',
+        ]);
+
+        $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+        $verfication->user()->update(['password' => bcrypt($request->password)]);
+        $verfication->delete();
+        return $this->sendResponse(true, 'Reset password successfully');
     }
 }
