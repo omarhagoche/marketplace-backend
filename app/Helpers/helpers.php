@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: helpers.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -10,6 +11,8 @@ use InfyOm\Generator\Common\GeneratorCuisine;
 use InfyOm\Generator\Utils\GeneratorCuisinesInputUtil;
 use InfyOm\Generator\Utils\HTMLCuisineGenerator;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @param $bytes
@@ -35,7 +38,7 @@ function getMediaColumn($mediaModel, $mediaCollectionName = '', $extraClass = ''
 
     if ($mediaModel->hasMedia($mediaCollectionName)) {
         return "<img class='" . $extraClass . "' style='width:50px' src='" . $mediaModel->getFirstMediaUrl($mediaCollectionName, $mediaThumbnail) . "' alt='" . $mediaModel->getFirstMedia($mediaCollectionName)->name . "'>";
-    }else{
+    } else {
         return "<img class='" . $extraClass . "' style='width:50px' src='" . asset('images/image_default.png') . "' alt='image_default'>";
     }
 }
@@ -173,8 +176,8 @@ function getArrayColumn($array = [], $titleAttribute = 'title', $extraClass = ''
     $result = [];
     foreach ($array as $link) {
         $title = $link[$titleAttribute];
-//        $replace = preg_replace('/\$\{href\}/', url($baseUrl, $link[$idAttribute]), $html);
-//        $replace = preg_replace('/\$\{title\}/', $link[$titleAttribute], $replace);
+        //        $replace = preg_replace('/\$\{href\}/', url($baseUrl, $link[$idAttribute]), $html);
+        //        $replace = preg_replace('/\$\{title\}/', $link[$titleAttribute], $replace);
         $html = "<span class='{$extraClass}'>{$title}</span>";
         $result[] = $html;
     }
@@ -399,7 +402,6 @@ function getLanguages()
         'zh' => 'Chinese',
         'zu' => 'Zulu',
     );
-
 }
 
 function generateCustomField($fields, $fieldsValues = null)
@@ -422,7 +424,7 @@ function generateCustomField($fields, $fieldsValues = null)
         if ($fieldsValues) {
             foreach ($fieldsValues as $value) {
                 if ($field->id === $value->customField->id) {
-                    $dynamicVars['$INPUT_ARR_SELECTED$'] = $value->value ? $value->value: '[]';
+                    $dynamicVars['$INPUT_ARR_SELECTED$'] = $value->value ? $value->value : '[]';
                     $dynamicVars['$FIELD_VALUE$'] = '\'' . addslashes($value->value) . '\'';
                     $gf->validations[] = $value->value;
                     continue;
@@ -446,7 +448,7 @@ function generateCustomField($fields, $fieldsValues = null)
             }
             $htmlFields[] = $fieldTemplate;
         }
-//    dd($fieldTemplate);
+        //    dd($fieldTemplate);
     }
     foreach ($htmlFields as $index => $field) {
         if (round(count($htmlFields) / 2) == $index + 1) {
@@ -455,11 +457,11 @@ function generateCustomField($fields, $fieldsValues = null)
     }
     $htmlFieldsString = implode("\n\n", $htmlFields);
     $htmlFieldsString = $startSeparator . "\n" . $htmlFieldsString . "\n" . $endSeparator;
-//    dd($htmlFieldsString);
+    //    dd($htmlFieldsString);
     $renderedHtml = "";
     try {
         $renderedHtml = render(Blade::compileString($htmlFieldsString));
-//        dd($renderedHtml);
+        //        dd($renderedHtml);
     } catch (FatalThrowableError $e) {
     }
     return $renderedHtml;
@@ -524,7 +526,6 @@ function getCustomFieldsValues($customFields = null, $request = null)
             $view = array_flip($view)[$value];
         } elseif ($fieldType === 'boolean') {
             $view = getBooleanColumn(['0' => $view], '0');
-
         } elseif ($fieldType === 'password') {
             $view = str_repeat('•', strlen($value));
             $value = bcrypt($value);
@@ -593,7 +594,6 @@ function getOnlyClassName($fullClassName, $isSnake = true)
         return snake_case(end($modelNames));
     }
     return end($modelNames);
-
 }
 
 function getModelsClasses(string $dir, array $excepts = null)
@@ -617,7 +617,6 @@ function getModelsClasses(string $dir, array $excepts = null)
                 if (!in_array($fullClassName, $excepts)) {
                     $customFieldModels[$fullClassName] = trans('lang.' . snake_case(basename($value, '.php')) . '_plural');
                 }
-
             }
         }
     }
@@ -632,4 +631,36 @@ function getNeededArray($delimiter = '|', $string = '', $input)
     } else {
         return [$array[0] => getNeededArray($delimiter, $array[1], $input)];
     }
+}
+
+
+/**
+ * Send sms message
+ * 
+ * @param $to : phone number that you want send message to
+ * @param $msg : text of message 
+ */
+function send_sms($to, $msg)
+{
+    $request = smsapi()->sendMessage($to, $msg);
+    $response = $request->response();
+    $sms_log = json_encode([
+        'id' => (string) Str::uuid(),
+        'user_id' => auth()->check() ? auth()->user()->id : '',
+        'ip' => request()->ip(),
+        'url' => request()->url(),
+        'to' => $to,
+        'msg' => $msg,
+        'response' => $response
+    ]);
+    Log::channel('sms')->info($sms_log);
+    if ($response) {
+        $response = json_decode($response);
+    }
+
+    if ($request->getResponseCode() != '200' || ($response && $response->code != 'ok')) {
+        Log::channel('smsErrors')->error($sms_log);
+    }
+
+    return $request;
 }

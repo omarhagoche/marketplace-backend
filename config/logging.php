@@ -76,6 +76,16 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'sms' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sms/laravel.log'),
+        ],
+
+        'smsErrors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sms/errors/laravel.log'),
+        ]
     ],
 
 ];
