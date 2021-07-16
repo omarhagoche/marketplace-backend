@@ -245,7 +245,7 @@ class UserAPIController extends Controller
         if (send_sms($user->phone_number, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Reset vervication code sent successfully');
         }
-        return $this->sendResponse(false, 'Reset vervication code did not send successfully', 422);
+        return $this->sendError('Reset vervication code did not send successfully', 422);
     }
 
 
@@ -266,11 +266,11 @@ class UserAPIController extends Controller
         $user = User::where('phone_number', $request->phone_number)->firstOrFail();
         $verfication = $user->verfication_code()->where('code', $request->code)->first();
         if (!$verfication) {
-            return $this->sendResponse(true, 'Invalid verfication code', 400);
+            return $this->sendError('Invalid verfication code', 400);
         }
         if ($verfication->created_at->addMinutes(10) < Carbon::now()) {
             $verfication->delete();
-            return $this->sendResponse(true, 'Verfication code expired', 400);
+            return $this->sendError('Verfication code expired', 400);
         }
         $verfication->token = str_random(128);
         $verfication->save();
