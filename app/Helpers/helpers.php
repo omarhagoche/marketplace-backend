@@ -642,6 +642,11 @@ function getNeededArray($delimiter = '|', $string = '', $input)
  */
 function send_sms($to, $msg)
 {
+    if (!config('sms-api.default') || !config('sms-api.easysms.url') || !config('sms-api.easysms.params.others.api_key')) {
+        throw new Exception("SMS gateway missing configrations, please make sure that you set sms-api config");
+    }
+
+    $to = ltrim($to, '0'); // remove left zeros to skip errors in sms gateway service provider
     $request = smsapi()->sendMessage($to, $msg);
     $response = $request->response();
     $sms_log = json_encode([
