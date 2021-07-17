@@ -58,9 +58,60 @@ class UserAPIController extends Controller
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), 401);
+
+
+
+    /**
+     * Send register verfication code to start register.
+     *
+     * @param Request $request
+     *
+     */
+    function sendRegisterCodePhone(Request $request)
+    {
+        $this->validate($request, ['phone_number' => 'required|numeric|regex:/^[9][12345][0-9]{7}$/|unique:users']);
+
+        $verfication = VerficationCode::updateOrCreate(
+            ['phone' => $request->phone_number, 'user_id' => null],
+            [
+                'code' => sprintf("%06d", mt_rand(1, 999999)),
+                'created_at' => now(),
+            ]
+        );
+
+        if (send_sms($verfication->phone, "رمز التحقق - $verfication->code")) {
+            return $this->sendResponse(true, 'Vervication code sent successfully');
         }
+        return $this->sendError('Vervication code did not send successfully', 422);
+    }
+
+
+
+    /**
+     * Confirm register verfication code to start register.
+     *
+     * @param Request $request
+     *
+     */
+    function confirmRegisterCodePhone(Request $request)
+    {
+        $this->validate($request, [
+            'phone_number' => 'required|numeric|regex:/^[9][12345][0-9]{7}$/',
+            'code' => 'required|string|size:6',
+        ]);
+
+        $verfication = VerficationCode::where('phone', $request->phone_number)->latest('id')->firstOrFail();
+        if ($verfication->code != $request->code) {
+            return $this->sendError('Invalid verfication code', 400);
+        }
+        if ($verfication->created_at->addMinutes(15) < Carbon::now()) {
+            $verfication->delete();
+            return $this->sendError('Verfication code expired', 400);
+        }
+        $verfication->token = str_random(128);
+        $verfication->save();
+
+        return  ['token' => $verfication->token];
     }
 
     /**
@@ -71,29 +122,28 @@ class UserAPIController extends Controller
      */
     function register(Request $request)
     {
-        try {
-            $this->validate($request, [
-                'name' => 'required',
-                'phone_number' => 'required|string|numeric|unique:users',
-                'email' => 'required|unique:users|email',
-                'password' => 'required',
-            ]);
-            $user = new User;
-            $user->name = $request->input('name');
-            $user->phone_number = $request->input('phone_number');
-            $user->email = $request->input('email');
-            $user->device_token = $request->input('device_token', '');
-            $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
-            $user->save();
+        $this->validate($request, [
+            'token' => 'required|string|min:64|max:256',
+            'name' => 'required|min:3|max:32',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|max:32',
+        ]);
 
-            $defaultRoles = $this->roleRepository->findByField('default', '1');
-            $defaultRoles = $defaultRoles->pluck('name')->toArray();
-            $user->assignRole($defaultRoles);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return $this->sendError($e->getMessage(), 401);
-        }
+        $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+
+        $user = new User;
+        $user->name = $request->input('name');
+        $user->phone_number = $verfication->phone;
+        $user->email = $request->input('email');
+        $user->device_token = $request->input('device_token', '');
+        $user->password = Hash::make($request->input('password'));
+        $user->api_token = str_random(60);
+        $user->save();
+        $verfication->delete();
+
+        $defaultRoles = $this->roleRepository->findByField('default', '1');
+        $defaultRoles = $defaultRoles->pluck('name')->toArray();
+        $user->assignRole($defaultRoles);
 
 
         return $this->sendResponse($user, 'User retrieved successfully');

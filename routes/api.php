@@ -41,6 +41,8 @@ Route::prefix('manager')->group(function () {
 
 
 Route::post('login', 'API\UserAPIController@login');
+Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
+Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
 Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');

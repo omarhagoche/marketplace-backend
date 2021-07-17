@@ -16,8 +16,8 @@ class CreateVerficationCodesTable extends Migration
         Schema::create('verfication_codes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code', '32');
-            $table->string('token', '150')->nullable();
-            $table->integer('user_id')->unsigned();
+            $table->string('token', '150')->nullable()->index();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
