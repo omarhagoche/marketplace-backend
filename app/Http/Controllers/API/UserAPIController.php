@@ -46,18 +46,18 @@ class UserAPIController extends Controller
 
     function login(Request $request)
     {
-        try {
-            $this->validate($request, [
-                'phone_number' => 'required|numeric',
-                'password' => 'required',
-            ]);
-            if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
-                // Authentication passed...
-                $user = auth()->user();
-                $user->device_token = $request->input('device_token', '');
-                $user->save();
-                return $this->sendResponse($user, 'User retrieved successfully');
-            }
+        $this->validate($request, [
+            'phone_number' => 'required|numeric',
+            'password' => 'required',
+        ]);
+        if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
+            // Authentication passed...
+            $user = auth()->user();
+            $user->device_token = $request->input('device_token', '');
+            $user->save();
+            return $this->sendResponse($user, 'User retrieved successfully');
+        }
+    }
 
 
 
