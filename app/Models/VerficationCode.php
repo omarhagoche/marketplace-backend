@@ -11,6 +11,8 @@ class VerficationCode extends Model
         'code',
         'token',
         'user_id',
+        'phone',
+        'created_at',
     ];
 
     /**
