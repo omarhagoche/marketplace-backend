@@ -72,7 +72,7 @@ class DistanceService
                     return $responseData;
                 }
 
-                Log::error($response->getBody()->getContents());
+                Log::error($response->getBody());
                 throw new Exception("Bad response from google when calculate duration");
             }
         } catch (Exception $e) {
