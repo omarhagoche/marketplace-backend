@@ -19,7 +19,7 @@ class CreateDistancesTable extends Migration
             $table->decimal('from_longitude', 8, 5);
             $table->decimal('to_latitude', 8, 5);
             $table->decimal('to_longitude', 8, 5);
-            $table->decimal('distance_value', 8, 2);
+            $table->decimal('distance_value', 9, 2);
             $table->integer('duration_value');
             $table->string('distance_text', 20);
             $table->string('duration_text', 20);
