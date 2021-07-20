@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: Food.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -184,7 +185,7 @@ class Food extends Model implements HasMedia
      **/
     public function extraGroups()
     {
-        return $this->belongsToMany(\App\Models\ExtraGroup::class,'extras');
+        return $this->belongsToMany(\App\Models\ExtraGroup::class, 'extras');
     }
 
     /**
@@ -209,7 +210,7 @@ class Food extends Model implements HasMedia
      */
     public function getRestaurantAttribute()
     {
-        return $this->restaurant()->first(['id', 'name','latitude', 'longitude',  'delivery_fee', 'delivery_price_type', 'address', 'phone', 'default_tax', 'available_for_delivery']);
+        return $this->restaurant()->first(['id', 'name', 'latitude', 'longitude',  'delivery_fee', 'delivery_range', 'delivery_price_type', 'address', 'phone', 'default_tax', 'available_for_delivery']);
     }
 
     /**
@@ -234,7 +235,7 @@ class Food extends Model implements HasMedia
     public function applyCoupon($coupon): float
     {
         $price = $this->getPrice();
-        if(isset($coupon) && count($this->discountables) + count($this->category->discountables) + count($this->restaurant->discountables) > 0){
+        if (isset($coupon) && count($this->discountables) + count($this->category->discountables) + count($this->restaurant->discountables) > 0) {
             if ($coupon->discount_type == 'fixed') {
                 $price -= $coupon->discount;
             } else {
@@ -249,6 +250,4 @@ class Food extends Model implements HasMedia
     {
         return $this->morphMany('App\Models\Discountable', 'discountable');
     }
-
-
 }
