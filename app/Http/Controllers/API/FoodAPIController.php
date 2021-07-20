@@ -25,6 +25,7 @@ use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Http\Controllers\API\Food\Resources\Food as FoodResource;
 
 /**
  * Class FoodController
@@ -131,7 +132,7 @@ class FoodAPIController extends Controller
             return $this->sendError('Food not found');
         }
 
-        return $this->sendResponse($food->toArray(), 'Food retrieved successfully');
+        return $this->sendResponse(FoodResource::make($food), 'Food retrieved successfully');
     }
 
     /**
