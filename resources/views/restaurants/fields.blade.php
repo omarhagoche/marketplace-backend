@@ -21,8 +21,22 @@
         </div>
     </div>
     @hasanyrole('admin|manager')
+    
+
+    <!-- 'Private_drivers Field' -->
+    <div class="form-group row private-drivers">
+        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('private_drivers', 0) !!}
+                {!! Form::checkbox('private_drivers', 1) !!}
+            </label>
+        </div>
+    </div>
+
+
     <!-- Users Field -->
-    <div class="form-group row ">
+    <div class="form-group row" id='restaurant-body-drivers'>
         {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
             {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
@@ -228,6 +242,30 @@
                 hideAndRemoveName(el.value)
             }
         </script>
+
+        {{-- Start events of private drivers to show/hide delivery boys depends on status  --}}
+        <script>
+            const prviateDriversElement = $('.private-drivers input');
+            const deliverBoysElement = document.getElementById('drivers[]');
+            const deliverBoysGroupElement = document.getElementById('restaurant-body-drivers');
+
+            function checkPrivateDriversStatus(value) {
+                if (value) {
+                        deliverBoysGroupElement.style.display = "none";
+                        deliverBoysElement.removeAttribute('name');
+                }else {
+                        deliverBoysGroupElement.style.display = "";
+                        deliverBoysElement.setAttribute('name','drivers[]');
+                }
+            } 
+
+            $(prviateDriversElement).on('ifChanged', function(event){
+                $(this).iCheck('update'); // apply input changes, which were done outside the plugin
+                checkPrivateDriversStatus(event.target.checked);
+            });
+            $(prviateDriversElement).trigger('ifChanged')
+        </script>
+        {{-- End events of private drivers --}}
 @endprepend
 
 <!-- Description Field -->

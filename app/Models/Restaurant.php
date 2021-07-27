@@ -72,6 +72,7 @@ class Restaurant extends Model implements HasMedia
         'closed',
         'information',
         'active',
+        'private_drivers',
     ];
 
     /**
@@ -110,6 +111,7 @@ class Restaurant extends Model implements HasMedia
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
         'admin_commission' => 'required|numeric|min:0',
+        'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -123,6 +125,7 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
+        'private_drivers' => 'required|boolean'
     ];
 
     /**
