@@ -93,7 +93,7 @@ class NotifyAvailableOrderListener
         $drivers = $this->getDrivers();
 
         if ($drivers->count() == 0) {
-            $this->order->order_status_id = 6;
+            $this->order->order_status_id = 6; // no drivers available
             $this->order->save();
             return;
         }
@@ -107,5 +107,9 @@ class NotifyAvailableOrderListener
                 'created_at' => $this->order->created_at,
                 'drivers' => $drivers->pluck('id')->toArray(),
             ]);
+
+
+        $this->order->order_status_id = 7; // waiting for drivers
+        $this->order->save();
     }
 }
