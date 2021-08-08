@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\UpdateOrderEarningTable',
             'App\Listeners\UpdateOrderDriverTable'
         ],
+        'App\Events\CreatedOrderEvent' => [
+            'App\Listeners\NotifyAvailableOrderListener',
+        ],
 
     ];
 

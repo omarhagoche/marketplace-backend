@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Events\CreatedOrderEvent;
 
 /**
  * Class Order
@@ -88,6 +89,15 @@ class Order extends Model
         
     ];
 
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => CreatedOrderEvent::class,
+    ];
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
