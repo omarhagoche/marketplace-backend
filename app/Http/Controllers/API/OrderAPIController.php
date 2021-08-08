@@ -306,6 +306,9 @@ class OrderAPIController extends Controller
         $order->order_status_id = 8;
         $order->driver_id = auth()->user()->id;
         $order->save();
+
+        app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
+
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 }
