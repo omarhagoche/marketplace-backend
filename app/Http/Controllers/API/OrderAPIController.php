@@ -287,4 +287,22 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 
+
+
+    /**
+     * Select order to delivery by current driver (auth user).
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delivery($id, Request $request)
+    {
+        $order = Order::where('order_status_id', 7)->findOrFail($id);
+        $order->order_status_id = 8;
+        $order->driver_id = auth()->user()->id;
+        $order->save();
+        return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
+    }
 }
