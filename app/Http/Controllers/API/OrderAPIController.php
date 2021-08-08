@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: OrderAPIController.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -118,8 +119,6 @@ class OrderAPIController extends Controller
         }
 
         return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
-
-
     }
 
     /**
@@ -137,7 +136,6 @@ class OrderAPIController extends Controller
                 return $this->stripPayment($request);
             } else {
                 return $this->cashPayment($request);
-
             }
         }
     }
@@ -229,13 +227,14 @@ class OrderAPIController extends Controller
                 "method" => $input['payment']['method'],
             ]);
 
-            $this->orderRepository->update(['payment_id' => $payment->id,
-                'restaurant_id' => $order->foodOrders->first()->food->restaurant_id], $order->id);
+            $this->orderRepository->update([
+                'payment_id' => $payment->id,
+                'restaurant_id' => $order->foodOrders->first()->food->restaurant_id
+            ], $order->id);
 
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
             Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
-
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -279,7 +278,6 @@ class OrderAPIController extends Controller
                     }
                 }
             }
-
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -300,6 +298,11 @@ class OrderAPIController extends Controller
     public function delivery($id, Request $request)
     {
         $order = Order::where('order_status_id', 7)->findOrFail($id);
+
+        /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
+            ->food()->firstOrFail()
+            ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
+
         $order->order_status_id = 8;
         $order->driver_id = auth()->user()->id;
         $order->save();
