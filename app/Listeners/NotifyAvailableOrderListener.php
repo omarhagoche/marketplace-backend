@@ -104,11 +104,12 @@ class NotifyAvailableOrderListener
             ->document($this->order->id)
             ->set([
                 'id' => $this->order->id,
+                'restaurant' => ['id' => $this->restaurant->id, 'name' => $this->restaurant->name],
                 'created_at' => $this->order->created_at,
-                'drivers' => $drivers->pluck('id')->toArray(),
+                'drivers' => $drivers->map(function ($e) {
+                    return ['id' => $e['id'], 'distance' => $e['real_distance']];
+                })->toArray(),
             ]);
-
-
         $this->order->order_status_id = 7; // waiting for drivers
         $this->order->save();
     }
