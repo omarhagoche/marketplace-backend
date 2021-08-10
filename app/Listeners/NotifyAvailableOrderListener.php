@@ -4,6 +4,10 @@ namespace App\Listeners;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\AvailableOrder;
+use Illuminate\Support\Facades\Notification;
+use App\Models\Driver;
+use App\Models\User;
 
 class NotifyAvailableOrderListener
 {
@@ -112,5 +116,11 @@ class NotifyAvailableOrderListener
             ]);
         $this->order->order_status_id = 7; // waiting for drivers
         $this->order->save();
+
+        $users = User::select('id', 'device_token')
+            ->whereIn('id', Driver::whereIn('id', $drivers->pluck('id'))->pluck('user_id'))
+            ->get();
+
+        Notification::send($users, new AvailableOrder($this->order));
     }
 }
