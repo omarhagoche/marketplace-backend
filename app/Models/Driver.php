@@ -29,7 +29,8 @@ class Driver extends Model
         'delivery_fee',
         'total_orders',
         'earning',
-        'available'
+        'available',
+        'working_on_order'
     ];
 
     /**
@@ -42,7 +43,8 @@ class Driver extends Model
         'delivery_fee' => 'double',
         'total_orders' => 'integer',
         'earning' => 'double',
-        'available' => 'boolean'
+        'available' => 'boolean',
+        'working_on_order' => 'boolean'
     ];
 
     /**

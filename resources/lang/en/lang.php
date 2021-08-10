@@ -373,6 +373,7 @@ return [
     'done' => 'Done',
     'driver' => 'Driver',
     'driver_available' => 'Available',
+    'driver_working_on_order' => 'Working on order',
     'driver_available_help' => 'Insert Available',
     'driver_available_placeholder' => 'Insert Available',
     'driver_create' => 'Refresh drivers',

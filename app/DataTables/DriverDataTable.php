@@ -42,6 +42,9 @@ class DriverDataTable extends DataTable
             ->editColumn('available', function ($driver) {
                 return getBooleanColumn($driver, 'available');
             })
+            ->editColumn('working_on_order', function ($driver) {
+                return getBooleanColumn($driver, 'working_on_order');
+            })
             ->addColumn('action', 'drivers.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
@@ -79,7 +82,10 @@ class DriverDataTable extends DataTable
             [
                 'data' => 'available',
                 'title' => trans('lang.driver_available'),
-
+            ],
+            [
+                'data' => 'working_on_order',
+                'title' => trans('lang.driver_working_on_order'),
             ],
             [
                 'data' => 'updated_at',
