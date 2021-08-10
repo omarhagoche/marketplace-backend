@@ -14,7 +14,19 @@ class NotifyAvailableOrderListener
     protected $order;
     protected $restaurant;
 
-    protected $distance_range = 250; //  km
+    /**
+     * Range of distance to scan drivers who can see available orders
+     * 
+     * @var float
+     */
+    protected $drivers_range;
+
+    /**
+     * The last access time (seen online) for drivers who can see available orders
+     * 
+     * @var int
+     */
+    protected $last_access;
 
 
     /**
@@ -24,7 +36,8 @@ class NotifyAvailableOrderListener
      */
     public function __construct()
     {
-        //
+        $this->drivers_range = (float)setting('drivers_range');
+        $this->last_access = (int)setting('drivers_last_access');
     }
 
     /**
@@ -58,7 +71,7 @@ class NotifyAvailableOrderListener
             ->orderBy("last_access", "desc")
             ->where('working_on_order', '=', false)
             ->where('available', '=', true)
-            ->where('last_access', '>', now()->addMonths(-3))
+            ->where('last_access', '>', now()->addSeconds($this->last_access * -1))
             ->documents();
 
 
@@ -75,14 +88,14 @@ class NotifyAvailableOrderListener
             $item['distance'] =  get_distance($item['latitude'], $item['longitude'],  $restaurant_latitude, $restaurant_longitude);
             return $item;
         })
-            ->where('distance', '<=', $this->distance_range + 10)
+            ->where('distance', '<=', $this->drivers_range + 10)
             ->sortBy('distance')
             ->take(25)
             ->map(function ($item) use ($restaurant_latitude, $restaurant_longitude) {
                 $item['real_distance'] = app('distance')->getDistanceByKM($item['latitude'], $item['longitude'],  $restaurant_latitude, $restaurant_longitude);
                 return $item;
             })
-            ->where('real_distance', '<=', $this->distance_range)
+            ->where('real_distance', '<=', $this->drivers_range)
             ->sortBy('real_distance');
 
 

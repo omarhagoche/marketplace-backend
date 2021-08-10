@@ -182,6 +182,8 @@ class UserAPIController extends Controller
             'default_currency' => '',
             'default_currency_decimal_digits' => '',
             'app_name' => '',
+            'drivers_range' => '',
+            'drivers_last_access' => '',
             'initial_price' => '',
             'price_per_minute' => '',
             'price_per_km' => '',
