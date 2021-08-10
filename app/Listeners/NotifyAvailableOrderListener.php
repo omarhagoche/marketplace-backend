@@ -57,7 +57,7 @@ class NotifyAvailableOrderListener
         $drivers = $firestore->collection('drivers')
             ->orderBy("last_access", "desc")
             ->where('active', '=', true)
-            ->where('avaliable', '=', true)
+            ->where('available', '=', true)
             ->where('last_access', '>', now()->addMonths(-3))
             ->documents();
 
