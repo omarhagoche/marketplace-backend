@@ -88,10 +88,8 @@ class UpdateDriverStatusListener
      */
     private function updateDriverStatus($driver_id, $working_on_order)
     {
-        $driver = Driver::select('id', 'available')->where('user_id', $driver_id)->first();
-
         $firestore = app('firebase.firestore')->getFirestore();
-        $ref = $firestore->collection('drivers')->document($driver->id);
+        $ref = $firestore->collection('drivers')->document($driver_id);
 
         $data = $ref->snapshot()->data();
 
@@ -99,8 +97,8 @@ class UpdateDriverStatusListener
             $data['working_on_order'] = $working_on_order;
         } else { // set data if not exists
             $data = [
-                'id' => $driver->id,
-                'available' => $driver->available,
+                'id' => $driver_id,
+                'available' => Driver::select('available')->where('user_id', $driver_id)->first()->available,
                 'working_on_order' => $working_on_order,
                 'latitude' => 0,
                 'longitude' => 0,

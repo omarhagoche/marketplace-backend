@@ -117,8 +117,8 @@ class NotifyAvailableOrderListener
         $this->order->order_status_id = 7; // waiting for drivers
         $this->order->save();
 
-        $users = User::select('id', 'device_token')
-            ->whereIn('id', Driver::whereIn('id', $drivers->pluck('id'))->pluck('user_id'))
+        $users = User::select('id', 'device_token')->whereNotNull('device_token')
+            ->whereIn('id', $drivers->pluck('id'))
             ->get();
 
         Notification::send($users, new AvailableOrder($this->order));
