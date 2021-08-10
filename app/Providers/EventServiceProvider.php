@@ -25,6 +25,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\CreatedOrderEvent' => [
             'App\Listeners\NotifyAvailableOrderListener',
+            'App\Listeners\UpdateDriverStatusListener',
+        ],
+        'App\Events\UpdatedOrderEvent' => [
+            'App\Listeners\UpdateDriverStatusListener',
         ],
 
     ];
