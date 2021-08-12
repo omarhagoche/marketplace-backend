@@ -71,7 +71,7 @@ class NotifyAvailableOrderListener
             ->orderBy("last_access", "desc")
             ->where('working_on_order', '=', false)
             ->where('available', '=', true)
-            ->where('last_access', '>', now()->addSeconds($this->last_access * -1))
+            ->where('last_access', '>', now()->addSeconds($this->last_access * -1)->timestamp)
             ->documents();
 
 
@@ -115,6 +115,8 @@ class NotifyAvailableOrderListener
             return;
         }
 
+        $drivers_ids = $drivers->pluck('id')->toArray();
+
         app('firebase.firestore')
             ->getFirestore()
             ->collection('orders')
@@ -122,16 +124,14 @@ class NotifyAvailableOrderListener
             ->set([
                 'id' => $this->order->id,
                 'restaurant' => ['id' => $this->restaurant->id, 'name' => $this->restaurant->name],
-                'created_at' => $this->order->created_at,
-                'drivers' => $drivers->map(function ($e) {
-                    return ['id' => $e['id'], 'distance' => $e['real_distance']];
-                })->toArray(),
+                'created_at' => $this->order->created_at->timestamp,
+                'drivers' => $drivers_ids
             ]);
         $this->order->order_status_id = 7; // waiting for drivers
         $this->order->save();
 
         $users = User::select('id', 'device_token')->whereNotNull('device_token')
-            ->whereIn('id', $drivers->pluck('id'))
+            ->whereIn('id', $drivers_ids)
             ->get();
 
         Notification::send($users, new AvailableOrder($this->order));
