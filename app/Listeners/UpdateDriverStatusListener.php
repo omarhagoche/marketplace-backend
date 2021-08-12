@@ -10,6 +10,7 @@ class UpdateDriverStatusListener
 {
 
     private $order;
+    private $driver;
 
     /**
      * Create the event listener.
@@ -30,82 +31,78 @@ class UpdateDriverStatusListener
     public function handle($event)
     {
         $this->order = $event->order;
+        $this->driver = $this->order->driver->driver;
+
+        if ($this->order->wasChanged('order_status_id')) {
+            if ($this->order->isStatusDone()) {
+                $this->setDriverFree();
+                return;
+            }
+
+            if ($this->order->isStatusWasDone() && !$this->order->wasChanged('driver_id')) {
+                $this->setDriverBusy();
+                return;
+            }
+        }
 
         // exit if order not new and dirver_id not changed , so that menas you do not do anything
-        if (!$this->order->wasRecentlyCreated && !$this->order->wasChanged('driver_id')) return;
+        if (!$this->order->wasRecentlyCreated && $this->order->isStatusDone() /* && !$this->order->wasChanged('driver_id') */) return;
 
-        $old_driver_id = $this->order->getChanges()['driver_id'] ?? false;
+        $old_driver_id = $this->order->wasChanged('driver_id') ?  $this->order->getOriginal('driver_id') : false;
+
 
         if (($this->order->wasRecentlyCreated || !$old_driver_id) &&  $this->order->driver_id) { //  assigned order to driver
-            $this->driverAssigned();
+            $this->setDriverBusy();
             return;
         }
 
 
         if ($old_driver_id &&  !$this->order->driver_id) { // driver canceled from order
-            $this->driverCanceled();
+            $this->setDriverFree();
             return;
         }
 
-        $this->driverChanged(); // otherwise driver changed
+        $this->driverChanged($old_driver_id); // otherwise driver changed
     }
 
     /**
      * Update driver working_on_order status to work (true)
      */
-    protected function driverAssigned()
+    protected function setDriverBusy()
     {
-        $this->updateDriverStatus($this->order->driver_id, true);
+        $this->updateDriverStatus(true);
     }
 
 
     /**
      * Update driver working_on_order status
      * Set old driver as free , and set new driver to busy
+     * @param int $old_driver_id
      */
-    protected function driverChanged()
+    protected function driverChanged($old_driver_id)
     {
-        $this->updateDriverStatus($this->order->getOriginal('driver_id'), false);
-        $this->updateDriverStatus($this->order->driver_id, true);
+        $this->updateDriverStatus(false, Driver::where('user_id', $old_driver_id)->first());
+        $this->updateDriverStatus(true);
     }
 
 
     /**
-     * Set driver as free
+     * Set driver as free , that means dirver can see available orders
      */
-    protected function driverCanceled()
+    protected function setDriverFree()
     {
-        $this->updateDriverStatus($this->order->driver_id, false);
+        $this->updateDriverStatus(false);
     }
 
     /**
-     * Update driver working_on_order status in firebase
-     * 
-     * @param int $driver_id
-     * @param boolean $working_on_order
-     * 
-     * @return void
+     * Update working_on_order property
      */
-    private function updateDriverStatus($driver_id, $working_on_order)
+    private function updateDriverStatus($working_on_order, $driver = null)
     {
-        $firestore = app('firebase.firestore')->getFirestore();
-        $ref = $firestore->collection('drivers')->document($driver_id);
-
-        $data = $ref->snapshot()->data();
-
-        if ($data) { // update data if exists
-            $data['working_on_order'] = $working_on_order;
-        } else { // set data if not exists
-            $data = [
-                'id' => $driver_id,
-                'available' => Driver::select('available')->where('user_id', $driver_id)->first()->available,
-                'working_on_order' => $working_on_order,
-                'latitude' => 0,
-                'longitude' => 0,
-                'last_access' => null,
-            ];
+        if (!$driver) {
+            $driver = $this->driver;
         }
-
-        $ref->set($data);
+        $driver->working_on_order = $working_on_order;
+        $driver->save();
     }
 }

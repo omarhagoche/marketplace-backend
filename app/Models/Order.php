@@ -174,5 +174,18 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
     }
-    
+
+    public function isStatusDone()
+    {
+        return $this->order_status_id == 5;
+    }
+
+    public function isStatusWasDone()
+    {
+        if (!$this->wasChanged('order_status_id')) {
+            return false;
+        };
+
+        return ($this->getOriginal('order_status_id') ?? false) == 5;
+    }
 }

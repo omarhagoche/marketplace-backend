@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Events\CreatedDriverEvent;
+use App\Events\UpdatedDriverEvent;
 
 /**
  * Class Driver
@@ -64,7 +66,16 @@ class Driver extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => CreatedDriverEvent::class,
+        'updated' => UpdatedDriverEvent::class,
     ];
 
     public function customFieldsValues()
