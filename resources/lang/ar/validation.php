@@ -117,6 +117,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Custom Validation Rules Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines contain the default error messages used by
+    | the validator class. Some of these rules have multiple versions such
+    | as the size rules. Feel free to tweak each of these messages here.
+    |
+    */
+    'phone_number' => 'The :attribute must be a valid phone number (9[1-5]XXXXXXX).',
+
+    /*
+    |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------
     |
