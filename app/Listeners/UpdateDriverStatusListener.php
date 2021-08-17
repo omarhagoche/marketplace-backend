@@ -31,7 +31,12 @@ class UpdateDriverStatusListener
     public function handle($event)
     {
         $this->order = $event->order;
-        $this->driver = $this->order->driver->driver;
+
+        if (($this->order->wasRecentlyCreated && empty($this->order->driver_id)) || !$this->order->wasChanged(['driver_id', 'order_status_id'])) {
+            return; // exit if order new without driver , or order driver or status dose not changed
+        }
+
+        $this->driver = $this->order->driver->driver ?? false;
 
         if ($this->order->wasChanged('order_status_id')) {
             if ($this->order->isStatusDone()) {
