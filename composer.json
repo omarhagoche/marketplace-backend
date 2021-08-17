@@ -14,11 +14,10 @@
         "caouecs/laravel-lang": "~3.0",
         "doctrine/dbal": "^2.7",
         "fideloper/proxy": "^4.0",
-        "google/cloud-firestore": "^1.19",
         "gr8shivam/laravel-sms-api": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
         "infyomlabs/adminlte-templates": "5.6.x-dev",
-        "kreait/firebase-php": "4.0",
+        "kreait/firebase-php": "4.15",
         "kylekatarnls/laravel-carbon-2": "^1.0.0",
         "laravel/cashier": "~7.0",
         "laravel/framework": "5.8.*",
@@ -26,6 +25,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "5.8.*",
         "maddhatter/laravel-fullcalendar": "^1.3",
+        "morrislaptop/firestore-php": "^2.2",
         "nesbot/carbon": "2.31.0 as 1.39.0",
         "orangehill/iseed": "^2.6",
         "overtrue/laravel-lang": "~3.0",
@@ -67,8 +67,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {

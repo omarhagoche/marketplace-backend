@@ -7,11 +7,8 @@ use GuzzleHttp\Client;
 use Log;
 use Exception;
 
-use Kreait\Firebase\Factory;
+use Morrislaptop\Firestore\Factory;
 use Kreait\Firebase\ServiceAccount;
-use Kreait\Firebase\Database;
-use Google\Cloud\Firestore\FirestoreClient;
-
 
 
 class FirestoreService
@@ -27,9 +24,11 @@ class FirestoreService
 
     public function __construct()
     {
-        $this->firestore = new FirestoreClient([
-            'projectId' => config('firebase.projects.app.project_id'),
-        ]);
+        $serviceAccount = ServiceAccount::fromJsonFile(base_path(config('firebase.projects.app.credentials.file')));
+
+        $this->firestore = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->createFirestore();
     }
 
     public function getFirestore()
