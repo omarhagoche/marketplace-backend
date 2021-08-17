@@ -135,6 +135,17 @@
             </label>
         </div>
     </div>
+    
+    <!-- 'Boolean featured Field' -->
+    <div class="form-group row ">
+        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('featured', 0) !!}
+                {!! Form::checkbox('featured', 1, null) !!}
+            </label>
+        </div>
+    </div>
 
     <!-- 'Boolean available_for_delivery Field' -->
     <div class="form-group row ">

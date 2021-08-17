@@ -43,6 +43,9 @@ class RestaurantDataTable extends DataTable
             ->editColumn('closed', function ($food) {
                 return getNotBooleanColumn($food, 'closed');
             })
+            ->editColumn('featured', function ($food) {
+                return getBooleanColumn($food, 'featured');
+            })
             ->editColumn('available_for_delivery', function ($food) {
                 return getBooleanColumn($food, 'available_for_delivery');
             })
@@ -151,6 +154,11 @@ class RestaurantDataTable extends DataTable
             [
                 'data' => 'closed',
                 'title' => trans('lang.restaurant_closed'),
+
+            ],
+            [
+                'data' => 'featured',
+                'title' => trans('lang.restaurant_featured'),
 
             ],
             [

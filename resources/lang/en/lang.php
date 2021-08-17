@@ -1044,6 +1044,7 @@ return [
     'app_setting_cache_is_cleared' => 'Application Cache is cleared successfully',
     'app_setting_clear_cache' => 'Clear cache',
     'restaurant_available_for_delivery' => 'Available for delivery',
+    'restaurant_featured' => 'Featured restaurant',
     'restaurant_closed' => 'Closed restaurant',
     'extra_group_updated_at' => 'Updated At',
     'app_setting_become_restaurant_owner' => 'Become Restaurant Owner',
