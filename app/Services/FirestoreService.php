@@ -2,13 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Distance;
-use GuzzleHttp\Client;
-use Log;
-use Exception;
 
-use Morrislaptop\Firestore\Factory;
-use Kreait\Firebase\ServiceAccount;
+use Google\Cloud\Firestore\FirestoreClient;
 
 
 class FirestoreService
@@ -24,11 +19,9 @@ class FirestoreService
 
     public function __construct()
     {
-        $serviceAccount = ServiceAccount::fromJsonFile(base_path(config('firebase.projects.app.credentials.file')));
-
-        $this->firestore = (new Factory)
-            ->withServiceAccount($serviceAccount)
-            ->createFirestore();
+        $this->firestore = new FirestoreClient([
+            'projectId' => config('firebase.projects.app.project_id'),
+        ]);
     }
 
     public function getFirestore()
