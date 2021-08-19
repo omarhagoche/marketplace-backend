@@ -386,6 +386,8 @@ return [
     'driver_delivery_fee' => 'Delivery Fee (%)',
     'driver_delivery_fee_help' => 'Ex: 50 for 50% of delivery amount of restaurant',
     'driver_delivery_fee_placeholder' => 'Insert Delivery Fee',
+    'driver_type' => 'Driver type',
+    'driver_type_help' => 'Type of driver',
     'driver_desc' => 'Drivers Management',
     'driver_earning' => 'Earning',
     'driver_earning_help' => 'Insert Earning',

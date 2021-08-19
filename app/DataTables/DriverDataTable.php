@@ -80,6 +80,11 @@ class DriverDataTable extends DataTable
 
             ],
             [
+                'data' => 'type',
+                'title' => trans('lang.driver_type'),
+
+            ],
+            [
                 'data' => 'available',
                 'title' => trans('lang.driver_available'),
             ],
@@ -117,15 +122,15 @@ class DriverDataTable extends DataTable
      */
     public function query(Driver $model)
     {
-        if(auth()->user()->hasRole('admin')){
+        if (auth()->user()->hasRole('admin')) {
             return $model->newQuery()->with("user")->select('drivers.*');
-        }else if (auth()->user()->hasRole('manager')){
+        } else if (auth()->user()->hasRole('manager')) {
             // restaurants of this user
             $restaurantsIds = array_column(auth()->user()->restaurants->toArray(), 'id');
 
             return $model->newQuery()->with("user")
-                ->join('driver_restaurants','driver_restaurants.user_id','=','drivers.user_id')
-                ->whereIn('driver_restaurants.restaurant_id',$restaurantsIds)
+                ->join('driver_restaurants', 'driver_restaurants.user_id', '=', 'drivers.user_id')
+                ->whereIn('driver_restaurants.restaurant_id', $restaurantsIds)
                 ->distinct('driver_restaurants.user_id')
                 ->select('drivers.*');
         }
@@ -141,12 +146,16 @@ class DriverDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
+            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
+                config('datatables-buttons.parameters'),
+                [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ), true)
+                        file_get_contents(
+                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ),
+                        true
+                    )
                 ]
             ));
     }

@@ -13,19 +13,31 @@
     </div>
   </div>
 </div>
-</div>
-<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
-<!-- 'Boolean Available Field' -->
+
+  <!-- 'Driver Type Field' -->
 <div class="form-group row ">
-  {!! Form::label('available', trans("lang.driver_available"),['class' => 'col-3 control-label text-right']) !!}
-  <div class="checkbox icheck">
-    <label class="col-9 ml-2 form-check-inline">
-      {!! Form::hidden('available', 0) !!}
-      {!! Form::checkbox('available', 1, null) !!}
-    </label>
+  {!! Form::label('type', trans("lang.driver_type"), ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    {!! Form::select('type', $driver->types(),$driver->type, ['class' => 'form-control']) !!}
+      <div class="form-text text-muted">{{ trans("lang.driver_type_help") }}</div>
   </div>
 </div>
+
+ 
+  <!-- 'Boolean Available Field' -->
+  <div class="form-group row ">
+    {!! Form::label('available', trans("lang.driver_available"),['class' => 'col-3 control-label text-right']) !!}
+    <div class="checkbox icheck">
+      <label class="col-9 ml-2 form-check-inline">
+        {!! Form::hidden('available', 0) !!}
+        {!! Form::checkbox('available', 1, null) !!}
+      </label>
+    </div>
+  </div>
+
+</div>
+
 
 </div>
 @if($customFields)
