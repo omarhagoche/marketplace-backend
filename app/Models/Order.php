@@ -8,8 +8,7 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
-use App\Events\CreatedOrderEvent;
+use Eloquent as Model; 
 use App\Events\UpdatedOrderEvent;
 
 /**
@@ -96,8 +95,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $dispatchesEvents = [
-        'created' => CreatedOrderEvent::class,
+    protected $dispatchesEvents = [ 
         'updated' => UpdatedOrderEvent::class,
     ];
     public function customFieldsValues()

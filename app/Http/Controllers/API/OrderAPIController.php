@@ -32,6 +32,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
+use App\Events\CreatedOrderEvent;
 
 /**
  * Class OrderController
@@ -192,6 +193,7 @@ class OrderAPIController extends Controller
                 $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
                 Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+                event(new CreatedOrderEvent($order));
             }
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
@@ -235,6 +237,7 @@ class OrderAPIController extends Controller
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
             Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+            event(new CreatedOrderEvent($order));
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
