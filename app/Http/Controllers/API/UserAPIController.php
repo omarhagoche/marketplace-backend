@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Rules\PhoneNumber;
 
 class UserAPIController extends Controller
 {
@@ -47,7 +48,7 @@ class UserAPIController extends Controller
     function login(Request $request)
     {
         $this->validate($request, [
-            'phone_number' => 'required|numeric',
+            'phone_number' => ['required', new PhoneNumber],
             'password' => 'required',
         ]);
         if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
@@ -69,7 +70,9 @@ class UserAPIController extends Controller
      */
     function sendRegisterCodePhone(Request $request)
     {
-        $this->validate($request, ['phone_number' => 'required|numeric|regex:/^[9][12345][0-9]{7}$/|unique:users']);
+        $this->validate($request, [
+            'phone_number' => ['required', new PhoneNumber, 'unique:users'],
+        ]);
 
         $verfication = VerficationCode::updateOrCreate(
             ['phone' => $request->phone_number, 'user_id' => null],
@@ -96,7 +99,7 @@ class UserAPIController extends Controller
     function confirmRegisterCodePhone(Request $request)
     {
         $this->validate($request, [
-            'phone_number' => 'required|numeric|regex:/^[9][12345][0-9]{7}$/',
+            'phone_number' => ['required', new PhoneNumber],
             'code' => 'required|string|size:6',
         ]);
 
@@ -288,7 +291,10 @@ class UserAPIController extends Controller
      */
     function sendResetCodePhone(Request $request)
     {
-        $this->validate($request, ['phone_number' => 'required|numeric']);
+        $this->validate($request, [
+            'phone_number' => ['required', new PhoneNumber],
+        ]);
+
 
         $user = User::where('phone_number', $request->phone_number)->firstOrFail();
         $verfication = $user->verfication_code()->create([
@@ -311,7 +317,7 @@ class UserAPIController extends Controller
     function confirmResetCodePhone(Request $request)
     {
         $this->validate($request, [
-            'phone_number' => 'required|numeric',
+            'phone_number' => ['required', new PhoneNumber],
             'code' => 'required|string|size:6',
         ]);
 
