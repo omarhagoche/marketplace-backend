@@ -123,6 +123,45 @@ class UserAPIController extends Controller
      * @param array $data
      * @return
      */
+    function registerDriver(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|string|min:64|max:256',
+            'name' => 'required|min:3|max:32',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|max:32',
+            'type' => 'required|in:bicycle,motorcycle,car',
+        ]);
+
+        $user = new User;
+        \DB::transaction(function () use ($request, $user) {
+            $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+            $user->name = $request->input('name');
+            $user->phone_number =    $verfication->phone;
+            $user->email = $request->input('email');
+            $user->device_token = $request->input('device_token', '');
+            $user->password = Hash::make($request->input('password'));
+            $user->api_token = str_random(60);
+            $user->save();
+            $verfication->delete();
+
+            $user->driver()->create([
+                'type' => $request->type,
+            ]);
+
+            $user->assignRole(['driver']);
+            $user->load('driver');
+        });
+
+        return $this->sendResponse($user, 'User retrieved successfully');
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param array $data
+     * @return
+     */
     function register(Request $request)
     {
         $this->validate($request, [

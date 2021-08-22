@@ -20,7 +20,9 @@
 
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
-    Route::post('register', 'API\Driver\UserAPIController@register');
+    Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
+    Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
+    Route::post('register', 'API\UserAPIController@registerDriver');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
     Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
