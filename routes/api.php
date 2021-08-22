@@ -34,6 +34,8 @@ Route::prefix('driver')->group(function () {
 
 Route::prefix('manager')->group(function () {
     Route::post('login', 'API\Manager\UserAPIController@login');
+    Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
+    Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
     Route::post('register', 'API\Manager\UserAPIController@register');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('user', 'API\Manager\UserAPIController@user');
