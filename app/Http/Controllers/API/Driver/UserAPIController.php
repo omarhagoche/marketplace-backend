@@ -59,7 +59,7 @@ class UserAPIController extends Controller
                     return $this->sendError('Disabled account', 403);
                 }
                 if (!$user->hasRole('driver')) {
-                    $this->sendError('User not driver', 401);
+                    return $this->sendError('User not driver', 401);
                 }
                 $user->device_token = $request->input('device_token', '');
                 $user->load('driver');
