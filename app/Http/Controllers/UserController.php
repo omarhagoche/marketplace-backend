@@ -255,6 +255,9 @@ class UserController extends Controller
         } else {
             $input['password'] = Hash::make($input['password']);
         }
+        if ($request->has('activated_at') && $input['activated_at'] == 1) {
+            $input['activated_at'] = now();
+        }
         try {
             $user = $this->userRepository->update($input, $id);
             if (empty($user)) {

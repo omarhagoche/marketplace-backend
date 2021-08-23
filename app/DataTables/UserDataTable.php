@@ -26,11 +26,14 @@ class UserDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         return $dataTable
+            ->editColumn('activated_at', function ($user) {
+                return getDateColumn($user, 'activated_at');
+            })
             ->editColumn('updated_at', function ($user) {
                 return getDateColumn($user, 'updated_at');
             })
             ->editColumn('role', function ($user) {
-                return getArrayColumn($user->roles,'name');
+                return getArrayColumn($user->roles, 'name');
             })
             ->editColumn('email', function ($user) {
                 return getEmailColumn($user, 'email');

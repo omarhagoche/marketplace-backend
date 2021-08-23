@@ -45,6 +45,20 @@
             </div>
         </div>
     </div>
+
+    @if($user->hasAnyRole(['driver','manager']) && !$user->activated_at)
+    <!-- 'Activated at Field' -->
+    <div class="form-group row">
+        {!! Form::label('activated_at', trans("lang.activated_at"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('activated_at', 0) !!}
+                {!! Form::checkbox('activated_at', 1) !!}
+            </label>
+        </div>
+    </div>
+    @endif
+    
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
     <!-- $FIELD_NAME_TITLE$ Field -->
