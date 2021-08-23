@@ -46,7 +46,7 @@
     <div class="form-group row ">
         {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('delivery_price_type', $restaurant->getDeliveryPriceTypes(),$restaurant->delivery_price_type, ['class' => 'form-control']) !!}
+            {!! Form::select('delivery_price_type', getDeliveryPriceTypes(),$restaurant->delivery_price_type?? null, ['class' => 'form-control']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_price_type_help") }}</div>
         </div>
     </div>

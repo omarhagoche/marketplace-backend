@@ -695,3 +695,12 @@ function getDistanceFromLatLonInKm($lat1, $lon1, $lat2, $lon2)
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     return $radius * $c; // Distance in km
 }
+
+/**
+ * Get Types of delivery prices 
+ * @return array
+ */
+function getDeliveryPriceTypes(): array
+{
+    return \App\Models\Restaurant::getDeliveryPriceTypes();
+}
