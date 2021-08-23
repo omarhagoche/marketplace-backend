@@ -262,11 +262,11 @@
 
             function checkPrivateDriversStatus(value) {
                 if (value) {
-                        deliverBoysGroupElement.style.display = "none";
-                        deliverBoysElement.removeAttribute('name');
-                }else {
                         deliverBoysGroupElement.style.display = "";
                         deliverBoysElement.setAttribute('name','drivers[]');
+                }else {
+                        deliverBoysGroupElement.style.display = "none";
+                        deliverBoysElement.removeAttribute('name');
                 }
             } 
 
