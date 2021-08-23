@@ -49,7 +49,7 @@
     @if($user->hasAnyRole(['driver','manager']) && !$user->activated_at)
     <!-- 'Activated at Field' -->
     <div class="form-group row">
-        {!! Form::label('activated_at', trans("lang.activated_at"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('activated_at', trans("lang.user_activated_at"),['class' => 'col-3 control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('activated_at', 0) !!}

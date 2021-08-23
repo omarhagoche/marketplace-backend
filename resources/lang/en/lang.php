@@ -933,6 +933,7 @@ return [
     'user_password' => 'Password',
     'user_password_help' => 'Insert Password',
     'user_password_placeholder' => 'Insert Password',
+    'user_activated_at' => 'Accept',
     'user_phone' => 'Phone',
     'user_phone_help' => 'Insert Phone Number',
     'user_phone_placeholder' => '+1 553 459 632',
