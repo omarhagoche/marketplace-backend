@@ -52,6 +52,12 @@ class UserAPIController extends Controller
             if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
+                if (!$user->activated_at) {
+                    return $this->sendError('Inactivated account', 401);
+                }
+                if (!$user->active) {
+                    return $this->sendError('Disabled account', 403);
+                }
                 if (!$user->hasRole('driver')) {
                     $this->sendError('User not driver', 401);
                 }
