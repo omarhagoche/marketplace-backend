@@ -26,6 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string name
  * @property string phone_number
  * @property string email
+ * @property boolean active
  * @property string password
  * @property string api_token
  * @property string device_token
@@ -48,6 +49,7 @@ class User extends Authenticatable implements HasMedia
         'name' => 'required|string|max:255',
         'phone_number' => 'required|string|max:20|unique:users,phone_number',
         'email' => 'required|string|email|unique:users,email',
+        'active' => 'required|boolean',
         'password' => 'required|min:6|max:32',
     ];
     public $table = 'users';
@@ -60,6 +62,7 @@ class User extends Authenticatable implements HasMedia
         'name',
         'phone_number',
         'email',
+        'active',
         'password',
         'api_token',
         'device_token',
@@ -74,6 +77,7 @@ class User extends Authenticatable implements HasMedia
         'name' => 'string',
         'phone_number' => 'string',
         'email' => 'string',
+        'active' => 'boolean',
         'password' => 'string',
         'api_token' => 'string',
         'device_token' => 'string',

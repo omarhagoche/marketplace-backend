@@ -59,6 +59,17 @@
     </div>
     @endif
     
+    <!-- 'Active Field' -->
+    <div class="form-group row">
+        {!! Form::label('active', trans("lang.active"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('active', 0) !!}
+                {!! Form::checkbox('active', 1) !!}
+            </label>
+        </div>
+    </div>
+
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
     <!-- $FIELD_NAME_TITLE$ Field -->
