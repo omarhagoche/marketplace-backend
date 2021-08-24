@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    @if($user->hasAnyRole(['driver','manager']) && !$user->activated_at)
+    @if(!empty($user) && $user->hasAnyRole(['driver','manager']) && !$user->activated_at)
     <!-- 'Activated at Field' -->
     <div class="form-group row">
         {!! Form::label('activated_at', trans("lang.user_activated_at"),['class' => 'col-3 control-label text-right']) !!}
