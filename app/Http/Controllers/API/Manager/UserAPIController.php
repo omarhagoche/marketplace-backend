@@ -75,8 +75,9 @@ class UserAPIController extends Controller
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
+            return $this->sendError(trans('auth.failed'), 422);
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), 401);
+            return $this->sendError($e->getMessage(), 422);
         }
     }
 
