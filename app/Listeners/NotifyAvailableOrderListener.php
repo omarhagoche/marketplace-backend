@@ -86,6 +86,7 @@ class NotifyAvailableOrderListener
 
         $near_drivers = $collection->map(function ($item) use ($restaurant_latitude, $restaurant_longitude) {
             $item['distance'] =  get_distance($item['latitude'], $item['longitude'],  $restaurant_latitude, $restaurant_longitude);
+            $item['id'] = (string) $item['id']; // convert it to string becuase mobile app can not filter int 
             return $item;
         })
             ->where('distance', '<=', $this->drivers_range + 10)
