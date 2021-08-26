@@ -85,7 +85,12 @@ return [
         'smsErrors' => [
             'driver' => 'daily',
             'path' => storage_path('logs/sms/errors/laravel.log'),
-        ]
+        ],
+
+        'canceledOrders' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/orders/canceled/laravel.log'),
+        ],
     ],
 
 ];
