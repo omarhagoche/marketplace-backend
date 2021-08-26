@@ -15,7 +15,7 @@ class OrderStatus extends Model
 {
 
     public $table = 'order_statuses';
-    
+
 
 
     public $fillable = [
@@ -28,7 +28,8 @@ class OrderStatus extends Model
      * @var array
      */
     protected $casts = [
-        'status' => 'string'
+        'key' => 'string',
+        'status' => 'string',
     ];
 
     /**
@@ -47,7 +48,7 @@ class OrderStatus extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+
     ];
 
     public function customFieldsValues()
@@ -57,18 +58,15 @@ class OrderStatus extends Model
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
-
-    
-    
 }
