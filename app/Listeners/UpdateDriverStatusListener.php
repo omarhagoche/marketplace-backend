@@ -39,7 +39,7 @@ class UpdateDriverStatusListener
         $this->driver = $this->order->driver->driver ?? false;
 
         if ($this->order->wasChanged('order_status_id')) {
-            if ($this->order->isStatusDone()) {
+            if ($this->order->isStatusDone() || $this->order->isStatusCanceled()) {
                 $this->setDriverFree();
                 return;
             }

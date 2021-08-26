@@ -314,4 +314,26 @@ class OrderAPIController extends Controller
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
+
+    /**
+     * Cancel driver order by current driver (auth user).
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cancel($id, Request $request)
+    {
+        $order = Order::where('user_id', auth()->user()->id)->whereIn('order_status_id', [4, 5])->findOrFail($id);
+
+        /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
+            ->food()->firstOrFail()
+            ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
+
+        $order->order_status_id = 9;
+        $order->save();
+
+        return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
+    }
 }

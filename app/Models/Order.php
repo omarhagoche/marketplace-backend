@@ -178,6 +178,11 @@ class Order extends Model
         return $this->order_status_id == 5;
     }
 
+    public function isStatusCanceled()
+    {
+        return $this->order_status_id == 9;
+    }
+
     public function isStatusWasDone()
     {
         if (!$this->wasChanged('order_status_id')) {

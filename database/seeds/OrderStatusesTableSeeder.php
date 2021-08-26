@@ -65,6 +65,12 @@ class OrderStatusesTableSeeder extends Seeder
                 'created_at' => '2019-10-15 18:04:30',
                 'updated_at' => '2019-10-15 18:04:30',
             ],
+            [
+                'id' => 9,
+                'status' => 'canceled from driver',
+                'created_at' => '2019-10-15 18:04:30',
+                'updated_at' => '2019-10-15 18:04:30',
+            ],
         ]);
     }
 }
