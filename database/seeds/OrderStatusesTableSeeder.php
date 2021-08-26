@@ -87,6 +87,13 @@ class OrderStatusesTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 105,
+                'key' => 'canceled_restaurant_did_not_accept',
+                'status' => 'Restaurant did not accept',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'id' => 110,
                 'key' => 'canceled_from_customer',
                 'status' => 'Canceled from customer',

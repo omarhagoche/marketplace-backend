@@ -180,7 +180,7 @@ class Order extends Model
 
     public function isStatusCanceled()
     {
-        return in_array($this->order_status_id, [100, 110, 120, 130, 140]); // canceled 
+        return in_array($this->order_status_id, [100, 105, 110, 120, 130, 140]); // canceled 
     }
 
     public function isStatusWasDone()
