@@ -50,7 +50,7 @@ class NotifyAvailableOrderListener
     {
         $this->order = $event->order;
         $this->restaurant = $this->order->foodOrders[0]->food->restaurant;
-        if ($this->restaurant->private_drivers) {
+        if ($this->restaurant->private_drivers || $this->order->payment->isPayOnPickUp()) {
             return;
         }
         $this->addOrderToFirebase();
