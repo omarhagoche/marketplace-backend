@@ -15,13 +15,19 @@ class CloseUnassignedOrders implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * Id of close unassigend orders operation , to use it in tracking in log system
+     */
+    protected $operationId;
+
+
+    /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct()
     {
-        //
+        $this->operationId = strtoupper(uniqid());
     }
 
     /**
@@ -31,15 +37,16 @@ class CloseUnassignedOrders implements ShouldQueue
      */
     public function handle()
     {
-        \Log::info("CloseUnassignedOrders Job");
-        $this->cancelOrdersThatNotAssignedToDrivers();
-        $this->cancelOrdersThatNotAcceptedFromRestaurant();
+        \Log::info("Started CloseUnassignedOrders Job : id => #$this->operationId");
+        $drivers =  $this->cancelOrdersThatNotAssignedToDrivers()->count();
+        $restaurants =  $this->cancelOrdersThatNotAcceptedFromRestaurant()->count();
+        \Log::info("Ended CloseUnassignedOrders Job : id => #$this->operationId | drivers: $drivers | restaurants : $restaurants");
     }
 
     /**
      * Cancel orders that took long time and did not assigned to drivers yet
      * 
-     * @return void
+     * @return App\Models\Order
      */
     public function cancelOrdersThatNotAssignedToDrivers()
     {
@@ -53,12 +60,13 @@ class CloseUnassignedOrders implements ShouldQueue
             $order->save();
             $this->log($order);
         }
+        return $orders;
     }
 
     /**
      * Cancel order that took long time and restaurant did not accept them
      * 
-     * @return void
+     * @return App\Models\Order
      */
     public function cancelOrdersThatNotAcceptedFromRestaurant()
     {
@@ -71,6 +79,7 @@ class CloseUnassignedOrders implements ShouldQueue
             $order->save();
             $this->log($order);
         }
+        return $orders;
     }
 
     /**
@@ -84,6 +93,7 @@ class CloseUnassignedOrders implements ShouldQueue
     {
         $data = $order->only('id', 'order_status_id', 'created_at', 'updated_at');
         $data['old_order_status_id'] = $order->getOriginal('order_status_id');
+        $data['operation_id'] = $this->operationId;
         Log::channel('canceledOrders')->log($data);
     }
 }
