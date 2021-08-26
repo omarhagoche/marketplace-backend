@@ -325,7 +325,7 @@ class OrderAPIController extends Controller
      */
     public function cancel($id, Request $request)
     {
-        $order = Order::where('user_id', auth()->user()->id)->whereIn('order_status_id', [4, 5])->findOrFail($id);
+        $order = Order::where('driver_id', auth()->user()->id)->whereIn('order_status_id', [4, 8])->findOrFail($id);
 
         /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
             ->food()->firstOrFail()
