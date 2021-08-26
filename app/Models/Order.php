@@ -175,12 +175,12 @@ class Order extends Model
 
     public function isStatusDone()
     {
-        return $this->order_status_id == 5;
+        return $this->order_status_id == 70; // 70 : delivered
     }
 
     public function isStatusCanceled()
     {
-        return $this->order_status_id == 9;
+        return in_array($this->order_status_id, [100, 110, 120, 130, 140]); // canceled 
     }
 
     public function isStatusWasDone()
@@ -189,6 +189,6 @@ class Order extends Model
             return false;
         };
 
-        return ($this->getOriginal('order_status_id') ?? false) == 5;
+        return ($this->getOriginal('order_status_id') ?? false) == 70; // 70 : delivered
     }
 }

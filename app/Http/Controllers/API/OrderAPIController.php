@@ -264,7 +264,7 @@ class OrderAPIController extends Controller
 
         try {
             $order = $this->orderRepository->update($input, $id);
-            if (isset($input['order_status_id']) && $input['order_status_id'] == 5 && !empty($order)) {
+            if (isset($input['order_status_id']) && $input['order_status_id'] == 80 /* delivered */ && !empty($order)) {
                 $this->paymentRepository->update(['status' => 'Paid'], $order['payment_id']);
             }
             event(new OrderChangedEvent($oldStatus, $order));
@@ -300,13 +300,13 @@ class OrderAPIController extends Controller
      */
     public function delivery($id, Request $request)
     {
-        $order = Order::where('order_status_id', 7)->findOrFail($id);
+        $order = Order::where('order_status_id', 10)->findOrFail($id);
 
         /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
             ->food()->firstOrFail()
             ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
 
-        $order->order_status_id = 8;
+        $order->order_status_id = 40;
         $order->driver_id = auth()->user()->id;
         $order->save();
 
@@ -325,13 +325,15 @@ class OrderAPIController extends Controller
      */
     public function cancel($id, Request $request)
     {
-        $order = Order::where('driver_id', auth()->user()->id)->whereIn('order_status_id', [4, 8])->findOrFail($id);
+        // 20 : waiting_for_restaurant
+        // 40 : driver_assigned
+        $order = Order::where('driver_id', auth()->user()->id)->whereIn('order_status_id', [20, 40])->findOrFail($id);
 
         /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
             ->food()->firstOrFail()
             ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
 
-        $order->order_status_id = 9;
+        $order->order_status_id = 130; // 130 : canceled_from_driver
         $order->save();
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));

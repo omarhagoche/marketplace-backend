@@ -111,7 +111,7 @@ class NotifyAvailableOrderListener
         $drivers = $this->getDrivers();
 
         if ($drivers->count() == 0) {
-            $this->order->order_status_id = 6; // no drivers available
+            $this->order->order_status_id = 100; // 100 :  no drivers available
             $this->order->save();
             return;
         }
@@ -128,7 +128,7 @@ class NotifyAvailableOrderListener
                 'created_at' => $this->order->created_at->timestamp,
                 'drivers' => $drivers_ids
             ]);
-        $this->order->order_status_id = 7; // waiting for drivers
+        $this->order->order_status_id = 10; // waiting for drivers
         $this->order->save();
 
         $users = User::select('id', 'device_token')->whereNotNull('device_token')
