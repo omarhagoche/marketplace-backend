@@ -32,8 +32,8 @@ class UpdateDriverStatusListener
     {
         $this->order = $event->order;
 
-        if (($this->order->wasRecentlyCreated && empty($this->order->driver_id)) || !$this->order->wasChanged(['driver_id', 'order_status_id'])) {
-            return; // exit if order new without driver , or order driver or status dose not changed
+        if (($this->order->wasRecentlyCreated && empty($this->order->driver_id)) || !$this->order->wasChanged(['driver_id', 'order_status_id']) || $this->orderNotAssignedToDriver()) {
+            return; // exit if order new without driver , or order driver or status dose not changed , or order not assigned to driver
         }
 
         $this->driver = $this->order->driver->driver ?? false;
@@ -109,5 +109,14 @@ class UpdateDriverStatusListener
         }
         $driver->working_on_order = $working_on_order;
         $driver->save();
+    }
+
+    /**
+     * Check if order not assigned to driver or not 
+     * It check if order not assigned to driver before and after update
+     */
+    private function orderNotAssignedToDriver()
+    {
+        return !$this->order->wasChanged('driver_id') && !$this->order->driver_id;
     }
 }
