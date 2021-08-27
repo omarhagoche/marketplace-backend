@@ -89,7 +89,12 @@ return [
 
         'canceledOrders' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/orders/canceled/laravel.log'),
+            'path' => storage_path('logs/orders/canceled/short.log'),
+        ],
+
+        'canceledOrdersDetails' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/orders/canceled/details.log'),
         ],
     ],
 

@@ -37,10 +37,12 @@ class CloseUnassignedOrders implements ShouldQueue
      */
     public function handle()
     {
-        \Log::info("Started CloseUnassignedOrders Job : id => #$this->operationId");
-        $drivers =  $this->cancelOrdersThatNotAssignedToDrivers()->count();
-        $restaurants =  $this->cancelOrdersThatNotAcceptedFromRestaurant()->count();
-        \Log::info("Ended CloseUnassignedOrders Job : id => #$this->operationId | drivers: $drivers | restaurants : $restaurants");
+        Log::channel('canceledOrders')->info("Started CloseUnassignedOrders Job : id => #$this->operationId");
+        \DB::transaction(function () {
+            $drivers =  $this->cancelOrdersThatNotAssignedToDrivers()->count();
+            $restaurants =  $this->cancelOrdersThatNotAcceptedFromRestaurant()->count();
+            Log::channel('canceledOrders')->info("Ended CloseUnassignedOrders Job : id => #$this->operationId | drivers: $drivers | restaurants : $restaurants");
+        });
     }
 
     /**
@@ -56,9 +58,10 @@ class CloseUnassignedOrders implements ShouldQueue
             ->get();
 
         foreach ($orders as $order) {
+            $old_status_id = $order->order_status_id;
             $order->order_status_id = 100; // canceled_no_drivers_available
             $order->save();
-            $this->log($order);
+            $this->log($order, $old_status_id);
         }
         return $orders;
     }
@@ -75,9 +78,10 @@ class CloseUnassignedOrders implements ShouldQueue
             ->get();
 
         foreach ($orders as $order) {
+            $old_status_id = $order->order_status_id;
             $order->order_status_id = 105; // canceled_restaurant_did_not_accept
             $order->save();
-            $this->log($order);
+            $this->log($order, $old_status_id);
         }
         return $orders;
     }
@@ -86,14 +90,15 @@ class CloseUnassignedOrders implements ShouldQueue
      * Write information about canceled orders to log file
      * 
      * @param App\Models\Order $order
+     * @param $old_status_id
      * 
      * @return void
      */
-    protected function log($order)
+    protected function log($order, $old_status_id)
     {
-        $data = $order->only('id', 'order_status_id', 'created_at', 'updated_at');
-        $data['old_order_status_id'] = $order->getOriginal('order_status_id');
+        $data = $order->only('id', 'order_status_id', 'driver_id', 'created_at', 'updated_at');
+        $data['old_order_status_id'] = $old_status_id;
         $data['operation_id'] = $this->operationId;
-        Log::channel('canceledOrders')->log($data);
+        Log::channel('canceledOrdersDetails')->info(json_encode($data));
     }
 }
