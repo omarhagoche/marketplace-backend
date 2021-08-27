@@ -193,6 +193,7 @@ class OrderAPIController extends Controller
                 $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
                 Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+                $order->payment_id = $payment->id;
                 event(new CreatedOrderEvent($order));
             }
         } catch (ValidatorException $e) {
@@ -237,6 +238,7 @@ class OrderAPIController extends Controller
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
             Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+            $order->payment_id = $payment->id;
             event(new CreatedOrderEvent($order));
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
