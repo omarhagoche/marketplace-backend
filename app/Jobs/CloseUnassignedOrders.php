@@ -61,7 +61,7 @@ class CloseUnassignedOrders implements ShouldQueue
             $old_status_id = $order->order_status_id;
             $order->order_status_id = 100; // canceled_no_drivers_available
             $order->save();
-            $this->log($order, $old_status_id);
+            $this->logOrderInfo($order, $old_status_id);
             $this->deleteOrderFromFirestore($order);
         }
         return $orders;
@@ -82,7 +82,7 @@ class CloseUnassignedOrders implements ShouldQueue
             $old_status_id = $order->order_status_id;
             $order->order_status_id = 105; // canceled_restaurant_did_not_accept
             $order->save();
-            $this->log($order, $old_status_id);
+            $this->logOrderInfo($order, $old_status_id);
             $this->deleteOrderFromFirestore($order);
         }
         return $orders;
