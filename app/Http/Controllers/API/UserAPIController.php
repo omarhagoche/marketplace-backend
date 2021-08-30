@@ -320,6 +320,26 @@ class UserAPIController extends Controller
         return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
     }
 
+
+
+    /**
+     * Update profile image of auth user
+     */
+    function updateProfileImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        $user = auth()->user();
+        //upload image 
+        $image = upload_image($request->image, $user->id, 'avatar');
+        $mediaItem = $image->getMedia('avatar')->first();
+        $mediaItem->copy($user, 'avatar');
+
+        return $this->sendResponse($user->media->last(), 'User image retrieved successfully');
+    }
+
+
     function sendResetLinkEmail(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
