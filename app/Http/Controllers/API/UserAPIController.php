@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Rules\PhoneNumber;
+use Illuminate\Support\Str;
+use DB;
+
 
 class UserAPIController extends Controller
 {
@@ -131,6 +134,7 @@ class UserAPIController extends Controller
     {
         $this->validate($request, [
             'token' => 'required|string|min:64|max:256',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|max:32',
@@ -138,7 +142,7 @@ class UserAPIController extends Controller
         ]);
 
         $user = new User;
-        \DB::transaction(function () use ($request, $user) {
+        DB::transaction(function () use ($request, $user) {
             $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
             $user->name = $request->input('name');
             $user->phone_number =    $verfication->phone;
@@ -155,9 +159,38 @@ class UserAPIController extends Controller
 
             $user->assignRole(['driver']);
             $user->load('driver');
+
+            //upload image
+            $image =  $this->uploadImage($request->image, $user->id);
+            $mediaItem = $image->getMedia('avatar')->first();
+            $mediaItem->copy($user, 'avatar');
         });
 
         return $this->sendResponse($user, 'User retrieved successfully');
+    }
+
+    /**
+     * upload iamges
+     * 
+     * @param UploadRequest $request 
+     * @return App\Models\Upload 
+     */
+    public function uploadImage($img, $userId)
+    {
+        $input = [
+            'file' => $img,
+            'uuid' => Str::uuid(),
+            'field' => 'avatar',
+        ];
+        $upload = $this->uploadRepository->create($input);
+        $upload->addMedia($img)
+            ->withCustomProperties([
+                'uuid' => $input['uuid'],
+                'user_id' => $userId
+            ])
+            ->toMediaCollection($input['field']);
+
+        return  $upload;
     }
 
     /**
