@@ -160,8 +160,8 @@ class UserAPIController extends Controller
             $user->assignRole(['driver']);
             $user->load('driver');
 
-            //upload image
-            $image =  $this->uploadImage($request->image, $user->id);
+            //upload image 
+            $image = upload_image($request->image, $user->id, 'avatar');
             $mediaItem = $image->getMedia('avatar')->first();
             $mediaItem->copy($user, 'avatar');
         });
@@ -169,29 +169,7 @@ class UserAPIController extends Controller
         return $this->sendResponse($user, 'User retrieved successfully');
     }
 
-    /**
-     * upload iamges
-     * 
-     * @param UploadRequest $request 
-     * @return App\Models\Upload 
-     */
-    public function uploadImage($img, $userId)
-    {
-        $input = [
-            'file' => $img,
-            'uuid' => Str::uuid(),
-            'field' => 'avatar',
-        ];
-        $upload = $this->uploadRepository->create($input);
-        $upload->addMedia($img)
-            ->withCustomProperties([
-                'uuid' => $input['uuid'],
-                'user_id' => $userId
-            ])
-            ->toMediaCollection($input['field']);
 
-        return  $upload;
-    }
 
     /**
      * Create a new user instance after a valid registration.
