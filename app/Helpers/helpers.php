@@ -704,3 +704,27 @@ function getDeliveryPriceTypes(): array
 {
     return \App\Models\Restaurant::getDeliveryPriceTypes();
 }
+
+/**
+ * Upload image using media library
+ * 
+ * @param $img $image request paramater object
+ * @param int $userId 
+ * @param string $field
+ * @param string $uuid , if it sent null this will generate it automatically   
+ * 
+ * @return App\Models\Upload 
+ */
+function upload_image($img, $userId, $field, $uuid = '')
+{
+    $uuid = $uuid ?? Str::uuid();
+    $upload = app()->make('App\Repositories\UploadRepository')->create(['uuid' => $uuid]);
+    $upload->addMedia($img)
+        ->withCustomProperties([
+            'uuid' => $uuid,
+            'user_id' => $userId
+        ])
+        ->toMediaCollection($field);
+
+    return  $upload;
+}
