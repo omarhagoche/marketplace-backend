@@ -331,12 +331,16 @@ class UserAPIController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $user = auth()->user();
+
+        if ($user->hasMedia('avatar')) {
+            $user->getFirstMedia('avatar')->delete();
+        }
+
         //upload image 
         $image = upload_image($request->image, $user->id, 'avatar');
-        $mediaItem = $image->getMedia('avatar')->first();
-        $mediaItem->copy($user, 'avatar');
+        $mediaItem = $image->getMedia('avatar')->first()->copy($user, 'avatar');
 
-        return $this->sendResponse($user->media->last(), 'User image retrieved successfully');
+        return $this->sendResponse($mediaItem, 'User image retrieved successfully');
     }
 
 
