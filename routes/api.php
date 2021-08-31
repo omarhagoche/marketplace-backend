@@ -80,6 +80,7 @@ Route::middleware('auth:api')->group(function () {
         Route::prefix('driver')->group(function () {
             Route::post('orders/delivery/{id}', 'API\OrderAPIController@delivery');
             Route::post('orders/cancel/{id}', 'API\OrderAPIController@cancel');
+            Route::get('orders/open', 'API\OrderAPIController@open');
             Route::resource('orders', 'API\OrderAPIController');
             Route::resource('notifications', 'API\NotificationAPIController');
             Route::get('profile', 'API\Driver\UserAPIController@profile');

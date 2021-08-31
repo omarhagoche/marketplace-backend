@@ -122,6 +122,30 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
     }
 
+
+    /**
+     * Display a listing of the open Order.
+     * GET|HEAD /orders
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function open(Request $request)
+    {
+        try {
+            $request->merge(['statuses' => [20, 30, 40, 50, 60, 70]]);
+            $this->orderRepository->pushCriteria(new RequestCriteria($request));
+            $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
+            $this->orderRepository->pushCriteria(new OrdersOfStatusesCriteria($request));
+            $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        $orders = $this->orderRepository->all();
+        return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
+    }
+
+
     /**
      * Store a newly created Order in storage.
      *
