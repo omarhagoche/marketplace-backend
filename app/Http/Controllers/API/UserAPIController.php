@@ -134,7 +134,7 @@ class UserAPIController extends Controller
     {
         $this->validate($request, [
             'token' => 'required|string|min:64|max:256',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:25600',
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|max:32',
@@ -328,7 +328,7 @@ class UserAPIController extends Controller
     function updateProfileImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:25600',
         ]);
         $user = auth()->user();
 
