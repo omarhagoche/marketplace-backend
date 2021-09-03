@@ -73,6 +73,7 @@ class UserAPIController extends Controller
                 }
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
+                $user->load('restaurants');
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
             return $this->sendError(trans('auth.failed'), 422);
