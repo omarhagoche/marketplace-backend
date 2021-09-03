@@ -373,8 +373,12 @@ class UserAPIController extends Controller
             'phone_number' => ['required', new PhoneNumber],
         ]);
 
-
         $user = User::where('phone_number', $request->phone_number)->firstOrFail();
+        $role = $request->segment(2);
+        if (in_array($role, ['driver', 'manager']) && !$user->hasRole($role)) {
+            return $this->sendError('User dose not have role', 404);
+        }
+
         $verfication = $user->verfication_code()->create([
             'code' => sprintf("%06d", mt_rand(1, 999999)),
         ]);
