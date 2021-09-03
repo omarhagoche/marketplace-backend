@@ -38,6 +38,9 @@ Route::prefix('manager')->group(function () {
     Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
     Route::post('register', 'API\Manager\UserAPIController@register');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
+    Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
+    Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
+    Route::post('reset_password', 'API\UserAPIController@ResetPassword');
     Route::get('user', 'API\Manager\UserAPIController@user');
     Route::get('logout', 'API\Manager\UserAPIController@logout');
     Route::get('settings', 'API\Manager\UserAPIController@settings');
