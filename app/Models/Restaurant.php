@@ -100,6 +100,7 @@ class Restaurant extends Model implements HasMedia
         'closed' => 'boolean',
         'information' => 'string',
         'active' => 'boolean',
+        'private_drivers' => 'boolean',
         'featured' => 'boolean'
     ];
 
