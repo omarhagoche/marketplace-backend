@@ -255,4 +255,19 @@ class UserAPIController extends Controller
 
         return $this->sendResponse($users->toArray(), 'Drivers retrieved successfully');
     }
+
+
+
+    /**
+     * Get profile of logged user
+     *
+     * @param Request $request
+     *
+     */
+    function profile(Request $request)
+    {
+        $user = auth()->user();
+        $user->load('restaurants');
+        return $this->sendResponse($user, 'User retrieved successfully');
+    }
 }

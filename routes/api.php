@@ -93,6 +93,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::group(['middleware' => ['role:manager']], function () {
         Route::prefix('manager')->group(function () {
+            Route::get('profile', 'API\Manager\UserAPIController@profile');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::get('users/drivers_of_restaurant/{id}', 'API\Manager\UserAPIController@driversOfRestaurant');
             Route::get('dashboard/{id}', 'API\DashboardAPIController@manager');
