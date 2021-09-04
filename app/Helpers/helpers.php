@@ -670,3 +670,61 @@ function send_sms($to, $msg)
 
     return $request;
 }
+
+
+/**
+ * Calculate distance between two points
+ */
+function get_distance($longitude, $latituide, $longitude2, $latituide2)
+{
+    return getDistanceFromLatLonInKm($latituide, $longitude, $latituide2, $longitude2);
+    //return sqrt(
+    //    pow(69.1 * ($latituide - $latituide2), 2) + pow(69.1 * ($longitude2 - $longitude) * COS($latituide / 57.3), 2)
+    //);
+}
+
+function getDistanceFromLatLonInKm($lat1, $lon1, $lat2, $lon2)
+{
+    $radius = 6371; // Radius of the earth in km
+    $dLat = deg2rad($lat2 - $lat1);  // deg2rad below
+    $dLon = deg2rad($lon2 - $lon1);
+    $a =
+        sin($dLat / 2) * sin($dLat / 2) +
+        cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+        sin($dLon / 2) * sin($dLon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    return $radius * $c; // Distance in km
+}
+
+/**
+ * Get Types of delivery prices 
+ * @return array
+ */
+function getDeliveryPriceTypes(): array
+{
+    return \App\Models\Restaurant::getDeliveryPriceTypes();
+}
+
+/**
+ * Upload image using media library
+ * 
+ * @param $img $image request paramater object
+ * @param int $userId 
+ * @param string $field
+ * @param string $uuid , if it sent null this will generate it automatically   
+ * 
+ * @return App\Models\Upload 
+ */
+function upload_image($img, $userId, $field, $uuid = '')
+{
+    $uuid = $uuid ?? Str::uuid();
+    $upload = app()->make('App\Repositories\UploadRepository')->create(['uuid' => $uuid]);
+    $upload->addMedia($img)
+        ->withCustomProperties([
+            'uuid' => $uuid,
+            'user_id' => $userId
+        ])
+        ->toMediaCollection($field);
+
+    return  $upload;
+}

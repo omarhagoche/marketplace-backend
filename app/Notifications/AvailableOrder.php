@@ -2,13 +2,14 @@
 
 namespace App\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use App\Models\Order;
 use Benwilkins\FCM\FcmMessage;
-use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class AssignedOrder extends Notification
+class AvailableOrder extends Notification
 {
     use Queueable;
 
@@ -31,33 +32,19 @@ class AssignedOrder extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
     {
-        return ['database', 'fcm'];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+        return ['fcm'];
     }
 
     public function toFcm($notifiable)
     {
         $message = new FcmMessage();
         $notification = [
-            'title' => "الطلبية #" . $this->order->id . " من مطعم " . $this->order->foodOrders[0]->food->restaurant->name . " تم ربطك بها",
+            'title' => "هناك طلبية برقم #" . $this->order->id . " من مطعم " . $this->order->foodOrders[0]->food->restaurant->name . " متاحة للتوصيل",
             'text'         => $this->order->foodOrders[0]->food->restaurant->name,
             'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'icon' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),

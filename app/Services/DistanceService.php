@@ -48,6 +48,22 @@ class DistanceService
         return $this->setNewDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude)->getDistance();
     }
 
+    /**
+     * Get distance by Kilo meters(km) between two locations (points)
+     */
+    public function getDistanceByKM($from_latitude, $from_longitude, $to_latitude, $to_longitude)
+    {
+        return $this->getDistanceByMeters(...func_get_args()) / 1000;
+    }
+
+    /**
+     * Get distance by Kilomaters(km) between two locations (points)
+     */
+    public function getDistanceByMeters($from_latitude, $from_longitude, $to_latitude, $to_longitude)
+    {
+        return $this->getDistance(...func_get_args())['distance']['value'];
+    }
+
 
     public function fetchDistanceFromGoogleMap($from_latitude, $from_longitude, $to_latitude, $to_longitude)
     {

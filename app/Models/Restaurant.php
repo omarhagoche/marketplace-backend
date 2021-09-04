@@ -74,6 +74,7 @@ class Restaurant extends Model implements HasMedia
         'closed',
         'information',
         'active',
+        'private_drivers',
         'featured',
     ];
 
@@ -99,6 +100,7 @@ class Restaurant extends Model implements HasMedia
         'closed' => 'boolean',
         'information' => 'string',
         'active' => 'boolean',
+        'private_drivers' => 'boolean',
         'featured' => 'boolean'
     ];
 
@@ -114,6 +116,7 @@ class Restaurant extends Model implements HasMedia
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
         'admin_commission' => 'required|numeric|min:0',
+        'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -127,6 +130,7 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
+        'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -144,7 +148,7 @@ class Restaurant extends Model implements HasMedia
     /**
      * @var array
      */
-    private $delivery_price_types = [
+    private static $delivery_price_types = [
         'fixed' => 'fixed',
         'distance' => 'distance',
         'flexible' => 'flexible',
@@ -266,9 +270,9 @@ class Restaurant extends Model implements HasMedia
      * Get Types of delivery prices 
      * @return array
      */
-    public function getDeliveryPriceTypes(): array
+    public static function getDeliveryPriceTypes(): array
     {
-        return $this->delivery_price_types;
+        return static::$delivery_price_types;
     }
 
     public function cuisines()

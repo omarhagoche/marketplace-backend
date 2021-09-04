@@ -97,5 +97,10 @@ class Payment extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
-    
+
+
+    public function isPayOnPickUp()
+    {
+        return $this->method == 'Pay on Pickup';
+    }
 }

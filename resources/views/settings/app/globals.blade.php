@@ -62,6 +62,50 @@
                         </div>
                     </div>
 
+                    <!-- drivers_range Field -->
+                    <div class="form-group row">
+                        {!! Form::label('drivers_range', trans("lang.app_setting_drivers_range"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('drivers_range', setting('drivers_range'),  ['step' => 'any','min' => '0.01','class' => 'form-control','placeholder'=>  trans("lang.app_setting_drivers_range_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_drivers_range_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- drivers_last_access Field -->
+                    <div class="form-group row">
+                        {!! Form::label('drivers_last_access', trans("lang.app_setting_drivers_last_access"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('drivers_last_access', setting('drivers_last_access'),  ['min' => '1','class' => 'form-control','placeholder'=>  trans("lang.app_setting_drivers_last_access_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_drivers_last_access_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- order_expiration_time_before_accept_for_drivers Field -->
+                    <div class="form-group row">
+                        {!! Form::label('order_expiration_time_before_accept_for_drivers', trans("lang.app_setting_order_expiration_time_before_accept_for_drivers"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('order_expiration_time_before_accept_for_drivers', setting('order_expiration_time_before_accept_for_drivers'),  ['step' => '1','min' => '1','class' => 'form-control','placeholder'=>  trans("lang.app_setting_order_expiration_time_before_accept_for_drivers_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_order_expiration_time_before_accept_for_drivers_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- order_expiration_time_before_accept_for_restaurants Field -->
+                    <div class="form-group row">
+                        {!! Form::label('order_expiration_time_before_accept_for_restaurants', trans("lang.app_setting_order_expiration_time_before_accept_for_restaurants"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('order_expiration_time_before_accept_for_restaurants', setting('order_expiration_time_before_accept_for_restaurants'),  ['step' => '1','min' => '1','class' => 'form-control','placeholder'=>  trans("lang.app_setting_order_expiration_time_before_accept_for_restaurants_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_order_expiration_time_before_accept_for_restaurants_help") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- initial_price Field -->
                     <div class="form-group row">
                         {!! Form::label('initial_price', trans("lang.app_setting_initial_price"), ['class' => 'col-4 control-label text-right']) !!}

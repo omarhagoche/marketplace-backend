@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Events\CreatedDriverEvent;
+use App\Events\UpdatedDriverEvent;
 
 /**
  * Class Driver
@@ -12,6 +14,7 @@ use Eloquent as Model;
  * @property \App\Models\User user
  * @property integer user_id
  * @property double delivery_fee
+ * @property enum type
  * @property integer total_orders
  * @property double earning
  * @property boolean available
@@ -27,9 +30,11 @@ class Driver extends Model
     public $fillable = [
         'user_id',
         'delivery_fee',
+        'type',
         'total_orders',
         'earning',
-        'available'
+        'available',
+        'working_on_order'
     ];
 
     /**
@@ -40,9 +45,11 @@ class Driver extends Model
     protected $casts = [
         'user_id' => 'integer',
         'delivery_fee' => 'double',
+        'type' => 'string',
         'total_orders' => 'integer',
         'earning' => 'double',
-        'available' => 'boolean'
+        'available' => 'boolean',
+        'working_on_order' => 'boolean'
     ];
 
     /**
@@ -51,7 +58,8 @@ class Driver extends Model
      * @var array
      */
     public static $rules = [
-        'delivery_fee' => 'required'
+        'delivery_fee' => 'required',
+        'type' => 'required|in:bicycle,motorcycle,car',
         //'user_id' => 'required|exists:users,id'
     ];
 
@@ -62,8 +70,30 @@ class Driver extends Model
      */
     protected $appends = [
         'custom_fields',
-        
     ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => CreatedDriverEvent::class,
+        'updated' => UpdatedDriverEvent::class,
+    ];
+
+
+
+    /**
+     * @var array
+     */
+    private $drivers_types = [
+        'bicycle' => 'Bicycle',
+        'motorcycle' => 'Motorcycle',
+        'car' => 'Car'
+    ];
+
+
 
     public function customFieldsValues()
     {
@@ -72,16 +102,16 @@ class Driver extends Model
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
 
     /**
@@ -91,5 +121,9 @@ class Driver extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
-    
+
+    public function types()
+    {
+        return $this->drivers_types;
+    }
 }

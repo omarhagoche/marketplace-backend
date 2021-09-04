@@ -20,7 +20,9 @@
 
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
-    Route::post('register', 'API\Driver\UserAPIController@register');
+    Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
+    Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
+    Route::post('register', 'API\UserAPIController@registerDriver');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
     Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
@@ -32,8 +34,13 @@ Route::prefix('driver')->group(function () {
 
 Route::prefix('manager')->group(function () {
     Route::post('login', 'API\Manager\UserAPIController@login');
+    Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
+    Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
     Route::post('register', 'API\Manager\UserAPIController@register');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
+    Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
+    Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
+    Route::post('reset_password', 'API\UserAPIController@ResetPassword');
     Route::get('user', 'API\Manager\UserAPIController@user');
     Route::get('logout', 'API\Manager\UserAPIController@logout');
     Route::get('settings', 'API\Manager\UserAPIController@settings');
@@ -74,10 +81,14 @@ Route::resource('slides', 'API\SlideAPIController')->except([
 Route::middleware('auth:api')->group(function () {
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {
+            Route::post('orders/delivery/{id}', 'API\OrderAPIController@delivery');
+            Route::post('orders/cancel/{id}', 'API\OrderAPIController@cancel');
+            Route::get('orders/open', 'API\OrderAPIController@open');
             Route::resource('orders', 'API\OrderAPIController');
             Route::resource('notifications', 'API\NotificationAPIController');
             Route::get('profile', 'API\Driver\UserAPIController@profile');
             Route::post('update-status', 'API\Driver\UserAPIController@updateStatus');
+            Route::post('update-profile-image', 'API\UserAPIController@updateProfileImage');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
@@ -85,12 +96,14 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::group(['middleware' => ['role:manager']], function () {
         Route::prefix('manager')->group(function () {
+            Route::get('profile', 'API\Manager\UserAPIController@profile');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::get('users/drivers_of_restaurant/{id}', 'API\Manager\UserAPIController@driversOfRestaurant');
             Route::get('dashboard/{id}', 'API\DashboardAPIController@manager');
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
+            Route::apiResource('foods', 'API\Manager\FoodAPIController')->except(['destroy']);
         });
     });
     Route::post('users/{id}', 'API\UserAPIController@update');

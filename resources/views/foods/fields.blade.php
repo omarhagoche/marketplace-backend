@@ -160,6 +160,17 @@
         </div>
     </div>
 
+    <!-- 'Boolean Available Field' -->
+    <div class="form-group row ">
+        {!! Form::label('available', trans("lang.food_available"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('available', 0) !!}
+                {!! Form::checkbox('available', 1, null) !!}
+            </label>
+        </div>
+    </div>
+
     <!-- 'Boolean deliverable Field' -->
     <div class="form-group row ">
         {!! Form::label('deliverable', trans("lang.food_deliverable"),['class' => 'col-3 control-label text-right']) !!}

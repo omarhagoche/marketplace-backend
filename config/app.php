@@ -170,6 +170,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\DistanceServiceProvider::class,
+        App\Providers\FirebaseServiceProvider::class,
 
 
     ],

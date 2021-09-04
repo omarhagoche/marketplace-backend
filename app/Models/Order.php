@@ -8,7 +8,8 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Eloquent as Model; 
+use App\Events\UpdatedOrderEvent;
 
 /**
  * Class Order
@@ -88,6 +89,15 @@ class Order extends Model
         
     ];
 
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [ 
+        'updated' => UpdatedOrderEvent::class,
+    ];
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
@@ -162,5 +172,23 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
     }
-    
+
+    public function isStatusDone()
+    {
+        return $this->order_status_id == 80; // 80 : delivered
+    }
+
+    public function isStatusCanceled()
+    {
+        return in_array($this->order_status_id, [100, 105, 110, 120, 130, 140]); // canceled 
+    }
+
+    public function isStatusWasDone()
+    {
+        if (!$this->wasChanged('order_status_id')) {
+            return false;
+        };
+
+        return ($this->getOriginal('order_status_id') ?? false) == 80; // 80 : delivered
+    }
 }

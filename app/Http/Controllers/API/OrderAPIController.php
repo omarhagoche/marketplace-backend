@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: OrderAPIController.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -31,6 +32,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
+use App\Events\CreatedOrderEvent;
 
 /**
  * Class OrderController
@@ -118,9 +120,31 @@ class OrderAPIController extends Controller
         }
 
         return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
-
-
     }
+
+
+    /**
+     * Display a listing of the open Order.
+     * GET|HEAD /orders
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function open(Request $request)
+    {
+        try {
+            $request->merge(['statuses' => [20, 30, 40, 50, 60, 70]]);
+            $this->orderRepository->pushCriteria(new RequestCriteria($request));
+            $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
+            $this->orderRepository->pushCriteria(new OrdersOfStatusesCriteria($request));
+            $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        $orders = $this->orderRepository->all();
+        return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
+    }
+
 
     /**
      * Store a newly created Order in storage.
@@ -137,7 +161,6 @@ class OrderAPIController extends Controller
                 return $this->stripPayment($request);
             } else {
                 return $this->cashPayment($request);
-
             }
         }
     }
@@ -194,6 +217,8 @@ class OrderAPIController extends Controller
                 $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
                 Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+                $order->payment_id = $payment->id;
+                event(new CreatedOrderEvent($order));
             }
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
@@ -229,13 +254,16 @@ class OrderAPIController extends Controller
                 "method" => $input['payment']['method'],
             ]);
 
-            $this->orderRepository->update(['payment_id' => $payment->id,
-                'restaurant_id' => $order->foodOrders->first()->food->restaurant_id], $order->id);
+            $this->orderRepository->update([
+                'payment_id' => $payment->id,
+                'restaurant_id' => $order->foodOrders->first()->food->restaurant_id
+            ], $order->id);
 
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
             Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
-
+            $order->payment_id = $payment->id;
+            event(new CreatedOrderEvent($order));
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -262,7 +290,7 @@ class OrderAPIController extends Controller
 
         try {
             $order = $this->orderRepository->update($input, $id);
-            if (isset($input['order_status_id']) && $input['order_status_id'] == 5 && !empty($order)) {
+            if (isset($input['order_status_id']) && $input['order_status_id'] == 80 /* delivered */ && !empty($order)) {
                 $this->paymentRepository->update(['status' => 'Paid'], $order['payment_id']);
             }
             event(new OrderChangedEvent($oldStatus, $order));
@@ -279,7 +307,6 @@ class OrderAPIController extends Controller
                     }
                 }
             }
-
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -287,4 +314,54 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 
+
+
+    /**
+     * Select order to delivery by current driver (auth user).
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delivery($id, Request $request)
+    {
+        $order = Order::where('order_status_id', 10)->findOrFail($id);
+
+        /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
+            ->food()->firstOrFail()
+            ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
+
+        $order->order_status_id = 40;
+        $order->driver_id = auth()->user()->id;
+        $order->save();
+
+        app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
+
+        return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
+    }
+
+    /**
+     * Cancel driver order by current driver (auth user).
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cancel($id, Request $request)
+    {
+        // 20 : waiting_for_restaurant
+        // 40 : driver_assigned
+        $order = Order::where('driver_id', auth()->user()->id)->whereIn('order_status_id', [20, 40])->findOrFail($id);
+
+        /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
+            ->food()->firstOrFail()
+            ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
+
+        $order->order_status_id = 130; // 130 : canceled_from_driver
+        $order->save();
+
+        return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
+    }
 }

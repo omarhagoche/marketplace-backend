@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Rules\PhoneNumber;
+use Illuminate\Support\Str;
+use DB;
+
 
 class UserAPIController extends Controller
 {
@@ -54,10 +57,14 @@ class UserAPIController extends Controller
         if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
             // Authentication passed...
             $user = auth()->user();
+            if (!$user->hasRole('client')) {
+                return $this->sendError('User not client', 401);
+            }
             $user->device_token = $request->input('device_token', '');
             $user->save();
             return $this->sendResponse($user, 'User retrieved successfully');
         }
+        return $this->sendError(trans('auth.failed'), 422);
     }
 
 
@@ -116,6 +123,53 @@ class UserAPIController extends Controller
 
         return  ['token' => $verfication->token];
     }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param array $data
+     * @return
+     */
+    function registerDriver(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|string|min:64|max:256',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:25600',
+            'name' => 'required|min:3|max:32',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|max:32',
+            'type' => 'required|in:bicycle,motorcycle,car',
+        ]);
+
+        $user = new User;
+        DB::transaction(function () use ($request, $user) {
+            $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+            $user->name = $request->input('name');
+            $user->phone_number =    $verfication->phone;
+            $user->email = $request->input('email');
+            $user->device_token = $request->input('device_token', '');
+            $user->password = Hash::make($request->input('password'));
+            $user->api_token = str_random(60);
+            $user->save();
+            $verfication->delete();
+
+            $user->driver()->create([
+                'type' => $request->type,
+            ]);
+
+            $user->assignRole(['driver']);
+            $user->load('driver');
+
+            //upload image 
+            $image = upload_image($request->image, $user->id, 'avatar');
+            $mediaItem = $image->getMedia('avatar')->first();
+            $mediaItem->copy($user, 'avatar');
+        });
+
+        return $this->sendResponse($user, 'User retrieved successfully');
+    }
+
+
 
     /**
      * Create a new user instance after a valid registration.
@@ -185,6 +239,10 @@ class UserAPIController extends Controller
             'default_currency' => '',
             'default_currency_decimal_digits' => '',
             'app_name' => '',
+            'drivers_range' => '',
+            'drivers_last_access' => '',
+            'order_expiration_time_before_accept_for_drivers' => '',
+            'order_expiration_time_before_accept_for_restaurant' => '',
             'initial_price' => '',
             'price_per_minute' => '',
             'price_per_km' => '',
@@ -264,6 +322,30 @@ class UserAPIController extends Controller
         return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
     }
 
+
+
+    /**
+     * Update profile image of auth user
+     */
+    function updateProfileImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:25600',
+        ]);
+        $user = auth()->user();
+
+        if ($user->hasMedia('avatar')) {
+            $user->getFirstMedia('avatar')->delete();
+        }
+
+        //upload image 
+        $image = upload_image($request->image, $user->id, 'avatar');
+        $mediaItem = $image->getMedia('avatar')->first()->copy($user, 'avatar');
+
+        return $this->sendResponse($mediaItem, 'User image retrieved successfully');
+    }
+
+
     function sendResetLinkEmail(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
@@ -293,8 +375,12 @@ class UserAPIController extends Controller
             'phone_number' => ['required', new PhoneNumber],
         ]);
 
-
         $user = User::where('phone_number', $request->phone_number)->firstOrFail();
+        $role = $request->segment(2);
+        if (in_array($role, ['driver', 'manager']) && !$user->hasRole($role)) {
+            return $this->sendError('User dose not have role', 404);
+        }
+
         $verfication = $user->verfication_code()->create([
             'code' => sprintf("%06d", mt_rand(1, 999999)),
         ]);

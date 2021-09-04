@@ -23,6 +23,19 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\UpdateOrderEarningTable',
             'App\Listeners\UpdateOrderDriverTable'
         ],
+        'App\Events\CreatedOrderEvent' => [
+            'App\Listeners\NotifyAvailableOrderListener',
+            'App\Listeners\UpdateDriverStatusListener',
+        ],
+        'App\Events\UpdatedOrderEvent' => [
+            'App\Listeners\UpdateDriverStatusListener',
+        ],
+        'App\Events\CreatedDriverEvent' => [
+            'App\Listeners\UpdateDriverStatusInFirebaseListener',
+        ],
+        'App\Events\UpdatedDriverEvent' => [
+            'App\Listeners\UpdateDriverStatusInFirebaseListener',
+        ],
 
     ];
 

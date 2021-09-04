@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: UserAPIController.php
  * Last modified: 2020.08.11 at 23:04:35
@@ -25,6 +26,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Rules\PhoneNumber;
+use App\Models\VerficationCode;
 
 class UserAPIController extends Controller
 {
@@ -60,17 +62,24 @@ class UserAPIController extends Controller
             if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
+                if (!$user->activated_at) {
+                    return $this->sendError('Inactivated account', 401);
+                }
+                if (!$user->active) {
+                    return $this->sendError('Disabled account', 403);
+                }
                 if (!$user->hasRole('manager')) {
-                    $this->sendError('User not driver', 401);
+                    return  $this->sendError('User not manager', 401);
                 }
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
+                $user->load('restaurants');
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
+            return $this->sendError(trans('auth.failed'), 422);
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), 401);
+            return $this->sendError($e->getMessage(), 422);
         }
-
     }
 
     /**
@@ -81,29 +90,29 @@ class UserAPIController extends Controller
      */
     function register(Request $request)
     {
-        try {
-            $this->validate($request, [
-                'name' => 'required',
-                'email' => 'required|unique:users|email',
-                'password' => 'required',
-            ]);
-            $user = new User;
+        $this->validate($request, [
+            'token' => 'required|string|min:64|max:256',
+            'name' => 'required|min:3|max:32',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|max:32',
+        ]);
+
+        $user = new User;
+        \DB::transaction(function () use ($request, $user) {
+            $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
             $user->name = $request->input('name');
+            $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
             $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);
             $user->save();
+            $verfication->delete();
 
-            $defaultRoles = $this->roleRepository->findByField('default', '1');
-            $defaultRoles = $defaultRoles->pluck('name')->toArray();
-            $user->assignRole($defaultRoles);
+            $user->assignRole(['manager']);
 
             event(new UserRoleChangedEvent($user));
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), 401);
-        }
-
+        });
 
         return $this->sendResponse($user, 'User retrieved successfully');
     }
@@ -120,7 +129,6 @@ class UserAPIController extends Controller
             $this->sendError($e->getMessage(), 401);
         }
         return $this->sendResponse($user['name'], 'User logout successfully');
-
     }
 
     function user(Request $request)
@@ -137,7 +145,8 @@ class UserAPIController extends Controller
     function settings(Request $request)
     {
         $settings = setting()->all();
-        $settings = array_intersect_key($settings,
+        $settings = array_intersect_key(
+            $settings,
             [
                 'default_tax' => '',
                 'default_currency' => '',
@@ -224,7 +233,6 @@ class UserAPIController extends Controller
                 'code' => 401,
             ], 'Reset link not sent');
         }
-
     }
 
     /**
@@ -236,16 +244,30 @@ class UserAPIController extends Controller
      */
     public function driversOfRestaurant($id, Request $request)
     {
-        try{
+        try {
             $this->userRepository->pushCriteria(new RequestCriteria($request));
             $this->userRepository->pushCriteria(new LimitOffsetCriteria($request));
             $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($id));
             $users = $this->userRepository->all();
-
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
 
         return $this->sendResponse($users->toArray(), 'Drivers retrieved successfully');
+    }
+
+
+
+    /**
+     * Get profile of logged user
+     *
+     * @param Request $request
+     *
+     */
+    function profile(Request $request)
+    {
+        $user = auth()->user();
+        $user->load('restaurants');
+        return $this->sendResponse($user, 'User retrieved successfully');
     }
 }

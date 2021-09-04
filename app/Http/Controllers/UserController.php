@@ -124,7 +124,8 @@ class UserController extends Controller
 
         $input['roles'] = isset($input['roles']) ? $input['roles'] : [];
         $input['password'] = Hash::make($input['password']);
-        $input['api_token'] = str_random(60);
+        $input['api_token'] = str_random(124);
+        $input['activated_at'] = now();
 
         try {
             $user = $this->userRepository->create($input);
@@ -254,6 +255,9 @@ class UserController extends Controller
             unset($input['password']);
         } else {
             $input['password'] = Hash::make($input['password']);
+        }
+        if ($request->has('activated_at') && $input['activated_at'] == 1) {
+            $input['activated_at'] = now();
         }
         try {
             $user = $this->userRepository->update($input, $id);
