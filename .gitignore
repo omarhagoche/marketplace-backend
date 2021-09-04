@@ -12,3 +12,4 @@ npm-debug.log
 yarn-error.log
 .env
 config_files/
+storage/app/public
