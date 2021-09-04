@@ -1047,6 +1047,7 @@ return [
     'food_package_items_count_placeholder' => '6',
     'food_package_items_count_help' => 'Number of item per package (ex: 6, 10)',
     'food_deliverable' => 'Deliverable food',
+    'food_available' => 'Available food',
     'app_setting_distance_unit' => 'Default unit of distance',
     'app_setting_km' => 'Km',
     'app_setting_mi' => 'mi',
