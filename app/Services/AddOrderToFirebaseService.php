@@ -120,6 +120,7 @@ class AddOrderToFirebaseService
             ]);
 
         $this->order->order_status_id = 10; // waiting for drivers
+        $this->order->driver_id = null;
         $this->order->save();
 
         $users = User::select('id', 'device_token')->whereNotNull('device_token')

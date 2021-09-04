@@ -360,8 +360,7 @@ class OrderAPIController extends Controller
             ->food()->firstOrFail()
             ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
 
-        $order->order_status_id = 130; // 130 : canceled_from_driver
-        $order->driver_id = null;
+        $order->order_status_id = 130; // 130 : canceled_from_driver 
         $order->save();
 
         $lifetime = (int)setting('order_expiration_time_before_accept_for_drivers');
