@@ -196,6 +196,7 @@ class FoodAPIController extends Controller
             'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:25600',
             'featured' => 'required|boolean',
             'deliverable' => 'required|boolean',
+            'available' => 'required|boolean',
             'category_id' => 'required|integer|exists:categories,id',
             'restaurant_id' => 'nullable|in_array:' . implode(',', $this->getRestaurantIds())
         ];
