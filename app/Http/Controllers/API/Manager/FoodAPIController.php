@@ -128,6 +128,54 @@ class FoodAPIController extends Controller
     }
 
     /**
+     * Update the specified Food in storage.
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update($id, Request $request)
+    {
+        $input = $this->validateData(true);
+
+        Food::select('id')->whereIn('restaurant_id', $this->getRestaurantIds())->findOrFail($id); // check if id exits
+
+        try {
+            DB::beginTransaction();
+
+            $food = $this->foodRepository->update($input, $id);
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+
+            foreach (getCustomFieldsValues($customFields, $request) as $value) {
+                $food->customFieldsValues()
+                    ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
+            }
+
+            if (isset($input['image']) && $input['image']) {
+                if ($food->hasMedia('image')) { // delete old image
+                    $food->getFirstMedia('image')->delete();
+                }
+
+                upload_image($request->image, $food->id, 'image')
+                    ->getMedia('image')
+                    ->first()
+                    ->copy($food, 'image');
+
+                $food->setHidden(['restaurant']); // skip load restaurant relationship
+                $food->load('media'); // load media relationship to load images of food
+            }
+
+            DB::commit();
+        } catch (ValidatorException $e) {
+            DB::rollBack();
+            return $this->sendError($e->getMessage());
+        }
+
+        return $this->sendResponse($food->toArray(), __('lang.updated_successfully', ['operator' => __('lang.food')]));
+    }
+
+    /**
      * Validate data and return it with default values for some properties
      * 
      * @param boolean $update
