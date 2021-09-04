@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Order;
 use Log;
+use DB;
 
 class CloseUnassignedOrders implements ShouldQueue
 {
@@ -19,6 +20,20 @@ class CloseUnassignedOrders implements ShouldQueue
      */
     protected $operationId;
 
+    /**
+     * Lifetime of orders before close if no drivers accept them
+     * 
+     * @var float
+     */
+    protected $lifetime_drivers;
+
+    /**
+     * Lifetime of orders before close if no restauarants accept them
+     * 
+     * @var int
+     */
+    protected $lifetime_restaurants;
+
 
     /**
      * Create a new job instance.
@@ -28,6 +43,8 @@ class CloseUnassignedOrders implements ShouldQueue
     public function __construct()
     {
         $this->operationId = strtoupper(uniqid());
+        $this->lifetime_drivers = (int)setting('order_expiration_time_before_accept_for_drivers');
+        $this->lifetime_restaurants = (int)setting('order_expiration_time_before_accept_for_restaurant');
     }
 
     /**
@@ -38,7 +55,7 @@ class CloseUnassignedOrders implements ShouldQueue
     public function handle()
     {
         Log::channel('canceledOrders')->info("Started CloseUnassignedOrders Job : id => #$this->operationId");
-        \DB::transaction(function () {
+        DB::transaction(function () {
             $drivers =  $this->cancelOrdersThatNotAssignedToDrivers()->count();
             $restaurants =  $this->cancelOrdersThatNotAcceptedFromRestaurant()->count();
             Log::channel('canceledOrders')->info("Ended CloseUnassignedOrders Job : id => #$this->operationId | drivers: $drivers | restaurants : $restaurants");
@@ -54,7 +71,7 @@ class CloseUnassignedOrders implements ShouldQueue
     {
         $orders = Order::whereNull('driver_id')
             ->where('order_status_id', 10)
-            ->where('created_at', '<', now()->addSeconds(-300))
+            ->where('created_at', '<=', now()->addSeconds($this->lifetime_drivers * -1))
             ->get();
 
         foreach ($orders as $order) {
@@ -75,7 +92,7 @@ class CloseUnassignedOrders implements ShouldQueue
     public function cancelOrdersThatNotAcceptedFromRestaurant()
     {
         $orders = Order::where('order_status_id', 20)
-            ->where('created_at', '<', now()->addSeconds(-360))
+            ->where('created_at', '<=', now()->addSeconds($this->lifetime_restaurants * -1))
             ->get();
 
         foreach ($orders as $order) {
