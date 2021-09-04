@@ -332,7 +332,7 @@ class OrderAPIController extends Controller
             ->food()->firstOrFail()
             ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
 
-        $order->order_status_id = 40;
+        $order->order_status_id = 20; // 20 : waiting_for_restaurant
         $order->driver_id = auth()->user()->id;
         $order->save();
 
