@@ -73,4 +73,20 @@ class FoodAPIController extends Controller
         return $this->sendResponse($foods->toArray(), 'Foods retrieved successfully');
     }
 
+    /**
+     * Display the specified Food.
+     * GET|HEAD /foods/{id}
+     *
+     * @param  int $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, $id)
+    {
+        $food =  Food::with('media')
+            ->whereIn('restaurant_id', $this->getRestaurantIds())
+            ->findOrFail($id);
+        $food->makeHidden(['restaurant']); // to skip bring restaurant relationship model
+        return $this->sendResponse($food->toArray(), 'Food retrieved successfully');
+    }
 }
