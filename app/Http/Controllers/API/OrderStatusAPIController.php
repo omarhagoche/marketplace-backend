@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
+use App\Criteria\General\IdsCriteria;
 use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Flash;
@@ -37,8 +38,9 @@ class OrderStatusAPIController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $this->orderStatusRepository->pushCriteria(new RequestCriteria($request));
+            $this->orderStatusRepository->pushCriteria(new IdsCriteria($request));
             $this->orderStatusRepository->pushCriteria(new LimitOffsetCriteria($request));
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
