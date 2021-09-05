@@ -66,7 +66,7 @@ class FoodAPIController extends Controller
      */
     public function index(Request $request)
     {
-        $foods =   Food::with('media')
+        $foods = Food::with('media', 'category')
             ->whereIn('restaurant_id', $this->getRestaurantIds())
             ->get();
         $foods->makeHidden(['restaurant']); // to skip bring restaurant relationship model
@@ -83,7 +83,7 @@ class FoodAPIController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $food =  Food::with('media')
+        $food =  Food::with('media', 'category')
             ->whereIn('restaurant_id', $this->getRestaurantIds())
             ->findOrFail($id);
         $food->makeHidden(['restaurant']); // to skip bring restaurant relationship model
@@ -115,7 +115,7 @@ class FoodAPIController extends Controller
                     ->copy($food, 'image');
 
                 $food->setHidden(['restaurant']); // skip load restaurant relationship
-                $food->load('media'); // load media relationship to load images of food
+                $food->load('media', 'category'); // load media relationship to load images of food
             }
 
             DB::commit();
@@ -162,9 +162,10 @@ class FoodAPIController extends Controller
                     ->first()
                     ->copy($food, 'image');
 
-                $food->setHidden(['restaurant']); // skip load restaurant relationship
                 $food->load('media'); // load media relationship to load images of food
             }
+            $food->setHidden(['restaurant']); // skip load restaurant relationship
+            $food->load('category');
 
             DB::commit();
         } catch (ValidatorException $e) {
