@@ -73,6 +73,7 @@ class Driver extends Model
      */
     protected $appends = [
         'custom_fields',
+        'driverType'
     ];
 
     /**
@@ -115,6 +116,15 @@ class Driver extends Model
             ->get()->toArray();
 
         return convertToAssoc($array, 'name');
+    }
+
+    /**
+     * get driverType attribute
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function getDriverTypeAttribute()
+    {
+        return $this->driverType()->first(['id', 'name', 'range', 'last_access']);
     }
 
     /**
