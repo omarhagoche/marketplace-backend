@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'actions' => 'Actions',
@@ -384,6 +384,9 @@ return [
     'driver_user_id' => 'User Id',
     'driver_user_id_help' => 'Insert User Id',
     'driver_user_id_placeholder' => 'Insert User Id',
+    'driver_type_id' => 'Driver Type',
+    'driver_type_id_help' => 'Insert Driver Type Id',
+    'driver_type_id_placeholder' => 'Insert Driver Type Id',
     'drivers_payout' => 'Drivers Payout',
     'drivers_payout_amount' => 'Amount',
     'drivers_payout_amount_help' => 'Insert Amount',

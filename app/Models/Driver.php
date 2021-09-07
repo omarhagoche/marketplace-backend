@@ -29,6 +29,7 @@ class Driver extends Model
 
     public $fillable = [
         'user_id',
+        'driver_type_id',
         'delivery_fee',
         'type',
         'total_orders',
@@ -44,6 +45,7 @@ class Driver extends Model
      */
     protected $casts = [
         'user_id' => 'integer',
+        'driver_type_id' => 'integer',
         'delivery_fee' => 'double',
         'type' => 'string',
         'total_orders' => 'integer',
@@ -60,6 +62,7 @@ class Driver extends Model
     public static $rules = [
         'delivery_fee' => 'required',
         'type' => 'required|in:bicycle,motorcycle,car',
+        'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
     ];
 
@@ -120,6 +123,14 @@ class Driver extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function driverType()
+    {
+        return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
     public function types()
