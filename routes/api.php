@@ -92,6 +92,9 @@ Route::middleware('auth:api')->group(function () {
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
+            Route::apiResource('driverTypes', 'API\DriverTypeAPIController')->only([
+                'index', 'show'
+            ]);
         });
     });
     Route::group(['middleware' => ['role:manager']], function () {
