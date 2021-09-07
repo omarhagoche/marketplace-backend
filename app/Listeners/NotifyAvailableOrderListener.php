@@ -66,7 +66,11 @@ class NotifyAvailableOrderListener
             $item['id'] = (string) $item['id']; // convert it to string becuase mobile app can not filter int 
             return $item;
         })
-            ->filter(function ($item) use ($types) {
+            ->filter(function ($item) use ($types) { // filter by last_access depends on driver type 
+                $last_access = $types->where('id', $item['driver_type_id'])->first()['last_access'];
+                return $item['last_access'] >  now()->addSeconds($last_access * -1)->timestamp;
+            })
+            ->filter(function ($item) use ($types) { // filter by range depends on driver type
                 $range = $types->where('id', $item['driver_type_id'])->first()['range'] + 10;
                 return $item['distance'] <= $range;
             })
@@ -76,7 +80,7 @@ class NotifyAvailableOrderListener
                 $item['real_distance'] = app('distance')->getDistanceByKM($item['latitude'], $item['longitude'],  $restaurant_latitude, $restaurant_longitude);
                 return $item;
             })
-            ->filter(function ($item) use ($types) {
+            ->filter(function ($item) use ($types) { // filter by real_distance depends on driver type
                 $range = $types->where('id', $item['driver_type_id'])->first()['range'];
                 return $item['real_distance'] <= $range;
             })
