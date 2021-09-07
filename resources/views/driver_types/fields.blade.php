@@ -17,7 +17,7 @@
 <div class="form-group row ">
   {!! Form::label('range', trans("lang.driver_type_range"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('range', null,  ['class' => 'form-control','placeholder'=>  trans("lang.driver_type_range_placeholder")]) !!}
+    {!! Form::number('range', null,['step' => 'any','min' => '0.01','class' => 'form-control','placeholder'=>  trans("lang.driver_type_range_placeholder")]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.driver_type_range_help") }}
     </div>
@@ -30,7 +30,7 @@
 <div class="form-group row ">
   {!! Form::label('last_access', trans("lang.driver_type_last_access"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('last_access', null,  ['class' => 'form-control','placeholder'=>  trans("lang.driver_type_last_access_placeholder")]) !!}
+    {!! Form::number('last_access', null, ['min' => '1','class' => 'form-control','placeholder'=>  trans("lang.driver_type_last_access_placeholder")]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.driver_type_last_access_help") }}
     </div>

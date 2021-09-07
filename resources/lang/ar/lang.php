@@ -1167,9 +1167,9 @@ return [
     'driver_type_name_help' => 'Insert Name',
     'driver_type_name_placeholder' => 'Insert Name',
     'driver_type_range' => 'Range',
-    'driver_type_range_help' => 'Insert Range',
-    'driver_type_range_placeholder' => 'Insert Range',
+    'driver_type_range_help' => 'Range of drivers who can see available orders (km)',
+    'driver_type_range_placeholder' => 'Enter a range of area by Kilometers (km)',
     'driver_type_last_access' => 'Last Access',
-    'driver_type_last_access_help' => 'Insert Last Access',
-    'driver_type_last_access_placeholder' => 'Insert Last Access',
+    'driver_type_last_access_help' => 'Last access for drivers who can see available orders (seconds)',
+    'driver_type_last_access_placeholder' => 'Enter last access time by seconds',
 ];
