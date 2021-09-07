@@ -154,9 +154,26 @@
     </li>
 @endcan
 
+
 @can('drivers.index')
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} </p></a>
+    <li class="nav-item has-treeview {{ Request::is('driver*') ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ Request::is('driver*') ? 'active' : '' }}"> @if($icons)
+            <i class="nav-icon fa fa-car"></i>@endif
+            <p>{{trans('lang.driver_plural')}} <i class="right fa fa-angle-left"></i></p>
+        </a>
+        <ul class="nav nav-treeview">
+            @can('drivers.index')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} </p></a>
+            </li>
+            @endcan
+
+            @can('driverTypes.index')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('driverTypes*') ? 'active' : '' }}" href="{!! route('driverTypes.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.driver_type_plural')}}</p></a>
+            </li>
+            @endcan
+        </ul>
     </li>
 @endcan
 

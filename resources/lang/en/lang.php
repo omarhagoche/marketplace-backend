@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -392,7 +392,7 @@ return [
     'driver_delivery_fee' => 'Delivery Fee (%)',
     'driver_delivery_fee_help' => 'Ex: 50 for 50% of delivery amount of restaurant',
     'driver_delivery_fee_placeholder' => 'Insert Delivery Fee',
-    'driver_type' => 'Driver type',
+    'driver_type' => 'Driver Type',
     'driver_type_help' => 'Type of driver',
     'driver_desc' => 'Drivers Management',
     'driver_earning' => 'Earning',
@@ -1184,7 +1184,6 @@ return [
     'app_setting_mobile_popular' => 'Popular restaurants grid',
     'app_setting_mobile_recent_reviews_heading' => 'Recent reviews heading',
     'app_setting_mobile_recent_reviews' => 'Recent reviews list',
-
     'restaurant_distance_price' => 'Distance Price',
     'restaurant_distance_price_plural' => 'Distance Prices',
     'restaurant_distance_price_create' => 'Create Distance Price',
@@ -1202,5 +1201,18 @@ return [
     'restaurant_distance_price_to' => 'To KM',
     'restaurant_distance_price_from_placeholder' => 'Enter number of KM',
     'restaurant_distance_price_to_placeholder' => 'Enter number of KM',
-
+    'driver_type_plural' => 'Driver Types',
+    'driver_type_desc' => 'Driver Types Management',
+    'driver_type_edit' => 'Edit Driver Type',
+    'driver_type_table' => 'Driver Types List',
+    'driver_type_create' => 'Create Driver Type',
+    'driver_type_name' => 'Name',
+    'driver_type_name_help' => 'Insert Name',
+    'driver_type_name_placeholder' => 'Insert Name',
+    'driver_type_range' => 'Range',
+    'driver_type_range_help' => 'Insert Range',
+    'driver_type_range_placeholder' => 'Insert Range',
+    'driver_type_last_access' => 'Last Access',
+    'driver_type_last_access_help' => 'Insert Last Access',
+    'driver_type_last_access_placeholder' => 'Insert Last Access',
 ];
