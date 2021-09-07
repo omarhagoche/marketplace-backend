@@ -7,38 +7,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\AvailableOrder;
 use Illuminate\Support\Facades\Notification;
 use App\Models\Driver;
+use App\Models\DriverType;
 use App\Models\User;
 
 class NotifyAvailableOrderListener
 {
     protected $order;
     protected $restaurant;
-
-    /**
-     * Range of distance to scan drivers who can see available orders
-     * 
-     * @var float
-     */
-    protected $drivers_range;
-
-    /**
-     * The last access time (seen online) for drivers who can see available orders
-     * 
-     * @var int
-     */
-    protected $last_access;
-
-
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->drivers_range = (float)setting('drivers_range');
-        $this->last_access = (int)setting('drivers_last_access');
-    }
 
     /**
      * Handle the event.
@@ -67,11 +42,13 @@ class NotifyAvailableOrderListener
     {
         $firestore = app('firebase.firestore')->getFirestore();
 
+        $types = DriverType::select('id', 'last_access', 'range')->get();
+
         $drivers = $firestore->collection('drivers')
             ->orderBy("last_access", "desc")
             ->where('working_on_order', '=', false)
             ->where('available', '=', true)
-            ->where('last_access', '>', now()->addSeconds($this->last_access * -1)->timestamp)
+            ->where('last_access', '>', now()->addSeconds($types->max('last_access') * -1)->timestamp)
             ->documents();
 
 
@@ -89,14 +66,20 @@ class NotifyAvailableOrderListener
             $item['id'] = (string) $item['id']; // convert it to string becuase mobile app can not filter int 
             return $item;
         })
-            ->where('distance', '<=', $this->drivers_range + 10)
+            ->filter(function ($item) use ($types) {
+                $range = $types->where('id', $item['driver_type_id'])->first()['range'] + 10;
+                return $item['distance'] <= $range;
+            })
             ->sortBy('distance')
             ->take(25)
             ->map(function ($item) use ($restaurant_latitude, $restaurant_longitude) {
                 $item['real_distance'] = app('distance')->getDistanceByKM($item['latitude'], $item['longitude'],  $restaurant_latitude, $restaurant_longitude);
                 return $item;
             })
-            ->where('real_distance', '<=', $this->drivers_range)
+            ->filter(function ($item) use ($types) {
+                $range = $types->where('id', $item['driver_type_id'])->first()['range'];
+                return $item['real_distance'] <= $range;
+            })
             ->sortBy('real_distance');
 
 
