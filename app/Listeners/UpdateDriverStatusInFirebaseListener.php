@@ -30,7 +30,7 @@ class UpdateDriverStatusInFirebaseListener
     {
         $this->driver = $event->driver;
 
-        if (!$this->driver->wasRecentlyCreated && !$this->driver->wasChanged(['type', 'working_on_order', 'available'])) {
+        if (!$this->driver->wasRecentlyCreated && !$this->driver->wasChanged(['driver_type_id', 'working_on_order', 'available'])) {
             return; // exit of driver not new and working_on_order and available not changed , so we do not need to do anything
         }
 
@@ -47,7 +47,7 @@ class UpdateDriverStatusInFirebaseListener
             ];
         }
 
-        $data['type'] = $this->driver->type;
+        $data['driver_type_id'] = $this->driver->driver_type_id;
         $data['working_on_order'] = $this->driver->working_on_order;
         $data['available'] = $this->driver->available;
 
