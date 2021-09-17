@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Notifications\AvailableOrder;
 use Illuminate\Support\Facades\Notification;
-use App\Models\Driver;
+use App\Models\DriverType;
 use App\Models\Order;
 use App\Models\User;
 
