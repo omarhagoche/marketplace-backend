@@ -138,7 +138,8 @@ class UserAPIController extends Controller
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|max:32',
-            'type' => 'required|in:bicycle,motorcycle,car',
+            #'type' => 'required|in:bicycle,motorcycle,car',
+            'driver_type_id' => 'required|integer|exists:driver_types,id'
         ]);
 
         $user = new User;
@@ -154,7 +155,7 @@ class UserAPIController extends Controller
             $verfication->delete();
 
             $user->driver()->create([
-                'type' => $request->type,
+                'driver_type_id' => $request->driver_type_id,
             ]);
 
             $user->assignRole(['driver']);
@@ -239,8 +240,6 @@ class UserAPIController extends Controller
             'default_currency' => '',
             'default_currency_decimal_digits' => '',
             'app_name' => '',
-            'drivers_range' => '',
-            'drivers_last_access' => '',
             'order_expiration_time_before_accept_for_drivers' => '',
             'order_expiration_time_before_accept_for_restaurant' => '',
             'initial_price' => '',

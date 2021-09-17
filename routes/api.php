@@ -30,6 +30,9 @@ Route::prefix('driver')->group(function () {
     Route::get('user', 'API\Driver\UserAPIController@user');
     Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
+    Route::apiResource('driverTypes', 'API\DriverTypeAPIController')->only([
+        'index', 'show'
+    ]);
 });
 
 Route::prefix('manager')->group(function () {

@@ -24,6 +24,15 @@
   </div>
 </div>
 
+  <!-- Driver type ID Field -->
+  <div class="form-group row ">
+      {!! Form::label('driver_type_id', trans("lang.driver_type_id"),['class' => 'col-3 control-label text-right']) !!}
+      <div class="col-9">
+          {!! Form::select('driver_type_id', $types, null, ['class' => 'select2 form-control']) !!}
+          <div class="form-text text-muted">{{ trans("lang.driver_type_id_help") }}</div>
+      </div>
+  </div>
+
  
   <!-- 'Boolean Available Field' -->
   <div class="form-group row ">

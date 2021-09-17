@@ -15,11 +15,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Models\DriverType;
+use App\Repositories\DriverTypeRepository;
+
 
 class DriverController extends Controller
 {
     /** @var  DriverRepository */
     private $driverRepository;
+
+    /** @var  DriverTypeRepository */
+    private $driverTypeRepository;
 
     /**
      * @var CustomFieldRepository
@@ -27,14 +33,15 @@ class DriverController extends Controller
     private $customFieldRepository;
 
     /**
-  * @var UserRepository
-  */
-private $userRepository;
+     * @var UserRepository
+     */
+    private $userRepository;
 
-    public function __construct(DriverRepository $driverRepo, CustomFieldRepository $customFieldRepo , UserRepository $userRepo)
+    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo)
     {
         parent::__construct();
         $this->driverRepository = $driverRepo;
+        $this->driverTypeRepository = $driverTypeRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->userRepository = $userRepo;
     }
@@ -59,13 +66,14 @@ private $userRepository;
     {
         $this->userRepository->pushCriteria(new DriversCriteria());
         $drivers = $this->userRepository->all();
-        foreach ($drivers as $driver){
-            if(!empty($driver)){
-                $this->driverRepository->firstOrCreate(['user_id'=>$driver->id]);
+        foreach ($drivers as $driver) {
+            if (!empty($driver)) {
+                $this->driverRepository->firstOrCreate(['user_id' => $driver->id]);
             }
         }
-        return redirect(route('drivers.index'));
 
+        $types = $this->driverTypeRepository->pluck('name', 'id');
+        return redirect(route('drivers.index'))->with('types', $types);
     }
 
     /**
@@ -81,13 +89,12 @@ private $userRepository;
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->create($input);
-            $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields,$request));
-            
+            $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('lang.saved_successfully',['operator' => __('lang.driver')]));
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.driver')]));
 
         return redirect(route('drivers.index'));
     }
@@ -122,22 +129,23 @@ private $userRepository;
     public function edit($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->pluck('name','id');
-        
+        $user = $this->userRepository->pluck('name', 'id');
+
 
         if (empty($driver)) {
-            Flash::error(__('lang.not_found',['operator' => __('lang.driver')]));
+            Flash::error(__('lang.not_found', ['operator' => __('lang.driver')]));
 
             return redirect(route('drivers.index'));
         }
         $customFieldsValues = $driver->customFieldsValues()->with('customField')->get();
         $customFields =  $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
-        $hasCustomField = in_array($this->driverRepository->model(),setting('custom_field_models',[]));
-        if($hasCustomField) {
+        $hasCustomField = in_array($this->driverRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('drivers.edit')->with('driver', $driver)->with("customFields", isset($html) ? $html : false)->with("user",$user);
+        $types = $this->driverTypeRepository->pluck('name', 'id');
+        return view('drivers.edit')->with('driver', $driver)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with('types', $types);
     }
 
     /**
@@ -160,17 +168,17 @@ private $userRepository;
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->update($input, $id);
-            
-            
-            foreach (getCustomFieldsValues($customFields, $request) as $value){
+
+
+            foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $driver->customFieldsValues()
-                    ->updateOrCreate(['custom_field_id'=>$value['custom_field_id']],$value);
+                    ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
             }
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('lang.updated_successfully',['operator' => __('lang.driver')]));
+        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.driver')]));
 
         return redirect(route('drivers.index'));
     }
@@ -194,12 +202,12 @@ private $userRepository;
 
         $this->driverRepository->delete($id);
 
-        Flash::success(__('lang.deleted_successfully',['operator' => __('lang.driver')]));
+        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.driver')]));
 
         return redirect(route('drivers.index'));
     }
 
-        /**
+    /**
      * Remove Media of Driver
      * @param Request $request
      */
@@ -208,7 +216,7 @@ private $userRepository;
         $input = $request->all();
         $driver = $this->driverRepository->findWithoutFail($input['id']);
         try {
-            if($driver->hasMedia($input['collection'])){
+            if ($driver->hasMedia($input['collection'])) {
                 $driver->getFirstMedia($input['collection'])->delete();
             }
         } catch (\Exception $e) {

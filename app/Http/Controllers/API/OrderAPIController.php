@@ -33,6 +33,7 @@ use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
 use App\Events\CreatedOrderEvent;
+use App\Services\AddOrderToFirebaseService;
 
 /**
  * Class OrderController
@@ -359,8 +360,19 @@ class OrderAPIController extends Controller
             ->food()->firstOrFail()
             ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
 
-        $order->order_status_id = 130; // 130 : canceled_from_driver
+        $order->order_status_id = 130; // 130 : canceled_from_driver 
         $order->save();
+
+        $lifetime = (int)setting('order_expiration_time_before_accept_for_drivers');
+        /**
+         * I subtract 15 seconds from time becuase it will not make sense to add order to firestore
+         * and waitting for drivers and restaurants to accept order in 15 seconds only , it is not enough time for doing this  
+         */
+        $lifetime -= 15;
+
+        if ($order->created_at > now()->addSeconds($lifetime * -1)) {
+            new AddOrderToFirebaseService($order);
+        }
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
