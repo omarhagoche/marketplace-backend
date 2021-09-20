@@ -177,6 +177,23 @@
     </li>
 @endcan
 
+
+@can('settlementDrivers.index')
+    <li class="nav-item has-treeview {{ Request::is('settlement*') ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ Request::is('settlement*') ? 'active' : '' }}"> @if($icons)
+            <i class="nav-icon fa fa-handshake-o"></i>@endif
+            <p>{{trans('lang.settlement_plural')}} <i class="right fa fa-angle-left"></i></p>
+        </a>
+        <ul class="nav nav-treeview">
+            @can('settlementDrivers.index')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('settlementDrivers*') ? 'active' : '' }}" href="{!! route('settlementDrivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.settlement_driver_plural')}}</p></a>
+            </li>
+            @endcan
+        </ul>
+    </li>
+@endcan
+
 @can('faqs.index')
     <li class="nav-item has-treeview {{ Request::is('faqCategories*') || Request::is('faqs*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('faqs*') || Request::is('faqCategories*') ? 'active' : '' }}"> @if($icons)

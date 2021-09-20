@@ -193,4 +193,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('slides', 'SlideController')->except([
         'show'
     ]);
+
+    Route::resource('settlementDrivers', 'SettlementDriverController')->except(['destroy']);
 });
