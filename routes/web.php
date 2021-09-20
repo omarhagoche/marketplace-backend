@@ -195,4 +195,5 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::resource('settlementDrivers', 'SettlementDriverController')->except(['destroy']);
+    Route::get('settlementDrivers/print/{id}', 'SettlementDriverController@print');
 });

@@ -127,6 +127,28 @@ class SettlementDriverController extends Controller
     }
 
     /**
+     * Print the specified SettlementDriver.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function print($id)
+    {
+        $settlementDriver = $this->settlementDriverRepository->findWithoutFail($id);
+
+        if (empty($settlementDriver)) {
+            Flash::error('Settlement Driver not found');
+
+            return redirect(route('settlementDrivers.index'));
+        }
+
+        $settlementDriver->load('orders', 'orders.payment');
+
+        return view('settlement_drivers.print')->with('settlement', $settlementDriver);
+    }
+
+    /**
      * Show the form for editing the specified SettlementDriver.
      *
      * @param  int $id

@@ -29,6 +29,11 @@
         <li class="nav-item">
           <a class="nav-link active" href="{!! route('settlementDrivers.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.settlement_driver_create')}}</a>
         </li>
+        <div class="ml-auto d-inline-flex">
+          <li class="nav-item">
+            <a class="nav-link pt-1" target="_blank" id="printOrder" href="{!! url("settlementDrivers/print/$settlementDriver->id") !!}"><i class="fa fa-print"></i> {{trans('lang.print')}}</a>
+          </li>
+        </div>
       </ul>
     </div>
     <div class="card-body">

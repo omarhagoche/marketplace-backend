@@ -97,4 +97,14 @@ class SettlementDriver extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'creator_id', 'id');
     }
+
+    /**
+     * Get all of the orders for the SettlementDriver
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
 }
