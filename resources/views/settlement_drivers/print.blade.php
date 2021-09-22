@@ -105,11 +105,11 @@
             <ul>
                 <li><b>رقم الفاتورة : </b><bdi>{{ $settlement->id }}</bdi></li>
                 @if($settlement->created_at)
-                    <li><b>تاريخ التسليم: </b><bdi>{{ $settlement->created_at->format('Y/m/d') }}</bdi></li>
+                    <li><b>تاريخ العملية: </b><bdi>{{ $settlement->created_at->format('Y/m/d') }}</bdi></li>
                 @endif
             </ul>
             <ul>
-                <li><b>رقم العضوية : </b><bdi>{{ $settlement->driver_id }}</bdi></li>
+                <li><b>كود العضوية : </b><bdi>{{ $settlement->driver_id }}</bdi></li>
                 <li><b>اسم المندوب : </b><bdi>{{ $settlement->driver->name }}</bdi></li>
             </ul>
         </div>
