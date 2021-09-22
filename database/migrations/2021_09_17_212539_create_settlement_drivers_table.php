@@ -22,7 +22,7 @@ class CreateSettlementDriversTable extends Migration
             $table->foreign('driver_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('count');
             $table->decimal('amount');
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
