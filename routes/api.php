@@ -95,6 +95,7 @@ Route::middleware('auth:api')->group(function () {
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
+            Route::get('statistics', 'API\Driver\StatisticAPIController@index');
         });
     });
     Route::group(['middleware' => ['role:manager']], function () {
