@@ -96,6 +96,7 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
             Route::get('statistics', 'API\Driver\StatisticAPIController@index');
+            Route::apiResource('settlements', 'API\Driver\SettlementDriverController')->only(['index', 'show']);
         });
     });
     Route::group(['middleware' => ['role:manager']], function () {
