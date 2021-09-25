@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: Order.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -8,7 +9,7 @@
 
 namespace App\Models;
 
-use Eloquent as Model; 
+use Eloquent as Model;
 use App\Events\UpdatedOrderEvent;
 
 /**
@@ -34,7 +35,7 @@ class Order extends Model
 {
 
     public $table = 'orders';
-    
+
 
 
     public $fillable = [
@@ -62,8 +63,8 @@ class Order extends Model
         'status' => 'string',
         'payment_id' => 'integer',
         'delivery_address_id' => 'integer',
-        'delivery_fee'=>'double',
-        'active'=>'boolean',
+        'delivery_fee' => 'double',
+        'active' => 'boolean',
         'driver_id' => 'integer',
     ];
 
@@ -86,7 +87,7 @@ class Order extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+
     ];
 
 
@@ -95,7 +96,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $dispatchesEvents = [ 
+    protected $dispatchesEvents = [
         'updated' => UpdatedOrderEvent::class,
     ];
     public function customFieldsValues()
@@ -105,14 +106,17 @@ class Order extends Model
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
+
+        return convertToAssoc($array, 'name');
+    }
 
 
     /**
@@ -127,7 +131,7 @@ class Order extends Model
          */
         static::saving(function ($model) {
             // set status value depends on order_status_id automatically 
-            $model->active = $model->order_status_id < 100; // canceled status 
+            $model->active = !$model->isStatusCanceled(); // canceled status 
         });
     }
 
