@@ -196,4 +196,6 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('settlementDrivers', 'SettlementDriverController');
     Route::get('settlementDrivers/print/{id}', 'SettlementDriverController@print');
+
+    Route::resource('settlementManagers', 'SettlementManagerController');
 });

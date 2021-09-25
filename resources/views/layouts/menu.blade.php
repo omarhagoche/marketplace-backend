@@ -178,7 +178,7 @@
 @endcan
 
 
-@can('settlementDrivers.index')
+@can('settlement.index')
     <li class="nav-item has-treeview {{ Request::is('settlement*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('settlement*') ? 'active' : '' }}"> @if($icons)
             <i class="nav-icon fa fa-handshake-o"></i>@endif
@@ -188,6 +188,11 @@
             @can('settlementDrivers.index')
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('settlementDrivers*') ? 'active' : '' }}" href="{!! route('settlementDrivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.settlement_driver_plural')}}</p></a>
+            </li>
+            @endcan
+            @can('settlementManagers.index')
+            <li class="nav-item">
+            <a class="nav-link {{ Request::is('settlementManagers*') ? 'active' : '' }}" href="{!! route('settlementManagers.index') !!}">@if($icons)<i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.settlement_manager_plural')}}</p></a>
             </li>
             @endcan
         </ul>
