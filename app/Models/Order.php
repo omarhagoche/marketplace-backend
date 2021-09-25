@@ -114,7 +114,21 @@ class Order extends Model
             ->where('custom_fields.in_table','=',true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+
+    /**
+     * 
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        /**
+         * Event fire before add or update model
+         */
+        static::saving(function ($model) {
+            // set status value depends on order_status_id automatically 
+            $model->active = $model->order_status_id < 100; // canceled status 
+        });
     }
 
     /**
