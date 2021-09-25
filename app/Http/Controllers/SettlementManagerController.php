@@ -170,7 +170,7 @@ class SettlementManagerController extends Controller
         try {
             $restaurant_changed = $request->restaurant_id != $settlementManager->restaurant_id;
 
-            if ($restaurant_changed) { // when driver change , recalculate orders
+            if ($restaurant_changed) { // when restaurant change , recalculate orders
                 $orders = $this->calculateOrders($request->restaurant_id);
                 $input = array_merge($input, [
                     'count' => $orders->count,
@@ -222,9 +222,15 @@ class SettlementManagerController extends Controller
             return redirect(route('settlementManagers.index'));
         }
 
-        $this->settlementManagerRepository->delete($id);
+        try {
+            $settlementManager->orders()->update(['settlement_manager_id' => null]);
+            $this->settlementManagerRepository->delete($id);
+            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.settlement_manager')]));
+        } catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
 
-        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.settlement_manager')]));
 
         return redirect(route('settlementManagers.index'));
     }
@@ -248,7 +254,10 @@ class SettlementManagerController extends Controller
 
 
 
-
+    /**
+     * Get restaurants as array key => value
+     * @return array 
+     */
     private function getRestaurants()
     {
         return Restaurant::pluck('name', 'id')
@@ -283,6 +292,9 @@ class SettlementManagerController extends Controller
         return $orders;
     }
 
+    /**
+     * Update orders settlement status 
+     */
     private function updateOrdersSettlement($restaurant_id, $settlementId)
     {
         return Order::join('food_orders', 'food_orders.order_id', 'orders.id')
