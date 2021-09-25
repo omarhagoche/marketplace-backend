@@ -247,6 +247,7 @@ class SettlementDriverController extends Controller
             return redirect(route('settlementDrivers.index'));
         }
 
+        $settlementDriver->orders()->update(['settlement_driver_id' => null]); // reset order 
         $this->settlementDriverRepository->delete($id);
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.settlement_driver')]));
