@@ -108,6 +108,7 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
+            Route::get('statistics', 'API\Manager\StatisticAPIController@index');
             Route::apiResource('foods', 'API\Manager\FoodAPIController')->except(['destroy']);
         });
     });
