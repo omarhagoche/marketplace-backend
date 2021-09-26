@@ -110,4 +110,16 @@ class SettlementManager extends Model
     {
         return $this->hasMany(\App\Models\Order::class);
     }
+
+    public function loadOrders()
+    {
+        if ($this->relationLoaded('orders')) return;
+        $this->load('orders', 'orders.payment', 'orders.foodOrders');
+        $this->orders->map(function ($o) {
+            $o->amount =  $o->foodOrders->sum(function ($f) {
+                return $f->quantity * $f->price;
+            });
+            $o->fee = round(($this->fee / 100) * $o->amount, 3);
+        });
+    }
 }

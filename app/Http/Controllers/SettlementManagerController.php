@@ -119,6 +119,30 @@ class SettlementManagerController extends Controller
         return view('settlement_managers.show')->with('settlementManager', $settlementManager);
     }
 
+
+    /**
+     * Print the specified SettlementDriver.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function print($id)
+    {
+        $settlementManager = $this->settlementManagerRepository->findWithoutFail($id);
+
+        if (empty($settlementManager)) {
+            Flash::error('Settlement Manager not found');
+
+            return redirect(route('settlementManagers.index'));
+        }
+
+        $settlementManager->loadOrders();
+
+        return view('settlement_managers.print')->with('settlement', $settlementManager);
+    }
+
+
     /**
      * Show the form for editing the specified SettlementManager.
      *
