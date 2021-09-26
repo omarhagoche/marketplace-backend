@@ -38,6 +38,7 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         'available_for_delivery',
         'closed',
         'admin_commission',
+        'featured',
     ];
 
     /**
@@ -62,7 +63,6 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
     {
         return Restaurant::join("user_restaurants", "restaurant_id", "=", "restaurants.id")
             ->where('user_restaurants.user_id', auth()->id())
-            ->where('restaurants.active','=','1')->get();
+            ->where('restaurants.active', '=', '1')->get();
     }
-
 }
