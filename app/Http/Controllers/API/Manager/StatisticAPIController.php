@@ -21,6 +21,11 @@ class StatisticAPIController extends Controller
     public function index(Request $request)
     {
         $restaurant = auth()->user()->restaurants()->first();
+
+        if (!$restaurant) {
+            return response()->json(["error" => "User not linked to any restauarnt"], 403);
+        }
+
         $settlements = SettlementManager::select(DB::raw("IFNULL(SUM(amount),0) amount"), DB::raw('IFNULL(SUM(count),0) count'))
             ->where('restaurant_id', $restaurant->id)->first()->toArray();
 
