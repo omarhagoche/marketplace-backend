@@ -26,16 +26,19 @@ class UpdateOrderStatusInFirebaseListener
     public function handle($event)
     {
         $order = $event->order;
-        if (!$order->wasChanged('order_status_id')) return;
+        if (!$order->wasChanged('order_status_id') || $order->created_at < now()->addHours('-3')) return;
 
         app('firebase.firestore')
             ->getFirestore()
             ->collection('current_orders')
             ->document($order->id)
             ->set([
-                'id' => $order->id,
+                'id' => (string)$order->id,
                 'order_status_id' => $order->order_status_id,
-                'driver' => $order->driver_id,
+                'restaurant_id' => (string)$order->foodOrders[0]->food->restaurant_id,
+                'user_id' => (string)$order->user_id,
+                'driver_id' => (string)$order->driver_id,
+                'total' => $order->payment->price,
                 'created_at' => $order->created_at->timestamp,
             ]);
     }
