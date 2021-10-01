@@ -52,9 +52,11 @@ class StatisticAPIController extends Controller
 
         $availabel_orders_for_settlement->amount  = round(($restaurant->admin_commission / 100) *  $availabel_orders_for_settlement->manager_fee, 3);
 
-        return [
+        $data =  [
             'settlements' => $settlements,
             'availabel_orders_for_settlement' => $availabel_orders_for_settlement,
         ];
+
+        return $this->sendResponse($data, "Statistics retrieved successfully");
     }
 }

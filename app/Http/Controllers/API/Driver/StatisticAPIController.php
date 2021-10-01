@@ -47,10 +47,12 @@ class StatisticAPIController extends Controller
 
         $availabel_orders_for_settlement['fee'] = round(getDriverFee() / 100 * $availabel_orders_for_settlement['delivery_fee'], 3);
 
-        return [
+        $data =  [
             //'delivered_orders' => $delivered_orders,
             'settlements' => $settlements,
             'availabel_orders_for_settlement' => $availabel_orders_for_settlement,
         ];
+
+        return $this->sendResponse($data, "Statistics retrieved successfully");
     }
 }
