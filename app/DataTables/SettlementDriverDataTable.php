@@ -99,6 +99,11 @@ class SettlementDriverDataTable extends DataTable
 
             ],
             [
+                'data' => 'fee',
+                'title' => trans('lang.settlement_driver_fee'),
+
+            ],
+            [
                 'data' => 'note',
                 'title' => trans('lang.settlement_driver_note'),
 

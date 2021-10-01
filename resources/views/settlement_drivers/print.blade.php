@@ -121,6 +121,7 @@
                     <tr style="background-color: #bbb;">
                         <th>#</th>
                         <th>رقم الطلبية</th>
+                        <th>العمولة</th>
                         <th>عمولة المندوب</th>
                         <th>قيمة الطلبية</th>
                         <th>طريقة الدفع</th>
@@ -133,6 +134,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $order->id }}</td>
+                            <td>{{ round(($settlement->fee/100) * $order->delivery_fee,3) }}</td>
                             <td>{{ $order->delivery_fee }}</td>
                             <td>{{ $order->payment->price }}</td>
                             <td>{{ $order->payment->method }}</td>
@@ -146,6 +148,7 @@
             <table class="table" style="margin-top: 20px;">
                 <thead>
                     <tr style="background-color: #bbb;">
+                        <th>العمولة</th>
                         <th>العدد</th>
                         <th>الإجمالي</th>
                         <th>الموظف</th>
@@ -155,6 +158,7 @@
                 <tbody>
 
                     <tr>
+                        <td>{{ $settlement->fee }}<bdi>%</bdi></td>
                         <td>{{ $settlement->count }}</td>
                         <td>{{ $settlement->amount }} <bdi>د.ل</bdi></td>
                         <td><bdi>{{ Auth::user()->name }}</bdi></td>

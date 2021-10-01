@@ -21,10 +21,10 @@ class SettlementDriver extends Model
     public $table = 'settlement_drivers';
 
 
-
     public $fillable = [
         'creator_id',
         'driver_id',
+        'fee',
         'amount',
         'note',
         'count',
@@ -38,6 +38,8 @@ class SettlementDriver extends Model
     protected $casts = [
         'creator_id' => 'integer',
         'driver_id' => 'integer',
+        'fee' => 'float',
+        'amount' => 'float',
         'note' => 'string',
         'count' => 'integer',
     ];

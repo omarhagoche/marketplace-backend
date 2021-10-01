@@ -87,6 +87,7 @@ class SettlementDriverController extends Controller
             $orders = $this->calculateOrders($request->driver_id);
             $input = array_merge($input, [
                 'count' => $orders->count,
+                'fee' => $orders->fee,
                 'amount' => $orders->amount,
                 'creator_id' => auth()->user()->id
             ]);
@@ -199,7 +200,8 @@ class SettlementDriverController extends Controller
                 $orders = $this->calculateOrders($request->driver_id);
                 $input = array_merge($input, [
                     'count' => $orders->count,
-                    'amount' => $orders->amount
+                    'fee' => $orders->fee,
+                    'amount' => $orders->amount,
                 ]);
             }
 
@@ -295,6 +297,10 @@ class SettlementDriverController extends Controller
         if ($orders->count == 0) {
             throw ValidationException::withMessages(["There is no available orders for settelment"]);
         }
+
+        $orders->fee = getDriverFee();
+        $orders->amount  = ($orders->fee / 100) *  $orders->amount; // calculate amount;
+
         return $orders;
     }
 

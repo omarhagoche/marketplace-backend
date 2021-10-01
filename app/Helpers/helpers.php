@@ -728,3 +728,11 @@ function upload_image($img, $userId, $field, $uuid = '')
 
     return  $upload;
 }
+
+/**
+ * Get drivers fee , it will change in feauture to be dyanmic
+ */
+function getDriverFee(): float
+{
+    return 10;
+}

@@ -22,6 +22,14 @@
   </div>
 </div>
 
+<!-- fee Field -->
+<div class="form-group row col-6">
+  {!! Form::label('fee', 'Fee:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! $settlementDriver->fee !!}</p>
+  </div>
+</div>
+
 <!-- Amount Field -->
 <div class="form-group row col-6">
   {!! Form::label('amount', 'Amount:', ['class' => 'col-3 control-label text-right']) !!}
