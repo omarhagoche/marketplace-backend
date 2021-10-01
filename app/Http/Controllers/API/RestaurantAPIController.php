@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantAPIController.php
  * Last modified: 2020.05.04 at 09:04:19
@@ -52,7 +53,6 @@ class RestaurantAPIController extends Controller
         $this->restaurantRepository = $restaurantRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->uploadRepository = $uploadRepo;
-
     }
 
     /**
@@ -75,11 +75,13 @@ class RestaurantAPIController extends Controller
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
             $restaurants = $this->restaurantRepository->all();
-
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
-        return  RestaurantResource::collection($restaurants);
+
+        return RestaurantResource::collection($restaurants)->sortBy(function ($r) {
+            return $r->toArray(request())['distance']['distance']['value'] ?? null;
+        })->values();
     }
 
     /**
