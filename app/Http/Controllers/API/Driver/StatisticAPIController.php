@@ -22,14 +22,30 @@ class StatisticAPIController extends Controller
     {
         $user_id = auth()->user()->id;
         //$delivered_orders = Order::where('driver_id', $user_id)->where('order_status_id', 80)->count();
-        $settlements = SettlementDriver::select(DB::raw("IFNULL(SUM(amount),0) amount"), DB::raw('IFNULL(SUM(count),0) count'))
-            ->where('driver_id', $user_id)->first()->toArray();
+        $settlements = SettlementDriver::select(
+            DB::raw("IFNULL(SUM(amount),0) amount"),
+            DB::raw("IFNULL(SUM(amount / fee * 100),0) delivery_fee"),
+            DB::raw('IFNULL(SUM(count),0) count')
+        )
+            ->where('driver_id', $user_id)
+            ->first()
+            ->makeHidden(['custom_fields'])
+            ->toArray();
 
-        $availabel_orders_for_settlement = Order::select(DB::raw("IFNULL(SUM(delivery_fee),0) amount"), DB::raw('IFNULL(COUNT(*),0) count'))
+        $settlements['delivery_fee'] = round($settlements['delivery_fee'], 3);
+
+        $availabel_orders_for_settlement = Order::select(
+            DB::raw("IFNULL(SUM(delivery_fee),0) delivery_fee"),
+            DB::raw('IFNULL(COUNT(*),0) count')
+        )
             ->where('driver_id', $user_id)
             ->where('order_status_id', 80) // Order Delivered
             ->whereNull('settlement_driver_id')
-            ->first();
+            ->first()
+            ->makeHidden(['custom_fields'])
+            ->toArray();
+
+        $availabel_orders_for_settlement['fee'] = round(getDriverFee() / 100 * $availabel_orders_for_settlement['delivery_fee'], 3);
 
         return [
             //'delivered_orders' => $delivered_orders,
