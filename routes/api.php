@@ -135,6 +135,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('drivers', 'API\DriverAPIController');
 
+    Route::resource('driver_reviews', 'API\DriverReviewAPIController');
+
     Route::resource('earnings', 'API\EarningAPIController');
 
     Route::resource('driversPayouts', 'API\DriversPayoutAPIController');

@@ -165,6 +165,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('driverTypes', 'DriverTypeController');
 
+    Route::resource('driverReviews', 'DriverReviewController');
+
     Route::resource('earnings', 'EarningController')->except([
         'show', 'edit', 'update'
     ]);
