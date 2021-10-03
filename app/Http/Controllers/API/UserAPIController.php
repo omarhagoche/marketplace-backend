@@ -241,7 +241,7 @@ class UserAPIController extends Controller
             'default_currency_decimal_digits' => '',
             'app_name' => '',
             'order_expiration_time_before_accept_for_drivers' => '',
-            'order_expiration_time_before_accept_for_restaurant' => '',
+            'order_expiration_time_before_accept_for_restaurants' => '',
             'initial_price' => '',
             'price_per_minute' => '',
             'price_per_km' => '',

@@ -44,7 +44,7 @@ class CloseUnassignedOrders implements ShouldQueue
     {
         $this->operationId = strtoupper(uniqid());
         $this->lifetime_drivers = (int)setting('order_expiration_time_before_accept_for_drivers');
-        $this->lifetime_restaurants = (int)setting('order_expiration_time_before_accept_for_restaurant');
+        $this->lifetime_restaurants = (int)setting('order_expiration_time_before_accept_for_restaurants');
     }
 
     /**
