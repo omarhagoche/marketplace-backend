@@ -3,7 +3,7 @@
 
 
 @section('title')
-فاتورة تسوية حساب شريك
+تسوية حساب شريك
 @endsection
 
 
@@ -15,8 +15,8 @@
         @endif
     </ul>
     <ul>
-        <li><b>كود المندوب : </b><bdi>{{ $settlement->driver_id }}</bdi></li>
-        <li><b>اسم المندوب : </b><bdi>{{ $settlement->driver->name }}</bdi></li>
+        <li><b>كود الشريك : </b><bdi>{{ $settlement->driver_id }}</bdi></li>
+        <li><b>اسم الشريك : </b><bdi>{{ $settlement->driver->name }}</bdi></li>
     </ul>
 @endsection
 
@@ -28,10 +28,9 @@
             <tr style="background-color: #bbb;">
                 <th>#</th>
                 <th>رقم الطلبية</th>
-                <th>العمولة</th>
+                <th>عمولة الشركة</th>
                 <th>عمولة المندوب</th>
                 <th>قيمة الطلبية</th>
-                <th>طريقة الدفع</th>
                 <th>التاريخ</th>
             </tr>
         </thead>
@@ -44,7 +43,6 @@
                     <td>{{ round(($settlement->fee/100) * $order->delivery_fee,3) }}</td>
                     <td>{{ $order->delivery_fee }}</td>
                     <td>{{ $order->payment->price }}</td>
-                    <td>{{ $order->payment->method }}</td>
                     <td><bdi>{{ $order->created_at->format('Y-m-d g:ia') }}</bdi></td>
                 </tr>
             @endforeach
