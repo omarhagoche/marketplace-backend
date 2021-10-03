@@ -3,7 +3,7 @@
 
 
 @section('title')
-فاتورة تسوية حساب مطعم
+تسوية حساب مطعم
 @endsection
 
 
@@ -28,9 +28,8 @@
             <tr style="background-color: #bbb;">
                 <th>#</th>
                 <th>رقم الطلبية</th>
-                <th>العمولة</th>
+                <th>عمولة الشركة</th>
                 <th>قيمة الطلبية</th>
-                <th>طريقة الدفع</th>
                 <th>التاريخ</th>
             </tr>
         </thead>
@@ -42,7 +41,6 @@
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->fee }}</td>
                     <td>{{ $order->amount }}</td>
-                    <td>{{ $order->payment->method }}</td>
                     <td><bdi>{{ $order->created_at->format('Y-m-d g:ia') }}</bdi></td>
                 </tr>
             @endforeach
