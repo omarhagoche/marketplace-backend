@@ -80,7 +80,7 @@ class RestaurantAPIController extends Controller
         }
 
         return RestaurantResource::collection($restaurants)->filter(function ($r) {
-            return $r->getDistance()['distance']['distance']['value'] < 15000;
+            return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
         })->sortBy(function ($r) {
             return $r->getDistance()['distance']['distance']['value'] ?? null;
         })->values();
