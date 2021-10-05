@@ -84,6 +84,28 @@
                         </div>
                     </div>
 
+                    <!-- range_restaurants_for_customers Field -->
+                    <div class="form-group row">
+                        {!! Form::label('range_restaurants_for_customers', trans("lang.app_setting_range_restaurants_for_customers"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('range_restaurants_for_customers', setting('range_restaurants_for_customers'),  ['step' => 'any','min' => '1.00','class' => 'form-control','placeholder'=>  trans("lang.app_setting_range_restaurants_for_customers_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_range_restaurants_for_customers_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- drivers_fee Field -->
+                    <div class="form-group row">
+                        {!! Form::label('drivers_fee', trans("lang.app_setting_drivers_fee"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('drivers_fee', setting('drivers_fee'),  ['min' => '0','max'=>'100','class' => 'form-control','placeholder'=>  trans("lang.app_setting_drivers_fee_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_drivers_fee_help") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- initial_price Field -->
                     <div class="form-group row">
                         {!! Form::label('initial_price', trans("lang.app_setting_initial_price"), ['class' => 'col-4 control-label text-right']) !!}

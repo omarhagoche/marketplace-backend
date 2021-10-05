@@ -242,6 +242,8 @@ class UserAPIController extends Controller
             'app_name' => '',
             'order_expiration_time_before_accept_for_drivers' => '',
             'order_expiration_time_before_accept_for_restaurants' => '',
+            'range_restaurants_for_customers' => '',
+            'drivers_fee' => '',
             'initial_price' => '',
             'price_per_minute' => '',
             'price_per_km' => '',
