@@ -734,5 +734,5 @@ function upload_image($img, $userId, $field, $uuid = '')
  */
 function getDriverFee(): float
 {
-    return 10;
+    return (float)setting('drivers_fee');
 }
