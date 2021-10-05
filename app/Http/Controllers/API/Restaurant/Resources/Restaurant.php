@@ -7,6 +7,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class Restaurant extends JsonResource
 {
+
+    /**
+     * To save cache distance value of getDistance method
+     * @var array
+     */
+    private $_get_distance;
+
+
+    /**
+     * To save cache delivery_prices value of getDeliveryPrices method
+     * @var array
+     */
+    private $_get_delivery_prices;
+
     /**
      * Transform the resource into an array.
      *
@@ -22,20 +36,28 @@ class Restaurant extends JsonResource
         );
     }
 
-    private function getDistance()
+    public function getDistance()
     {
-        if (request()->has(['myLon', 'myLat'])) {
-            return  ['distance' =>  app('distance')->getDistance(request()->myLat, request()->myLon, $this->latitude, $this->longitude)];
+        if (!$this->_get_distance) {
+            if (request()->has(['myLon', 'myLat'])) {
+                $this->_get_distance =  ['distance' =>  app('distance')->getDistance(request()->myLat, request()->myLon, $this->latitude, $this->longitude)];
+            } else {
+                $this->_get_distance = [];
+            }
         }
-        return [];
+
+        return $this->_get_distance;
     }
 
 
     private function getDeliveryPrices()
     {
-        return [
-            'delivery_fee' => $this->getDeliveryPriceByType($this->delivery_price_type),
-        ];
+        if (!$this->_get_delivery_prices) {
+            $this->_get_delivery_prices =  [
+                'delivery_fee' => $this->getDeliveryPriceByType($this->delivery_price_type),
+            ];
+        }
+        return $this->_get_delivery_prices;
     }
 
     private function getDeliveryPriceByType($delivery_price_type)

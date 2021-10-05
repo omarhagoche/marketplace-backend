@@ -79,8 +79,10 @@ class RestaurantAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
 
-        return RestaurantResource::collection($restaurants)->sortBy(function ($r) {
-            return $r->toArray(request())['distance']['distance']['value'] ?? null;
+        return RestaurantResource::collection($restaurants)->filter(function ($r) {
+            return $r->getDistance()['distance']['distance']['value'] < 15000;
+        })->sortBy(function ($r) {
+            return $r->getDistance()['distance']['distance']['value'] ?? null;
         })->values();
     }
 
