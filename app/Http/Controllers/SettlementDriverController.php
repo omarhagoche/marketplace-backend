@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\SettlementDriverDataTable;
+use App\DataTables\SettlementDriverAvailableDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateSettlementDriverRequest;
 use App\Http\Requests\UpdateSettlementDriverRequest;
@@ -54,6 +55,17 @@ class SettlementDriverController extends Controller
     public function index(SettlementDriverDataTable $settlementDriverDataTable)
     {
         return $settlementDriverDataTable->render('settlement_drivers.index');
+    }
+
+    /**
+     * Display a listing of the SettlementDriver available.
+     *
+     * @param SettlementDriverAvailableDataTable $settlementDriverDataTable
+     * @return Response
+     */
+    public function indexAvailable(SettlementDriverAvailableDataTable $settlementDriverDataTable)
+    {
+        return $settlementDriverDataTable->render('settlement_drivers.available.index');
     }
 
     /**
@@ -125,6 +137,41 @@ class SettlementDriverController extends Controller
         }
 
         return view('settlement_drivers.show')->with('settlementDriver', $settlementDriver);
+    }
+
+    /**
+     * Display the specified SettlementDriver .
+     * Available settlement by driver id
+     *
+     * @param  int $driver_id
+     *
+     * @return Response
+     */
+    public function showAvailable($driver_id)
+    {
+        $settlementDriver = new \stdClass;
+
+        $orders = Order::with('payment', 'driver:id,name')
+            ->where('order_status_id', 80) // Order Delivered
+            ->whereNull('settlement_driver_id')
+            ->where("driver_id", $driver_id)
+            ->get();
+
+
+        if (empty($orders)) {
+            Flash::error('Settlement Driver not found');
+
+            return redirect(route('settlementDrivers.indexAvailable'));
+        }
+
+        $settlementDriver->orders = $orders;
+        $settlementDriver->driver = $orders->first()->driver;
+        $settlementDriver->count = $orders->count();
+        $settlementDriver->delivery_fee = $orders->sum('delivery_fee');
+        $settlementDriver->amount = (getDriverFee() / 100) * $settlementDriver->delivery_fee;
+        $settlementDriver->fee = getDriverFee();
+
+        return view('settlement_drivers.available.show')->with('settlementDriver', $settlementDriver);
     }
 
     /**

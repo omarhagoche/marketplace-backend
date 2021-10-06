@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -1247,4 +1247,22 @@ return [
     'driver_review_driver_id' => 'Driver Id',
     'driver_review_driver_id_help' => 'Insert Driver Id',
     'driver_review_driver_id_placeholder' => 'Insert Driver Id',
+    'settlement_driver_available' => 'Settlement Driver Available',
+    'settlement_driver_available_plural' => 'Settlement Driver Availables',
+    'settlement_driver_available_desc' => 'Settlement Driver Availables Management',
+    'settlement_driver_available_edit' => 'Edit Settlement Driver Available',
+    'settlement_driver_available_table' => 'Settlement Driver Availables List',
+    'settlement_driver_available_create' => 'Create Settlement Driver Available',
+    'settlement_driver_available_driver' => 'Driver',
+    'settlement_driver_available_driver_help' => 'Insert Driver',
+    'settlement_driver_available_driver_placeholder' => 'Insert Driver',
+    'settlement_driver_available_count' => 'Count',
+    'settlement_driver_available_count_help' => 'Insert Count',
+    'settlement_driver_available_count_placeholder' => 'Insert Count',
+    'settlement_driver_available_amount' => 'Amount',
+    'settlement_driver_available_amount_help' => 'Insert Amount',
+    'settlement_driver_available_amount_placeholder' => 'Insert Amount',
+    'settlement_driver_available_fee' => 'Fee',
+    'settlement_driver_available_fee_help' => 'Insert Fee',
+    'settlement_driver_available_fee_placeholder' => 'Insert Fee',
 ];

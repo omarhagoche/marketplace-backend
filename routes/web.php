@@ -196,6 +196,8 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
+    Route::get('settlementDrivers/available', 'SettlementDriverController@indexAvailable')->name('settlementDrivers.indexAvailable');
+    Route::get('settlementDrivers/available/{driver_id}', 'SettlementDriverController@showAvailable')->name('settlementDrivers.showAvailable');
     Route::resource('settlementDrivers', 'SettlementDriverController');
     Route::get('settlementDrivers/print/{id}', 'SettlementDriverController@print');
 

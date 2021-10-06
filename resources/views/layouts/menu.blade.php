@@ -193,7 +193,12 @@
         <ul class="nav nav-treeview">
             @can('settlementDrivers.index')
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('settlementDrivers*') ? 'active' : '' }}" href="{!! route('settlementDrivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.settlement_driver_plural')}}</p></a>
+                <a class="nav-link {{ Request::is('settlementDrivers*') && !Request::is('settlementDrivers/available*') ? 'active' : '' }}" href="{!! route('settlementDrivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.settlement_driver_plural')}}</p></a>
+            </li>
+            @endcan
+            @can('settlementDrivers.indexAvailable')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('settlementDrivers/available*') ? 'active' : '' }}" href="{!! route('settlementDrivers.indexAvailable') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.settlement_driver_available_plural')}}</p></a>
             </li>
             @endcan
             @can('settlementManagers.index')
