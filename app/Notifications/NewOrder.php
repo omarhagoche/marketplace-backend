@@ -36,7 +36,7 @@ class NewOrder extends Notification
      */
     public function via($notifiable)
     {
-        return ['database','fcm'];
+        return ['database', 'fcm'];
     }
 
     /**
@@ -57,10 +57,11 @@ class NewOrder extends Notification
     {
         $message = new FcmMessage();
         $notification = [
-            'title'        => "New Order #".$this->order->id." to ".$this->order->foodOrders[0]->food->restaurant->name,
+            'title'        => "New Order #" . $this->order->id . " to " . $this->order->foodOrders[0]->food->restaurant->name,
             'body'         => $this->order->user->name,
             'icon'         => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
+            "sound" => "swiftly",
             'id' => '1',
             'status' => 'done',
         ];

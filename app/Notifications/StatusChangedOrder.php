@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: StatusChangedOrder.php
  * Last modified: 2020.04.30 at 08:21:09
@@ -65,7 +66,8 @@ class StatusChangedOrder extends Notification
         $notification = [
             'title' => trans('lang.notification_your_order', ['order_id' => $this->order->id, 'order_status' => $this->order->orderStatus->status]),
             'text' => $this->order->foodOrders[0]->food->restaurant->name,
-            'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb')
+            'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
+            "sound" => "swiftly",
         ];
         $data = [
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",

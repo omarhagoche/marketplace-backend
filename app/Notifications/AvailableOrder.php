@@ -48,6 +48,7 @@ class AvailableOrder extends Notification
             'text'         => $this->order->foodOrders[0]->food->restaurant->name,
             'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'icon' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
+            "sound" => "swiftly",
         ];
         $data = [
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
