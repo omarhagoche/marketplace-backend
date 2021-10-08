@@ -124,12 +124,6 @@ class RestaurantAPIController extends Controller
             $restaurant = $this->restaurantRepository->create($input);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
             if (isset($input['image']) && $input['image']) {
-                $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
-                $mediaItem = $cacheUpload->getMedia('image')->first();
-                $mediaItem->copy($restaurant, 'image');
-            }
-
-            if (isset($input['image']) && $input['image']) {
                 upload_image($request->image, $restaurant->id, 'image')
                     ->getMedia('image')
                     ->first()
