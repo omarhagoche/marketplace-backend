@@ -128,6 +128,15 @@ class RestaurantAPIController extends Controller
                 $mediaItem = $cacheUpload->getMedia('image')->first();
                 $mediaItem->copy($restaurant, 'image');
             }
+
+            if (isset($input['image']) && $input['image']) {
+                upload_image($request->image, $restaurant->id, 'image')
+                    ->getMedia('image')
+                    ->first()
+                    ->copy($restaurant, 'image');
+
+                $restaurant->load('media'); // load media relationship to load images 
+            }
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -157,9 +166,15 @@ class RestaurantAPIController extends Controller
             $input['users'] = isset($input['users']) ? $input['users'] : [];
             $input['drivers'] = isset($input['drivers']) ? $input['drivers'] : [];
             if (isset($input['image']) && $input['image']) {
-                $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
-                $mediaItem = $cacheUpload->getMedia('image')->first();
-                $mediaItem->copy($restaurant, 'image');
+                if ($restaurant->hasMedia('image')) {
+                    $restaurant->getFirstMedia('image')->delete();
+                }
+                upload_image($request->image, $restaurant->id, 'image')
+                    ->getMedia('image')
+                    ->first()
+                    ->copy($restaurant, 'image');
+
+                $restaurant->load('media'); // load media relationship to load images of food
             }
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $restaurant->customFieldsValues()
