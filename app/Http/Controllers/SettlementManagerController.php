@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\SettlementManagerDataTable;
+use App\DataTables\SettlementManagerAvailableDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateSettlementManagerRequest;
 use App\Http\Requests\UpdateSettlementManagerRequest;
@@ -48,6 +49,17 @@ class SettlementManagerController extends Controller
     public function index(SettlementManagerDataTable $settlementManagerDataTable)
     {
         return $settlementManagerDataTable->render('settlement_managers.index');
+    }
+
+    /**
+     * Display a listing of the SettlementDriver available.
+     *
+     * @param SettlementManagerAvailableDataTable $settlementManagerDataTable
+     * @return Response
+     */
+    public function indexAvailable(SettlementManagerAvailableDataTable $settlementManagerDataTable)
+    {
+        return $settlementManagerDataTable->render('settlement_managers.available.index');
     }
 
     /**
@@ -117,6 +129,54 @@ class SettlementManagerController extends Controller
         }
 
         return view('settlement_managers.show')->with('settlementManager', $settlementManager);
+    }
+
+
+    /**
+     * Display the specified settlementManager .
+     * Available settlement by restaurant id
+     *
+     * @param  int $restaurant_id
+     *
+     * @return Response
+     */
+    public function showAvailable($restaurant_id)
+    {
+        $settlementManager = new \stdClass;
+        $restaurant = Restaurant::findOrFail($restaurant_id);
+        $settlementManager->restaurant = $restaurant;
+
+
+        $food = FoodOrder::join('foods', 'foods.id', 'food_orders.food_id')
+            ->join('orders', 'orders.id', 'food_orders.order_id')
+            ->select(
+                DB::raw('food_orders.order_id order_id'),
+                DB::raw("IFNULL(SUM(food_orders.quantity * food_orders.price),0) amount"),
+            )
+            ->where('foods.restaurant_id', $restaurant_id)
+            ->where('orders.order_status_id', 80) // Order Delivered
+            ->whereNull('orders.settlement_manager_id')
+            ->groupBy('order_id');
+
+
+        $orders = Order::joinSub($food, 'foods', function ($join) {
+            $join->on('orders.id', '=', 'foods.order_id');
+        })->get();
+
+
+        if (empty($settlementManager)) {
+            Flash::error('Settlement Manager not found');
+
+            return redirect(route('settlementManagers.indexAvailable'));
+        }
+
+        $settlementManager->orders = $orders;
+        $settlementManager->count = $orders->count();
+        $settlementManager->sales_amount = $orders->sum('amount');
+        $settlementManager->amount = ($restaurant->admin_commission / 100) * $settlementManager->sales_amount;
+        $settlementManager->fee = $restaurant->admin_commission;
+
+        return view('settlement_managers.available.show')->with('settlementManager', $settlementManager);
     }
 
 

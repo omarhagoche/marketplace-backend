@@ -203,8 +203,13 @@
             @endcan
             @can('settlementManagers.index')
             <li class="nav-item">
-            <a class="nav-link {{ Request::is('settlementManagers*') ? 'active' : '' }}" href="{!! route('settlementManagers.index') !!}">@if($icons)<i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.settlement_manager_plural')}}</p></a>
+            <a class="nav-link {{ Request::is('settlementManagers*') && !Request::is('settlementManagers/available*') ? 'active' : '' }}" href="{!! route('settlementManagers.index') !!}">@if($icons)<i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.settlement_manager_plural')}}</p></a>
             </li>
+            @endcan
+            @can('settlementManagers.indexAvailable')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('settlementManagers/available*') ? 'active' : '' }}" href="{!! route('settlementManagers.indexAvailable') !!}">@if($icons)<i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.settlement_manager_available_plural')}}</p></a>
+                </li>
             @endcan
         </ul>
     </li>

@@ -201,6 +201,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('settlementDrivers', 'SettlementDriverController');
     Route::get('settlementDrivers/print/{id}', 'SettlementDriverController@print');
 
+
+    Route::get('settlementManagers/available', 'SettlementManagerController@indexAvailable')->name('settlementManagers.indexAvailable');
+    Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
 });
