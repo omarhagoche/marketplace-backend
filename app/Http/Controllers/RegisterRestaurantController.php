@@ -40,7 +40,7 @@ class RegisterRestaurantController extends Controller
             'added_by' => 'required|string|min:3|max:64',
 
             // users data
-            'user_name' => 'required|min:3|max:100',
+            //'user_name' => 'required|min:3|max:100',
             'user_phone' => 'required|unique:users,phone_number',
 
             // restuarant data
@@ -82,12 +82,15 @@ class RegisterRestaurantController extends Controller
                 'private_drivers' => false,
                 'delivery_price_type' => 'distance',
                 'admin_commission' => 10,
+                'active' => true,
             ]));
             $user = $restaurant->users()->create([
-                'name'  => $request->user_name,
-                'phone_number'  => $request->user_phone,
+                'name'  => $request->name, //$request->user_name,
+                'phone_number'  => ltrim($request->user_phone, 0),
                 'email' => now(),
                 'password'  => Hash::make('123456'),
+                'active' => true,
+                'activated_at' => now(),
                 'api_token'  => str_random(60),
             ]);
 

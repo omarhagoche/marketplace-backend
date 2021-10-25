@@ -80,12 +80,12 @@
             <hr />
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                {{-- <div class="col-md-6 mb-3">
                     <label class="form-label">اسم المستخدم</label>
                     <input type="text" class="form-control" name="user_name" value="{{ request()->old('user_name') }}"
                         minlength="3" maxlength="32" required>
                     <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 100 حرف</div>
-                </div>
+                </div> --}}
                 <div class="col-md-6 mb-3">
                     <label class="form-label">رقم تليفون المستخدم</label>
                     <input type="text" class="form-control" name="user_phone" value="{{ request()->old('user_phone') }}"
