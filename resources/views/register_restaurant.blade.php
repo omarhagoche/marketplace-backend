@@ -66,13 +66,13 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">رقم تليفون المطعم</label>
                     <input type="text" class="form-control" name="phone" value="{{ request()->old('phone') }}"
-                        placeholder="9XXXXXXXX" pattern="^+0[9][12345][0-9]{7}$" required maxlength="9">
+                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$" required maxlength="10">
                     <div class="invalid-feedback">يجب أن يكون رقم التليفون بالتنسيق (9100000000)</div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">رقم تليفون المطعم2</label>
                     <input type="text" class="form-control" name="mobile" value="{{ request()->old('mobile') }}"
-                        placeholder="9XXXXXXXX" pattern="^+0[9][12345][0-9]{7}$"   maxlength="9">
+                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$"   maxlength="10">
                     <div class="invalid-feedback">يجب أن يكون رقم التليفون بالتنسيق (9100000000)</div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">رقم تليفون المستخدم</label>
                     <input type="text" class="form-control" name="user_phone" value="{{ request()->old('user_phone') }}"
-                        placeholder="9XXXXXXXX" pattern="^+0[9][12345][0-9]{7}$" required maxlength="9">
+                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$" required maxlength="10">
                     <div class="invalid-feedback">يجب أن يكون رقم التليفون بالتنسيق (9100000000)</div>
                 </div>
                 <!-- <div class="col-md-6 mb-3">
