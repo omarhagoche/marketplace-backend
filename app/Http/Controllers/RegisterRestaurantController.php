@@ -102,6 +102,7 @@ class RegisterRestaurantController extends Controller
                 'private_drivers' => false,
                 'delivery_price_type' => 'distance',
                 'admin_commission' => 10,
+                'deliver_range' => 20,
                 'active' => true,
             ]));
             $user = $restaurant->users()->create([
