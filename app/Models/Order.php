@@ -40,6 +40,7 @@ class Order extends Model
 
     public $fillable = [
         'user_id',
+        'unregistered_customer_id',
         'order_status_id',
         'tax',
         'hint',
@@ -47,7 +48,7 @@ class Order extends Model
         'delivery_address_id',
         'delivery_fee',
         'active',
-        'driver_id'
+        'driver_id',
     ];
 
     /**
@@ -57,6 +58,7 @@ class Order extends Model
      */
     protected $casts = [
         'user_id' => 'integer',
+        'unregistered_customer_id' => 'integer',
         'order_status_id' => 'integer',
         'tax' => 'double',
         'hint' => 'string',
@@ -74,7 +76,8 @@ class Order extends Model
      * @var array
      */
     public static $rules = [
-        'user_id' => 'required|exists:users,id',
+        'user_id' => 'nullable|exists:users,id',
+        'unregistered_customer' => 'required_without:user_id',
         'order_status_id' => 'required|exists:order_statuses,id',
         'payment_id' => 'exists:payments,id',
         'driver_id' => 'nullable|exists:users,id',
@@ -87,7 +90,7 @@ class Order extends Model
      */
     protected $appends = [
         'custom_fields',
-
+        'unregistered_customer',
     ];
 
 
@@ -142,6 +145,32 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function unregisteredCustomer()
+    {
+        return $this->belongsTo(\App\Models\UnregisteredCustomer::class, 'unregistered_customer_id', 'id');
+    }
+
+
+    public function getUnregisteredCustomerAttribute()
+    {
+        if ($this->unregistered_customer_id) {
+            return $this->unregisteredCustomer()->first();
+        }
+        return null;
+    }
+
+
+    //public function getDeliveryAddressAttribute()
+    //{
+    //    if ($this->delivery_address_id) {
+    //        return $this->deliveryAddress()->first();
+    //    }
+    //    return null;
+    //}
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

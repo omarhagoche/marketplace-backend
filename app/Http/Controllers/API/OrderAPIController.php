@@ -34,6 +34,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
 use App\Events\CreatedOrderEvent;
 use App\Services\AddOrderToFirebaseService;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class OrderController
@@ -237,9 +238,8 @@ class OrderAPIController extends Controller
         $input = $request->all();
         $amount = 0;
         try {
-            $order = $this->orderRepository->create(
-                $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint')
-            );
+            DB::beginTransaction();
+            $order = $this->orderRepository->create($request->only('order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint'));
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
@@ -248,27 +248,62 @@ class OrderAPIController extends Controller
             $amount += $order->delivery_fee;
             $amountWithTax = $amount + ($amount * $order->tax / 100);
             $payment = $this->paymentRepository->create([
-                "user_id" => $input['user_id'],
+                "user_id" => $input['user_id'] ?? null,
                 "description" => trans("lang.payment_order_waiting"),
                 "price" => $amountWithTax,
                 "status" => 'Waiting for Client',
                 "method" => $input['payment']['method'],
             ]);
 
-            $this->orderRepository->update([
-                'payment_id' => $payment->id,
-                'restaurant_id' => $order->foodOrders->first()->food->restaurant_id
-            ], $order->id);
+            $restaurant_id = $order->foodOrders->first()->food->restaurant_id;
+            /* if ($request->phone) {
+                $unregistered_customer = $order->unregisteredCustomer()->create([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                    'restaurant_id' => $restaurant_id,
+                ]);
+                $order->setRelation('unregisteredCustomer', $unregistered_customer);
+            } */
+            if ($request->has('unregistered_customer')) {
+                $unregistered_customer = $order->unregisteredCustomer()->create(array_merge(
+                    $request->unregistered_customer,
+                    [
+                        'restaurant_id' => $restaurant_id,
+                    ]
+                ));
+                $order->setRelation('unregisteredCustomer', $unregistered_customer);
+
+                if ($request->has('delivery_address')) {
+                    $delivery_address = $unregistered_customer->address()->create($request->delivery_address);
+                    $order->setRelation('deliveryAddress', $delivery_address);
+                }
+            }
+
+            $this->orderRepository->update(array_merge(
+                [
+                    'payment_id' => $payment->id,
+                    'restaurant_id' => $restaurant_id,
+                    'unregistered_customer_id' => $unregistered_customer->id ?? null,
+                ],
+                (isset($delivery_address->id) ? ['delivery_address_id' => $delivery_address->id] : [])
+            ), $order->id);
+
 
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
-            Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+            if ($order->user_id) {
+                Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+            }
+            $order->unregistered_customer_id =  $unregistered_customer->id ?? null;
+            $order->delivery_address_id =  $delivery_address->id ?? null;
             $order->payment_id = $payment->id;
             event(new CreatedOrderEvent($order));
+            DB::commit();
         } catch (ValidatorException $e) {
+            DB::rollback();
             return $this->sendError($e->getMessage());
         }
-
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 

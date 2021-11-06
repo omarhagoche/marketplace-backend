@@ -87,12 +87,12 @@ class DeliveryAddress extends Model
         return convertToAssoc($array,'name');
     }
 
+
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+        return $this->morphTo();
     }
-    
 }
