@@ -61,6 +61,8 @@ Route::post('reset_password', 'API\UserAPIController@ResetPassword');
 Route::get('user', 'API\UserAPIController@user');
 Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
+Route::get('distance', 'API\DistanceAPIController@getDistanceBetweenTwoPoints');
+
 
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
