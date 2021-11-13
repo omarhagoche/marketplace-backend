@@ -103,6 +103,11 @@
 
     </div>
 
+    {!! Form::label('restaurant_delivery_fee', trans('lang.restaurant_delivery_fee'), ['class' => 'col-4 control-label']) !!}
+    <div class="col-8">
+        <p>{!! $order->restaurant_delivery_fee !!}</p>
+    </div>
+
     {!! Form::label('hint', 'Hint:', ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
         <p>{!! $order->hint !!}</p>

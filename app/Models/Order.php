@@ -27,6 +27,7 @@ use App\Events\UpdatedOrderEvent;
  * @property integer payment_id
  * @property double tax
  * @property double delivery_fee
+ * @property double restaurant_delivery_fee
  * @property string id
  * @property int delivery_address_id
  * @property string hint
@@ -47,6 +48,7 @@ class Order extends Model
         'payment_id',
         'delivery_address_id',
         'delivery_fee',
+        'restaurant_delivery_fee',
         'active',
         'driver_id',
     ];
@@ -66,6 +68,7 @@ class Order extends Model
         'payment_id' => 'integer',
         'delivery_address_id' => 'integer',
         'delivery_fee' => 'double',
+        'restaurant_delivery_fee' => 'double',
         'active' => 'boolean',
         'driver_id' => 'integer',
     ];
