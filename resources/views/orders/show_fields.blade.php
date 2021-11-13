@@ -7,12 +7,22 @@
 
     {!! Form::label('order_client', trans('lang.order_client'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-    <p>{!! $order->user->name !!}</p>
+    <p>{!! $order->user->name ?? $order->unregistered_customer->name !!}</p>
+  </div>
+
+  
+    {!! Form::label('Add by restaurant','Add by restaurant', ['class' => 'col-4 control-label']) !!}
+    <div class="col-8">
+    @if($order->user_id)
+      <p><span class='badge badge-danger'>{{trans('lang.no')}}</span></p>
+    @else
+      <p><span class='badge badge-success'>{{trans('lang.yes')}}</span></p>
+    @endif
   </div>
 
     {!! Form::label('order_client_phone', trans('lang.order_client_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-    <p>{!! isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "" !!}</p>
+    <p>{!! $order->unregistered_customer->phone ?? (isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "") !!}</p>
   </div>
 
     {!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}
