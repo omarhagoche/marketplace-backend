@@ -204,6 +204,13 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
+     * Get the user's address.
+     */
+    public function address()
+    {
+        return $this->morphOne(\App\Models\DeliveryAddress::class, 'user');
+    }
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      **/
     public function verfication_code()

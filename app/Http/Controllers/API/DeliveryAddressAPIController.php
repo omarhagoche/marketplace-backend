@@ -39,6 +39,10 @@ class DeliveryAddressAPIController extends Controller
         try {
             $this->deliveryAddressRepository->pushCriteria(new RequestCriteria($request));
             $this->deliveryAddressRepository->pushCriteria(new LimitOffsetCriteria($request));
+            $this->deliveryAddressRepository->scopeQuery(function ($query) {
+                return $query->where('user_id', auth()->user()->id)
+                    ->where('user_type', get_class(auth()->user()));
+            });
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -81,7 +85,8 @@ class DeliveryAddressAPIController extends Controller
         $uniqueInput = $request->only("address");
         $otherInput = $request->except("address");
         try {
-            $deliveryAddress = $this->deliveryAddressRepository->updateOrCreate($uniqueInput, $otherInput);
+            $deliveryAddress = auth()->user()->address()->updateOrCreate($uniqueInput, $otherInput);
+            #$deliveryAddress = $this->deliveryAddressRepository->updateOrCreate($uniqueInput, $otherInput);
 
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
@@ -106,7 +111,7 @@ class DeliveryAddressAPIController extends Controller
             return $this->sendError('Delivery Address not found');
         }
         $input = $request->all();
-        if ($input['is_default'] == true){
+        if ($input['is_default'] == true) {
             $this->deliveryAddressRepository->initIsDefault($input['user_id']);
         }
         try {
@@ -116,7 +121,6 @@ class DeliveryAddressAPIController extends Controller
         }
 
         return $this->sendResponse($deliveryAddress->toArray(), __('lang.updated_successfully', ['operator' => __('lang.delivery_address')]));
-
     }
 
     /**
@@ -132,12 +136,10 @@ class DeliveryAddressAPIController extends Controller
 
         if (empty($address)) {
             return $this->sendError('Delivery Address Not found');
-
         }
 
         $this->deliveryAddressRepository->delete($id);
 
-        return $this->sendResponse($address, __('lang.deleted_successfully',['operator' => __('lang.delivery_address')]));
-
+        return $this->sendResponse($address, __('lang.deleted_successfully', ['operator' => __('lang.delivery_address')]));
     }
 }
