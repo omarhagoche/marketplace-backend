@@ -290,7 +290,10 @@ class OrderAPIController extends Controller
             ), $order->id);
 
 
-            $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
+            // if order dose not have user_id , that means order for unregistered_customer from restaurant
+            // so user_id of cart is restaurant (manager users) id 
+            // so we can clear cart by manager id (auth user = manager) 
+            $this->cartRepository->deleteWhere(['user_id' => $order->user_id ?? auth()->user()->id]);
 
             if ($order->user_id) {
                 Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
