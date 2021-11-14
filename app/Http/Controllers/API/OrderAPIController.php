@@ -239,7 +239,7 @@ class OrderAPIController extends Controller
         $amount = 0;
         try {
             DB::beginTransaction();
-            $order = $this->orderRepository->create($request->only('order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'restaurant_delivery_fee', 'hint'));
+            $order = $this->orderRepository->create($request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'restaurant_delivery_fee', 'hint'));
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
