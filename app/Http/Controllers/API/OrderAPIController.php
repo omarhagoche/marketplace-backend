@@ -374,7 +374,7 @@ class OrderAPIController extends Controller
         if ($order->user_id) {
             $order->order_status_id = 20; // 20 : waiting_for_restaurant
         } else {
-            $order->order_status_id = 40; // 40 : driver_assigned
+            $order->order_status_id = 30; // 30 : accepted_from_restaurant
         }
         $order->driver_id = auth()->user()->id;
         $order->save();
