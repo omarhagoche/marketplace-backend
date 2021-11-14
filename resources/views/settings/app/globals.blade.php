@@ -139,6 +139,17 @@
                         </div>
                     </div>
 
+                    <!-- minimum_price Field -->
+                    <div class="form-group row">
+                        {!! Form::label('minimum_price', trans("lang.app_setting_minimum_price"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::text('minimum_price', setting('minimum_price'),  ['class' => 'form-control','placeholder'=>  trans("lang.app_setting_minimum_price_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_minimum_price_help") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Theme Contrast Field -->
                     <div class="form-group row ">
                         {!! Form::label('theme_contrast', trans("lang.app_setting_theme_contrast"),['class' => 'col-4 control-label text-right']) !!}

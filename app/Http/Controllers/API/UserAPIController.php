@@ -247,6 +247,7 @@ class UserAPIController extends Controller
             'initial_price' => '',
             'price_per_minute' => '',
             'price_per_km' => '',
+            'minimum_price' => '',
             'currency_right' => '',
             'enable_paypal' => '',
             'enable_stripe' => '',
