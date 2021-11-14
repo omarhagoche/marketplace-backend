@@ -299,7 +299,7 @@ class OrderAPIController extends Controller
                 Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
             }
             $order->unregistered_customer_id =  $unregistered_customer->id ?? null;
-            $order->delivery_address_id =  $delivery_address->id ?? null;
+            $order->delivery_address_id =  $delivery_address->id ?? $request->get('delivery_address_id');
             $order->payment_id = $payment->id;
             event(new CreatedOrderEvent($order));
             DB::commit();
