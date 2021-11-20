@@ -153,8 +153,13 @@ class UserAPIController extends Controller
             'google_maps_key' => '',
             'fcm_key' => '',
             'mobile_language' => '',
-            'app_version' => '',
             'enable_version' => '',
+            'app_driver_version' => '',
+            'app_manager_version' => '',
+            'app_customer_version' => '',
+            'app_driver_force_update' => '',
+            'app_manager_force_update' => '',
+            'app_customer_force_update' => '',
             'distance_unit' => '',
         ]);
 

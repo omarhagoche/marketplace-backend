@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: AppSettingsTableSeeder.php
  * Last modified: 2020.05.24 at 18:23:55
@@ -377,9 +378,37 @@ class AppSettingsTableSeeder extends Seeder
                 'id' => 144,
                 'key' => 'home_section_12',
                 'value' => 'recent_reviews',
-            )
+            ),
+            array(
+                'id' => 145,
+                'key' => 'app_driver_version',
+                'value' => '1',
+            ),
+            array(
+                'id' => 146,
+                'key' => 'app_manager_version',
+                'value' => '1',
+            ),
+            array(
+                'id' => 147,
+                'key' => 'app_customer_version',
+                'value' => '1',
+            ),
+            array(
+                'id' => 148,
+                'key' => 'app_driver_force_update',
+                'value' => '1',
+            ),
+            array(
+                'id' => 149,
+                'key' => 'app_manager_force_update',
+                'value' => '1',
+            ),
+            array(
+                'id' => 150,
+                'key' => 'app_customer_force_update',
+                'value' => '1',
+            ),
         ));
-
-
     }
 }

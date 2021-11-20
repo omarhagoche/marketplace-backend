@@ -86,6 +86,68 @@
                         </label>
                     </div>
                 </div>
+                <!-- app_driver_version Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_driver_version', trans('lang.app_driver_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_driver_version', setting('app_driver_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_driver_version_placeholder')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_driver_version_help') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_driver_force_update Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_driver_force_update', trans('lang.app_driver_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_driver_force_update', null) !!}
+                            {!! Form::checkbox('app_driver_force_update', 1, setting('app_driver_force_update', true)) !!}
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- app_manager_version Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_manager_version', trans('lang.app_manager_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_manager_version', setting('app_manager_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_manager_version_placeholder')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_manager_version_help') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_manager_force_update Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_manager_force_update', trans('lang.app_manager_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_manager_force_update', null) !!}
+                            {!! Form::checkbox('app_manager_force_update', 1, setting('app_manager_force_update', true)) !!}
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- app_customer_version Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_customer_version', trans('lang.app_customer_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_customer_version', setting('app_customer_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_customer_version_placeholder')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_customer_version_help') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_customer_force_update Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_customer_force_update', trans('lang.app_customer_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_customer_force_update', null) !!}
+                            {!! Form::checkbox('app_customer_force_update', 1, setting('app_customer_force_update', true)) !!}
+                        </label>
+                    </div>
+                </div>
 
                 <!-- Submit Field -->
                 <div class="form-group mt-4 col-12 text-right">
