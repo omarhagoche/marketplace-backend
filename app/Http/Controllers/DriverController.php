@@ -57,6 +57,17 @@ class DriverController extends Controller
         return $driverDataTable->render('drivers.index');
     }
 
+
+    /**
+     * Display the specified Driver.
+     *
+     * @return Response
+     */
+    public function map()
+    {
+        return view('drivers.map');
+    }
+
     /**
      * Show the form for creating a new Driver.
      *

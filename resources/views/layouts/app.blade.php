@@ -177,6 +177,7 @@
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js')}}"></script>
 
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js')}}"></script>
+    <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-firestore.js')}}"></script>
 
     <script type="text/javascript">@include('vendor.notifications.init_firebase')</script>
 
@@ -266,5 +267,7 @@
 
     <script src="{{asset('js/scripts.js')}}"></script>
     @stack('scripts')
+    
+    @yield('extra-js')
 </body>
 </html>

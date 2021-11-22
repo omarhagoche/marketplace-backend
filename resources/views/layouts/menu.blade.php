@@ -167,6 +167,12 @@
                 <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} </p></a>
             </li>
             @endcan
+            
+            @can('drivers.map')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.map') !!}">@if($icons)<i class="nav-icon fa fa-map"></i>@endif<p>{{trans('lang.drivers_map')}} </p></a>
+            </li>
+            @endcan
 
             @can('driverReviews.index')
                 <li class="nav-item">

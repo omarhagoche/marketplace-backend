@@ -166,6 +166,8 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
+    Route::get('drivers/map', 'DriverController@map')->name('drivers.map');
+
     Route::resource('driverTypes', 'DriverTypeController');
 
     Route::resource('driverReviews', 'DriverReviewController');

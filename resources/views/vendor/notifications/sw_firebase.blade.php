@@ -1,5 +1,6 @@
 importScripts('//www.gstatic.com/firebasejs/7.2.0/firebase-app.js');
 importScripts('//www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js');
+importScripts('//www.gstatic.com/firebasejs/7.2.0/firebase-firestore.js');
 
 @include('vendor.notifications.init_firebase')
 
