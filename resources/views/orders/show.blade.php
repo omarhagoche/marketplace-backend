@@ -58,6 +58,10 @@
               <th class="text-right">{{trans('lang.order_tax')}} ({!!$order->tax!!}%) </th>
               <td>{!! getPrice($taxAmount)!!}</td>
             </tr>
+            <tr>
+              <th class="text-right">{{trans('lang.coupon_value')}}</th>
+              <td>{!! getPrice($order['coupon_value'])!!}</td>
+            </tr>
 
             <tr>
               <th class="text-right">{{trans('lang.order_total')}}</th>

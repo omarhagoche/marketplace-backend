@@ -730,6 +730,7 @@ return [
     'order_status_updated_at' => 'Updated At',
     'order_subtotal' => 'Subtotal',
     'order_table' => 'Orders List',
+    "coupon_value" => "Coupon",
     'order_tax' => 'Tax',
     'order_tax_help' => 'Insert Tax',
     'order_tax_placeholder' => 'Insert Tax',

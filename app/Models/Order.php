@@ -24,8 +24,9 @@ use App\Events\UpdatedOrderEvent;
  * @property \App\Models\FoodOrder[] foodOrders
  * @property integer user_id
  * @property integer order_status_id
- * @property integer payment_id
+ * @property integer coupon_id
  * @property double tax
+ * @property double coupon_value
  * @property double delivery_fee
  * @property double restaurant_delivery_fee
  * @property string id
@@ -44,8 +45,9 @@ class Order extends Model
         'unregistered_customer_id',
         'order_status_id',
         'tax',
+        'coupon_value',
         'hint',
-        'payment_id',
+        'coupon_id',
         'delivery_address_id',
         'delivery_fee',
         'restaurant_delivery_fee',
@@ -63,9 +65,10 @@ class Order extends Model
         'unregistered_customer_id' => 'integer',
         'order_status_id' => 'integer',
         'tax' => 'double',
+        'coupon_value' => 'double',
         'hint' => 'string',
         'status' => 'string',
-        'payment_id' => 'integer',
+        'coupon_id' => 'integer',
         'delivery_address_id' => 'integer',
         'delivery_fee' => 'double',
         'restaurant_delivery_fee' => 'double',
@@ -82,7 +85,7 @@ class Order extends Model
         'user_id' => 'nullable|exists:users,id',
         'unregistered_customer' => 'required_without:user_id',
         'order_status_id' => 'required|exists:order_statuses,id',
-        'payment_id' => 'exists:payments,id',
+        'coupon_id' => 'exists:coupons,id',
         'driver_id' => 'nullable|exists:users,id',
     ];
 
@@ -213,6 +216,14 @@ class Order extends Model
     public function payment()
     {
         return $this->belongsTo(\App\Models\Payment::class, 'payment_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function coupon()
+    {
+        return $this->belongsTo(\App\Models\Coupon::class, 'coupon_id', 'id');
     }
 
     /**
