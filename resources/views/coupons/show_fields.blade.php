@@ -78,6 +78,14 @@
   </div>
 </div>
 
+<!-- On delivery fee Field -->
+<div class="form-group row col-6">
+  {!! Form::label('on_delivery_fee', 'On delivery fee:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! $coupon->on_delivery_fee !!}</p>
+  </div>
+</div>
+
 <!-- Created At Field -->
 <div class="form-group row col-6">
   {!! Form::label('created_at', 'Created At:', ['class' => 'col-3 control-label text-right']) !!}

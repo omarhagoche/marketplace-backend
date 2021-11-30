@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Coupon findWithoutFail($id, $columns = ['*'])
  * @method Coupon find($id, $columns = ['*'])
  * @method Coupon first($columns = ['*'])
-*/
+ */
 class CouponRepository extends BaseRepository
 {
     /**
@@ -28,7 +28,8 @@ class CouponRepository extends BaseRepository
         'restaurant_id',
         'category_id',
         'expires_at',
-        'enabled'
+        'enabled',
+        'on_delivery_fee'
     ];
 
     /**

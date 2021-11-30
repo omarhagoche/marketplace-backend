@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: Coupon.php
  * Last modified: 2020.08.23 at 19:56:12
@@ -21,12 +22,13 @@ use Eloquent as Model;
  * @property string description
  * @property dateTime expires_at
  * @property boolean enabled
+ * @property boolean on_delivery_fee
  */
 class Coupon extends Model
 {
 
     public $table = 'coupons';
-    
+
 
 
     public $fillable = [
@@ -35,7 +37,8 @@ class Coupon extends Model
         'discount_type',
         'description',
         'expires_at',
-        'enabled'
+        'enabled',
+        'on_delivery_fee',
     ];
 
     /**
@@ -49,7 +52,8 @@ class Coupon extends Model
         'discount_type' => 'string',
         'description' => 'string',
         'expires_at' => 'datetime',
-        'enabled' => 'boolean'
+        'enabled' => 'boolean',
+        'on_delivery_fee' => 'boolean'
     ];
 
     /**
@@ -71,7 +75,7 @@ class Coupon extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+
     ];
 
     public function customFieldsValues()
@@ -81,21 +85,20 @@ class Coupon extends Model
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
 
     public function discountables()
     {
         return $this->hasMany(\App\Models\Discountable::class, 'coupon_id');
     }
-    
 }

@@ -1082,6 +1082,7 @@ return [
     'coupon_expires_at_help' => 'Insert Expires At',
     'coupon_expires_at_placeholder' => 'Insert Expires At',
     'coupon_enabled' => 'Enabled',
+    'coupon_on_delivery_fee' => 'On delivery fee',
     'coupon_updated_at' => 'Updated At',
     'coupon_restaurant_id' => 'Restaurants',
     'coupon_restaurant_id_help' => 'The coupon will applied on selected restaurants',

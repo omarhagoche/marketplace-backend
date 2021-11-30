@@ -6,14 +6,14 @@
 <div class="form-group row ">
   {!! Form::label('code', trans("lang.coupon_code"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    @if(isset($coupon['code']))
+    {{-- @if(isset($coupon['code']))
       <p>{!! $coupon->code !!}</p>
-    @else
+    @else --}}
       {!! Form::text('code', null,  ['class' => 'form-control','placeholder'=>  trans("lang.coupon_code_placeholder")]) !!}
       <div class="form-text text-muted">
         {{ trans("lang.coupon_code_help") }}
       </div>
-      @endif
+      {{-- @endif --}}
   </div>
 </div>
 
@@ -89,6 +89,16 @@
     <div class="form-text text-muted">
       {{ trans("lang.coupon_expires_at_help") }}
     </div>
+  </div>
+</div>
+
+<!-- 'Boolean On delivery_fee Field' -->
+<div class="form-group row">
+  {!! Form::label('on_delivery_fee', trans("lang.coupon_on_delivery_fee"),['class' => 'col-3 control-label text-right']) !!}
+  {!! Form::hidden('on_delivery_fee', 0, ['id'=>"hidden_on_delivery_fee"]) !!}
+  <div class="col-9 icheck-{{setting('theme_color')}}">
+      {!! Form::checkbox('on_delivery_fee', 1, null) !!}
+      <label for="on_delivery_fee"></label>
   </div>
 </div>
 
