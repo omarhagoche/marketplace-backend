@@ -75,8 +75,23 @@ class Coupon extends Model
      */
     protected $appends = [
         'custom_fields',
-
+        'restaurant_id'
     ];
+
+
+    /**
+     * get Restaurant id attribute
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function getRestaurantIdAttribute()
+    {
+        $r = $this->discountables->where("discountable_type", Restaurant::class)->first();
+        if ($r) {
+            return $r->discountable_id;
+        }
+        return null;
+    }
+
 
     public function customFieldsValues()
     {
