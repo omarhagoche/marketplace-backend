@@ -24,9 +24,11 @@ use App\Events\UpdatedOrderEvent;
  * @property \App\Models\FoodOrder[] foodOrders
  * @property integer user_id
  * @property integer order_status_id
- * @property integer coupon_id
+ * @property integer delivery_coupon_id
+ * @property integer restaurant_coupon_id
  * @property double tax
- * @property double coupon_value
+ * @property double delivery_coupon_value
+ * @property double restaurant_coupon_value
  * @property double delivery_fee
  * @property double restaurant_delivery_fee
  * @property string id
@@ -45,9 +47,11 @@ class Order extends Model
         'unregistered_customer_id',
         'order_status_id',
         'tax',
-        'coupon_value',
+        'delivery_coupon_value',
+        'restaurant_coupon_value',
         'hint',
-        'coupon_id',
+        'delivery_coupon_id',
+        'restaurant_coupon_id',
         'delivery_address_id',
         'delivery_fee',
         'restaurant_delivery_fee',
@@ -65,10 +69,12 @@ class Order extends Model
         'unregistered_customer_id' => 'integer',
         'order_status_id' => 'integer',
         'tax' => 'double',
-        'coupon_value' => 'double',
+        'delivery_coupon_value' => 'double',
+        'restaurant_coupon_value' => 'double',
         'hint' => 'string',
         'status' => 'string',
-        'coupon_id' => 'integer',
+        'delivery_coupon_id' => 'integer',
+        'restaurant_coupon_id' => 'integer',
         'delivery_address_id' => 'integer',
         'delivery_fee' => 'double',
         'restaurant_delivery_fee' => 'double',
@@ -85,7 +91,8 @@ class Order extends Model
         'user_id' => 'nullable|exists:users,id',
         'unregistered_customer' => 'required_without:user_id',
         'order_status_id' => 'required|exists:order_statuses,id',
-        'coupon_id' => 'exists:coupons,id',
+        'delivery_coupon_id' => 'exists:coupons,id',
+        'restaurant_coupon_id' => 'exists:coupons,id',
         'driver_id' => 'nullable|exists:users,id',
     ];
 
@@ -221,9 +228,17 @@ class Order extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function coupon()
+    public function deliveryCoupon()
     {
-        return $this->belongsTo(\App\Models\Coupon::class, 'coupon_id', 'id');
+        return $this->belongsTo(\App\Models\Coupon::class, 'delivery_coupon_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function restaurantCoupon()
+    {
+        return $this->belongsTo(\App\Models\Coupon::class, 'restaurant_coupon_id', 'id');
     }
 
     /**

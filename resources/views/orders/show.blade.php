@@ -59,8 +59,12 @@
               <td>{!! getPrice($taxAmount)!!}</td>
             </tr>
             <tr>
-              <th class="text-right">{{trans('lang.coupon_value')}}</th>
-              <td>{!! getPrice($order['coupon_value'])!!}</td>
+              <th class="text-right">{{trans('lang.delivery_coupon_value')}}</th>
+              <td>{!! getPrice($order['delivery_coupon_value'])!!}</td>
+            </tr>
+            <tr>
+              <th class="text-right">{{trans('lang.restaurant_coupon_value')}}</th>
+              <td>{!! getPrice($order['restaurant_coupon_value'])!!}</td>
             </tr>
 
             <tr>

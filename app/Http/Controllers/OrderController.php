@@ -152,7 +152,7 @@ class OrderController extends Controller
 
         $total = $subtotal + $order['delivery_fee'];
         $taxAmount = $total * $order['tax'] / 100;
-        $total += $taxAmount - $order->coupon_value;
+        $total += $taxAmount - $order->delivery_coupon_value - $order->restaurant_coupon_value;
         $foodOrderDataTable->id = $id;
 
         return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
