@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use App\Repositories\CouponRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Restaurant;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
@@ -38,14 +39,21 @@ class CouponAPIController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $this->couponRepository->pushCriteria(new RequestCriteria($request));
             $this->couponRepository->pushCriteria(new LimitOffsetCriteria($request));
             $this->couponRepository->pushCriteria(new ValidCriteria());
+            if ($request->get('restaurant_id')) {
+                $this->couponRepository->scopeQuery(function ($query) use ($request) {
+                    return  $query->whereHas('discountables', function ($q) use ($request) {
+                        $q->where("discountable_type", Restaurant::class)->where('discountable_id', $request->get('restaurant_id'));
+                    });
+                });
+            }
+            $coupons = $this->couponRepository->all();
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
-        $coupons = $this->couponRepository->all();
 
         return $this->sendResponse($coupons->toArray(), 'Coupons retrieved successfully');
     }
