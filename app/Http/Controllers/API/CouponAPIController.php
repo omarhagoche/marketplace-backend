@@ -45,7 +45,7 @@ class CouponAPIController extends Controller
             $this->couponRepository->pushCriteria(new ValidCriteria());
             if ($request->get('restaurant_id')) {
                 $this->couponRepository->scopeQuery(function ($query) use ($request) {
-                    return  $query->whereHas('discountables', function ($q) use ($request) {
+                    return  $query->where('on_delivery_fee', true)->orWhereHas('discountables', function ($q) use ($request) {
                         $q->where("discountable_type", Restaurant::class)->where('discountable_id', $request->get('restaurant_id'));
                     });
                 });
