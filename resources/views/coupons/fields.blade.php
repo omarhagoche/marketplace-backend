@@ -102,6 +102,17 @@
   </div>
 </div>
 
+
+<!-- 'Boolean Cost on restaurant Field' -->
+<div class="form-group row">
+  {!! Form::label('cost_on_restaurant', trans("lang.coupon_cost_on_restaurant"),['class' => 'col-3 control-label text-right']) !!}
+  {!! Form::hidden('cost_on_restaurant', 0, ['id'=>"hidden_cost_on_restaurant"]) !!}
+  <div class="col-9 icheck-{{setting('theme_color')}}">
+      {!! Form::checkbox('cost_on_restaurant', 1, null) !!}
+      <label for="cost_on_restaurant"></label>
+  </div>
+</div>
+
 <!-- 'Boolean Enabled Field' -->
 <div class="form-group row">
   {!! Form::label('enabled', trans("lang.coupon_enabled"),['class' => 'col-3 control-label text-right']) !!}

@@ -39,8 +39,11 @@ class CouponDataTable extends DataTable
             ->editColumn('on_delivery_fee', function ($coupon) {
                 return getBooleanColumn($coupon, 'on_delivery_fee');
             })
+            ->editColumn('cost_on_restaurant', function ($coupon) {
+                return getBooleanColumn($coupon, 'cost_on_restaurant');
+            })
             ->editColumn('discount', function ($coupon) {
-                if($coupon['discount_type'] == 'percent'){
+                if ($coupon['discount_type'] == 'percent') {
                     return $coupon['discount'] . "%";
                 }
                 return getPriceColumn($coupon, 'discount');
@@ -90,6 +93,11 @@ class CouponDataTable extends DataTable
 
             ],
             [
+                'data' => 'cost_on_restaurant',
+                'title' => trans('lang.coupon_cost_on_restaurant'),
+
+            ],
+            [
                 'data' => 'updated_at',
                 'title' => trans('lang.coupon_updated_at'),
                 'searchable' => false,
@@ -121,24 +129,23 @@ class CouponDataTable extends DataTable
     {
         if (auth()->user()->hasRole('admin')) {
             return $model->newQuery();
-        }elseif (auth()->user()->hasRole('manager')){
+        } elseif (auth()->user()->hasRole('manager')) {
             $restaurants = $model->join("discountables", "discountables.coupon_id", "=", "coupons.id")
                 ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "discountables.discountable_id")
-                ->where('discountable_type','App\\Models\\Restaurant')
-                ->where("user_restaurants.user_id",auth()->id())->select("coupons.*");
+                ->where('discountable_type', 'App\\Models\\Restaurant')
+                ->where("user_restaurants.user_id", auth()->id())->select("coupons.*");
 
             $foods = $model->join("discountables", "discountables.coupon_id", "=", "coupons.id")
                 ->join("foods", "foods.id", "=", "discountables.discountable_id")
-                ->where('discountable_type','App\\Models\\Food')
+                ->where('discountable_type', 'App\\Models\\Food')
                 ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
-                ->where("user_restaurants.user_id",auth()->id())
+                ->where("user_restaurants.user_id", auth()->id())
                 ->select("coupons.*")
                 ->union($restaurants);
             return $foods;
-        }else{
+        } else {
             $model->newQuery();
         }
-
     }
 
     /**
@@ -151,13 +158,17 @@ class CouponDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
+            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
+                config('datatables-buttons.parameters'),
+                [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ), true),
-                    'order' => [ [5, 'desc'] ],
+                        file_get_contents(
+                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ),
+                        true
+                    ),
+                    'order' => [[5, 'desc']],
                 ]
             ));
     }

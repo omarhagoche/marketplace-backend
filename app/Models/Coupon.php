@@ -23,6 +23,7 @@ use Eloquent as Model;
  * @property dateTime expires_at
  * @property boolean enabled
  * @property boolean on_delivery_fee
+ * @property boolean cost_on_restaurant
  */
 class Coupon extends Model
 {
@@ -39,6 +40,7 @@ class Coupon extends Model
         'expires_at',
         'enabled',
         'on_delivery_fee',
+        'cost_on_restaurant',
     ];
 
     /**
@@ -53,7 +55,8 @@ class Coupon extends Model
         'description' => 'string',
         'expires_at' => 'datetime',
         'enabled' => 'boolean',
-        'on_delivery_fee' => 'boolean'
+        'on_delivery_fee' => 'boolean',
+        'cost_on_restaurant' => 'boolean'
     ];
 
     /**
