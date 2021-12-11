@@ -33,6 +33,7 @@ use App\Events\UpdatedOrderEvent;
  * @property double restaurant_delivery_fee
  * @property string id
  * @property int delivery_address_id
+ * @property int restaurant_id
  * @property string hint
  */
 class Order extends Model
@@ -53,6 +54,7 @@ class Order extends Model
         'delivery_coupon_id',
         'restaurant_coupon_id',
         'delivery_address_id',
+        'restaurant_id',
         'delivery_fee',
         'restaurant_delivery_fee',
         'active',
@@ -76,6 +78,7 @@ class Order extends Model
         'delivery_coupon_id' => 'integer',
         'restaurant_coupon_id' => 'integer',
         'delivery_address_id' => 'integer',
+        'restaurant_id' => 'integer',
         'delivery_fee' => 'double',
         'restaurant_delivery_fee' => 'double',
         'active' => 'boolean',
@@ -184,6 +187,15 @@ class Order extends Model
     //    }
     //    return null;
     //}
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function restaurant()
+    {
+        return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
