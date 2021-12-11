@@ -94,7 +94,8 @@ class SettlementManagerDataTable extends DataTable
 
             ],
             [
-                'data' => 'amount',
+                //'data' => 'amount',
+                'data' => 'total',
                 'title' => trans('lang.settlement_manager_amount'),
 
             ],

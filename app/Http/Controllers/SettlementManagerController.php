@@ -93,6 +93,12 @@ class SettlementManagerController extends Controller
             $input = array_merge($input, [
                 'count' => $orders->count,
                 'amount' => $orders->amount,
+                'delivery_coupons_amount' => $orders->delivery_coupons->amount,
+                'delivery_coupons_count' => $orders->delivery_coupons->count,
+                'restaurant_coupons_amount' => $orders->restaurant_coupons->amount,
+                'restaurant_coupons_count' => $orders->restaurant_coupons->count,
+                'restaurant_coupons_on_company_amount' => $orders->restaurant_coupons_on_company->amount,
+                'restaurant_coupons_on_company_count' => $orders->restaurant_coupons_on_company->count,
                 'fee' => $orders->admin_commission,
                 'creator_id' => auth()->user()->id
             ]);
@@ -259,6 +265,12 @@ class SettlementManagerController extends Controller
                 $input = array_merge($input, [
                     'count' => $orders->count,
                     'amount' => $orders->amount,
+                    'delivery_coupons_amount' => $orders->delivery_coupons->amount,
+                    'delivery_coupons_count' => $orders->delivery_coupons->count,
+                    'restaurant_coupons_amount' => $orders->restaurant_coupons->amount,
+                    'restaurant_coupons_count' => $orders->restaurant_coupons->count,
+                    'restaurant_coupons_on_company_amount' => $orders->restaurant_coupons_on_company->amount,
+                    'restaurant_coupons_on_company_count' => $orders->restaurant_coupons_on_company->count,
                     'fee' => $orders->admin_commission,
                     'creator_id' => auth()->user()->id
                 ]);
@@ -353,25 +365,64 @@ class SettlementManagerController extends Controller
 
     private function calculateOrders($restaurant_id)
     {
-        $orders = FoodOrder::join('foods', 'foods.id', 'food_orders.food_id')
-            ->join('orders', 'orders.id', 'food_orders.order_id')
+        $orders = FoodOrder::join('orders', 'orders.id', 'food_orders.order_id')
             ->select(
                 DB::raw("IFNULL(SUM(food_orders.quantity * food_orders.price),0) amount"),
                 DB::raw('IFNULL(COUNT(DISTINCT food_orders.order_id),0) count')
             )
-            ->where('foods.restaurant_id', $restaurant_id)
+            ->where('orders.restaurant_id', $restaurant_id)
             ->where('orders.order_status_id', 80) // Order Delivered
             ->whereNull('orders.settlement_manager_id')
             ->first();
-
 
         if ($orders->count == 0) {
             throw ValidationException::withMessages(["There is no available orders for settelment"]);
         }
 
+        $orders->restaurant_coupons = Order::join('coupons', 'coupons.id', 'orders.restaurant_coupon_id')
+            //->join('discountables', 'discountables.coupon_id', 'coupons.id')
+            ->select(
+                DB::raw('IFNULL(SUM(orders.restaurant_coupon_value),0) amount'),
+                DB::raw('IFNULL(COUNT(DISTINCT orders.id),0) count')
+            )
+            ->where('orders.restaurant_id', $restaurant_id)
+            ->where('orders.order_status_id', 80) // Order Delivered
+            ->whereNull('orders.settlement_manager_id')
+            ->where('coupons.cost_on_restaurant', true)
+            //->where('discountables.discountable_id', $restaurant_id)
+            //->where('discountables.discountable_type', Restaurant::class)
+            ->first();
+
+
+        $orders->restaurant_coupons_on_company = Order::join('coupons', 'coupons.id', 'orders.restaurant_coupon_id')
+            //->join('discountables', 'discountables.coupon_id', 'coupons.id')
+            ->select(
+                DB::raw('IFNULL(SUM(orders.restaurant_coupon_value),0) amount'),
+                DB::raw('IFNULL(COUNT(DISTINCT orders.id),0) count')
+            )
+            ->where('orders.restaurant_id', $restaurant_id)
+            ->where('orders.order_status_id', 80) // Order Delivered
+            ->whereNull('orders.settlement_manager_id')
+            ->where('coupons.cost_on_restaurant', false)
+            //->where('discountables.discountable_id', $restaurant_id)
+            //->where('discountables.discountable_type', Restaurant::class)
+            ->first();
+
+        $orders->delivery_coupons = Order::join('coupons', 'coupons.id', 'orders.delivery_coupon_id')
+            ->select(
+                DB::raw('IFNULL(SUM(orders.delivery_coupon_value),0) amount'),
+                DB::raw('IFNULL(COUNT(DISTINCT orders.id),0) count')
+            )
+            ->where('orders.restaurant_id', $restaurant_id)
+            ->where('orders.order_status_id', 80) // Order Delivered
+            ->whereNull('orders.settlement_manager_id')
+            ->where('coupons.cost_on_restaurant', true)
+            //->where('coupons.on_delivery_fee', true)
+            ->first();
+
         $orders->admin_commission =  Restaurant::select('admin_commission')->where('id', $restaurant_id)->first()->admin_commission;
 
-        $orders->amount  = ($orders->admin_commission / 100) *  $orders->amount; // calculate amount;
+        $orders->amount  = ($orders->admin_commission / 100) *  ($orders->amount - $orders->restaurant_coupons->amount); // calculate amount;
 
         return $orders;
     }

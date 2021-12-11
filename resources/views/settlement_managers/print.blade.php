@@ -49,6 +49,52 @@
     </table>
 
 
+    {{-- Start coupons summary --}}
+    <table class="table" style="margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #bbb;">
+                <th>عدد كوبونات التوصيل</th>
+                <th>عدد كوبونات الطلبيات</th>
+                <th>قيمة كوبونات التوصيل+</th>
+                <th>قيمة كوبونات الطلبيات</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>{{ $settlement->delivery_coupons_count }}</td>
+                <td>{{ $settlement->restaurant_coupons_count }}</td>
+                <td>{{ $settlement->delivery_coupons_amount }} <bdi>د.ل</bdi></td>
+                <td>{{ $settlement->restaurant_coupons_amount }} <bdi>د.ل</bdi></td>
+            </tr>
+
+        </tbody>
+    </table>
+    {{-- End coupons summary --}}
+
+
+    {{-- Start coupons summary --}}
+    <table class="table" style="margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #bbb;">
+                <th>عدد كوبونات الشركة</th>
+                <th>قيمة كوبونات الشركة-</th>
+                <th>إجمالي العمولة</th> 
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>{{ $settlement->restaurant_coupons_on_company_count }}</td>
+                <td>{{ $settlement->restaurant_coupons_on_company_amount }} <bdi>د.ل</bdi></td>
+                <td>{{ $settlement->amount }} <bdi>د.ل</bdi></td>
+            </tr>
+
+        </tbody>
+    </table>
+    {{-- End coupons summary --}}
+
+
     <table class="table" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: #bbb;">
@@ -64,7 +110,7 @@
             <tr>
                 <td>{{ $settlement->fee }}<bdi>%</bdi></td>
                 <td>{{ $settlement->count }}</td>
-                <td>{{ $settlement->amount }} <bdi>د.ل</bdi></td>
+                <td>{{ $settlement->total  }} <bdi>د.ل</bdi></td>
                 <td><bdi>{{ Auth::user()->name }}</bdi></td>
                 <td><bdi>{{ date('Y-m-d g:ia') }}</bdi></td>
             </tr>

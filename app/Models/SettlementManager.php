@@ -12,7 +12,13 @@ use Eloquent as Model;
  * @property integer creator_id
  * @property integer restaurant_id
  * @property integer count
+ * @property integer delivery_coupons_count
+ * @property integer restaurant_coupons_count
+ * @property integer restaurant_coupons_on_company_count
  * @property decimal amount
+ * @property decimal delivery_coupons_amount
+ * @property decimal restaurant_coupons_amount
+ * @property decimal restaurant_coupons_on_company_amount
  * @property decimal fee
  * @property string note
  */
@@ -27,7 +33,13 @@ class SettlementManager extends Model
         'creator_id',
         'restaurant_id',
         'count',
+        'delivery_coupons_count',
+        'restaurant_coupons_count',
+        'restaurant_coupons_on_company_count',
         'amount',
+        'delivery_coupons_amount',
+        'restaurant_coupons_amount',
+        'restaurant_coupons_on_company_amount',
         'fee',
         'note',
     ];
@@ -41,7 +53,13 @@ class SettlementManager extends Model
         'creator_id' => 'integer',
         'restaurant_id' => 'integer',
         'count' => 'integer',
+        'delivery_coupons_count' => 'integer',
+        'restaurant_coupons_count' => 'integer',
+        'restaurant_coupons_on_company_count' => 'integer',
         'amount' => 'float',
+        'delivery_coupons_amount' => 'float',
+        'restaurant_coupons_amount' => 'float',
+        'restaurant_coupons_on_company_amount' => 'float',
         'fee' => 'float',
         'note' => 'string'
     ];
@@ -63,7 +81,18 @@ class SettlementManager extends Model
      */
     protected $appends = [
         'custom_fields',
+        'total'
     ];
+
+
+    /**
+     * Total value that should company take from manger
+     */
+    public function getTotalAttribute()
+    {
+        return $this->amount + $this->delivery_coupons_amount -  $this->restaurant_coupons_on_company_amount;
+    }
+
 
     public function customFieldsValues()
     {
@@ -114,11 +143,14 @@ class SettlementManager extends Model
     public function loadOrders()
     {
         if ($this->relationLoaded('orders')) return;
-        $this->load('orders', 'orders.payment', 'orders.foodOrders');
+        $this->load('orders', 'orders.payment', 'orders.foodOrders', 'orders.restaurantCoupon');
         $this->orders->map(function ($o) {
             $o->amount =  $o->foodOrders->sum(function ($f) {
                 return $f->quantity * $f->price;
             });
+            if ($o->restaurantCoupon->cost_on_restaurant ?? false) {
+                $o->amount -= $o->restaurant_coupon_value;
+            }
             $o->fee = round(($this->fee / 100) * $o->amount, 3);
         });
     }

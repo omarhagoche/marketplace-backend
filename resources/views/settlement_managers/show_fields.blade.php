@@ -34,7 +34,8 @@
 <div class="form-group row col-6">
   {!! Form::label('amount', 'Amount:', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    <p>{!! $settlementManager->amount !!}</p>
+    {{-- <p>{!! $settlementManager->amount !!}</p> --}}
+    <p>{!! $settlementManager->total !!}</p>
   </div>
 </div>
 
