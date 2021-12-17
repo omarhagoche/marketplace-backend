@@ -1002,6 +1002,7 @@ return [
     'category_description' => 'Description',
     'category_description_help' => 'Insert Description',
     'category_description_placeholder' => 'Insert Description',
+    'category_for_restaurants' => 'For Restaurants',
     'category_image' => 'Image',
     'category_image_help' => 'Insert image in SVG format',
     'category_image_placeholder' => 'Insert image in SVG format',
