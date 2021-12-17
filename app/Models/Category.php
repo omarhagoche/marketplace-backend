@@ -51,7 +51,7 @@ class Category extends Model implements HasMedia
     protected $casts = [
         'name' => 'string',
         'description' => 'string',
-        'for_restaurants' => 'string',
+        'for_restaurants' => 'boolean',
         'image' => 'string'
     ];
 

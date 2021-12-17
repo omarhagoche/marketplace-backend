@@ -13,12 +13,21 @@
   
     {!! Form::label('Add by restaurant','Add by restaurant', ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-    @if($order->user_id)
-      <p><span class='badge badge-danger'>{{trans('lang.no')}}</span></p>
-    @else
-      <p><span class='badge badge-success'>{{trans('lang.yes')}}</span></p>
-    @endif
-  </div>
+      @if($order->user_id)
+        <p><span class='badge badge-danger'>{{trans('lang.no')}}</span></p>
+      @else
+        <p><span class='badge badge-success'>{{trans('lang.yes')}}</span></p>
+      @endif
+    </div>
+  
+    {!! Form::label('For restaurant','For restaurant', ['class' => 'col-4 control-label']) !!}
+    <div class="col-8">
+      @if($order->for_restaurants)
+        <p><span class='badge badge-success'>{{trans('lang.yes')}}</span></p>
+      @else
+        <p><span class='badge badge-danger'>{{trans('lang.no')}}</span></p>
+      @endif
+    </div>
 
     {!! Form::label('order_client_phone', trans('lang.order_client_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">

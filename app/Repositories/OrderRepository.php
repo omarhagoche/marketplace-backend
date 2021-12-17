@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Order findWithoutFail($id, $columns = ['*'])
  * @method Order find($id, $columns = ['*'])
  * @method Order first($columns = ['*'])
-*/
+ */
 class OrderRepository extends BaseRepository
 {
     /**
@@ -28,6 +28,7 @@ class OrderRepository extends BaseRepository
         'delivery_address_id',
         'active',
         'driver_id',
+        'for_restaurants',
     ];
 
     /**

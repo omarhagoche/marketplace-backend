@@ -35,6 +35,7 @@ use App\Events\UpdatedOrderEvent;
  * @property int delivery_address_id
  * @property int restaurant_id
  * @property string hint
+ * @property boolean for_restaurants
  */
 class Order extends Model
 {
@@ -51,6 +52,7 @@ class Order extends Model
         'delivery_coupon_value',
         'restaurant_coupon_value',
         'hint',
+        'for_restaurants',
         'delivery_coupon_id',
         'restaurant_coupon_id',
         'delivery_address_id',
@@ -74,6 +76,7 @@ class Order extends Model
         'delivery_coupon_value' => 'double',
         'restaurant_coupon_value' => 'double',
         'hint' => 'string',
+        'for_restaurants' => 'boolean',
         'status' => 'string',
         'delivery_coupon_id' => 'integer',
         'restaurant_coupon_id' => 'integer',

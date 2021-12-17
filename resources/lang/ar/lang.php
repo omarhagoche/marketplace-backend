@@ -1035,6 +1035,7 @@ return [
     'extra_group' => 'Extra Group',
     'order_pending' => 'Waiting for costumer',
     'order_active' => 'Active',
+    'order_for_restaurants' => 'For restaurants',
     'order_canceled' => 'Canceled',
     'food_unit' => 'Unit',
     'food_unit_placeholder' => 'g',
