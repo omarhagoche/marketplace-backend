@@ -255,7 +255,7 @@ class Restaurant extends Model implements HasMedia
      **/
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'user_restaurants');
+        return $this->belongsToMany(\App\Models\User::class, 'user_restaurants')->withPivot('enable_notifications');
     }
 
     /**
@@ -286,5 +286,16 @@ class Restaurant extends Model implements HasMedia
     public function discountables()
     {
         return $this->morphMany('App\Models\Discountable', 'discountable');
+    }
+
+    /**
+     * Get users who wants to receive notifications
+     */
+    public function getUsersWhoEnabledNotifications()
+    {
+        if (!$this->relationLoaded('users')) {
+            $this->load('users');
+        }
+        return $this->users->where('pivot.enable_notifications', 1);
     }
 }

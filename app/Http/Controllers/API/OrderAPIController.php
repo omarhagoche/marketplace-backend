@@ -296,7 +296,7 @@ class OrderAPIController extends Controller
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id ?? auth()->user()->id]);
 
             if ($order->user_id) {
-                Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+                Notification::send($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications(), new NewOrder($order));
             }
             $order->unregistered_customer_id =  $unregistered_customer->id ?? null;
             $order->delivery_address_id =  $delivery_address->id ?? $request->get('delivery_address_id');
