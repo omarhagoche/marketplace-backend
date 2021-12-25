@@ -353,4 +353,48 @@ class UserAPIController extends Controller
         }
     }
 
+
+    /**
+     * Update user linked to restaurant.
+     *
+     * @param array $data
+     * @return
+     */
+    function updateUser($id, Request $request)
+    {
+        $input = $this->validate($request, [
+            'name' => 'nullable|min:3|max:32',
+            'phone_number' => ['nullable', new PhoneNumber, 'unique:users,phone_number,' . $id],
+            //'email' => 'required|email|unique:users',
+            'password' => 'nullable|min:6|max:32',
+            'restaurant_id' => 'required|exists:user_restaurants,restaurant_id,user_id,' . auth()->user()->id,
+            'active' => 'nullable|boolean',
+            'enable_notifications' => 'nullable|boolean',
+        ]);
+
+        $user = $this->userRepository->findWithoutFail($id);
+        if (empty($user) || !$user->restaurants()->where('restaurant_id', $request->restaurant_id)->count()) {
+            return $this->sendResponse([
+                'error' => true,
+                'code' => 404,
+            ], 'User not found');
+        }
+
+        try {
+            DB::beginTransaction();
+            if ($request->has('enable_notifications')) {
+                $user->restaurants()->updateExistingPivot($request->restaurant_id, $request->only('enable_notifications'));
+            }
+            if (!empty($input['password'])) {
+                $input['password'] = Hash::make($request->input('password'));
+            }
+            $user->update($input);
+            $user->load('restaurants');
+            DB::commit();
+            return $this->sendResponse($user, 'User retrieved successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->sendError($e->getMessage(), 500);
+        }
+    }
 }
