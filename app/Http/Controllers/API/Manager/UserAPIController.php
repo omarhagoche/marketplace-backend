@@ -278,6 +278,34 @@ class UserAPIController extends Controller
     }
 
     /**
+     * Get users who linked to specific restaurant.
+     * GET|HEAD /users/get
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUsers(Request $request)
+    {
+        try {
+            $this->userRepository->pushCriteria(new RequestCriteria($request));
+            $this->userRepository->pushCriteria(new LimitOffsetCriteria($request));
+            $this->userRepository->scopeQuery(function ($query) use ($request) {
+                return  $query->whereHas('restaurants', function ($q) use ($request) {
+                    if ($request->restaurant_id) {
+                        $q->where('restaurant_id', $request->restaurant_id);
+                    }
+                    $q->whereIn("restaurant_id", auth()->user()->restaurants()->allRelatedIds());
+                });
+            });
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        $users = $this->userRepository->all();
+
+        return $this->sendResponse($users->toArray(), 'Users retrieved successfully');
+    }
+
+    /**
      * Create a new user linked to restaurant.
      *
      * @param array $data

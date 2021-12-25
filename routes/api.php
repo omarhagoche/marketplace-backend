@@ -104,6 +104,7 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['middleware' => ['role:manager']], function () {
         Route::prefix('manager')->group(function () {
             Route::get('profile', 'API\Manager\UserAPIController@profile');
+            Route::get('users/get', 'API\Manager\UserAPIController@getUsers');
             Route::post('users/add', 'API\Manager\UserAPIController@addUser');
             Route::post('users/{id}', 'API\UserAPIController@update');
             Route::get('unregistered-customer/{phone}', 'API\UnregisteredCustomerAPIController@show');
