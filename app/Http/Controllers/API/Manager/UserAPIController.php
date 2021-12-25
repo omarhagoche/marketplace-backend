@@ -27,6 +27,7 @@ use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Rules\PhoneNumber;
 use App\Models\VerficationCode;
+use Illuminate\Support\Facades\DB;
 
 class UserAPIController extends Controller
 {
@@ -275,4 +276,53 @@ class UserAPIController extends Controller
         $user->load('restaurants');
         return $this->sendResponse($user, 'User retrieved successfully');
     }
+
+    /**
+     * Create a new user linked to restaurant.
+     *
+     * @param array $data
+     * @return
+     */
+    function addUser(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|min:3|max:32',
+            'phone_number' => ['required', new PhoneNumber, 'unique:users'],
+            //'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|max:32',
+            'restaurant_id' => 'required|exists:user_restaurants,restaurant_id,user_id,' . auth()->user()->id,
+        ]);
+
+        //$restaurant = auth()->user()->restaurants()->where('id', $request->restaurant_id)->first();
+
+        //if (!$restaurant) {
+        //    return response()->json(["error" => "User not linked to any restauarnt"], 403);
+        //}
+
+        try {
+            DB::beginTransaction();
+            $user = User::create([
+                'name'  => $request->name,
+                'phone_number'  => $request->phone_number,
+                'email' => now(),
+                'password'  => Hash::make($request->input('password')),
+                'active' => true,
+                'activated_at' => now(),
+                'api_token'  => str_random(60),
+            ]);
+
+            $user->restaurants()->attach($request->restaurant_id, [
+                'enable_notifications' => $request->get('enable_notifications', 1)
+            ]);
+
+            $user->assignRole(['manager']);
+            event(new UserRoleChangedEvent($user));
+            DB::commit();
+            return $this->sendResponse($user, 'User retrieved successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->sendError($e->getMessage(), 500);
+        }
+    }
+
 }
