@@ -782,6 +782,7 @@ return [
     'radio' => 'Radio',
     'refresh' => 'Refresh',
     'reset' => 'Reset',
+    'update_drivers_data_in_firestore' => 'Update drivers in firestore',
     'restaurant' => 'Restaurant',
     'restaurant_address' => 'Address',
     'restaurant_address_help' => 'Insert Address',

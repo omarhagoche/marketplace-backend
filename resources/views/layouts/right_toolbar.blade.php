@@ -1,4 +1,9 @@
 <div class="ml-auto d-inline-flex">
+    @can('drivers.update_data_in_firestore')
+    <li class="nav-item">
+        <a class="nav-link pt-1" href="{{ route('drivers.update_data_in_firestore') }}"><i class="fa fa-upload"></i> {{trans('lang.update_drivers_data_in_firestore')}}</a>
+    </li>
+    @endcan
     <li class="nav-item dropdown">
         <a class="nav-link  dropdown-toggle pt-1" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-save"></i> {{trans('lang.export')}}
         </a>
