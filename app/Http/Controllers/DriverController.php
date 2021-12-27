@@ -7,6 +7,7 @@ use App\DataTables\DriverDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateDriverRequest;
 use App\Http\Requests\UpdateDriverRequest;
+use App\Models\Driver;
 use App\Repositories\DriverRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\UserRepository;
@@ -188,6 +189,62 @@ class DriverController extends Controller
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
+
+        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.driver')]));
+
+        return redirect(route('drivers.index'));
+    }
+
+
+    /**
+     * Update Data Drivers information in firestore.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function updateDataInFirestore(Request $request)
+    {
+        // bring drivers from firestore
+        $db_drivers = app('firebase.firestore')->getFirestore()->collection('drivers')->documents();
+        // save data in Associative Arrays to make it easy access to it, just by id
+        $firestore_drivers  = [];
+        foreach ($db_drivers as $doc) {
+            $firestore_drivers[$doc->id()] = $doc->data();
+        }
+        // end bring data from firestore
+
+        // bring drivers from database
+        $drivers = Driver::with('user:id,name,phone_number')->orderBy('user_id')->get();
+
+        // start batch upload data to firestore
+        $db = app('firebase.firestore')->getFirestore();
+        $batch = $db->batch();
+
+        foreach ($drivers as $d) {
+            $driver = $firestore_drivers[$d->user_id] ?? [];
+            if (!$driver) {
+                $driver = [
+                    'id' => $d->user_id,
+                    'latitude' => 0,
+                    'longitude' => 0,
+                    'last_access' => null,
+                ];
+            }
+
+            $driver['name'] = $d->user->name;
+            $driver['phone_number'] = $d->user->phone_number;
+            $driver['driver_type_id'] = $d->driver_type_id;
+            $driver['working_on_order'] = $d->working_on_order;
+            $driver['available'] = $d->available;
+
+            // set document in batch
+            $docRef = $db->collection("drivers")->document($driver['id']);
+            $batch->set($docRef, $driver);
+        }
+
+        $batch->commit(); // upload or commit batch
+        // end batch upload data to firestore
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.driver')]));
 
