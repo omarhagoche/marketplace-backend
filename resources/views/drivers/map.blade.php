@@ -193,7 +193,7 @@
     var db = firebase.firestore();
 
     function getDriversFromFirebaseAndSetThemOnMap(){
-        /* db.collection('drivers').get().then((querySnapshot) => {
+        db.collection('drivers').get().then((querySnapshot) => {
             db_drivers = [];
             querySnapshot.forEach((doc) => {
                 db_drivers.push(doc.data());
@@ -209,9 +209,9 @@
         }).catch(e => {
             console.log(e);
             alert(e.message);
-        }); */
+        });
         
-        const observer = db.collection('drivers').onSnapshot(snapshot => {
+        /* const observer = db.collection('drivers').onSnapshot(snapshot => {
             db_drivers = [];
             snapshot.forEach((doc) => {
                 db_drivers.push(doc.data());
@@ -227,13 +227,13 @@
         }, e => {
             console.log(e);
             alert(e.message);
-        })
+        }) */
     }
 
     getDriversFromFirebaseAndSetThemOnMap();
-    /* setInterval(() => {
+    setInterval(() => {
         getDriversFromFirebaseAndSetThemOnMap()
-    }, 4000); */
+    }, 10000);
 
 </script>
 
