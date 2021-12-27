@@ -152,7 +152,11 @@
             "click",
             (function(marker, index) {
             return function() {
-                infowindow.setContent(db_drivers[index].id);
+                infowindow.setContent(`
+                    ${db_drivers[index].id}
+                    <div>${db_drivers[index].name}</div>
+                    <h6>${db_drivers[index].phone_number}</h6>
+                `);
                 infowindow.open(map, marker);
             };
             })(marker, index)
