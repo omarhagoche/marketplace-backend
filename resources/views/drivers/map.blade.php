@@ -111,6 +111,7 @@
 @section('extra-js')
 
 <script src="https://maps.google.com/maps/api/js?key={{ setting('google_maps_key',"AIzaSyAT07iMlfZ9bJt1gmGj9KhJDLFY8srI6dA") }}" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 
@@ -156,6 +157,9 @@
                     ${db_drivers[index].id}
                     <div>${db_drivers[index].name}</div>
                     <h6>${db_drivers[index].phone_number}</h6>
+                    <div>Last access</div>
+                    <h6>${moment(db_drivers[index].last_access).format()}</h6>
+                    <h6>${moment(db_drivers[index].last_access).fromNow()}</h6>
                 `);
                 infowindow.open(map, marker);
             };
