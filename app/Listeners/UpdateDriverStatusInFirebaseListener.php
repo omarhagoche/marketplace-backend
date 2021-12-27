@@ -47,6 +47,8 @@ class UpdateDriverStatusInFirebaseListener
             ];
         }
 
+        $data['name'] = $this->driver->user->name;
+        $data['phone_number'] = $this->driver->user->phone_number;
         $data['driver_type_id'] = $this->driver->driver_type_id;
         $data['working_on_order'] = $this->driver->working_on_order;
         $data['available'] = $this->driver->available;
