@@ -64,18 +64,20 @@
                     </div>
                 </div>
 
-                <h5 class="col-12 pb-4 custom-field-container"><i class="mr-3 fa fa-mobile-phone"></i>{!! trans('lang.app_setting_version') !!}</h5>
+                <h5 class="col-12 pb-4 custom-field-container"><i class="mr-3 fa fa-mobile-phone"></i>{!! trans('lang.app_setting_version_android') !!}</h5>
 
                 <!-- app_version Field -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_version', trans('lang.app_setting_app_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    {{-- {!! Form::label('app_version', trans('lang.app_setting_app_version'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
                         {!! Form::text('app_version', setting('app_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_app_version_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_app_version_help') !!}
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
+
+
                 <!-- 'Boolean enable_facebook Field' -->
                 <div class="form-group row col-6">
                     {!! Form::label('enable_version', trans('lang.app_setting_enable_version'),['class' => 'col-4 control-label text-right']) !!}
@@ -86,65 +88,132 @@
                         </label>
                     </div>
                 </div>
-                <!-- app_driver_version Field -->
+                <!-- app_driver_version_android Field -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_driver_version', trans('lang.app_driver_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    {!! Form::label('app_driver_version_android', trans('lang.app_driver_version_android'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('app_driver_version', setting('app_driver_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_driver_version_placeholder')]) !!}
+                        {!! Form::text('app_driver_version_android', setting('app_driver_version_android',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_driver_version_placeholder_android')]) !!}
                         <div class="form-text text-muted">
-                            {!! trans('lang.app_driver_version_help') !!}
+                            {!! trans('lang.app_driver_version_help_android') !!}
                         </div>
                     </div>
                 </div>
-                <!-- 'Boolean app_driver_force_update Field' -->
+                <!-- 'Boolean app_driver_force_update_android Field' -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_driver_force_update', trans('lang.app_driver_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    {!! Form::label('app_driver_force_update_android', trans('lang.app_driver_force_update_android'),['class' => 'col-6 control-label text-right']) !!}
                     <div class="checkbox icheck">
                         <label class="w-100 ml-2 form-check-inline">
-                            {!! Form::hidden('app_driver_force_update', null) !!}
-                            {!! Form::checkbox('app_driver_force_update', 1, setting('app_driver_force_update', true)) !!}
+                            {!! Form::hidden('app_driver_force_update_android', null) !!}
+                            {!! Form::checkbox('app_driver_force_update_android', 1, setting('app_driver_force_update_android', true)) !!}
                         </label>
                     </div>
                 </div>
                 
-                <!-- app_manager_version Field -->
+                <!-- app_manager_version_android Field -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_manager_version', trans('lang.app_manager_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    {!! Form::label('app_manager_version_android', trans('lang.app_manager_version_android'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('app_manager_version', setting('app_manager_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_manager_version_placeholder')]) !!}
+                        {!! Form::text('app_manager_version_android', setting('app_manager_version_android',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_manager_version_placeholder_android')]) !!}
                         <div class="form-text text-muted">
-                            {!! trans('lang.app_manager_version_help') !!}
+                            {!! trans('lang.app_manager_version_help_android') !!}
                         </div>
                     </div>
                 </div>
-                <!-- 'Boolean app_manager_force_update Field' -->
+                <!-- 'Boolean app_manager_force_update_android Field' -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_manager_force_update', trans('lang.app_manager_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    {!! Form::label('app_manager_force_update_android', trans('lang.app_manager_force_update_android'),['class' => 'col-6 control-label text-right']) !!}
                     <div class="checkbox icheck">
                         <label class="w-100 ml-2 form-check-inline">
-                            {!! Form::hidden('app_manager_force_update', null) !!}
-                            {!! Form::checkbox('app_manager_force_update', 1, setting('app_manager_force_update', true)) !!}
+                            {!! Form::hidden('app_manager_force_update_android', null) !!}
+                            {!! Form::checkbox('app_manager_force_update_android', 1, setting('app_manager_force_update_android', true)) !!}
                         </label>
                     </div>
                 </div>
                 
-                <!-- app_customer_version Field -->
+                <!-- app_customer_version_android Field -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_customer_version', trans('lang.app_customer_version'), ['class' => 'col-4 control-label text-right']) !!}
+                    {!! Form::label('app_customer_version_android', trans('lang.app_customer_version_android'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('app_customer_version', setting('app_customer_version',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_customer_version_placeholder')]) !!}
+                        {!! Form::text('app_customer_version_android', setting('app_customer_version_android',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_customer_version_placeholder_android')]) !!}
                         <div class="form-text text-muted">
-                            {!! trans('lang.app_customer_version_help') !!}
+                            {!! trans('lang.app_customer_version_help_android') !!}
                         </div>
                     </div>
                 </div>
-                <!-- 'Boolean app_customer_force_update Field' -->
+                <!-- 'Boolean app_customer_force_update_android Field' -->
                 <div class="form-group row col-6">
-                    {!! Form::label('app_customer_force_update', trans('lang.app_customer_force_update'),['class' => 'col-6 control-label text-right']) !!}
+                    {!! Form::label('app_customer_force_update_android', trans('lang.app_customer_force_update_android'),['class' => 'col-6 control-label text-right']) !!}
                     <div class="checkbox icheck">
                         <label class="w-100 ml-2 form-check-inline">
-                            {!! Form::hidden('app_customer_force_update', null) !!}
-                            {!! Form::checkbox('app_customer_force_update', 1, setting('app_customer_force_update', true)) !!}
+                            {!! Form::hidden('app_customer_force_update_android', null) !!}
+                            {!! Form::checkbox('app_customer_force_update_android', 1, setting('app_customer_force_update_android', true)) !!}
+                        </label>
+                    </div>
+                </div>
+
+                
+                <h5 class="col-12 pb-4 custom-field-container"><i class="mr-3 fa fa-mobile-phone"></i>{!! trans('lang.app_setting_version_ios') !!}</h5>
+
+                
+                <!-- app_driver_version_ios Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_driver_version_ios', trans('lang.app_driver_version_ios'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_driver_version_ios', setting('app_driver_version_ios',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_driver_version_placeholder_ios')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_driver_version_help_ios') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_driver_force_update_ios Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_driver_force_update_ios', trans('lang.app_driver_force_update_ios'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_driver_force_update_ios', null) !!}
+                            {!! Form::checkbox('app_driver_force_update_ios', 1, setting('app_driver_force_update_ios', true)) !!}
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- app_manager_version_ios Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_manager_version_ios', trans('lang.app_manager_version_ios'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_manager_version_ios', setting('app_manager_version_ios',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_manager_version_placeholder_ios')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_manager_version_help_ios') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_manager_force_update_ios Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_manager_force_update_ios', trans('lang.app_manager_force_update_ios'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_manager_force_update_ios', null) !!}
+                            {!! Form::checkbox('app_manager_force_update_ios', 1, setting('app_manager_force_update_ios', true)) !!}
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- app_customer_version_ios Field -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_customer_version_ios', trans('lang.app_customer_version_ios'), ['class' => 'col-4 control-label text-right']) !!}
+                    <div class="col-8">
+                        {!! Form::text('app_customer_version_ios', setting('app_customer_version_ios',"1.0.0"),  ['class' => 'form-control','placeholder'=>  trans('lang.app_customer_version_placeholder_ios')]) !!}
+                        <div class="form-text text-muted">
+                            {!! trans('lang.app_customer_version_help_ios') !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- 'Boolean app_customer_force_update_ios Field' -->
+                <div class="form-group row col-6">
+                    {!! Form::label('app_customer_force_update_ios', trans('lang.app_customer_force_update_ios'),['class' => 'col-6 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('app_customer_force_update_ios', null) !!}
+                            {!! Form::checkbox('app_customer_force_update_ios', 1, setting('app_customer_force_update_ios', true)) !!}
                         </label>
                     </div>
                 </div>
