@@ -330,6 +330,38 @@ class UserAPIController extends Controller
     }
 
 
+    /**
+     * Update password the specified User in storage.
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     */
+    public function updatePassword(Request $request, $id = null)
+    {
+        $this->validate($request, [
+            'password' => 'required|string|min:6|max:32',
+            'new_password' => 'required|string|min:6|max:32',
+        ]);
+
+        //$user = $this->userRepository->findWithoutFail($id);
+        $user = auth()->user();
+
+        if (empty($user)) {
+            return $this->sendResponse([
+                'error' => true,
+                'code' => 404,
+            ], 'User not found');
+        }
+        if (!Hash::check($request->password, $user->password)) {
+            return $this->sendError("كلمة المرور غير صحيحة", 403);
+        }
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
+    }
+
 
     /**
      * Update profile image of auth user

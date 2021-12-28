@@ -118,6 +118,7 @@ Route::middleware('auth:api')->group(function () {
             Route::apiResource('foods', 'API\Manager\FoodAPIController')->except(['destroy']);
         });
     });
+    Route::post('users/change_password/{id?}', 'API\UserAPIController@updatePassword');
     Route::post('users/{id}', 'API\UserAPIController@update');
 
     Route::resource('order_statuses', 'API\OrderStatusAPIController');
