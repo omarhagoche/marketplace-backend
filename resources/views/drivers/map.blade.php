@@ -185,7 +185,9 @@
         var marker, i;
 
         for (i = 0; i < data.length; i++) {  
-            addMarker(data[i].latitude, data[i].longitude,i);
+            if(data[i].available){ // skip show unavailable drivers on map
+                addMarker(data[i].latitude, data[i].longitude,i);
+            }
         }
     }
 
