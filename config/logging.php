@@ -101,6 +101,11 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/register_restaurants/laravel.log'),
         ],
+
+        'requests' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/requests/laravel.log'),
+        ],
     ],
 
 ];
