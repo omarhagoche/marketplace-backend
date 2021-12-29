@@ -197,9 +197,9 @@ class FoodAPIController extends Controller
             'weight' => "$nullable_on_update|string|min:3|max:64",
             'unit' => 'nullable|string|min:1|max:10',
             'image' => "$nullable_on_update|mimes:jpeg,png,jpg,gif,svg|max:25600",
-            'featured' => "$nullable_on_update|boolean",
-            'deliverable' => "$nullable_on_update|boolean",
-            'available' => "$nullable_on_update|boolean",
+            'featured' => "$nullable_on_update",
+            'deliverable' => "$nullable_on_update",
+            'available' => "$nullable_on_update",
             'category_id' => "$nullable_on_update|integer|exists:categories,id",
             'restaurant_id' => 'nullable|in_array:' . implode(',', $this->getRestaurantIds())
         ];
