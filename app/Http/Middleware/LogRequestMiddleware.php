@@ -27,7 +27,8 @@ class LogRequestMiddleware
                 'METHOD' => $request->getMethod(),
                 'RESPONSE_STATUS' => $response->status(),
                 'REQUEST_BODY' => $request->all(),
-                'RESPONSE' => $response->getContent()
+                'RESPONSE' => $response->getContent(),
+                "HEADER"  => $request->header(),
             ];
 
             Log::channel('requests')->info(json_encode($log));
