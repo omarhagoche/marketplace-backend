@@ -100,10 +100,10 @@ class RegisterRestaurantController extends Controller
             // restaurant data
             $restaurant = Restaurant::create(array_merge($data, [
                 'private_drivers' => false,
-                'delivery_price_type' => 'distance',
-                'admin_commission' => 10,
+                'delivery_price_type' => 'flexible',
+                'admin_commission' => 0,
                 'deliver_range' => 20,
-                'active' => true,
+                'active' => false,
             ]));
             $user = $restaurant->users()->create([
                 'name'  => $request->name, //$request->user_name,
