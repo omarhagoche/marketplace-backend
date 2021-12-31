@@ -91,7 +91,8 @@ class User extends Authenticatable implements HasMedia
      */
     protected $appends = [
         'custom_fields',
-        'has_media'
+        'has_media',
+        'enable_notifications',
     ];
 
     /**
@@ -177,6 +178,19 @@ class User extends Authenticatable implements HasMedia
     public function getHasMediaAttribute()
     {
         return $this->hasMedia('avatar') ? true : false;
+    }
+
+    /**
+     * Add enable_notifications to api results
+     * @return bool
+     */
+    public function getEnableNotificationsAttribute()
+    {
+        if ($this->relationLoaded('restaurants')) {
+            return $this->restaurants->first()->pivot->enable_notifications;
+        }
+
+        return null;
     }
 
     /**
