@@ -12,6 +12,7 @@ namespace App\Http\Controllers\API\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\SettlementManager;
 use App\Models\FoodOrder;
+use App\Models\Order;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use DB;
