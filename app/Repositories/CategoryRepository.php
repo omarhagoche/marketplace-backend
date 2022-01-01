@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Category findWithoutFail($id, $columns = ['*'])
  * @method Category find($id, $columns = ['*'])
  * @method Category first($columns = ['*'])
-*/
+ */
 class CategoryRepository extends BaseRepository
 {
     /**
@@ -21,7 +21,8 @@ class CategoryRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'name',
-        'description'
+        'description',
+        'for_restaurants'
     ];
 
     /**

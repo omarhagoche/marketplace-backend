@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: Category.php
  * Last modified: 2020.05.02 at 08:39:42
@@ -24,6 +25,7 @@ use Spatie\MediaLibrary\Models\Media;
  * @property \Illuminate\Database\Eloquent\Collection[] discountables
  * @property string name
  * @property string description
+ * @property boolean for_restaurants
  */
 class Category extends Model implements HasMedia
 {
@@ -32,12 +34,13 @@ class Category extends Model implements HasMedia
     }
 
     public $table = 'categories';
-    
+
 
 
     public $fillable = [
         'name',
-        'description'
+        'description',
+        'for_restaurants'
     ];
 
     /**
@@ -48,6 +51,7 @@ class Category extends Model implements HasMedia
     protected $casts = [
         'name' => 'string',
         'description' => 'string',
+        'for_restaurants' => 'boolean',
         'image' => 'string'
     ];
 
@@ -58,7 +62,8 @@ class Category extends Model implements HasMedia
      */
     public static $rules = [
         'name' => 'required',
-        'description' => 'required'
+        'description' => 'required',
+        'for_restaurants' => 'required'
     ];
 
     /**
@@ -69,7 +74,7 @@ class Category extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media'
-        
+
     ];
 
     /**
@@ -98,30 +103,30 @@ class Category extends Model implements HasMedia
      * @param string $conversion
      * @return string url
      */
-    public function getFirstMediaUrl($collectionName = 'default',$conversion = '')
+    public function getFirstMediaUrl($collectionName = 'default', $conversion = '')
     {
         $url = $this->getFirstMediaUrlTrait($collectionName);
         $array = explode('.', $url);
         $extension = strtolower(end($array));
-        if (in_array($extension,config('medialibrary.extensions_has_thumb'))) {
-            return asset($this->getFirstMediaUrlTrait($collectionName,$conversion));
-        }else{
-            return asset(config('medialibrary.icons_folder').'/'.$extension.'.png');
+        if (in_array($extension, config('medialibrary.extensions_has_thumb'))) {
+            return asset($this->getFirstMediaUrlTrait($collectionName, $conversion));
+        } else {
+            return asset(config('medialibrary.icons_folder') . '/' . $extension . '.png');
         }
     }
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
 
     /**
@@ -153,6 +158,4 @@ class Category extends Model implements HasMedia
     {
         return $this->morphMany('App\Models\Discountable', 'discountable');
     }
-
-
 }

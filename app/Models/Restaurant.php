@@ -46,6 +46,7 @@ use Spatie\MediaLibrary\Models\Media;
  * @property boolean closed
  * @property boolean active
  * @property boolean featured
+ * @property boolean is_restaurant
  */
 class Restaurant extends Model implements HasMedia
 {
@@ -76,6 +77,7 @@ class Restaurant extends Model implements HasMedia
         'active',
         'private_drivers',
         'featured',
+        'is_restaurant',
     ];
 
     /**
@@ -101,7 +103,8 @@ class Restaurant extends Model implements HasMedia
         'information' => 'string',
         'active' => 'boolean',
         'private_drivers' => 'boolean',
-        'featured' => 'boolean'
+        'featured' => 'boolean',
+        'is_restaurant' => 'boolean'
     ];
 
     /**

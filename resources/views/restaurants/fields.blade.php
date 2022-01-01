@@ -139,6 +139,18 @@
             </div>
         </div>
     </div>
+    
+    <!-- 'Boolean is_restaurant Field' -->
+    <div class="form-group row ">
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('is_restaurant', 0) !!}
+                {!! Form::checkbox('is_restaurant', 1, null) !!}
+            </label>
+        </div>
+    </div>
+
     <!-- 'Boolean closed Field' -->
     <div class="form-group row ">
         {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-3 control-label text-right']) !!}
