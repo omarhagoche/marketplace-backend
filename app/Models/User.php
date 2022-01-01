@@ -115,6 +115,17 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
+     * Specifies the user's Sms phone
+     *
+     * @return string
+     */
+    public function routeNotificationForSms($notification)
+    {
+        return $this->phone_number;
+    }
+
+
+    /**
      * @param Media|null $media
      * @throws \Spatie\Image\Exceptions\InvalidManipulation
      */

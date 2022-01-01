@@ -127,6 +127,8 @@ return [
     'app_setting_fixed_footer_help' => 'Fix Footer on bottom',
     'app_setting_fixed_header' => 'Fixed Header',
     'app_setting_fixed_header_help' => 'Fix Header on top',
+    'app_setting_send_sms_notifications_for_restaurants' => 'SMS notifications for restaurants',
+    'app_setting_send_sms_notifications_for_restaurants_help' => 'Send sms message for restaurants users when receive orders(order with status waitting_for_restaurants)',
     'app_setting_fr' => 'French',
     'app_setting_global' => 'Global Settings',
     'app_setting_globals' => 'Global Settings',

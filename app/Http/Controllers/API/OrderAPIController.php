@@ -33,6 +33,7 @@ use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
 use App\Events\CreatedOrderEvent;
+use App\Notifications\OrderNeedsToAccept;
 use App\Services\AddOrderToFirebaseService;
 use Illuminate\Support\Facades\DB;
 
@@ -373,6 +374,9 @@ class OrderAPIController extends Controller
 
         if ($order->user_id) {
             $order->order_status_id = 20; // 20 : waiting_for_restaurant
+            if (setting('send_sms_notifications_for_restaurants', false)) {
+                Notification::send($order->restaurant->getUsersWhoEnabledNotifications(), new OrderNeedsToAccept($order));
+            }
         } else {
             $order->order_status_id = 30; // 30 : accepted_from_restaurant
         }
