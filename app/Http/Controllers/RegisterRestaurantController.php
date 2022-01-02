@@ -42,6 +42,7 @@ class RegisterRestaurantController extends Controller
             // users data
             //'user_name' => 'required|min:3|max:100',
             'user_phone' => 'required|unique:users,phone_number',
+            'users.*.user_phone' => 'required|unique:users,phone_number',
 
             // restuarant data
             'name' => 'required|min:3|max:100',
@@ -105,21 +106,24 @@ class RegisterRestaurantController extends Controller
                 'deliver_range' => 20,
                 'active' => false,
             ]));
-            $user = $restaurant->users()->create([
-                'name'  => $request->name, //$request->user_name,
-                'phone_number'  => ltrim($request->user_phone, 0),
-                'email' => now(),
-                'password'  => Hash::make('123456'),
-                'active' => true,
-                'activated_at' => now(),
-                'api_token'  => str_random(60),
-            ]);
+            // add main users 
+            $user =  $this->addUserToRestaurant($restaurant, $request->name, $request->user_phone);
 
-            $user->assignRole(['manager']);
+            // start add mulit users (employees)
+            $users = [];
+            foreach ($request->users as $u) {
+                if (ltrim($u['user_phone'], 0) == $user->phone_number) {
+                    continue;
+                }
+                $item =   $this->addUserToRestaurant($restaurant, $u['user_name'] ?? $u['user_phone'], $u['user_phone']);
+                $users[$item->id] = $item->toArray();
+            }
+            // end add mulit users (employees)
 
             Log::channel('registerRestaurants')->info(json_encode([
                 'restaurant' => $restaurant->toArray(),
                 'user' => $user->toArray(),
+                'users' =>  $users,
                 'request' => $request->all(),
                 'ip' => $request->ip(),
                 'user_agent' => $request->server('HTTP_USER_AGENT')
@@ -132,5 +136,23 @@ class RegisterRestaurantController extends Controller
         }
 
         return redirect()->back();;
+    }
+
+
+
+    protected function addUserToRestaurant($restaurant, $name, $phone)
+    {
+        $user = $restaurant->users()->create([
+            'name'  => $name,
+            'phone_number'  => ltrim($phone, 0),
+            'email' => microtime(true),
+            'password'  => Hash::make('123456'),
+            'active' => true,
+            'activated_at' => now(),
+            'api_token'  => str_random(128),
+        ]);
+
+        $user->assignRole(['manager']);
+        return $user;
     }
 }

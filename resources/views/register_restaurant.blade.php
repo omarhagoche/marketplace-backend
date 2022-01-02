@@ -100,6 +100,14 @@
 
             <hr />
 
+            <h5>موظفين</h5>
+
+            <div id="listUsers">
+                {{-- list of users --}}
+            </div>
+
+            <hr />
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">أضيف بواسطة</label>
@@ -174,6 +182,64 @@
             alert("عذرا ، متصفحك لا يدعم خدمات تحديد الموقع الجغرافي");
         }
 
+
+        /* Start dynmaic list of users */
+
+        
+
+        function addItemToList(phone='',name = ''){
+            id = document.getElementById('listUsers').childElementCount + 1;
+            document.getElementById('listUsers').insertAdjacentHTML('beforeend',`
+                <div class="row">
+                    <div class="col-md mb-3">
+                        <label class="form-label">رقم تليفون المستخدم</label>
+                        <input type="text" data-phone class="form-control" name="users[${id}][user_phone]" value="${phone}"
+                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$" required maxlength="10">
+                        <div class="invalid-feedback">يجب أن يكون رقم التليفون بالتنسيق (9100000000)</div>
+                    </div>
+                    <div class="col-md mb-3">
+                        <label class="form-label">اسم المستخدم</label>
+                        <input type="text" data-name class="form-control" name="users[${id}][user_name]" value="${name}"
+                            minlength="3" maxlength="32">
+                        <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 100 حرف</div>
+                    </div>
+                    <div class="col-md-auto mb-3 mt-md-4 pt-md-2">
+                        <button class="btn btn-primary" onclick="addItemToList()" type="button">أضف</button>
+                        <button class="btn btn-danger" onclick=removeItemFromList(this) type="button">أحذف</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        @if(request()->old('users')) 
+            /* Start add old users if exists */
+            @foreach (request()->old('users') as $user)
+            @php Log::info($user) @endphp
+                addItemToList("{{$user['user_phone']}}","{{$user['user_name'] ?? ''}}");
+            @endforeach
+            /* end add old users if exists */
+        @else
+            /* add one item empty to allow to user to work on list */
+            addItemToList(); 
+        @endif
+
+        function removeItemFromList(input){
+            /* remove item from list only if there are more than one element in list */
+            if(document.getElementById('listUsers').childElementCount > 1){   
+                input.closest('.row').remove();
+                reOrderItemsIdsInList();
+            }
+        }
+
+        /* Reorder items ids to be sorted and readable for uesr when there are error in validatoins from back-end */
+        function reOrderItemsIdsInList(){
+            let list = document.getElementById('listUsers');
+            Array.from(list.children).forEach((element,index) => {
+                i = index +1;
+                element.querySelector('input[data-phone]').setAttribute('name',`users[${i}][user_phone]`);
+                element.querySelector('input[data-name]').setAttribute('name',`users[${i}][user_name]`);
+            });
+        }
 
     </script>
 </body>
