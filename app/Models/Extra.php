@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: Extra.php
  * Last modified: 2020.04.30 at 08:21:09
@@ -25,7 +26,7 @@ use Spatie\MediaLibrary\Models\Media;
  * @property string name
  * @property string description
  * @property double price
- * @property integer food_id
+ * @property integer restaurant_id
  * @property integer extra_group_id
  */
 class Extra extends Model implements HasMedia
@@ -35,14 +36,14 @@ class Extra extends Model implements HasMedia
     }
 
     public $table = 'extras';
-    
+
 
 
     public $fillable = [
         'name',
         'description',
         'price',
-        'food_id',
+        'restaurant_id',
         'extra_group_id'
     ];
 
@@ -56,7 +57,7 @@ class Extra extends Model implements HasMedia
         'image' => 'string',
         'description' => 'string',
         'price' => 'double',
-        'food_id' => 'integer',
+        'restaurant_id' => 'integer',
         'extra_group_id' => 'integer'
     ];
 
@@ -68,7 +69,7 @@ class Extra extends Model implements HasMedia
     public static $rules = [
         'name' => 'required',
         'price' => 'nullable|numeric|min:0',
-        'food_id' => 'required|exists:foods,id',
+        'restaurant_id' => 'required|exists:restaurants,id',
         'extra_group_id' => 'required|exists:extra_groups,id'
     ];
 
@@ -80,7 +81,7 @@ class Extra extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media'
-        
+
     ];
 
     /**
@@ -109,30 +110,30 @@ class Extra extends Model implements HasMedia
      * @param string $conversion
      * @return string url
      */
-    public function getFirstMediaUrl($collectionName = 'default',$conversion = '')
+    public function getFirstMediaUrl($collectionName = 'default', $conversion = '')
     {
         $url = $this->getFirstMediaUrlTrait($collectionName);
         $array = explode('.', $url);
         $extension = strtolower(end($array));
-        if (in_array($extension,config('medialibrary.extensions_has_thumb'))) {
-            return asset($this->getFirstMediaUrlTrait($collectionName,$conversion));
-        }else{
-            return asset(config('medialibrary.icons_folder').'/'.$extension.'.png');
+        if (in_array($extension, config('medialibrary.extensions_has_thumb'))) {
+            return asset($this->getFirstMediaUrlTrait($collectionName, $conversion));
+        } else {
+            return asset(config('medialibrary.icons_folder') . '/' . $extension . '.png');
         }
     }
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
 
     /**
@@ -147,9 +148,9 @@ class Extra extends Model implements HasMedia
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function food()
+    public function restaurant()
     {
-        return $this->belongsTo(\App\Models\Food::class, 'food_id', 'id');
+        return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
 
     /**
@@ -159,6 +160,4 @@ class Extra extends Model implements HasMedia
     {
         return $this->belongsTo(\App\Models\ExtraGroup::class, 'extra_group_id', 'id');
     }
-
-
 }

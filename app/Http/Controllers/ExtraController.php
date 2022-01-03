@@ -14,6 +14,7 @@ use App\Criteria\Foods\FoodsOfUserCriteria;
 use App\DataTables\ExtraDataTable;
 use App\Http\Requests\CreateExtraRequest;
 use App\Http\Requests\UpdateExtraRequest;
+use App\Models\Restaurant;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\ExtraGroupRepository;
 use App\Repositories\ExtraRepository;
@@ -79,8 +80,9 @@ class ExtraController extends Controller
      */
     public function create()
     {
-        $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
-        $food = $this->foodRepository->groupedByRestaurants();
+        //$this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+        //$food = $this->foodRepository->groupedByRestaurants();
+        $restaurant = Restaurant::pluck('name', 'id');
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
 
         $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
@@ -88,7 +90,7 @@ class ExtraController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("extraGroup", $extraGroup);
+        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
     }
 
     /**
@@ -158,8 +160,9 @@ class ExtraController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.extra')]));
             return redirect(route('extras.index'));
         }
-        $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
-        $food = $this->foodRepository->groupedByRestaurants();
+        #$this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+        #$food = $this->foodRepository->groupedByRestaurants();
+        $restaurant = Restaurant::pluck('name', 'id');
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
 
 
@@ -170,7 +173,7 @@ class ExtraController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('extras.edit')->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("extraGroup", $extraGroup);
+        return view('extras.edit')->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
     }
 
     /**
