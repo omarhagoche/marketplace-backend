@@ -11,6 +11,7 @@ use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
+use App\Repositories\CustomFieldRepository;
 use Flash;
 
 /**
@@ -23,9 +24,15 @@ class ExtraAPIController extends Controller
     /** @var  ExtraRepository */
     private $extraRepository;
 
-    public function __construct(ExtraRepository $extraRepo)
+    /**
+     * @var CustomFieldRepository
+     */
+    private $customFieldRepository;
+
+    public function __construct(ExtraRepository $extraRepo, CustomFieldRepository $customFieldRepo)
     {
         $this->extraRepository = $extraRepo;
+        $this->customFieldRepository = $customFieldRepo;
     }
 
     /**
@@ -37,7 +44,7 @@ class ExtraAPIController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $this->extraRepository->pushCriteria(new RequestCriteria($request));
             $this->extraRepository->pushCriteria(new LimitOffsetCriteria($request));
         } catch (RepositoryException $e) {
@@ -93,8 +100,7 @@ class ExtraAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
 
-        return $this->sendResponse($extra->toArray(),__('lang.saved_successfully', ['operator' => __('lang.extra')]));
-
+        return $this->sendResponse($extra->toArray(), __('lang.saved_successfully', ['operator' => __('lang.extra')]));
     }
 
     /**
@@ -130,8 +136,7 @@ class ExtraAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
 
-        return $this->sendResponse($extra->toArray(),__('lang.updated_successfully', ['operator' => __('lang.extra')]));
-
+        return $this->sendResponse($extra->toArray(), __('lang.updated_successfully', ['operator' => __('lang.extra')]));
     }
 
     /**
@@ -151,6 +156,6 @@ class ExtraAPIController extends Controller
 
         $extra = $this->extraRepository->delete($id);
 
-        return $this->sendResponse($extra,__('lang.deleted_successfully', ['operator' => __('lang.extra')]));
+        return $this->sendResponse($extra, __('lang.deleted_successfully', ['operator' => __('lang.extra')]));
     }
 }
