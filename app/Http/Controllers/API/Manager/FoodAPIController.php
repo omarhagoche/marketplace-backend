@@ -83,7 +83,7 @@ class FoodAPIController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $food =  Food::with('media', 'category')
+        $food =  Food::with('media', 'category', 'extras')
             ->whereIn('restaurant_id', $this->getRestaurantIds())
             ->findOrFail($id);
         $food->makeHidden(['restaurant']); // to skip bring restaurant relationship model
@@ -196,11 +196,12 @@ class FoodAPIController extends Controller
             'package_items_count' => 'nullable|numeric|min:1',
             'weight' => "$nullable_on_update|string|min:3|max:64",
             'unit' => 'nullable|string|min:1|max:10',
-            'image' => "$nullable_on_update|mimes:jpeg,png,jpg,gif,svg|max:25600",
+            'image' => "nullable|mimes:jpeg,png,jpg,gif,svg|max:25600",
             'featured' => "$nullable_on_update",
             'deliverable' => "$nullable_on_update",
             'available' => "$nullable_on_update",
             'category_id' => "$nullable_on_update|integer|exists:categories,id",
+            'extras' => "$nullable_on_update|array",
             'restaurant_id' => 'nullable|in_array:' . implode(',', $this->getRestaurantIds())
         ];
 
