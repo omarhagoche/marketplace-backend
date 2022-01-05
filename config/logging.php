@@ -87,6 +87,16 @@ return [
             'path' => storage_path('logs/sms/errors/laravel.log'),
         ],
 
+        'whatsapp' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/whatsapp/laravel.log'),
+        ],
+
+        'whatsappErrors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/whatsapp/errors/laravel.log'),
+        ],
+
         'canceledOrders' => [
             'driver' => 'daily',
             'path' => storage_path('logs/orders/canceled/short.log'),

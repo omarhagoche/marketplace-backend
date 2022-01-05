@@ -672,6 +672,51 @@ function send_sms($to, $msg)
 }
 
 
+
+/**
+ * Send whatsapp message
+ * 
+ * @param $to : phone number that you want send message to
+ * @param $msg : text of message 
+ */
+function send_whatsapp_msg($to, $msg)
+{
+    $to = ltrim($to, '0'); // remove left zeros to skip errors in sms gateway service provider
+    if (!str_starts_with($to, "+218")) {
+        $to = '+218' . $to;
+    }
+
+    $script_path = base_path('scripts');
+
+    exec("python {$script_path}/whatsapp.py --phone=\"$to\" --message=\"$msg\" ", $response);
+
+    $log = json_encode([
+        'id' => (string) Str::uuid(),
+        'user_id' => auth()->check() ? auth()->user()->id : '',
+        'ip' => request()->ip(),
+        'url' => request()->url(),
+        'to' => $to,
+        'msg' => $msg,
+        'response' => $response
+    ]);
+    Log::channel('whatsapp')->info($log);
+
+
+    if ($response) {
+        $response = json_decode($response[0] ?? "");
+    }
+
+    $is_successed = $response->success ?? false;
+
+    if (!$is_successed) {
+        Log::channel('whatsappErrors')->error($log);
+        return false;
+    }
+
+    return $is_successed;
+}
+
+
 /**
  * Calculate distance between two points
  */
