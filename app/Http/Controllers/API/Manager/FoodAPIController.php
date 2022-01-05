@@ -10,8 +10,12 @@ use App\Repositories\FoodRepository;
 use App\Repositories\UploadRepository;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use Prettus\Repository\Criteria\RequestCriteria;
 use Auth;
 use DB;
+use Prettus\Repository\Exceptions\RepositoryException;
+use App\Http\Controllers\API\Food\Resources\Food as FoodResource;
 
 /**
  * Class FoodController
@@ -66,10 +70,17 @@ class FoodAPIController extends Controller
      */
     public function index(Request $request)
     {
-        $foods = Food::with('media', 'category')
-            ->whereIn('restaurant_id', $this->getRestaurantIds())
-            ->get();
-        $foods->makeHidden(['restaurant']); // to skip bring restaurant relationship model
+        try {
+            $this->foodRepository->pushCriteria(new RequestCriteria($request));
+            $this->foodRepository->pushCriteria(new LimitOffsetCriteria($request));
+            $this->foodRepository->scopeQuery(function ($q) {
+                return $q->whereIn('restaurant_id', $this->getRestaurantIds());
+            });
+            $foods = $this->foodRepository->with('media', 'category')->all();
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+
         return $this->sendResponse($foods->toArray(), 'Foods retrieved successfully');
     }
 
@@ -83,11 +94,26 @@ class FoodAPIController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $food =  Food::with('media', 'category', 'extras')
-            ->whereIn('restaurant_id', $this->getRestaurantIds())
-            ->findOrFail($id);
-        $food->makeHidden(['restaurant']); // to skip bring restaurant relationship model
-        return $this->sendResponse($food->toArray(), 'Food retrieved successfully');
+        /** @var Food $food */
+        if (!empty($this->foodRepository)) {
+            try {
+                $this->foodRepository->pushCriteria(new RequestCriteria($request));
+                $this->foodRepository->pushCriteria(new LimitOffsetCriteria($request));
+                $this->foodRepository->scopeQuery(function ($q) {
+                    return $q->whereIn('restaurant_id', $this->getRestaurantIds());
+                });
+                $this->foodRepository->with('media', 'category', 'extras');
+            } catch (RepositoryException $e) {
+                return $this->sendError($e->getMessage());
+            }
+            $food = $this->foodRepository->findWithoutFail($id);
+        }
+
+        if (empty($food)) {
+            return $this->sendError('Food not found');
+        }
+
+        return $this->sendResponse(FoodResource::make($food), 'Food retrieved successfully');
     }
 
     /**
