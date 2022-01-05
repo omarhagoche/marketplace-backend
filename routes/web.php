@@ -18,6 +18,17 @@
 |
 */
 
+
+Route::get('test/whatsapp/{phone?}/{msg?}', function ($phone, $msg) {
+    $respone = [
+        "phone" => $phone,
+        "message" => $msg,
+        "response" => send_whatsapp_msg($phone, $msg)
+    ];
+    return $respone;
+});
+
+
 Route::get('register-restaurant', 'RegisterRestaurantController@show');
 Route::post('register-restaurant', 'RegisterRestaurantController@register');
 
