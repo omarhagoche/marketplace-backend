@@ -77,6 +77,7 @@ class FoodAPIController extends Controller
                 return $q->whereIn('restaurant_id', $this->getRestaurantIds());
             });
             $foods = $this->foodRepository->with('media', 'category')->all();
+            $foods->loadExtraGroupsIfExists();
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -112,6 +113,7 @@ class FoodAPIController extends Controller
         if (empty($food)) {
             return $this->sendError('Food not found');
         }
+        $food->loadExtraGroupsIfExists();
 
         return $this->sendResponse(FoodResource::make($food), 'Food retrieved successfully');
     }

@@ -9,6 +9,7 @@
 
 namespace App\Models;
 
+use App\Collections\FoodCollection;
 use Eloquent as Model;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -167,6 +168,19 @@ class Food extends Model implements HasMedia
     }
 
     /**
+     * Add extra_groups to api results 
+     * we add it here even user can access it from extras because we changed type of relation between extra and foods , 
+     * and we do not want to spend time to make changes on mobile apps and may be we will got bugs (so , it for save time and skip bugs on mobile apps)
+     * @return array
+     */
+    public function getExtraGroupsAttribute()
+    {
+        return $this->extras->map(function ($item) {
+            return $item->extragroup;
+        })->unique();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function category()
@@ -251,5 +265,30 @@ class Food extends Model implements HasMedia
     public function discountables()
     {
         return $this->morphMany('App\Models\Discountable', 'discountable');
+    }
+
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array  $models
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new FoodCollection($models);
+    }
+
+
+    /**
+     * Load extra_groups property if extras relation loaded
+     * @return static
+     */
+    public function loadExtraGroupsIfExists()
+    {
+        if ($this->relationLoaded("extras")) {
+            $this->append('extra_groups');
+        }
+        return $this;
     }
 }
