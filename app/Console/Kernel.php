@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\CloseUnassignedOrders;
 use App\Jobs\RemoveOldOrdersInFirebase;
+use App\Jobs\SetDriversToUnavailable;
 
 class Kernel extends ConsoleKernel
 {
@@ -30,6 +31,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->job(new CloseUnassignedOrders)->everyMinute();
         $schedule->job(new RemoveOldOrdersInFirebase)->everyMinute();
+        $schedule->job(new SetDriversToUnavailable)->everyMinute();
     }
 
     /**
