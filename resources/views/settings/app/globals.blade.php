@@ -62,6 +62,18 @@
                         </div>
                     </div>
 
+                    <!-- drivers_to_unavailable_last_access_time Field -->
+                    <div class="form-group row">
+                        {!! Form::label('drivers_to_unavailable_last_access_time', trans("lang.app_setting_drivers_to_unavailable_last_access_time"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('drivers_to_unavailable_last_access_time', setting('drivers_to_unavailable_last_access_time'),  ['step' => '1','min' => '1','class' => 'form-control','placeholder'=>  trans("lang.app_setting_drivers_to_unavailable_last_access_time_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_drivers_to_unavailable_last_access_time_help") }}
+                            </div>
+                        </div>
+                    </div>
+
+
                     <!-- order_expiration_time_before_accept_for_drivers Field -->
                     <div class="form-group row">
                         {!! Form::label('order_expiration_time_before_accept_for_drivers', trans("lang.app_setting_order_expiration_time_before_accept_for_drivers"), ['class' => 'col-4 control-label text-right']) !!}
