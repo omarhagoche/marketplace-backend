@@ -374,7 +374,7 @@ class OrderAPIController extends Controller
 
         if ($order->user_id) {
             $order->order_status_id = 20; // 20 : waiting_for_restaurant
-            if (setting('send_sms_notifications_for_restaurants', false)) {
+            if (setting('send_sms_notifications_for_restaurants', false) || setting('send_whatsapp_notifications_for_restaurants', false)) {
                 Notification::send($order->restaurant->getUsersWhoEnabledNotifications(), new OrderNeedsToAccept($order));
             }
         } else {

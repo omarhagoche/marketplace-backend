@@ -343,6 +343,17 @@
                     </div>
                 </div>
                 
+                <!-- send_whatsapp_notifications_for_restaurants Field -->
+                <div class="form-group row ">
+                    {!! Form::label('send_whatsapp_notifications_for_restaurants', trans("lang.app_setting_send_whatsapp_notifications_for_restaurants"),['class' => 'col-4 control-label text-right']) !!}
+                    <div class="checkbox icheck">
+                        <label class="w-100 ml-2 form-check-inline">
+                            {!! Form::hidden('send_whatsapp_notifications_for_restaurants', null) !!}
+                            {!! Form::checkbox('send_whatsapp_notifications_for_restaurants', 'fixed-bottom', setting('send_whatsapp_notifications_for_restaurants')) !!}
+                            <span class="ml-2">{!! trans("lang.app_setting_send_whatsapp_notifications_for_restaurants_help") !!}</span> </label>
+                    </div>
+                </div>
+                
                 <!-- Submit Field -->
                 <div class="form-group mt-4 col-12 text-right">
                     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.app_setting_globals')}}
