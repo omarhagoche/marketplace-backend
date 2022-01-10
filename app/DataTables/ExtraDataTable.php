@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: ExtraDataTable.php
  * Last modified: 2020.04.30 at 08:21:09
@@ -40,11 +41,11 @@ class ExtraDataTable extends DataTable
             ->editColumn('price', function ($extra) {
                 return getPriceColumn($extra, 'price');
             })
-            ->editColumn('food.name', function ($extra) {
-                return getLinksColumnByRouteName([$extra->food->toArray()], 'foods.edit','id','name');
-            })
-            ->editColumn('food.restaurant.name', function ($extra) {
-                return getLinksColumnByRouteName([$extra->food->restaurant->toArray()], 'restaurants.edit', 'id', 'name');
+            //->editColumn('food.name', function ($extra) {
+            //    return getLinksColumnByRouteName([$extra->food->toArray()], 'foods.edit', 'id', 'name');
+            //})
+            ->editColumn('restaurant.name', function ($extra) {
+                return getLinksColumnByRouteName([$extra->restaurant->toArray()], 'restaurants.edit', 'id', 'name');
             })
             ->editColumn('updated_at', function ($extra) {
                 return getDateColumn($extra, 'updated_at');
@@ -78,13 +79,13 @@ class ExtraDataTable extends DataTable
                 'title' => trans('lang.extra_price'),
 
             ],
+            //[
+            //    'data' => 'food.name',
+            //    'title' => trans('lang.food'),
+            //
+            //],
             [
-                'data' => 'food.name',
-                'title' => trans('lang.food'),
-
-            ],
-            [
-                'data' => 'food.restaurant.name',
+                'data' => 'restaurant.name',
                 'title' => trans('lang.restaurant'),
 
             ],
@@ -125,16 +126,16 @@ class ExtraDataTable extends DataTable
     public function query(Extra $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("food")->with("extraGroup")->with('food.restaurant');
+            return $model->newQuery()->with("restaurant")->with("extraGroup");
         } else if (auth()->user()->hasRole('manager')) {
-            return $model->newQuery()->with("food")->with("extraGroup")->with('food.restaurant')
-                ->join("foods", "extras.food_id", "=", "foods.id")
+            return $model->newQuery()->with("restaurant")->with("extraGroup")
+                ->join("restaurants", "extras.restaurant_id", "=", "restaurants.id")
                 ->join("user_restaurants", "foods.restaurant_id", "=", "user_restaurants.restaurant_id")
                 ->where('user_restaurants.user_id', auth()->id())
                 ->groupBy("extras.id")
                 ->select('extras.*');
         } else {
-            return $model->newQuery()->with("food")->with("extraGroup")->with('food.restaurant');
+            return $model->newQuery()->with("restaurant")->with("extraGroup");
         }
     }
 
@@ -148,12 +149,16 @@ class ExtraDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
+            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
+                config('datatables-buttons.parameters'),
+                [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ), true)
+                        file_get_contents(
+                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ),
+                        true
+                    )
                 ]
             ));
     }

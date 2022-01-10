@@ -124,6 +124,17 @@ class User extends Authenticatable implements HasMedia
         return $this->phone_number;
     }
 
+    /**
+     * Specifies the user's Whatsapp phone
+     *
+     * @return string
+     */
+    public function routeNotificationForWhatsapp($notification)
+    {
+        return $this->phone_number;
+    }
+
+
 
     /**
      * @param Media|null $media
