@@ -59,7 +59,7 @@ class SetDriversToUnavailable implements ShouldQueue
 
 
         DB::transaction(function () use ($drivers, $batch) {
-            Driver::whereIn('user_id', $drivers->only('id'))->update(['available', False]);
+            Driver::whereIn('user_id', $drivers->only('id'))->update(['available' => False]);
             $batch->commit(); // upload or commit batch
             // end batch upload data to firestore
             Log::channel('unavailableDrivers')->info([
