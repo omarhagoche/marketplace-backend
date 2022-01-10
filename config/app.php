@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Tripoli',
 
     /*
     |--------------------------------------------------------------------------
@@ -158,7 +158,7 @@ return [
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
-//        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
+        //        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
 
         /*
@@ -227,7 +227,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'HTMLFieldGenerator' => InfyOm\Generator\Utils\HTMLFieldGenerator::class,
-//        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
+        //        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
 
     ],
 
