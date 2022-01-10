@@ -7,6 +7,7 @@ use App\Models\Extra;
 use App\Repositories\ExtraRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Food;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
@@ -51,6 +52,23 @@ class ExtraAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
         $extras = $this->extraRepository->all();
+
+        /**
+         * We add checked property to determind if extra linked to food or not 
+         * It just for helping front-end developers to make it easy to them work on some complications in update food
+         */
+        if ($request->has('food_id')) {
+            $food =  Food::select('id')->where('id', $request->food_id)->with('extras')->first();
+
+            $food_extra_ids = [];
+            if (isset($food->extras)) {
+                $food_extra_ids =  $food->extras->pluck('id')->toArray();
+            }
+
+            foreach ($extras as $e) {
+                $e->checked = in_array($e->id, $food_extra_ids);
+            }
+        }
 
         return $this->sendResponse($extras->toArray(), 'Extras retrieved successfully');
     }
