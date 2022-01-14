@@ -72,7 +72,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">رقم تليفون المطعم2</label>
                     <input type="text" class="form-control" name="mobile" value="{{ request()->old('mobile') }}"
-                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$"   maxlength="10">
+                        placeholder="9XXXXXXXX" pattern="^0?[9][12345][0-9]{7}$" maxlength="10">
                     <div class="invalid-feedback">يجب أن يكون رقم التليفون بالتنسيق (9100000000)</div>
                 </div>
             </div>
@@ -100,10 +100,34 @@
 
             <hr />
 
-            <h5>موظفين</h5>
+            <div class="row my-4">
+                <div class="col-auto">
+                    <h5>موظفين</h5>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-primary" onclick="addItemToUsersList()" type="button">أضف</button>
+                    <button class="btn btn-sm btn-danger" onclick=clearUsersList() type="button">حذف الكل</button>
+                </div>
+            </div>
 
             <div id="listUsers">
                 {{-- list of users --}}
+            </div>
+
+            <hr />
+
+            <div class="row my-4">
+                <div class="col-auto">
+                    <h5>وجبات</h5>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-primary" onclick="addItemToFoodsList()" type="button">أضف</button>
+                    <button class="btn btn-sm btn-danger" onclick=clearFoodsList() type="button">حذف الكل</button>
+                </div>
+            </div>
+
+            <div id="listFoods">
+                {{-- list of foods --}}
             </div>
 
             <hr />
@@ -114,7 +138,7 @@
                     <input type="text" class="form-control" name="added_by" value="{{ request()->old('added_by') }}"
                         minlength="3" maxlength="32" required>
                     <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 100 حرف</div>
-                </div> 
+                </div>
             </div>
 
 
@@ -185,11 +209,9 @@
 
         /* Start dynmaic list of users */
 
-        
-
-        function addItemToList(phone='',name = ''){
+        function addItemToUsersList(phone = '', name = '') {
             id = document.getElementById('listUsers').childElementCount + 1;
-            document.getElementById('listUsers').insertAdjacentHTML('beforeend',`
+            document.getElementById('listUsers').insertAdjacentHTML('beforeend', `
                 <div class="row">
                     <div class="col-md mb-3">
                         <label class="form-label">رقم تليفون المستخدم</label>
@@ -204,42 +226,126 @@
                         <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 100 حرف</div>
                     </div>
                     <div class="col-md-auto mb-3 mt-md-4 pt-md-2">
-                        <button class="btn btn-primary" onclick="addItemToList()" type="button">أضف</button>
-                        <button class="btn btn-danger" onclick=removeItemFromList(this) type="button">أحذف</button>
+                        <button class="btn btn-primary" onclick="addItemToUsersList()" type="button">أضف</button>
+                        <button class="btn btn-danger" onclick=removeItemFromUsersList(this) type="button">أحذف</button>
                     </div>
                 </div>
             `);
         }
 
-        @if(request()->old('users')) 
+        @if (request() -> old('users'))
             /* Start add old users if exists */
-            @foreach (request()->old('users') as $user)
-            @php Log::info($user) @endphp
-                addItemToList("{{$user['user_phone']}}","{{$user['user_name'] ?? ''}}");
+            @foreach(request() -> old('users') as $user)
+                addItemToUsersList("{{$user['user_phone']}}", "{{$user['user_name'] ?? ''}}");
             @endforeach
             /* end add old users if exists */
-        @else
-            /* add one item empty to allow to user to work on list */
-            addItemToList(); 
         @endif
 
-        function removeItemFromList(input){
+        function removeItemFromUsersList(input) {
             /* remove item from list only if there are more than one element in list */
-            if(document.getElementById('listUsers').childElementCount > 1){   
+            if (document.getElementById('listUsers').childElementCount > 1) {
                 input.closest('.row').remove();
-                reOrderItemsIdsInList();
+                reOrderItemsIdsInUsersList();
             }
         }
 
+        /* Remove all items from foods list */
+        function clearUsersList(){
+            let list = document.getElementById('listUsers').innerHTML ='';
+        }
+
         /* Reorder items ids to be sorted and readable for uesr when there are error in validatoins from back-end */
-        function reOrderItemsIdsInList(){
+        function reOrderItemsIdsInUsersList() {
             let list = document.getElementById('listUsers');
-            Array.from(list.children).forEach((element,index) => {
-                i = index +1;
-                element.querySelector('input[data-phone]').setAttribute('name',`users[${i}][user_phone]`);
-                element.querySelector('input[data-name]').setAttribute('name',`users[${i}][user_name]`);
+            Array.from(list.children).forEach((element, index) => {
+                i = index + 1;
+                element.querySelector('input[data-phone]').setAttribute('name', `users[${i}][user_phone]`);
+                element.querySelector('input[data-name]').setAttribute('name', `users[${i}][user_name]`);
             });
         }
+
+        /* End dynmaic list of users */
+        
+
+
+        /* Start dynmaic list of foods */
+
+        function foodsSelect(rowId,value = ''){
+
+           return `
+            <select class="form-select" data-category name="foods[${id}][category_id]" value="${value}">
+                    @foreach($categories as $c)
+                        <option value="{{ $c->id }}">{{ $c->name }}</option>
+                    @endforeach
+                </select>`;
+        }
+
+        function addItemToFoodsList(name = '',price = '',category='') {
+            id = document.getElementById('listFoods').childElementCount + 1;
+            document.getElementById('listFoods').insertAdjacentHTML('beforeend', `
+                <div class="row">
+                    <div class="col-md mb-3">
+                        <label class="form-label">الفئة</label>
+                        ${foodsSelect(id,category)}
+                        <div class="invalid-feedback">يجب اختيار عنصر</div>
+                    </div>
+                    <div class="col-md mb-3">
+                        <label class="form-label">اسم الوجبة</label>
+                        <input type="text" data-name class="form-control" name="foods[${id}][name]" value="${name}" minlength="3" maxlength="32" required>
+                        <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 32 حرف</div>
+                    </div>
+                    <div class="col-md mb-3">
+                        <label class="form-label">السعر</label>
+                        <input type="number" data-name class="form-control" name="foods[${id}][price]" value="${price}" min="0" step="any" required>
+                        <div class="invalid-feedback">حقل إجباري</div>
+                    </div>
+                    <div class="col-md-auto mb-3 mt-md-4 pt-md-2">
+                        <button class="btn btn-primary" onclick="addItemToFoodsList()" type="button">أضف</button>
+                        <button class="btn btn-danger" onclick=removeItemFromFoodsList(this) type="button">أحذف</button>
+                    </div>
+                </div>
+            `);
+
+            if(category){ // set value of select category
+                document.getElementById('listFoods').querySelector(`select[name="foods[${id}][category_id]"]`).value = category;
+            }  
+        }
+
+        @if (request() -> old('foods'))
+            /* Start add old foods if exists */
+
+            @foreach(request()->old('foods') as $food)
+            @php Log:: info($food) @endphp
+                addItemToFoodsList("{{$food['name']}}","{{$food['price']}}", "{{$food['category_id']}}");
+            @endforeach
+            /* end add old foods if exists */
+        @endif
+
+        function removeItemFromFoodsList(input) {
+            /* remove item from list only if there are more than one element in list */
+            if (document.getElementById('listFoods').childElementCount > 1) {
+                input.closest('.row').remove();
+                reOrderItemsIdsInFoodsList();
+            }
+        }
+
+        /* Remove all items from foods list */
+        function clearFoodsList(){
+            let list = document.getElementById('listFoods').innerHTML ='';
+        }
+
+        /* Reorder items ids to be sorted and readable for uesr when there are error in validatoins from back-end */
+        function reOrderItemsIdsInFoodsList() {
+            let list = document.getElementById('listFoods');
+            Array.from(list.children).forEach((element, index) => {
+                i = index + 1;
+                element.querySelector('input[data-name]').setAttribute('name', `foods[${i}][name]`);
+                element.querySelector('input[data-price]').setAttribute('name', `foods[${i}][price]`);
+                element.querySelector('select[data-category]').setAttribute('name', `foods[${i}][category_id]`);
+            });
+        }
+
+        /* End dynmaic list of foods */
 
     </script>
 </body>
