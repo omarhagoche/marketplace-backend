@@ -781,3 +781,24 @@ function getDriverFee(): float
 {
     return (float)setting('drivers_fee');
 }
+
+
+/**
+ * This function to return search params of l5-repository package as array
+ * @return array of params
+ */
+function getCriteriaSearchParams()
+{
+    $search = request()->get(config('repository.criteria.params.search', 'search'), null);
+
+    if (!$search) {
+        return [];
+    }
+
+    $params = [];
+    foreach (explode(';', $search) as $row) {
+        list($field, $value) = explode(':', $row);
+        $params[$field] = $value;
+    }
+    return $params;
+}
