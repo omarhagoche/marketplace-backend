@@ -97,7 +97,7 @@ class UserAPIController extends Controller
             $user->email = $request->input('email');
             $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
+            //$user->api_token = str_random(60);
             $user->save();
 
             $user->assignRole('driver');
@@ -113,27 +113,13 @@ class UserAPIController extends Controller
 
     function logout(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
-        try {
-            auth()->logout();
-        } catch (\Exception $e) {
-            $this->sendError($e->getMessage(), 401);
-        }
-        return $this->sendResponse($user['name'], 'User logout successfully');
+        $user = auth()->user();
+        return $this->sendResponse($user->name, 'User logout successfully');
     }
 
     function user(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
-
-        return $this->sendResponse($user, 'User retrieved successfully');
+        return $this->sendResponse(auth()->user(), 'User retrieved successfully');
     }
 
     function settings(Request $request)
