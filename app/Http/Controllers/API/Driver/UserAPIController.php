@@ -49,7 +49,7 @@ class UserAPIController extends Controller
                 'phone_number' => ['required', new PhoneNumber],
                 'password' => 'required',
             ]);
-            if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
+            if ($token = auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
                 if (!$user->activated_at) {
@@ -61,10 +61,16 @@ class UserAPIController extends Controller
                 if (!$user->hasRole('driver')) {
                     return $this->sendError('User not driver', 401);
                 }
-                $user->device_token = $request->input('device_token', '');
+                if ($request->has('device_token')) {
+                    $user->device_token = $request->device_token;
+                }
                 $user->load('driver');
                 $user->save();
-                return $this->sendResponse($user, 'User retrieved successfully');
+                return response()->json([
+                    'token' => $token,
+                    'user' => $user,
+                ]);
+                //return $this->sendResponse($user, 'User retrieved successfully');
             }
             return $this->sendError(trans('auth.failed'), 422);
         } catch (\Exception $e) {
