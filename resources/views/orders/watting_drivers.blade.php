@@ -67,6 +67,36 @@
 </div>
 
 
+<!-- Start model confirm set driver for order -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Set driver for order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <bdi>
+                    هل أنت متأكد أنك تريد إعطاء الطلب
+                    #<span id="dataOrdersId" class="font-weight-bold"></span>
+                    للسائق
+                    <span id="dataOrdersDriver" class="font-weight-bold"></span>
+                    ؟
+                </bdi>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a target="_blank" id="dataOrdersSetDriverLink" class="btn btn-primary"
+                    onclick="close_confirm_set_driver_modal()">Select</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End model confirm set driver for order -->
+
 
 
 <!--Firestore Libraries-->
@@ -118,10 +148,17 @@
                     {
                         data: 'drivers',
                         title: "Drivers",
-                        'render': function (data) {
+                        'render': function (data, type, row, meta) {
                             r = '';
                             data && data.map(function (e) {
-                                r += ` <a href="/users/${e}/edit">${drivers[e] ?? e}</a> ,`;
+                                r += `
+                                    <div class="py-1">
+                                        <a href="/users/${e}/edit">${drivers[e] ?? e}</a>
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="prepare_set_driver_for_order(${row.id},${e},'${drivers[e] ?? e}')">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </div>
+                                `;
                                 return e;
                             });
                             return r;
@@ -160,6 +197,19 @@
     }
 
     getOrdersFromFirestore();
+
+    function prepare_set_driver_for_order(order_id, driver_id, driver_name) {
+        let link = "{{ url('/orders/set-driver') }}";
+        document.getElementById('dataOrdersId').innerHTML = order_id;
+        document.getElementById('dataOrdersDriver').innerHTML = driver_name;
+        document.getElementById('dataOrdersSetDriverLink').setAttribute("href", `${link}/${order_id}/${driver_id}`);
+        $('#exampleModal').modal('show');
+    }
+
+
+    function close_confirm_set_driver_modal() {
+        $('#exampleModal').modal('hide');
+    }
 
 </script>
 
