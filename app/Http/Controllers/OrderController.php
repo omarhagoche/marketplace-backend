@@ -298,4 +298,18 @@ class OrderController extends Controller
             Log::error($e->getMessage());
         }
     }
+
+
+
+
+    /**
+     * Display the specified Driver.
+     *
+     * @return Response
+     */
+    public function ordersWaittingForDrivers()
+    {
+        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
+        return view('orders.watting_drivers')->with('drivers', $drivers);
+    }
 }

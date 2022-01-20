@@ -130,6 +130,13 @@
                             <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_plural')}}</p></a>
                 </li>
             @endcan
+
+            @can('orders.waitting_drivers')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('orders/waitting-drivers*') ? 'active' : '' }}" href="{!! route('orders.waitting_drivers') !!}">@if($icons)
+                            <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_waitting_drivers_plural')}}</p></a>
+                </li>
+            @endcan
             @can('orderStatuses.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('orderStatuses*') ? 'active' : '' }}" href="{!! route('orderStatuses.index') !!}">@if($icons)
