@@ -137,8 +137,8 @@
                     {
                         data: 'created_at_since',
                         title: "created at since",
-                        'render': function (data) {
-                            return moment(data).fromNow()
+                        'render': function (data, type, row, meta) {
+                            return moment(row.created_at * 1000).fromNow()
                         }
                     },
                 ]
