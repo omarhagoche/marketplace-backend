@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: OrderDataTable.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -35,7 +36,25 @@ class OrderDataTable extends DataTable
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
             ->editColumn('id', function ($order) {
-                return "#".$order->id;
+                return "#" . $order->id;
+            })
+            ->editColumn('restaurant.name', function ($order) {
+                return getLinksColumnByRouteName([$order->restaurant], 'restaurants.edit', 'id', 'name');
+            })
+            ->editColumn('user.name', function ($order) {
+                if (!$order->user) {
+                    return $order->unregistered_customer->name;
+                }
+                return getLinksColumnByRouteName([$order->user], "users.edit", 'id', 'name');
+            })
+            ->editColumn('driver.name', function ($order) {
+                if (!$order->driver) {
+                    return '---'; // trans('lang.order_driver_not_assigned');
+                }
+                return getLinksColumnByRouteName([$order->driver], "users.edit", 'id', 'name');
+            })
+            ->editColumn('created_at', function ($order) {
+                return getDateColumn($order, 'created_at');
             })
             ->editColumn('updated_at', function ($order) {
                 return getDateColumn($order, 'updated_at');
@@ -47,7 +66,7 @@ class OrderDataTable extends DataTable
                 return $order->tax . "%";
             })
             ->editColumn('payment.status', function ($order) {
-                return getPayment($order->payment,'status');
+                return getPayment($order->payment, 'status');
             })
             ->editColumn('active', function ($food) {
                 return getBooleanColumn($food, 'active');
@@ -69,33 +88,40 @@ class OrderDataTable extends DataTable
             [
                 'data' => 'id',
                 'title' => trans('lang.order_id'),
-
+            ],
+            [
+                'data' => 'restaurant.name',
+                'name' => 'restaurant.name',
+                'title' => trans('lang.restaurant'),
             ],
             [
                 'data' => 'user.name',
                 'name' => 'user.name',
                 'title' => trans('lang.order_user_id'),
-
+            ],
+            [
+                'data' => 'driver.name',
+                'name' => 'driver.name',
+                'title' => trans('lang.order_driver_id'),
             ],
             [
                 'data' => 'order_status.status',
                 'name' => 'orderStatus.status',
                 'title' => trans('lang.order_order_status_id'),
-
             ],
-            [
+            /* [
                 'data' => 'tax',
                 'title' => trans('lang.order_tax'),
                 'searchable' => false,
 
-            ],
+            ], */
             [
                 'data' => 'delivery_fee',
                 'title' => trans('lang.order_delivery_fee'),
                 'searchable' => false,
 
             ],
-            [
+            /*  [
                 'data' => 'payment.status',
                 'name' => 'payment.status',
                 'title' => trans('lang.payment_status'),
@@ -111,6 +137,12 @@ class OrderDataTable extends DataTable
                 'data' => 'active',
                 'title' => trans('lang.order_active'),
 
+            ],*/
+            [
+                'data' => 'created_at',
+                'title' => trans('lang.order_date'),
+                'searchable' => false,
+                'orderable' => true,
             ],
             [
                 'data' => 'updated_at',
@@ -145,7 +177,7 @@ class OrderDataTable extends DataTable
     public function query(Order $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment');
+            return $model->newQuery()->with("user", "restaurant:id,name", "driver:id,name")->with("orderStatus")/* ->with('payment') */;
         } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
                 ->join("food_orders", "orders.id", "=", "food_orders.order_id")
@@ -167,7 +199,6 @@ class OrderDataTable extends DataTable
         } else {
             return $model->newQuery()->with("user")->with("orderStatus")->with('payment');
         }
-
     }
 
     /**
@@ -180,13 +211,16 @@ class OrderDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
+            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
                 [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ), true),
-                    'order' => [ [0, 'desc'] ],
+                        file_get_contents(
+                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ),
+                        true
+                    ),
+                    'order' => [[0, 'desc']],
                 ],
                 config('datatables-buttons.parameters')
             ));
