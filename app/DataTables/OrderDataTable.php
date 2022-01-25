@@ -143,14 +143,14 @@ class OrderDataTable extends DataTable
 
             ],*/
             [
-                'name' => 'order.created_at',
+                'name' => 'orders.created_at',
                 'data' => 'created_at',
                 'title' => trans('lang.order_date'),
                 'searchable' => false,
                 'orderable' => true,
             ],
             [
-                'name' => 'order.updated_at',
+                'name' => 'orders.updated_at',
                 'data' => 'updated_at',
                 'title' => trans('lang.order_updated_at'),
                 'searchable' => false,
