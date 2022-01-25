@@ -43,7 +43,7 @@ class OrderDataTable extends DataTable
             })
             ->editColumn('user.name', function ($order) {
                 if (!$order->user) {
-                    return $order->unregistered_customer->name;
+                    return $order->unregistered_customer->name ?? '----';
                 }
                 return getLinksColumnByRouteName([$order->user], "users.edit", 'id', 'name');
             })
