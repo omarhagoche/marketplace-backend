@@ -39,6 +39,9 @@ class OrderDataTable extends DataTable
                 return "#" . $order->id;
             })
             ->editColumn('restaurant.name', function ($order) {
+                if (!$order->restaurant) {
+                    return '---';
+                }
                 return getLinksColumnByRouteName([$order->restaurant], 'restaurants.edit', 'id', 'name');
             })
             ->editColumn('user.name', function ($order) {
