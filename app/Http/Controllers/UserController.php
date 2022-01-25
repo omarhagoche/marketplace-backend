@@ -211,6 +211,20 @@ class UserController extends Controller
 
             return redirect(route('users.index'));
         }
+
+
+        if ($user->hasRole('driver')) {
+            $doc = app('firebase.firestore')->getFirestore()->collection('drivers')
+                ->document(102/* $user->user_id */)->snapshot(); //->get();
+
+            if ($doc->exists()) {
+                $d = $doc->data();
+                $user->longitude = $d['longitude'];
+                $user->latitude = $d['latitude'];
+            }
+        }
+
+
         return view('settings.users.edit')
             ->with('user', $user)->with("role", $role)
             ->with("rolesSelected", $rolesSelected)

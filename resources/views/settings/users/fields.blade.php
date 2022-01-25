@@ -141,6 +141,16 @@
     </div>
     @endcan
 
+    
+    @isset($user->latitude)
+        <!-- Google map link -->
+        <div class="form-group row justify-content-center">
+            <div class="col-auto">
+                <a href="https://maps.google.com/?q={{ $user->latitude }},{{ $user->longitude }}" target="_blank" class="btn btn-{{setting('theme_color')}}">Location on google map</a>
+            </div>
+        </div>
+    @endisset
+
 </div>
 @if($customFields)
     {{--TODO generate custom field--}}
