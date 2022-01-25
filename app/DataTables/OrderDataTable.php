@@ -89,6 +89,7 @@ class OrderDataTable extends DataTable
     {
         $columns = [
             [
+                "name" => 'orders.id',
                 'data' => 'id',
                 'title' => trans('lang.order_id'),
             ],
@@ -142,17 +143,18 @@ class OrderDataTable extends DataTable
 
             ],*/
             [
+                'name' => 'order.created_at',
                 'data' => 'created_at',
                 'title' => trans('lang.order_date'),
                 'searchable' => false,
                 'orderable' => true,
             ],
             [
+                'name' => 'order.updated_at',
                 'data' => 'updated_at',
                 'title' => trans('lang.order_updated_at'),
                 'searchable' => false,
                 'orderable' => true,
-
             ]
         ];
 
