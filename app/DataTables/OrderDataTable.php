@@ -158,7 +158,7 @@ class OrderDataTable extends DataTable
             ]
         ];
 
-        $hasCustomField = in_array(Order::class, setting('custom_field_models', []));
+        /* $hasCustomField = in_array(Order::class, setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFieldsCollection = CustomField::where('custom_field_model', Order::class)->where('in_table', '=', true)->get();
             foreach ($customFieldsCollection as $key => $field) {
@@ -169,7 +169,7 @@ class OrderDataTable extends DataTable
                     'searchable' => false,
                 ]]);
             }
-        }
+        } */
         return $columns;
     }
 
@@ -182,7 +182,7 @@ class OrderDataTable extends DataTable
     public function query(Order $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("user", "restaurant:id,name", "driver:id,name")->with("orderStatus")/* ->with('payment') */;
+            return $model->newQuery()->with("user:id,name", "restaurant:id,name", "driver:id,name")->with("orderStatus")->with('payment');
         } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
                 ->join("food_orders", "orders.id", "=", "food_orders.order_id")
