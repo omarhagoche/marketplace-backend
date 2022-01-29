@@ -31,10 +31,12 @@ use App\Events\UpdatedOrderEvent;
  * @property double restaurant_coupon_value
  * @property double delivery_fee
  * @property double restaurant_delivery_fee
+ * @property int processing_time
  * @property string id
  * @property int delivery_address_id
  * @property int restaurant_id
  * @property string hint
+ * @property string reason
  * @property boolean for_restaurants
  */
 class Order extends Model
@@ -52,6 +54,7 @@ class Order extends Model
         'delivery_coupon_value',
         'restaurant_coupon_value',
         'hint',
+        'reason',
         'for_restaurants',
         'delivery_coupon_id',
         'restaurant_coupon_id',
@@ -59,6 +62,7 @@ class Order extends Model
         'restaurant_id',
         'delivery_fee',
         'restaurant_delivery_fee',
+        'processing_time',
         'active',
         'driver_id',
     ];
@@ -76,6 +80,7 @@ class Order extends Model
         'delivery_coupon_value' => 'double',
         'restaurant_coupon_value' => 'double',
         'hint' => 'string',
+        'reason' => 'string',
         'for_restaurants' => 'boolean',
         'status' => 'string',
         'delivery_coupon_id' => 'integer',
@@ -84,6 +89,7 @@ class Order extends Model
         'restaurant_id' => 'integer',
         'delivery_fee' => 'double',
         'restaurant_delivery_fee' => 'double',
+        'processing_time' => 'double',
         'active' => 'boolean',
         'driver_id' => 'integer',
     ];
