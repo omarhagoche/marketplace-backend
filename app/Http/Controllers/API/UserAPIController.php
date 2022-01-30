@@ -92,7 +92,7 @@ class UserAPIController extends Controller
         if (send_sms($verfication->phone, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Vervication code sent successfully');
         }
-        return $this->sendError('Vervication code did not send successfully', 422);
+        return $this->sendError('Vervication code did not send successfully', 400);
     }
 
 
@@ -434,7 +434,7 @@ class UserAPIController extends Controller
         if (send_sms($user->phone_number, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Reset vervication code sent successfully');
         }
-        return $this->sendError('Reset vervication code did not send successfully', 422);
+        return $this->sendError('Reset vervication code did not send successfully', 400);
     }
 
 
