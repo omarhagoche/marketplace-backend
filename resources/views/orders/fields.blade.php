@@ -70,6 +70,17 @@
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
+    <!-- Processing time Field -->
+    <div class="form-group row ">
+        {!! Form::label('processing_time', trans("lang.order_processing_time"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('processing_time', null,  ['class' => 'form-control', 'min' => 0, 'placeholder'=>  trans("lang.order_processing_time_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.order_processing_time_help") }}
+            </div>
+        </div>
+    </div>
+
     <!-- Tax Field -->
     <div class="form-group row ">
         {!! Form::label('tax', trans("lang.order_tax"), ['class' => 'col-3 control-label text-right']) !!}

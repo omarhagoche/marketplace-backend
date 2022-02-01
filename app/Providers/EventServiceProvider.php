@@ -23,12 +23,8 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\UpdateOrderEarningTable',
             'App\Listeners\UpdateOrderDriverTable'
         ],
-        'App\Events\CreatedOrderEvent' => [
-            'App\Listeners\NotifyAvailableOrderListener',
-            'App\Listeners\UpdateDriverStatusListener',
-            'App\Listeners\UpdateOrderStatusInFirebaseListener',
-        ],
         'App\Events\UpdatedOrderEvent' => [
+            'App\Listeners\NotifyAvailableOrderListener',
             'App\Listeners\UpdateDriverStatusListener',
             'App\Listeners\UpdateOrderStatusInFirebaseListener',
             'App\Listeners\RemoveCanceledOrdersFromFirestoreListener',
