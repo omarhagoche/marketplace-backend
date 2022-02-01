@@ -21,6 +21,8 @@ use Eloquent as Model;
  * @property string discount_type
  * @property string description
  * @property dateTime expires_at
+ * @property int count
+ * @property int count_used
  * @property boolean enabled
  * @property boolean on_delivery_fee
  * @property boolean cost_on_restaurant
@@ -38,6 +40,8 @@ class Coupon extends Model
         'discount_type',
         'description',
         'expires_at',
+        'count',
+        'count_used',
         'enabled',
         'on_delivery_fee',
         'cost_on_restaurant',
@@ -54,6 +58,8 @@ class Coupon extends Model
         'discount_type' => 'string',
         'description' => 'string',
         'expires_at' => 'datetime',
+        'count' => 'int',
+        'count_used' => 'int',
         'enabled' => 'boolean',
         'on_delivery_fee' => 'boolean',
         'cost_on_restaurant' => 'boolean'
