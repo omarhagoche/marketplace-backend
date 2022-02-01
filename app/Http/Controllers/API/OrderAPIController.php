@@ -300,6 +300,18 @@ class OrderAPIController extends Controller
             if ($order->user_id) {
                 Notification::send($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications(), new NewOrder($order));
             }
+
+            // start update number of use for coupons
+            if ($order->delivery_coupon_id) {
+                $order->deliveryCoupon->count_used += 1;
+                $order->deliveryCoupon->save();
+            }
+            if ($order->restaurant_coupon_id) {
+                $order->restaurantCoupon->count_used += 1;
+                $order->restaurantCoupon->save();
+            }
+            // end update number of use for coupons
+
             DB::commit();
         } catch (ValidatorException $e) {
             DB::rollback();
