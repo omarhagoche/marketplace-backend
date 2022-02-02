@@ -74,7 +74,7 @@ class Coupon extends Model
         'code' => 'required|unique:coupons|max:50',
         'discount' => 'required|numeric|min:0',
         'discount_type' => 'required',
-        'expires_at' => 'required|date|after_or_equal:tomorrow'
+        'expires_at' => 'required|date', //'|after_or_equal:tomorrow'
     ];
 
     /**

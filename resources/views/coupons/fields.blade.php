@@ -37,6 +37,16 @@
   </div>
 </div>
 
+<!-- count Field -->
+<div class="form-group row ">
+  {!! Form::label('count', trans("lang.count"), ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    {!! Form::number('count', null,  ['class' => 'form-control','placeholder'=>  trans("lang.count_placeholder"),'step'=>"any", 'min'=>"0"]) !!}
+    <div class="form-text text-muted">
+      {!! trans("lang.count_help")   !!}
+    </div>
+  </div>
+</div>
 
 
 <!-- Description Field -->
