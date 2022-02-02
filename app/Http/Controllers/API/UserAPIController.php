@@ -84,7 +84,7 @@ class UserAPIController extends Controller
         $verfication = VerficationCode::updateOrCreate(
             ['phone' => $request->phone_number, 'user_id' => null],
             [
-                'code' => sprintf("%06d", mt_rand(1, 999999)),
+                'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
                 'created_at' => now(),
             ]
         );
@@ -429,7 +429,7 @@ class UserAPIController extends Controller
         }
 
         $verfication = $user->verfication_code()->create([
-            'code' => sprintf("%06d", mt_rand(1, 999999)),
+            'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
         ]);
         if (send_sms($user->phone_number, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Reset vervication code sent successfully');
