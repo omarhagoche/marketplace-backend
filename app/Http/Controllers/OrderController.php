@@ -183,7 +183,7 @@ class OrderController extends Controller
         $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
+        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria(0))->pluck('name', 'id');
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
