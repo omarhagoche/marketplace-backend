@@ -41,7 +41,8 @@ class DriversOfRestaurantCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return $model->join('driver_restaurants','users.id','=','driver_restaurants.user_id')
-            ->where('driver_restaurants.restaurant_id',$this->restaurantId);
+        return $model;
+        // return $model->join('driver_restaurants','users.id','=','driver_restaurants.user_id')
+        //     ->where('driver_restaurants.restaurant_id',$this->restaurantId);
     }
 }
