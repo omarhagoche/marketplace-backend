@@ -182,7 +182,7 @@ class UserAPIController extends Controller
     {
         $this->validate($request, [
             //'token' => 'required|string|min:64|max:256',
-            'phone_number' => ['required', new PhoneNumber],
+            'phone_number' => ['required', new PhoneNumber, 'unique:users'],
             'name' => 'required|min:3|max:32',
             'email' => 'nullable|email|unique:users',
             'password' => 'required|min:6|max:32',
@@ -193,7 +193,7 @@ class UserAPIController extends Controller
         $user = new User;
         $user->name = $request->input('name');
         $user->phone_number = $request->input('phone_number'); // $verfication->phone;
-        $user->email = $request->get('email', $user->phone_number);
+        $user->email = $request->get('email', "$request->phone_number." . time());
         $user->device_token = $request->input('device_token', '');
         $user->password = Hash::make($request->input('password'));
         $user->api_token = str_random(60);
