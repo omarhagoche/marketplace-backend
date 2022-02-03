@@ -181,23 +181,24 @@ class UserAPIController extends Controller
     function register(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required|string|min:64|max:256',
+            //'token' => 'required|string|min:64|max:256',
+            'phone_number' => ['required', new PhoneNumber],
             'name' => 'required|min:3|max:32',
-            'email' => 'required|email|unique:users',
+            'email' => 'nullable|email|unique:users',
             'password' => 'required|min:6|max:32',
         ]);
 
-        $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+        //$verfication = VerficationCode::where('token', $request->token)->firstOrFail();
 
         $user = new User;
         $user->name = $request->input('name');
-        $user->phone_number = $verfication->phone;
-        $user->email = $request->input('email');
+        $user->phone_number = $request->input('phone_number'); // $verfication->phone;
+        $user->email = $request->get('email', $user->phone_number);
         $user->device_token = $request->input('device_token', '');
         $user->password = Hash::make($request->input('password'));
         $user->api_token = str_random(60);
         $user->save();
-        $verfication->delete();
+        //$verfication->delete();
 
         $defaultRoles = $this->roleRepository->findByField('default', '1');
         $defaultRoles = $defaultRoles->pluck('name')->toArray();
