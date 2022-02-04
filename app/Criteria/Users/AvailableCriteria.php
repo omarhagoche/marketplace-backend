@@ -43,12 +43,13 @@ class AvailableCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return $model->where(function ($q) {
-            $q->where('available', true)->where('working_on_order', false);
-            if ($this->driver_id) {
-                $q->orWhere('user_id', $this->driver_id);
-            }
-            return $q;
-        });
+        return $model->join('drivers', 'users.id', '=', 'drivers.user_id')
+            ->where(function ($q) {
+                $q->where('available', true)->where('working_on_order', false);
+                if ($this->driver_id) {
+                    $q->orWhere('user_id', $this->driver_id);
+                }
+                return $q;
+            });
     }
 }

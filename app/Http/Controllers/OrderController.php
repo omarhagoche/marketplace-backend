@@ -184,11 +184,11 @@ class OrderController extends Controller
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
         $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
         if ($order->restaurant->private_drivers) {
-            $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
+            $driver = $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
         } else {
-            $driver = $this->userRepository->getByCriteria(new DriversCriteria());
+            $driver = $this->userRepository->pushCriteria(new DriversCriteria());
         }
-        $driver = $driver->pluck('name', 'id');
+        $driver = $driver->select('users.name', 'users.id')->pluck('name', 'id');
         // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
         $driver->prepend(null, "");
 
