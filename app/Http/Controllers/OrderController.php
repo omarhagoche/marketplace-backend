@@ -231,7 +231,8 @@ class OrderController extends Controller
             $order = $this->orderRepository->update($input, $id);
 
             if (setting('enable_notifications', false)) {
-                if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                    // we send notifications for only users who are clients , not unregisterd customer
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
