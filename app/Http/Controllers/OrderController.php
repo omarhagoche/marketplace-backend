@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AvailableCriteria;
 use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
 use App\Criteria\Users\DriversOfRestaurantCriteria;
@@ -179,11 +180,19 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
 
-        $restaurant = $order->foodOrders()->first();
-        $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
+        $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
+        if ($order->restaurant->private_drivers) {
+            $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
+        } else {
+            $driver = $this->userRepository->getByCriteria(new DriversCriteria());
+        }
+        $driver = $driver->pluck('name', 'id');
+        // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
+        $driver->prepend(null, "");
+
+
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
