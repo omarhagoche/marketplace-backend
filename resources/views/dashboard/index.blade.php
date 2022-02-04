@@ -133,7 +133,7 @@
                             <a href="{{route('restaurants.index')}}" class="btn btn-tool btn-sm"><i class="fa fa-bars"></i> </a>
                         </div>
                     </div>
-                    <div class="card-body p-0" style="width: 100%; border-collapse: collapse;">
+                    <div class="card-body p-0" style="width: 100%; border-collapse: collapse; overflow-x:auto;">
                         <table class="table table-striped table-valign-middle">
                             <thead>
                             <tr>
