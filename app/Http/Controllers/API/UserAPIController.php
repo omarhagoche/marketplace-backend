@@ -9,23 +9,24 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\VerficationCode;
-use Carbon\Carbon;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\RoleRepository;
-use App\Repositories\UploadRepository;
-use App\Repositories\UserRepository;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Password;
-use Prettus\Validator\Exceptions\ValidatorException;
-use App\Rules\PhoneNumber;
-use Illuminate\Support\Str;
 use DB;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Rules\PhoneNumber;
+use App\Models\DeviceToken;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\VerficationCode;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
+use App\Repositories\UploadRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Password;
+use App\Repositories\CustomFieldRepository;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 
 class UserAPIController extends Controller
@@ -60,7 +61,13 @@ class UserAPIController extends Controller
             if (!$user->hasRole('client')) {
                 return $this->sendError('User not client', 401);
             }
-            $user->device_token = $request->input('device_token', '');
+            //create token for device
+            $deviceToken=str_random(128);
+            //save decvice token on table
+            $user->deviceTokens()->create(['token'=>$deviceToken]);
+            //set value to column device_token
+            $user->device_token = $deviceToken;
+            // $user->device_token = $request->input('device_token', '');
             $user->save();
             return $this->sendResponse($user, 'User retrieved successfully');
         }
@@ -148,9 +155,14 @@ class UserAPIController extends Controller
             $user->name = $request->input('name');
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
-            $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);
+            //create token for device
+            $deviceToken=str_random(128);
+            //save decvice token on table
+            $user->deviceTokens()->create(['token'=>$deviceToken]);
+            //set value to column device_token
+            $user->device_token = $deviceToken;
             $user->save();
             $verfication->delete();
 
@@ -193,9 +205,14 @@ class UserAPIController extends Controller
         $user->name = $request->input('name');
         $user->phone_number = $verfication->phone;
         $user->email = $request->input('email');
-        $user->device_token = $request->input('device_token', '');
         $user->password = Hash::make($request->input('password'));
         $user->api_token = str_random(60);
+        //create token for device
+        $deviceToken=str_random(128);
+        //save decvice token on table
+        $user->deviceTokens()->create(['token'=>$deviceToken]);
+        //set value to column device_token
+        $user->device_token = $deviceToken;
         $user->save();
         $verfication->delete();
 
@@ -214,6 +231,9 @@ class UserAPIController extends Controller
             return $this->sendError('User not found', 401);
         }
         try {
+            //delete token from device token
+            DeviceToken::where ('token',$user->device_token)->delete();
+            // logout user
             auth()->logout();
         } catch (\Exception $e) {
             $this->sendError($e->getMessage(), 401);

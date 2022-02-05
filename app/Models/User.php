@@ -9,14 +9,15 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\DeviceToken;
+use App\Traits\SkipAppends;
 use Laravel\Cashier\Billable;
 use Spatie\Image\Manipulations;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Permission\Traits\HasRoles;
-use App\Traits\SkipAppends;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
@@ -124,7 +125,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function routeNotificationForFcm($notification)
     {
-        return $this->device_token;
+        return $this->getDeviceTokens();
     }
 
     /**
@@ -266,4 +267,19 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(\App\Models\VerficationCode::class, 'user_id');
     }
+    /**
+     * Get all of the Device_Tokens for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function deviceTokens()
+    {
+        return $this->hasMany(DeviceToken::class);;
+    }
+    public function getDeviceTokens()
+    {
+        return $this->deviceTokens()->pluck('token')->toArray();
+     
+    }
+
 }
