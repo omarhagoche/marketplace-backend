@@ -101,7 +101,7 @@ class Order extends Model
      */
     public static $rules = [
         'user_id' => 'nullable|exists:users,id',
-        'unregistered_customer' => 'required_without:user_id',
+        //'unregistered_customer' => 'required_without:user_id',
         'order_status_id' => 'required|exists:order_statuses,id',
         'delivery_coupon_id' => 'exists:coupons,id',
         'restaurant_coupon_id' => 'exists:coupons,id',
@@ -287,5 +287,14 @@ class Order extends Model
         };
 
         return ($this->getOriginal('order_status_id') ?? false) == 80; // 80 : delivered
+    }
+
+    public function isStatusWasCanceled()
+    {
+        if (!$this->wasChanged('order_status_id')) {
+            return false;
+        };
+
+        return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
     }
 }
