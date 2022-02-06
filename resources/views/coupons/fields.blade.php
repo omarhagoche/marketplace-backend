@@ -82,14 +82,14 @@
 
 
 <!-- Category Id Field -->
-<div class="form-group row ">
+{{-- <div class="form-group row ">
   {!! Form::label('categories[]', trans("lang.coupon_category_id"),['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
     {!! Form::select('categories[]', $category, $categoriesSelected, ['class' => 'select2 form-control', 'multiple'=>'multiple']) !!}
     <div class="form-text text-muted">{{ trans("lang.coupon_category_id_help") }}</div>
   </div>
 </div>
-
+ --}}
 
 <!-- Expires At Field -->
 <div class="form-group row ">
