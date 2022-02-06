@@ -84,7 +84,8 @@ class Coupon extends Model
      */
     protected $appends = [
         'custom_fields',
-        'restaurant_id'
+        'restaurant_id',
+        'foods_ids'
     ];
 
 
@@ -99,6 +100,16 @@ class Coupon extends Model
             return $r->discountable_id;
         }
         return null;
+    }
+
+
+    /**
+     * get Foods ids attribute
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function getFoodsIdsAttribute()
+    {
+        return $this->discountables->where("discountable_type", Food::class)->pluck('id');
     }
 
 
