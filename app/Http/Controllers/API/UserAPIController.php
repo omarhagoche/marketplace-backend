@@ -61,12 +61,11 @@ class UserAPIController extends Controller
             if (!$user->hasRole('client')) {
                 return $this->sendError('User not client', 401);
             }
-            //create token for device
-            $deviceToken=str_random(128);
+           
             //save decvice token on table
-            $user->deviceTokens()->create(['token'=>$deviceToken]);
+            $user->deviceTokens()->create(['token'=>$request->input('device_token', '')]);
             //set value to column device_token
-            $user->device_token = $deviceToken;
+            $user->device_token = $request->input('device_token', '');
             // $user->device_token = $request->input('device_token', '');
             $user->save();
             return $this->sendResponse($user, 'User retrieved successfully');
@@ -157,12 +156,10 @@ class UserAPIController extends Controller
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);
-            //create token for device
-            $deviceToken=str_random(128);
             //save decvice token on table
-            $user->deviceTokens()->create(['token'=>$deviceToken]);
+            $user->deviceTokens()->create(['token'=>$request->input('device_token', '')]);
             //set value to column device_token
-            $user->device_token = $deviceToken;
+            $user->device_token = $request->input('device_token', '');
             $user->save();
             $verfication->delete();
 
@@ -207,12 +204,10 @@ class UserAPIController extends Controller
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->api_token = str_random(60);
-        //create token for device
-        $deviceToken=str_random(128);
-        //save decvice token on table
-        $user->deviceTokens()->create(['token'=>$deviceToken]);
-        //set value to column device_token
-        $user->device_token = $deviceToken;
+       //save decvice token on table
+       $user->deviceTokens()->create(['token'=>$request->input('device_token', '')]);
+       //set value to column device_token
+       $user->device_token = $request->input('device_token', '');
         $user->save();
         $verfication->delete();
 
@@ -232,7 +227,7 @@ class UserAPIController extends Controller
         }
         try {
             //delete token from device token
-            DeviceToken::where ('token',$user->device_token)->delete();
+            DeviceToken::where ('token',$request->input('device_token', ''))->delete();
             // logout user
             auth()->logout();
         } catch (\Exception $e) {
