@@ -61,7 +61,7 @@ class RolesTableSeeder extends Seeder
             array (
                 'id' => 6,
                 'name' => 'operations',
-                'guard_name' => 'operations',
+                'guard_name' => 'web',
                 'default' => 0,
                 'created_at' => '2019-12-15 18:50:21',
                 'updated_at' => '2019-12-15 18:50:21',
