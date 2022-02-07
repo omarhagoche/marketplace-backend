@@ -54,6 +54,20 @@
     <p>{!! $order->orderStatus->status  !!}</p>
   </div>
 
+  @if($order->reason)
+    <!-- Reason Field -->
+    {!! Form::label('reason', trans('lang.order_reason'), ['class' => 'col-4 control-label']) !!}
+    <div class="col-8">
+      <p>{{ $order->reason  }}</p>
+    </div>
+  @endif
+
+  <!-- Processing time Field -->
+  {!! Form::label('processing_time', trans('lang.order_processing_time'), ['class' => 'col-4 control-label']) !!}
+  <div class="col-8">
+    <p>{{ $order->processing_time  }} minute</p>
+  </div>
+
     {!! Form::label('active', trans('lang.order_active'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
     @if($order->active)

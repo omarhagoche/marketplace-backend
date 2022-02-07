@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AvailableCriteria;
 use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
 use App\Criteria\Users\DriversOfRestaurantCriteria;
@@ -179,11 +180,19 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
 
-        $restaurant = $order->foodOrders()->first();
-        $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
+        $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
+        if ($order->restaurant->private_drivers) {
+            $driver = $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
+        } else {
+            $driver = $this->userRepository->pushCriteria(new DriversCriteria());
+        }
+        $driver = $driver->select('users.name', 'users.id')->pluck('name', 'id');
+        // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
+        $driver->prepend(null, "");
+
+
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
@@ -222,7 +231,8 @@ class OrderController extends Controller
             $order = $this->orderRepository->update($input, $id);
 
             if (setting('enable_notifications', false)) {
-                if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                    // we send notifications for only users who are clients , not unregisterd customer
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
