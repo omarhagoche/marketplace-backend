@@ -51,7 +51,7 @@ class User extends Authenticatable implements HasMedia
     public static $rules = [
         'name' => 'required|string|max:255',
         'phone_number' => 'required|string|max:20|unique:users,phone_number',
-        'email' => 'required|string|email|unique:users,email',
+        'email' => 'required|string|unique:users,email',
         'active' => 'required|boolean',
         'password' => 'required|min:6|max:32',
     ];

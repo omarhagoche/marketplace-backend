@@ -84,7 +84,7 @@ class UserAPIController extends Controller
         $verfication = VerficationCode::updateOrCreate(
             ['phone' => $request->phone_number, 'user_id' => null],
             [
-                'code' => sprintf("%06d", mt_rand(1, 999999)),
+                'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
                 'created_at' => now(),
             ]
         );
@@ -181,23 +181,24 @@ class UserAPIController extends Controller
     function register(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required|string|min:64|max:256',
+            //'token' => 'required|string|min:64|max:256',
+            'phone_number' => ['required', new PhoneNumber, 'unique:users'],
             'name' => 'required|min:3|max:32',
-            'email' => 'required|email|unique:users',
+            'email' => 'nullable|email|unique:users',
             'password' => 'required|min:6|max:32',
         ]);
 
-        $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
+        //$verfication = VerficationCode::where('token', $request->token)->firstOrFail();
 
         $user = new User;
         $user->name = $request->input('name');
-        $user->phone_number = $verfication->phone;
-        $user->email = $request->input('email');
+        $user->phone_number = $request->input('phone_number'); // $verfication->phone;
+        $user->email = $request->email ?? "$request->phone_number." . time();
         $user->device_token = $request->input('device_token', '');
         $user->password = Hash::make($request->input('password'));
         $user->api_token = str_random(60);
         $user->save();
-        $verfication->delete();
+        //$verfication->delete();
 
         $defaultRoles = $this->roleRepository->findByField('default', '1');
         $defaultRoles = $defaultRoles->pluck('name')->toArray();
@@ -429,7 +430,7 @@ class UserAPIController extends Controller
         }
 
         $verfication = $user->verfication_code()->create([
-            'code' => sprintf("%06d", mt_rand(1, 999999)),
+            'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
         ]);
         if (send_sms($user->phone_number, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Reset vervication code sent successfully');

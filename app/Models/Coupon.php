@@ -21,6 +21,8 @@ use Eloquent as Model;
  * @property string discount_type
  * @property string description
  * @property dateTime expires_at
+ * @property int count
+ * @property int count_used
  * @property boolean enabled
  * @property boolean on_delivery_fee
  * @property boolean cost_on_restaurant
@@ -38,6 +40,8 @@ class Coupon extends Model
         'discount_type',
         'description',
         'expires_at',
+        'count',
+        'count_used',
         'enabled',
         'on_delivery_fee',
         'cost_on_restaurant',
@@ -54,6 +58,8 @@ class Coupon extends Model
         'discount_type' => 'string',
         'description' => 'string',
         'expires_at' => 'datetime',
+        'count' => 'int',
+        'count_used' => 'int',
         'enabled' => 'boolean',
         'on_delivery_fee' => 'boolean',
         'cost_on_restaurant' => 'boolean'
@@ -68,7 +74,7 @@ class Coupon extends Model
         'code' => 'required|unique:coupons|max:50',
         'discount' => 'required|numeric|min:0',
         'discount_type' => 'required',
-        'expires_at' => 'required|date|after_or_equal:tomorrow'
+        'expires_at' => 'required|date', //'|after_or_equal:tomorrow'
     ];
 
     /**
@@ -78,7 +84,8 @@ class Coupon extends Model
      */
     protected $appends = [
         'custom_fields',
-        'restaurant_id'
+        'restaurant_id',
+        'foods_ids'
     ];
 
 
@@ -93,6 +100,16 @@ class Coupon extends Model
             return $r->discountable_id;
         }
         return null;
+    }
+
+
+    /**
+     * get Foods ids attribute
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function getFoodsIdsAttribute()
+    {
+        return $this->discountables->where("discountable_type", Food::class)->pluck('id');
     }
 
 
