@@ -364,13 +364,13 @@ class OrderController extends Controller
     * @param  int  $id -> order id
     * @return Response
     */
-    public function editOrderProducts($id)
+    public function editorderFoods($id)
     {
-        $orderProducts = FoodOrder::where('order_id',$id)->get();
+        $orderFoods = FoodOrder::where('order_id',$id)->get();
         $data = [
-            "orderProducts" =>  $orderProducts,
+            "orderFoods" =>  $orderFoods,
             "orderId"       =>  $id
         ];
-        return view('orders.orderProducts.edit')->with($data);   
+        return view('orders.orderFoods.edit')->with($data);   
     }
 }

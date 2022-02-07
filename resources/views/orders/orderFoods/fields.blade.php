@@ -1,8 +1,5 @@
 
 
-{{ $orderProducts }}
-
-
 <div style="flex: 50%;max-width: 100%;padding: 0 4px;" class="column">
 
 <div class="row">
@@ -18,27 +15,27 @@
               </tr>
             </thead>
             <tbody>
-                @foreach ($orderProducts as $orderProduct)
+                @foreach ($orderFoods as $orderFoods)
                 <tr>
-                  <th scope="row">{{ $orderProduct->food->name}}</th>
-                  <td>{{$orderProduct->price}}</td>
-                  <td>{{$orderProduct->quantity}}</td>
+                  <th scope="row">{{ $orderFoods->food->name}}</th>
+                  <td>{{$orderFoods->price}}</td>
+                  <td>{{$orderFoods->quantity}}</td>
                   <td>
-                      @foreach ($orderProduct->extras as $extra)
+                      @foreach ($orderFoods->extras as $extra)
                       <div class="row">
-                            <p>
+                            <button type="button" class="btn btn-outline-dark mb-2">
                                 {{$extra->name}} <a><i class="fa fa-trash text-danger"></i></a>
-                            </p>
+                            </button>
                       </div>
-                      <hr>
                       @endforeach
-                      {{-- @if (count($orderProduct->extras) !=0) --}}
+                      {{-- @if (count($orderFoods->extras) !=0) --}}
                       <div class="row">
                         <div class="col col-md-6">
-                            <select name="" id=""></select>
+                          {{-- {{}} --}}
+                            {!! Form::select('user_id', $orderFoods->food->extras->pluck('name','id'),null, ['class' => 'select2 form-control']) !!}
                         </div>
                         <div class="col col-md-6">
-                          <button></button>
+                          <button class="btn btn-primary">Add Extra <i class="fa fa-plus"></i></button>
                         </div>
                       </div>
                       {{-- @endif --}}

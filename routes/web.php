@@ -167,7 +167,7 @@ Route::middleware('auth')->group(function () {
     Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
     
     Route::resource('orders', 'OrderController');
-    Route::get('orders/edit/products/{order_id}', 'OrderController@editOrderProducts')->name('orders.edit-order-products');
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editorderFoods')->name('orders.edit-order-foods');
 
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',

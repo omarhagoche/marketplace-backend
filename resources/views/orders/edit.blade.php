@@ -51,7 +51,7 @@
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('orders.edit-order-products',$order->id) !!}"><i class="fa fa-product-hunt mr-2"></i>{{trans('lang.order_edit_products')}}</a>
+          <a class="nav-link" href="{!! route('orders.edit-order-foods',$order->id) !!}"><i class="fa fa-product-hunt mr-2"></i>{{trans('lang.order_edit_foods')}}</a>
         </li>
       </ul>
     </div>
