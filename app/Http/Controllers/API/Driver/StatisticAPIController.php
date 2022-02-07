@@ -21,6 +21,7 @@ class StatisticAPIController extends Controller
     public function index(Request $request)
     {
         $user_id = auth()->user()->id;
+
         //$delivered_orders = Order::where('driver_id', $user_id)->where('order_status_id', 80)->count();
         $settlements = SettlementDriver::select(
             DB::raw("IFNULL(SUM(amount),0) amount"),
@@ -47,10 +48,21 @@ class StatisticAPIController extends Controller
 
         $availabel_orders_for_settlement['fee'] = round(getDriverFee() / 100 * $availabel_orders_for_settlement['delivery_fee'], 3);
 
+        $driverCopon = Order::select(
+            DB::raw("ifnull(SUM(delivery_coupon_value),0) amountDelivery"),
+            DB::raw('ifnull(SUM(restaurant_coupon_value),0) amountrestaurant'))
+            ->where('driver_id', $user_id)
+            ->where('order_status_id', 80) 
+            ->whereNull('settlement_driver_id')
+            ->where('delivery_coupon_id','!=',null)
+            ->first();
+        $driverCopon->amount  =  $driverCopon->amountDelivery + $driverCopon->amountrestaurant; 
+
         $data =  [
             //'delivered_orders' => $delivered_orders,
             'settlements' => $settlements,
             'availabel_orders_for_settlement' => $availabel_orders_for_settlement,
+            'driver_copon_settlements' => $driverCopon,
         ];
 
         return $this->sendResponse($data, "Statistics retrieved successfully");
