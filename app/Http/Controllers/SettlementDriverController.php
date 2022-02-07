@@ -336,17 +336,24 @@ class SettlementDriverController extends Controller
 
     private function calculateOrders($driver_id)
     {
-        $orders = Order::select(DB::raw("IFNULL(SUM(delivery_fee),0) amount"), DB::raw('IFNULL(COUNT(*),0) count'))
+        $orders = Order::select(
+            DB::raw("IFNULL(SUM(delivery_fee),0) amount"), 
+            DB::raw('IFNULL(COUNT(*),0) count'),
+            DB::raw("ifnull(SUM(delivery_coupon_value),0) amountDelivery"),
+            DB::raw('ifnull(SUM(restaurant_coupon_value),0) amountrestaurant')
+            )
             ->where('driver_id', $driver_id)
             ->where('order_status_id', 80) // Order Delivered
-            ->whereNull('settlement_driver_id')
+            ->where('settlement_driver_id',null)
             ->first();
         if ($orders->count == 0) {
             throw ValidationException::withMessages(["There is no available orders for settelment"]);
         }
 
         $orders->fee = getDriverFee();
+        $couponStttlement = $orders->amountDelivery + $orders->amountrestaurant;
         $orders->amount  = ($orders->fee / 100) *  $orders->amount; // calculate amount;
+        $orders->amount  = $orders->amount + $couponStttlement;
 
         return $orders;
     }
