@@ -57,6 +57,16 @@ class RolesTableSeeder extends Seeder
                 'updated_at' => '2019-12-15 18:50:21',
                 'deleted_at' => NULL,
             ),
+            4 => 
+            array (
+                'id' => 5,
+                'name' => 'driver',
+                'guard_name' => 'operations',
+                'default' => 0,
+                'created_at' => '2019-12-15 18:50:21',
+                'updated_at' => '2019-12-15 18:50:21',
+                'deleted_at' => NULL,
+            ),
         ));
         
         
