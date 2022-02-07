@@ -228,3 +228,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
 });
+//// new Dashboard for operations
+Route::group(['middleware' => ['permission:operations']], function () {
+    Route::prefix('manager')->group(function () {
+
+    });
+
+});
