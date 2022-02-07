@@ -733,6 +733,7 @@ return [
     'order_order_status_id_help' => 'Insert Order Status',
     'order_order_status_id_placeholder' => 'Insert Order Status',
     'order_paid' => 'Paid',
+    'order_waitting_drivers_plural' => 'Orders waitting for drivers',
     'order_plural' => 'Orders',
     'order_status' => 'Order Status',
     'order_status_create' => 'Create Order Status',

@@ -16,6 +16,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use App\Traits\SkipAppends;
 
 /**
  * Class Restaurant
@@ -53,6 +54,8 @@ class Restaurant extends Model implements HasMedia
     use HasMediaTrait {
         getFirstMediaUrl as protected getFirstMediaUrlTrait;
     }
+
+    use SkipAppends;
 
     public $table = 'restaurants';
 
@@ -157,6 +160,16 @@ class Restaurant extends Model implements HasMedia
         'flexible' => 'flexible',
     ];
 
+
+
+    /**
+     * Allowed attributes to skip appends attributes 
+     * This method useful to skip load extra data , also skip load relations when will not be useful
+     */
+    public function getAllowedAttributesToSkipAppends()
+    {
+        return ['id', 'name'];
+    }
 
 
     /**

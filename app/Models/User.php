@@ -16,6 +16,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\SkipAppends;
 
 /**
  * Class User
@@ -39,6 +40,8 @@ class User extends Authenticatable implements HasMedia
         getFirstMediaUrl as protected getFirstMediaUrlTrait;
     }
     use HasRoles;
+    use SkipAppends;
+
 
     /**
      * Validation rules
@@ -103,6 +106,16 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Allowed attributes to skip appends attributes 
+     * This method useful to skip load extra data , also skip load relations when will not be useful
+     */
+    public function getAllowedAttributesToSkipAppends()
+    {
+        return ['id', 'name'];
+    }
+
 
     /**
      * Specifies the user's FCM token

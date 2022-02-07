@@ -17,7 +17,10 @@ use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Order;
+use App\Models\User;
 use App\Notifications\AssignedOrder;
+use App\Notifications\OrderNeedsToAccept;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\NotificationRepository;
@@ -297,5 +300,49 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
+    }
+
+
+
+
+    /**
+     * Display the specified Driver.
+     *
+     * @return Response
+     */
+    public function ordersWaittingForDrivers()
+    {
+        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
+        return view('orders.watting_drivers')->with('drivers', $drivers);
+    }
+
+
+    /**
+     * Set driver to deliver order.
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function setDriverForOrder($order_id, $driver_id, Request $request)
+    {
+        $order = Order::where('order_status_id', 10)->findOrFail($order_id);
+        $user = User::findOrFail($driver_id);
+
+        if ($order->user_id) {
+            $order->order_status_id = 20; // 20 : waiting_for_restaurant
+            if (setting('send_sms_notifications_for_restaurants', false) || setting('send_whatsapp_notifications_for_restaurants', false)) {
+                Notification::send($order->restaurant->getUsersWhoEnabledNotifications(), new OrderNeedsToAccept($order));
+            }
+        } else {
+            $order->order_status_id = 30; // 30 : accepted_from_restaurant
+        }
+        $order->driver_id = $user->id;
+        $order->save();
+
+        app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
+
+        return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 }

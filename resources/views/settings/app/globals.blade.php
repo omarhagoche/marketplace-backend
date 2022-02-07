@@ -96,6 +96,28 @@
                         </div>
                     </div>
 
+                    <!-- orders_minimum_value Field -->
+                    <div class="form-group row">
+                        {!! Form::label('orders_minimum_value', trans("lang.app_setting_orders_minimum_value"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('orders_minimum_value', setting('orders_minimum_value'),  ['step' => '1','min' => '0','class' => 'form-control','placeholder'=>  trans("lang.app_setting_orders_minimum_value_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_orders_minimum_value_help") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- orders_maximum_value Field -->
+                    <div class="form-group row">
+                        {!! Form::label('orders_maximum_value', trans("lang.app_setting_orders_maximum_value"), ['class' => 'col-4 control-label text-right']) !!}
+                        <div class="col-8">
+                            {!! Form::number('orders_maximum_value', setting('orders_maximum_value'),  ['step' => '1','min' => '0','class' => 'form-control','placeholder'=>  trans("lang.app_setting_orders_maximum_value_placeholder")]) !!}
+                            <div class="form-text text-muted">
+                                {{ trans("lang.app_setting_orders_maximum_value_help") }}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- range_restaurants_for_customers Field -->
                     <div class="form-group row">
                         {!! Form::label('range_restaurants_for_customers', trans("lang.app_setting_range_restaurants_for_customers"), ['class' => 'col-4 control-label text-right']) !!}

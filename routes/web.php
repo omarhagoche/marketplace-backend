@@ -162,6 +162,10 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
+
+    Route::get('orders/waitting-drivers', 'OrderController@ordersWaittingForDrivers')->name('orders.waitting_drivers');
+    Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
+
     Route::resource('orders', 'OrderController');
 
     Route::resource('notifications', 'NotificationController')->except([

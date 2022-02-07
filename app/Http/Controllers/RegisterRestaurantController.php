@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\UserRoleChangedEvent;
 use App\Models\Restaurant;
 use App\Models\User;
+use App\Models\Category;
 use Exception;
 use Session;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class RegisterRestaurantController extends Controller
 
     public function show(Request $request)
     {
-        return view('register_restaurant');
+        $categories = Category::select('id', 'name')->get();
+        return view('register_restaurant', [
+            'categories' => $categories
+        ]);
     }
 
 
@@ -43,6 +47,12 @@ class RegisterRestaurantController extends Controller
             //'user_name' => 'required|min:3|max:100',
             'user_phone' => 'required|unique:users,phone_number',
             'users.*.user_phone' => 'required|unique:users,phone_number',
+
+
+            // foods data
+            'foods.*.name' => 'required|min:3|max:32',
+            'foods.*.price' => 'required|integer',
+            'foods.*.category_id' => 'required|int|exists:categories,id',
 
             // restuarant data
             'name' => 'required|min:3|max:100',
@@ -111,19 +121,26 @@ class RegisterRestaurantController extends Controller
 
             // start add mulit users (employees)
             $users = [];
-            foreach ($request->users as $u) {
-                if (ltrim($u['user_phone'], 0) == $user->phone_number) {
-                    continue;
+            if ($request->has('users')) {
+                foreach ($request->users as $u) {
+                    if (ltrim($u['user_phone'], 0) == $user->phone_number) {
+                        continue;
+                    }
+                    $item =   $this->addUserToRestaurant($restaurant, $u['user_name'] ?? $u['user_phone'], $u['user_phone']);
+                    $users[$item->id] = $item->toArray();
                 }
-                $item =   $this->addUserToRestaurant($restaurant, $u['user_name'] ?? $u['user_phone'], $u['user_phone']);
-                $users[$item->id] = $item->toArray();
             }
             // end add mulit users (employees)
+
+            // start add mulit foods 
+            $foods =   $this->addFoodsToRestaurant($restaurant, $request->foods ?? []);
+            // end add mulit foods 
 
             Log::channel('registerRestaurants')->info(json_encode([
                 'restaurant' => $restaurant->toArray(),
                 'user' => $user->toArray(),
                 'users' =>  $users,
+                'foods' =>  $foods,
                 'request' => $request->all(),
                 'ip' => $request->ip(),
                 'user_agent' => $request->server('HTTP_USER_AGENT')
@@ -154,5 +171,19 @@ class RegisterRestaurantController extends Controller
 
         $user->assignRole(['manager']);
         return $user;
+    }
+
+
+    protected function addFoodsToRestaurant($restaurant, $foods)
+    {
+        $query = [];
+        foreach ($foods as $f) {
+            array_push($query, [
+                'name' => $f['name'],
+                'price' => $f['price'],
+                'category_id' => $f['category_id'],
+            ]);
+        }
+        return $restaurant->foods()->createMany($query);
     }
 }

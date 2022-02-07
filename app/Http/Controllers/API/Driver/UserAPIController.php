@@ -167,6 +167,8 @@ class UserAPIController extends Controller
             'app_manager_force_update_ios' => '',
             'app_customer_force_update_ios' => '',
             'distance_unit' => '',
+            'orders_minimum_value' => '',
+            'orders_maximum_value' => '',
         ]);
 
         if (!$settings) {
