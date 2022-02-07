@@ -54,7 +54,7 @@ class DriverController extends Controller
      * @return Response
      */
     public function index(DriverDataTable $driverDataTable)
-    {
+    {  
         return $driverDataTable->render('drivers.index');
     }
 

@@ -165,6 +165,10 @@ class Order extends Model
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
 
+    public function userName()
+    {
+        return $this->user->name;
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -199,6 +203,10 @@ class Order extends Model
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
 
+    public function restaurantName()
+    {
+        return $this->restaurant->name;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

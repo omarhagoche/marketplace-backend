@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
 /**
  * Class Driver
@@ -143,8 +144,22 @@ class Driver extends Model
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function lastOrder()
+    {
+        return $this->orders()->orderby('created_at', 'desc')->first();
+    }
     public function types()
     {
         return $this->drivers_types;
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(DriverReview::class);
     }
 }
