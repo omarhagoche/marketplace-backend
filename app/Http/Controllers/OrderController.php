@@ -18,6 +18,7 @@ use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\FoodOrder;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\AssignedOrder;
@@ -161,6 +162,7 @@ class OrderController extends Controller
 
         return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
     }
+
 
     /**
      * Show the form for editing the specified Order.
@@ -354,5 +356,21 @@ class OrderController extends Controller
         app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
+    }
+
+    /**
+    * Show order products update page.
+    *
+    * @param  int  $id -> order id
+    * @return Response
+    */
+    public function editOrderProducts($id)
+    {
+        $orderProducts = FoodOrder::where('order_id',$id)->get();
+        $data = [
+            "orderProducts" =>  $orderProducts,
+            "orderId"       =>  $id
+        ];
+        return view('orders.orderProducts.edit')->with($data);   
     }
 }
