@@ -33,7 +33,9 @@ class UserDataTable extends DataTable
                 return getDateColumn($user, 'updated_at');
             })
             ->editColumn('role', function ($user) {
-                return getArrayColumn($user->roles, 'name');
+                if ($user->hasRole('client')) {
+                    return getArrayColumn($user->roles, 'name');
+                }
             })
             ->editColumn('email', function ($user) {
                 return getEmailColumn($user, 'email');

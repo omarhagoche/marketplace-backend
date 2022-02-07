@@ -25,10 +25,10 @@
     @include('flash::message')
     <div class="clearfix"></div>
     <div class="row">
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             @include('layouts.settings.menu')
-        </div>
-        <div class="col-md-9">
+        </div> --}}
+        <div class="col-md-12">
             @yield('settings_content')
         </div>
     </div>

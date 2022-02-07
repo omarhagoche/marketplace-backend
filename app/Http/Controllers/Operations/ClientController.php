@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Operations;
 
 use Illuminate\Http\Request;
+use App\DataTables\UserDataTable;
 use App\Http\Controllers\Controller;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
+     /**
+     * Display a listing of the User.
      *
-     * @return \Illuminate\Http\Response
+     * @param UserDataTable $userDataTable
+     * @return Response
      */
-    public function index()
+    public function index(UserDataTable $userDataTable)
     {
-        //
+        return $userDataTable->render('operations.client.index');
     }
 
     /**

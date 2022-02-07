@@ -1,4 +1,4 @@
-@extends('layouts.settings.default')
+@extends('operations.layouts.settings.default')
 @section('settings_title',trans('lang.user_table'))
 @section('settings_content')
   @include('flash::message')
@@ -11,7 +11,7 @@
         <li class="nav-item">
           <a class="nav-link " href="{!! route('users.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.user_create')}}</a>
         </li>
-        @include('layouts.right_toolbar', compact('dataTable'))
+        @include('operations.layouts.right_toolbar', compact('dataTable'))
       </ul>
     </div>
     <div class="card-body">

@@ -227,11 +227,17 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
-});
-//// new Dashboard for operations
-Route::group(['middleware' => ['permission:operations']], function () {
-    Route::prefix('manager')->group(function () {
 
-    });
+    //// new Dashboard for operations
+    // Route::group(['middleware' => ['permission:operations']], function () {
+        Route::prefix('operations')->group(function () {
+            Route::get('users', 'Operations\ClientController@index');
+
+            // Route::resource('users', 'Operations\ClientController');
+
+        });
+
+    // });
+
 
 });
