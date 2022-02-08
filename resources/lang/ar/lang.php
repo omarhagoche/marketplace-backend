@@ -394,7 +394,7 @@ return [
     'driver_available' => 'Available',
     'driver_available_help' => 'Insert Available',
     'driver_available_placeholder' => 'Insert Available',
-    'driver_create' => 'Refresh drivers',
+    'driver_create' => 'Create driver',
     'driver_delivery_fee' => 'Delivery Fee (%)',
     'driver_delivery_fee_help' => 'Ex: 50 for 50% of delivery amount of restaurant',
     'driver_delivery_fee_placeholder' => 'Insert Delivery Fee',
