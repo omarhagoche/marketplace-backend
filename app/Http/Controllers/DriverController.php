@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
 use App\Models\Order;
+use App\Models\User;
 use App\Repositories\DriverTypeRepository;
-
+use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
@@ -86,7 +87,7 @@ class DriverController extends Controller
         }
 
         $types = $this->driverTypeRepository->pluck('name', 'id');
-        return redirect(route('drivers.index'))->with('types', $types);
+        return view('drivers.create')->with('types', $types);
     }
 
     /**
@@ -98,14 +99,31 @@ class DriverController extends Controller
      */
     public function store(CreateDriverRequest $request)
     {
-        $input = $request->all();
+
+        /*
+        old code 
+                dd($request->all());
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->create($input);
             $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
-        }
+        }*/
+        $input = $request->all();
+        $user = User::create([
+            'name' => $input['name'],
+            'phone_number' => $input['phone_number'],
+            'password' => Hash::make($input['password']),
+            'email' => $input['email'],
+            'active' => $input['active'],
+        ]);
+        Driver::create([
+            'user_id' => $user->id,
+            'driver_type_id' => $input['driver_type_id'],
+            'available' => $input['available'],
+            'delivery_fee' => $input['delivery_fee'],
+        ]);
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.driver')]));
 
