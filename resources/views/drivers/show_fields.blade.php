@@ -65,7 +65,7 @@
 <div class="form-group row col-6">
     {!! Form::label('total_orders', 'Total Orders:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->total_orders !!}</p>
+        <p>{!! $driver->orders->count() !!}</p>
     </div>
 </div>
 
