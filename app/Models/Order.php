@@ -167,7 +167,7 @@ class Order extends Model
 
     public function userName()
     {
-        return $this->user->name;
+        return $this->user ? $this->user->name : '';
     }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -205,7 +205,7 @@ class Order extends Model
 
     public function restaurantName()
     {
-        return $this->restaurant->name;
+        return $this->restaurant ? $this->restaurant->name : "";
     }
 
     /**
