@@ -27,7 +27,8 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-    <section class="content">
+    @yield('name')
+    {{-- <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3">
@@ -123,7 +124,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
     @include('layouts.media_modal',['collection'=>null])
 @endsection
 @push('scripts_lib')

@@ -1,14 +1,13 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Operations;
 
 use App\Models\CustomField;
 use App\Models\User;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 use Barryvdh\DomPDF\Facade as PDF;
-
-class UserDataTable extends DataTable
+class ClientDataTable extends DataTable
 {
 
     /**
@@ -33,7 +32,9 @@ class UserDataTable extends DataTable
                 return getDateColumn($user, 'updated_at');
             })
             ->editColumn('role', function ($user) {
-                return getArrayColumn($user->roles, 'name');
+                if ($user->hasRole('client')) {
+                    return getArrayColumn($user->roles, 'name');
+                }
             })
             ->editColumn('email', function ($user) {
                 return getEmailColumn($user, 'email');
@@ -41,9 +42,10 @@ class UserDataTable extends DataTable
             ->editColumn('avatar', function ($user) {
                 return getMediaColumn($user, 'avatar', 'img-circle elevation-2');
             })
-            ->addColumn('action', 'settings.users.datatables_actions')
+            ->addColumn('action', 'operations.settings.client.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
     }
+    // resources/views/operations/settings/client/datatables_actions.blade.php
 
     /**
      * Get query source of dataTable.
@@ -53,7 +55,7 @@ class UserDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return $model->newQuery()->with('roles');
+        return $model->whereHas('roles', function($q){$q->whereIn('name', ['client']);});
     }
 
     /**

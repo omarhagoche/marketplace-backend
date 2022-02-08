@@ -231,9 +231,10 @@ Route::middleware('auth')->group(function () {
     //// new Dashboard for operations
     // Route::group(['middleware' => ['permission:operations']], function () {
         Route::prefix('operations')->group(function () {
-            Route::get('users', 'Operations\ClientController@index');
+            // Route::get('users', 'Operations\ClientController@index',['names' => 'users']);
+            Route::get('users/profile/{id}', 'Operations\ClientController@profile')->name('operations.users.profile');
 
-            // Route::resource('users', 'Operations\ClientController');
+            Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
 
         });
 
