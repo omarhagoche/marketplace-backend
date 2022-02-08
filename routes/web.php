@@ -168,6 +168,8 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('orders', 'OrderController');
     Route::get('orders/edit/foods/{order_id}', 'OrderController@editorderFoods')->name('orders.edit-order-foods');
+    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
+    Route::post('orders/edit/foods/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
 
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',

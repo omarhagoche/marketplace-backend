@@ -18,7 +18,9 @@ use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Extra;
 use App\Models\FoodOrder;
+use App\Models\FoodOrderExtra;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\AssignedOrder;
@@ -32,6 +34,7 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\UserRepository;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -372,5 +375,50 @@ class OrderController extends Controller
             "orderId"       =>  $id
         ];
         return view('orders.orderFoods.edit')->with($data);   
+    }
+    /**
+    * add extra to foodOrder.
+    *
+    * @param  int  $foodOrder -> foodOrder id
+    * @return Response
+    */
+    public function addExtraInOrderFood(Request $request, $orderFoodId)
+    {
+        try {
+            DB::beginTransaction();
+            $extra = Extra::find($request->extraId);
+            $orderFood = FoodOrder::find($orderFoodId);
+            $foodOrderExtras = new FoodOrderExtra();
+            $foodOrderExtras->food_order_id = $orderFoodId;
+            $foodOrderExtras->extra_id = $request->extraId;
+            $foodOrderExtras->price = $extra->price;
+            $foodOrderExtras->save();
+            $orderFood->price = $orderFood->price + $extra->price;
+            $orderFood->save();
+            DB::commit();
+            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
+            return redirect(route('orders.edit-order-foods',$orderFood->order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
+    }
+
+    public function removeExtraInOrderFood(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $foodOrderExtra = FoodOrderExtra::where('food_order_id', $request->food_order_id)->where('extra_id',$request->extra_id)->get()->first();
+            $foodOrder = FoodOrder::find($foodOrderExtra->food_order_id);
+            $foodOrder->price = $foodOrder->price - $foodOrderExtra->price;
+            DB::delete('delete from food_order_extras where food_order_id = ? and extra_id = ?', [$request->food_order_id,$request->extra_id]);
+            $foodOrder->update();
+            DB::commit();
+            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
+            return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
     }
 }

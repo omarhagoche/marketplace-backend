@@ -22,23 +22,32 @@
                   <td>{{$orderFoods->quantity}}</td>
                   <td>
                       @foreach ($orderFoods->extras as $extra)
-                      <div class="row">
-                            <button type="button" class="btn btn-outline-dark mb-2">
+                      {!! Form::open(['route' => ['orders.remove-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
+                      {{-- <div class="row"> --}}
+                            <input type="hidden" name="food_order_id" value="{{$extra->pivot->food_order_id}}">
+                            <input type="hidden" name="extra_id" value="{{$extra->pivot->extra_id}}">
+                            <button type="submit" class="btn btn-outline-dark mb-2">
                                 {{$extra->name}} <a><i class="fa fa-trash text-danger"></i></a>
                             </button>
-                      </div>
+                      {{-- </div> --}}
+                      {!! Form::close() !!}
                       @endforeach
-                      {{-- @if (count($orderFoods->extras) !=0) --}}
+                      {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
                       <div class="row">
                         <div class="col col-md-6">
-                          {{-- {{}} --}}
-                            {!! Form::select('user_id', $orderFoods->food->extras->pluck('name','id'),null, ['class' => 'select2 form-control']) !!}
+                          <select name="extraId" id="extra" class="select2 form-control">
+                            @foreach ($orderFoods->food->extras as $extra)
+                            @if (!$orderFoods->foodOrderExtra->pluck('extra_id')->contains($extra->id))
+                              <option value="{{ $extra->id }}">{{ $extra->name}}</option>
+                            @endif
+                            @endforeach
+                          </select>
                         </div>
                         <div class="col col-md-6">
-                          <button class="btn btn-primary">Add Extra <i class="fa fa-plus"></i></button>
+                          <button id="addExtra" class="btn btn-primary">Add Extra <i class="fa fa-plus"></i></button>
                         </div>
                       </div>
-                      {{-- @endif --}}
+                      {!! Form::close() !!}
                     </td>
                   <td>Otto</td>
                 </tr>
@@ -50,6 +59,3 @@
 
 
 </div>
-
-
-
