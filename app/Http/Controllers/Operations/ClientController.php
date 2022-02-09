@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Operations;
 
+use Flash;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\DataTables\Operations\ClientDataTable;
+use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
+use App\Http\Controllers\Controller;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
+use App\Repositories\UploadRepository;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\RoleRepository;
-use App\Repositories\UploadRepository;
-use App\Repositories\UserRepository;
-use Flash;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use App\Repositories\CustomFieldRepository;
+use App\DataTables\Operations\OrderDataTable;
+use App\DataTables\Operations\ClientDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class ClientController extends Controller
@@ -52,6 +53,29 @@ class ClientController extends Controller
     public function index(ClientDataTable $userDataTable)
     {
         return $userDataTable->render('operations.client.index');
+    }
+     /**
+     * Display a listing of the User.
+     *
+     * @param OrderUserDataTable $userDataTable
+     * @return Response
+     */
+    public function orders(OrderDataTable $orderDataTable,$id)
+    {
+        $user = $this->userRepository->findWithoutFail($id);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+
+        return $orderDataTable->with('id', $id)->render('operations.client.profile.orders', compact('user','role','rolesSelected'));
+        // ->with('user', $user)->with("role", $role)
+        // ->with("rolesSelected", $rolesSelected)
+        // ->with("customFields", $html);
     }
 
     /**

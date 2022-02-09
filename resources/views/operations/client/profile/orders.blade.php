@@ -1,4 +1,4 @@
-@extends('operations.client.profile.master')
+@extends('layouts.app')
 @push('css_lib')
     <!-- iCheck -->
     <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">
@@ -41,13 +41,9 @@
                             @include('operations.client.profile.include.links')
                         </div>
                         <div class="card-body">
-                            {!! Form::model($user, ['route' => ['users.update', $user->id], 'method' => 'patch']) !!}
-                            <div class="row">
-                                @include('settings.users.fields')
-                            </div>
-                            {!! Form::close() !!}
+                            @include('orders.table')
                             <div class="clearfix"></div>
-                        </div>
+                          </div>
                     </div>
                 </div>
             </div>
