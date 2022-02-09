@@ -82,8 +82,10 @@ class UserAPIController extends Controller
                 if (!$user->hasRole('manager')) {
                     return  $this->sendError('User not manager', 401);
                 }
-                $user->device_token = $request->input('device_token', '');
-                $user->save();
+                if ($request->has('device_token')) {
+                    //save decvice token on table
+                    $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                }
                 $user->load('restaurants');
                 return $this->sendResponse($user, 'User retrieved successfully');
             }
@@ -114,11 +116,16 @@ class UserAPIController extends Controller
             $user->name = $request->input('name');
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
-            $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);
             $user->save();
             $verfication->delete();
+
+            if ($request->has('device_token')) {
+                //save decvice token on table
+                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+            }
+
 
             $user->assignRole(['manager']);
 
