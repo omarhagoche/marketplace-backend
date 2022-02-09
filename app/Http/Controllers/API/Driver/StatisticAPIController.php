@@ -21,6 +21,7 @@ class StatisticAPIController extends Controller
     public function index(Request $request)
     {
         $user_id = auth()->user()->id;
+
         //$delivered_orders = Order::where('driver_id', $user_id)->where('order_status_id', 80)->count();
         $settlements = SettlementDriver::select(
             DB::raw("IFNULL(SUM(amount),0) amount"),
@@ -36,7 +37,12 @@ class StatisticAPIController extends Controller
 
         $availabel_orders_for_settlement = Order::select(
             DB::raw("IFNULL(SUM(delivery_fee),0) delivery_fee"),
-            DB::raw('IFNULL(COUNT(*),0) count')
+            DB::raw('IFNULL(COUNT(*),0) count'),
+
+            DB::raw("IFNULL(SUM(delivery_coupon_value),0) amount_delivery"),
+            DB::raw('IFNULL(SUM(restaurant_coupon_value),0) amount_restaurant'),
+            DB::raw('IFNULL(COUNT(delivery_coupon_id),0) count_delivery'),
+            DB::raw('IFNULL(COUNT(restaurant_coupon_id),0) count_restaurant'),
         )
             ->where('driver_id', $user_id)
             ->where('order_status_id', 80) // Order Delivered
@@ -46,6 +52,7 @@ class StatisticAPIController extends Controller
             ->toArray();
 
         $availabel_orders_for_settlement['fee'] = round(getDriverFee() / 100 * $availabel_orders_for_settlement['delivery_fee'], 3);
+
 
         $data =  [
             //'delivered_orders' => $delivered_orders,
