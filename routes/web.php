@@ -170,6 +170,9 @@ Route::middleware('auth')->group(function () {
     Route::get('orders/edit/foods/{order_id}', 'OrderController@editorderFoods')->name('orders.edit-order-foods');
     Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
     Route::post('orders/edit/foods/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
+    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
+    
+    ;
 
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',
@@ -230,4 +233,6 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
+
+    // Route::delete('foodorders/{id}', 'FoodOrderController@destroy',['name' => 'foodorders']);
 });
