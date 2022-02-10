@@ -846,6 +846,7 @@ return [
     'restaurant_phone_help' => 'Insert Phone',
     'restaurant_phone_placeholder' => 'Insert Phone',
     'restaurant_plural' => 'Restaurants',
+    'restaurant_register' => 'Register',
     'restaurant_review' => 'Restaurant Review',
     'restaurant_review_create' => 'Create Restaurant Review',
     'restaurant_review_desc' => 'Restaurant Reviews Management',
