@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 
 @section('content')
 <!-- Content Header (Page header) -->
@@ -33,9 +33,9 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                          @include('orders.show_fields')
+                          @include('operations.settings.order.show_fields')
                         </div>
-                        @include('food_orders.table')
+                        @include('operations.settings.order.food_orders_table')
                         <div class="row">
                         <div class="col-12 ">
                           <div class="table-responsive table-light">
