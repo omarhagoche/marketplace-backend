@@ -10,17 +10,24 @@ use App\Http\Controllers\Controller;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\OrderRepository;
+use App\DataTables\FoodOrderDataTable;
 use App\Repositories\UploadRepository;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Response;
 use App\Repositories\CustomFieldRepository;
+use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\DataTables\Operations\OrderDataTable;
 use App\DataTables\Operations\ClientDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class ClientController extends Controller
 {
+
+        /** @var  OrderRepository */
+        private $orderRepository;
+
       /** @var  UserRepository */
       private $userRepository;
       /**
@@ -35,7 +42,7 @@ class ClientController extends Controller
        */
       private $customFieldRepository;
   
-      public function __construct(UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
+      public function __construct(OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
                                   CustomFieldRepository $customFieldRepo)
       {
           parent::__construct();
@@ -43,6 +50,8 @@ class ClientController extends Controller
           $this->roleRepository = $roleRepo;
           $this->uploadRepository = $uploadRepo;
           $this->customFieldRepository = $customFieldRepo;
+          $this->orderRepository = $orderRepo;
+
       }
      /**
      * Display a listing of the User.
@@ -54,8 +63,49 @@ class ClientController extends Controller
     {
         return $userDataTable->render('operations.client.index');
     }
+      /**
+     * Display the specified Order.
+     *
+     * @param int $id
+     * @param FoodOrderDataTable $foodOrderDataTable
+     *
+     * @return Response
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     */
+
+    public function viewOrders(FoodOrderDataTable $foodOrderDataTable, $userId,$orderId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $this->orderRepository->pushCriteria(new OrdersOfUserCriteria($userId));
+        $order = $this->orderRepository->findWithoutFail($orderId);
+        if (empty($order)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
+
+            return redirect(route('orders.index'));
+        }
+        $subtotal = 0;
+
+        foreach ($order->foodOrders as $foodOrder) {
+            foreach ($foodOrder->extras as $extra) {
+                $foodOrder->price += $extra->price;
+            }
+            $subtotal += $foodOrder->price * $foodOrder->quantity;
+        }
+
+        $total = $subtotal + $order['delivery_fee'];
+        $taxAmount = $total * $order['tax'] / 100;
+        $total += $taxAmount - $order->delivery_coupon_value - $order->restaurant_coupon_value;
+        $foodOrderDataTable->id = $orderId;
+
+        return $foodOrderDataTable->render('operations.client.profile.view_order',compact('order','total','subtotal','taxAmount','user','role','rolesSelected') );
+    }
+
      /**
-     * Display a listing of the User.
+     * Display a listing of the User.b
      *
      * @param OrderUserDataTable $userDataTable
      * @return Response

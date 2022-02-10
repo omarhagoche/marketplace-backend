@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.client.profile.master')
 @push('css_lib')
     <!-- iCheck -->
     <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">

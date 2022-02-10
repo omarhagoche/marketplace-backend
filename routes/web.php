@@ -232,8 +232,9 @@ Route::middleware('auth')->group(function () {
     // Route::group(['middleware' => ['permission:operations']], function () {
         Route::prefix('operations')->group(function () {
             // Route::get('users', 'Operations\ClientController@index',['names' => 'users']);
-            Route::get('users/profile/{id}/info', 'Operations\ClientController@profile')->name('operations.user.profile.info');
-            Route::get('users/profile/{id}/orders', 'Operations\ClientController@orders')->name('operations.user.profile.orders');
+            Route::get('users/profile/{id}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
+            Route::get('users/profile/{id}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
+            Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
 
             Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
 

@@ -13,7 +13,7 @@
     'onclick' => "swal({title: ".trans('lang.error').", confirmButtonText: ".trans('lang.ok').",
                             text: data.message,type: 'error', confirmButtonClass: 'btn-danger'});"
     ]) !!}
-            <a titel="{{trans('lang.user_profile')}}" class='success' href="{{ route('operations.users.profile',$id) }}"><i class="fa fa-user mr-1"></i>  </a>
+            <a titel="{{trans('lang.user_profile')}}" class='success' href="{{ route('operations.users.profile.info',$id) }}"><i class="fa fa-user mr-1"></i>  </a>
 
     {{-- <div class="dropdown">
         <a class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
