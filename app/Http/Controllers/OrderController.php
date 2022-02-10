@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AvailableCriteria;
 use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
 use App\Criteria\Users\DriversOfRestaurantCriteria;
@@ -17,6 +18,9 @@ use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Extra;
+use App\Models\FoodOrder;
+use App\Models\FoodOrderExtra;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\AssignedOrder;
@@ -30,6 +34,7 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\UserRepository;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -161,6 +166,7 @@ class OrderController extends Controller
         return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
     }
 
+
     /**
      * Show the form for editing the specified Order.
      *
@@ -179,11 +185,19 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
 
-        $restaurant = $order->foodOrders()->first();
-        $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
+        $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
+        // if ($order->restaurant->private_drivers) {
+        //     $driver = $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
+        // } else {
+            $driver = $this->userRepository->pushCriteria(new DriversCriteria());
+        // }
+        $driver = $driver->select('users.name', 'users.id')->pluck('name', 'id');
+        // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
+        $driver->prepend(null, "");
+
+
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
@@ -222,7 +236,8 @@ class OrderController extends Controller
             $order = $this->orderRepository->update($input, $id);
 
             if (setting('enable_notifications', false)) {
-                if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                    // we send notifications for only users who are clients , not unregisterd customer
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
@@ -345,4 +360,75 @@ class OrderController extends Controller
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
+
+    /**
+    * Show order products update page.
+    *
+    * @param  int  $id -> order id
+    * @return Response
+    */
+    public function editorderFoods($id)
+    {
+        $orderFoods = FoodOrder::where('order_id',$id)->get();
+        $data = [
+            "orderFoods" =>  $orderFoods,
+            "orderId"       =>  $id
+        ];
+        return view('orders.orderFoods.edit')->with($data);   
+    }
+    /**
+    * add extra to foodOrder.
+    *
+    * @param  int  $foodOrder -> foodOrder id
+    * @return Response
+    */
+    public function addExtraInOrderFood(Request $request, $orderFoodId)
+    {
+        try {
+            DB::beginTransaction();
+            $extra = Extra::find($request->extraId);
+            $orderFood = FoodOrder::find($orderFoodId);
+            $foodOrderExtras = new FoodOrderExtra();
+            $foodOrderExtras->food_order_id = $orderFoodId;
+            $foodOrderExtras->extra_id = $request->extraId;
+            $foodOrderExtras->price = $extra->price;
+            $foodOrderExtras->save();
+            $orderFood->price = $orderFood->price + $extra->price;
+            $orderFood->save();
+            DB::commit();
+            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
+            return redirect(route('orders.edit-order-foods',$orderFood->order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
+    }
+
+    public function removeExtraInOrderFood(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $foodOrderExtra = FoodOrderExtra::where('food_order_id', $request->food_order_id)->where('extra_id',$request->extra_id)->get()->first();
+            $foodOrder = FoodOrder::find($foodOrderExtra->food_order_id);
+            $foodOrder->price = $foodOrder->price - $foodOrderExtra->price;
+            DB::delete('delete from food_order_extras where food_order_id = ? and extra_id = ?', [$request->food_order_id,$request->extra_id]);
+            $foodOrder->update();
+            DB::commit();
+            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
+            return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
+    }
+
+    public function updateOrderFoods(Request $request)
+    {
+        $orderFood = FoodOrder::find($request->orderFoodId);
+        $orderFood->price = $request->new_price;
+        $orderFood->quantity = $request->new_quantity;
+        $orderFood->update();
+        return response()->json($request, 200);
+    }
+    
 }

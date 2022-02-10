@@ -23,6 +23,11 @@ class ValidCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return $model->where('enabled','1')->where('expires_at','>',Carbon::now());
+        return $model->where('enabled', '1')
+            ->where('expires_at', '>', Carbon::now())
+            ->where(function ($q) {
+                $q->whereNull('count')
+                    ->orWhereRaw('count - count_used > 0');
+            });
     }
 }

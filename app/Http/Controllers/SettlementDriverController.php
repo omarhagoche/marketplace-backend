@@ -98,6 +98,10 @@ class SettlementDriverController extends Controller
         try {
             $orders = $this->calculateOrders($request->driver_id);
             $input = array_merge($input, [
+                'count_delivery_coupons' => $orders->count_delivery,
+                'count_restaurant_coupons' => $orders->count_restaurant,
+                'amount_delivery_coupons' => $orders->amount_delivery,
+                'amount_restaurant_coupons' => $orders->amount_restaurant,
                 'count' => $orders->count,
                 'fee' => $orders->fee,
                 'amount' => $orders->amount,
@@ -246,6 +250,10 @@ class SettlementDriverController extends Controller
             if ($driver_changed) { // when driver change , recalculate orders
                 $orders = $this->calculateOrders($request->driver_id);
                 $input = array_merge($input, [
+                    'count_delivery_coupons' => $orders->count_delivery,
+                    'count_restaurant_coupons' => $orders->count_restaurant,
+                    'amount_delivery_coupons' => $orders->amount_delivery,
+                    'amount_restaurant_coupons' => $orders->amount_restaurant,
                     'count' => $orders->count,
                     'fee' => $orders->fee,
                     'amount' => $orders->amount,
@@ -336,7 +344,14 @@ class SettlementDriverController extends Controller
 
     private function calculateOrders($driver_id)
     {
-        $orders = Order::select(DB::raw("IFNULL(SUM(delivery_fee),0) amount"), DB::raw('IFNULL(COUNT(*),0) count'))
+        $orders = Order::select(
+            DB::raw("IFNULL(SUM(delivery_fee),0) amount"),
+            DB::raw('IFNULL(COUNT(*),0) count'),
+            DB::raw("IFNULL(SUM(delivery_coupon_value),0) amount_delivery"),
+            DB::raw('IFNULL(SUM(restaurant_coupon_value),0) amount_restaurant'),
+            DB::raw('IFNULL(COUNT(delivery_coupon_id),0) count_delivery'),
+            DB::raw('IFNULL(COUNT(restaurant_coupon_id),0) count_restaurant'),
+        )
             ->where('driver_id', $driver_id)
             ->where('order_status_id', 80) // Order Delivered
             ->whereNull('settlement_driver_id')
@@ -347,6 +362,8 @@ class SettlementDriverController extends Controller
 
         $orders->fee = getDriverFee();
         $orders->amount  = ($orders->fee / 100) *  $orders->amount; // calculate amount;
+        //$couponStttlement = $orders->amount_delivery + $orders->amount_restaurant;
+        //$orders->amount  = $orders->amount + $couponStttlement;
 
         return $orders;
     }

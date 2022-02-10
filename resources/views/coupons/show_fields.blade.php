@@ -14,6 +14,22 @@
   </div>
 </div>
 
+<!-- count Field -->
+<div class="form-group row col-6">
+  {!! Form::label('count', 'count:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! $coupon->count !!}</p>
+  </div>
+</div>
+
+<!-- count_used Field -->
+<div class="form-group row col-6">
+  {!! Form::label('count_used', 'count_used:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! $coupon->count_used !!}</p>
+  </div>
+</div>
+
 <!-- Discount Field -->
 <div class="form-group row col-6">
   {!! Form::label('discount', 'Discount:', ['class' => 'col-3 control-label text-right']) !!}
