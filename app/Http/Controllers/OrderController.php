@@ -223,8 +223,7 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
         $oldStatus = $oldOrder->payment->status;
-        // return $request;
-        // $request->delivery_address_id = $request->user_addresses;
+        
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         try {
