@@ -18,6 +18,7 @@ use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\DeliveryAddress;
 use App\Models\Extra;
 use App\Models\FoodOrder;
 use App\Models\FoodOrderExtra;
@@ -200,8 +201,8 @@ class OrderController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-
-        return view('orders.edit')->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
+        $userAddresses = DeliveryAddress::where('user_id',$order->user->id)->pluck('address','id');
+        return view('orders.edit')->with('userAddresses', $userAddresses)->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
     }
 
     /**
@@ -222,12 +223,13 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
         $oldStatus = $oldOrder->payment->status;
+        // return $request;
+        // $request->delivery_address_id = $request->user_addresses;
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         try {
 
             $order = $this->orderRepository->update($input, $id);
-
             if (setting('enable_notifications', false)) {
                 if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
                     // we send notifications for only users who are clients , not unregisterd customer
