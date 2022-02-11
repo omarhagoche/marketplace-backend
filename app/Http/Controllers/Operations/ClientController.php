@@ -20,28 +20,31 @@ use App\Repositories\CustomFieldRepository;
 use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\DataTables\Operations\OrderDataTable;
 use App\DataTables\Operations\ClientDataTable;
+use App\DataTables\Operations\FavoriteDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class ClientController extends Controller
 {
 
-        /** @var  OrderRepository */
-        private $orderRepository;
+    /** 
+     * @var  OrderRepository 
+     * */
+    private $orderRepository;
 
-      /** @var  UserRepository */
-      private $userRepository;
-      /**
-       * @var RoleRepository
-       */
-      private $roleRepository;
-  
-      private $uploadRepository;
-  
-      /**
-       * @var CustomFieldRepository
-       */
-      private $customFieldRepository;
-  
+    /** 
+     * @var  UserRepository 
+     * */
+    private $userRepository;
+    /**
+     * @var RoleRepository
+     */
+    private $roleRepository;
+    private $uploadRepository;
+    /**
+     * @var CustomFieldRepository
+     */
+    private $customFieldRepository;
+
       public function __construct(OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
                                   CustomFieldRepository $customFieldRepo)
       {
@@ -110,9 +113,9 @@ class ClientController extends Controller
      * @param OrderUserDataTable $userDataTable
      * @return Response
      */
-    public function orders(OrderDataTable $orderDataTable,$id)
+    public function orders(OrderDataTable $orderDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($id);
+        $user = $this->userRepository->findWithoutFail($userId);
         $role = $this->roleRepository->pluck('name', 'name');
         $rolesSelected = $user->getRoleNames()->toArray();
         $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
@@ -122,10 +125,30 @@ class ClientController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return $orderDataTable->with('id', $id)->render('operations.client.profile.orders', compact('user','role','rolesSelected'));
-        // ->with('user', $user)->with("role", $role)
-        // ->with("rolesSelected", $rolesSelected)
-        // ->with("customFields", $html);
+        return $orderDataTable->with('id', $userId)->render('operations.client.profile.orders', compact('user','role','rolesSelected'));
+ 
+    }
+     /**
+     * Display the specified Favorite.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function favorites(FavoriteDataTable $favoriteDataTable,$userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+
+        return $favoriteDataTable->with('userId', $userId)->render('operations.client.profile.favorites', compact('user','role','rolesSelected'));
+
     }
 
     /**
