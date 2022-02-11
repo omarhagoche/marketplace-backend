@@ -1,13 +1,41 @@
 
 
 <div style="flex: 50%;max-width: 100%;padding: 0 4px;" class="column">
-
+  <div class="row">
+    <label> Add Food To Order</label>
+  </div>
+  {!! Form::hidden('food_old_price', null, ['id' => 'food_old_price']) !!}
+  {!! Form::open(['route' => ['foodOrders.store'], 'method' => 'post']) !!}
+  <div class="row">
+    <div class="col col-md-2">
+      <label for="restaurant_foood"> foods</label>
+      {!! Form::hidden('order_id', $orderId, ['id' => 'food_old_price']) !!}
+    {!! Form::select('food_id', $restaurantFooods, null, ['class' => 'select2 form-control', 'id' => 'restaurant_foood']) !!}
+  </div>
+  <div class="col col-md-2">
+    <label for="food_price">price</label>
+    <div id="waiting_price"></div>
+    {!! Form::text('price', null, ['class' => 'form-control','id' => 'food_price', 'readonly' => 'readonly']) !!}
+  </div>
+  <div class="col col-md-2">
+    <label for="food_quantity">quantity</label>
+    {!! Form::number('quantity', 1, ['class' => 'form-control', 'id' => 'food_quantity']) !!}
+  </div>
+  <div class="col col-md-1">
+    <label for="add">.</label>
+    <button type="submit" class="form-control btn btn-primary"> Add Food 
+      <i class="fa fa-plus"></i>
+    </button>
+  </div>
+</div>
+{!! Form::close() !!}
+<hr>
 <div class="row">
     <div class="col col-md-12" style="width: 100%; border-collapse: collapse; overflow-x:auto;">
         <table class="table">
             <thead>
               <tr>
-                <th scope="col">name</th>
+                <th scope="col" style="width: 486px;">name</th>
                 <th scope="col">price</th>
                 <th scope="col">quantity</th>
                 <th scope="col">extras</th>
@@ -61,14 +89,13 @@
                       {!! Form::close() !!}
                     </td>
                   <td>
-                    {{-- {!! Form::open(['route' => ['foodorders', $orderFoods->id], 'method' => 'delete']) !!}
-                      {!! Form::button('<i class="fa fa-trash"></i>', [
+                    {!! Form::open(['route' => ['foodOrders.destroy', $orderFoods->id], 'method' => 'delete']) !!}
+                      {!! Form::button('<i class="fa fa-trash" style="font-size: 33px;"></i>', [
                       'type' => 'submit',
                       'class' => 'btn btn-link text-danger',
                       'onclick' => "return confirm('Are you sure?')"
                       ]) !!}
                     {!! Form::close() !!}
-                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button></td> --}}
                 </tr>
                 @endforeach
             </tbody>
@@ -76,7 +103,8 @@
     </div>
 </div>
 </div>
-
+@push('scripts')
+    
 <script>
   function changeQuantity(oldQuantity ,oldPrice ,orderFoodId) {
     console.log("hi");
@@ -108,7 +136,39 @@
       }
     });
   }
+
   $(document).ready(function () {
-    
+    $('select#restaurant_foood').change(function () { 
+      var foodId = $(this).val();
+      var url = "{{ route('foods.get-one', ":foodId") }}";
+      url = url.replace(':foodId', foodId); 
+      $('#food_price').val("");
+      $("#food_price").hide();
+      $("#waiting_price").html("<i class='fa fa-spinner fa-spin'></i>");
+      $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        success: function (response) {
+          console.log(response);
+          $("#waiting_price").html("")
+          $("#food_price").show()
+          $('#food_price').val(response.price);
+          $('#food_old_price').val(response.price);
+        }
+      });
+      
+    });
+
+    $('#food_quantity').keyup(function () { 
+      console.log($(this).val())
+      if($('#food_price').length != 0) {
+        console.log("hi");
+        var new_quantity = $(this).val()
+        var new_price = $('#food_old_price').val() * new_quantity
+        $('#food_price').val(new_price.toFixed(2))
+      }
+    });
   });
 </script>
+@endpush

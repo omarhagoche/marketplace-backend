@@ -150,22 +150,15 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
         $subtotal = 0;
-
-        foreach ($order->foodOrders as $foodOrder) {
-            foreach ($foodOrder->extras as $extra) {
-                $foodOrder->price += $extra->price;
-            }
-            $subtotal += $foodOrder->price * $foodOrder->quantity;
-        }
-
-        $total = $subtotal + $order['delivery_fee'];
-        $taxAmount = $total * $order['tax'] / 100;
-        $total += $taxAmount - $order->delivery_coupon_value - $order->restaurant_coupon_value;
+        $taxAmount = 0;
+        $data = $this->orderRepository->calculateOrderTotal($order, $subtotal,$taxAmount);
+        $total      = $data["total"];
+        $subtotal   = $data["subtotal"];
+        $taxAmount  = $data["taxAmount"];
         $foodOrderDataTable->id = $id;
 
         return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
     }
-
 
     /**
      * Show the form for editing the specified Order.
@@ -362,15 +355,17 @@ class OrderController extends Controller
     }
 
     /**
-    * Show order products update page.
+    * Show order foods update page.
     *
     * @param  int  $id -> order id
     * @return Response
     */
-    public function editorderFoods($id)
+    public function editOrderFoods($id)
     {
         $orderFoods = FoodOrder::where('order_id',$id)->get();
+        $order = Order::find($id);
         $data = [
+            "restaurantFooods" =>  [null => 'select food' , $order->restaurant->foods->pluck('name','id')],
             "orderFoods" =>  $orderFoods,
             "orderId"       =>  $id
         ];
@@ -422,6 +417,12 @@ class OrderController extends Controller
         }
     }
 
+    /**
+    * update order Foods -> quantity.
+    *
+    * @param  Request  $request
+    * @return Response
+    */
     public function updateOrderFoods(Request $request)
     {
         $orderFood = FoodOrder::find($request->orderFoodId);
