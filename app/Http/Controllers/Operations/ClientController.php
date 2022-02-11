@@ -17,6 +17,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Response;
 use App\Repositories\CustomFieldRepository;
+use App\DataTables\Operations\NoteDataTable;
 use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\DataTables\Operations\OrderDataTable;
 use App\DataTables\Operations\ClientDataTable;
@@ -148,6 +149,28 @@ class ClientController extends Controller
         }
 
         return $favoriteDataTable->with('userId', $userId)->render('operations.client.profile.favorites', compact('user','role','rolesSelected'));
+
+    }
+      /**
+     * Display the specified Favorite.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function notes(NoteDataTable $noteDataTable,$userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+
+        return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('user','role','rolesSelected'));
 
     }
 

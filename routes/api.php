@@ -153,4 +153,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('coupons', 'API\CouponAPIController')->except([
         'show'
     ]);
+// this api for save note for user 
+    Route::post('user/note', 'API\NoteController@store');
+
 });

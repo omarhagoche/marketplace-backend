@@ -12,7 +12,7 @@
         <a class="nav-link {{ Route::is('operations.users.profile.coupons') ? 'active' : '' }}" href="{!! url()->current().'/coupons' !!}"><i class="fa fa-credit-card mr-2"></i>{{trans('lang.client_coupons')}}</a>
     </li>
     <li class="nav-item ">
-        <a class="nav-link {{ Route::is('operations.users.profile.notes') ? 'active' : '' }}" href="{!! url()->current() .'/notes'!!}"><i class="fa fa-commenting-o  mr-2"></i>{{trans('lang.client_notes')}}</a>
+        <a class="nav-link {{ Route::is('operations.users.profile.notes') ? 'active' : '' }}" href="{!! route('operations.users.profile.notes',$user->id)!!}"><i class="fa fa-commenting-o  mr-2"></i>{{trans('lang.client_notes')}}</a>
     </li>
     <li class="nav-item ">
         <a class="nav-link {{ Route::is('operations.users.profile.address') ? 'active' : '' }}" href="{!! url()->current().'/address' !!}"><i class="fa fa-map-marker  mr-2"></i>{{trans('lang.client_address')}}</a>

@@ -234,6 +234,7 @@ Route::middleware('auth')->group(function () {
             Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
             Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
             Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
+            Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
             Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
 
             Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);

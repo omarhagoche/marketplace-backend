@@ -266,4 +266,13 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(\App\Models\VerficationCode::class, 'user_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\Note::class, 'user_id');
+    }
+    
 }
