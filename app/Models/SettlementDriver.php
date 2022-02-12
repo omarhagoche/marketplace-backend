@@ -12,8 +12,12 @@ use Eloquent as Model;
  * @property integer creator_id
  * @property integer driver_id
  * @property decimal amount
+ * @property decimal amount_restaurant_coupons
+ * @property decimal amount_delivery_coupons
  * @property string note
  * @property integer count
+ * @property integer count_delivery_coupons
+ * @property integer count_restaurant_coupons
  */
 class SettlementDriver extends Model
 {
@@ -26,8 +30,12 @@ class SettlementDriver extends Model
         'driver_id',
         'fee',
         'amount',
+        'amount_restaurant_coupons',
+        'amount_delivery_coupons',
         'note',
         'count',
+        'count_delivery_coupons',
+        'count_restaurant_coupons',
     ];
 
     /**
@@ -40,8 +48,12 @@ class SettlementDriver extends Model
         'driver_id' => 'integer',
         'fee' => 'float',
         'amount' => 'float',
+        'amount_restaurant_coupons' => 'float',
+        'amount_delivery_coupons' => 'float',
         'note' => 'string',
         'count' => 'integer',
+        'count_delivery_coupons' => 'integer',
+        'count_restaurant_coupons' => 'integer',
     ];
 
     /**
@@ -61,6 +73,7 @@ class SettlementDriver extends Model
      */
     protected $appends = [
         'custom_fields',
+        'total_amount',
     ];
 
     public function customFieldsValues()
@@ -80,6 +93,11 @@ class SettlementDriver extends Model
             ->get()->toArray();
 
         return convertToAssoc($array, 'name');
+    }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->amount + $this->amount_restaurant_coupons - $this->amount_delivery_coupons;
     }
 
 

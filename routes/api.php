@@ -28,7 +28,6 @@ Route::prefix('driver')->group(function () {
     Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
     Route::post('reset_password', 'API\UserAPIController@ResetPassword');
     Route::get('user', 'API\Driver\UserAPIController@user');
-    Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
     Route::apiResource('driverTypes', 'API\DriverTypeAPIController')->only([
         'index', 'show'
@@ -45,7 +44,6 @@ Route::prefix('manager')->group(function () {
     Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
     Route::post('reset_password', 'API\UserAPIController@ResetPassword');
     Route::get('user', 'API\Manager\UserAPIController@user');
-    Route::get('logout', 'API\Manager\UserAPIController@logout');
     Route::get('settings', 'API\Manager\UserAPIController@settings');
 });
 
@@ -59,7 +57,6 @@ Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
 Route::post('confirm_reset_code', 'API\UserAPIController@confirmResetCodePhone');
 Route::post('reset_password', 'API\UserAPIController@ResetPassword');
 Route::get('user', 'API\UserAPIController@user');
-Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
 Route::get('distance', 'API\DistanceAPIController@getDistanceBetweenTwoPoints');
 
@@ -153,4 +150,6 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('coupons', 'API\CouponAPIController')->except([
         'show'
     ]);
+
+    Route::post('logout', 'API\UserAPIController@logout');
 });

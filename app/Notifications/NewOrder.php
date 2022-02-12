@@ -61,7 +61,7 @@ class NewOrder extends Notification
             'body'         => $this->order->user->name,
             'icon'         => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
-            "sound" => "swiftly",
+            "sound" => "default",
             'id' => '1',
             'status' => 'done',
         ];

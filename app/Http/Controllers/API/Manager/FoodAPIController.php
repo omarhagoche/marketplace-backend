@@ -229,7 +229,7 @@ class FoodAPIController extends Controller
             'deliverable' => "$nullable_on_update",
             'available' => "$nullable_on_update",
             'category_id' => "$nullable_on_update|integer|exists:categories,id",
-            'extras' => "$nullable_on_update|array",
+            'extras' => "nullable|array",
             'restaurant_id' => 'nullable|in_array:' . implode(',', $this->getRestaurantIds())
         ];
 
