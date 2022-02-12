@@ -52,7 +52,7 @@
                   <td style="width: 270px">
                     <div class="row">
                       <div class="col col-md-6 m-1">
-                        <input type="number" class="form-control" id="quantity_new_{{$orderFoods->id}}" value="{{$orderFoods->quantity}}" onkeyup="changeQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" style="width: 114px;">
+                        <input type="number" class="form-control" min="1" oninput="validity.valid||(value='');"  id="quantity_new_{{$orderFoods->id}}" value="{{$orderFoods->quantity}}" onkeyup="changeQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" style="width: 114px;">
                       </div>
                       <div class="col col-md-6 m-1">
                         <button id="btn_update_{{$orderFoods->id}}" type="submit" onclick="updateQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" class="btn btn-primary" style="border-color: #33456b; background-color: #33456b;">
@@ -74,7 +74,7 @@
                       {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
                       <div class="row">
                         <div class="col col-md-6 m-1">
-                          <select name="extraId" id="extra" class="select2 form-control">
+                          <select name="extraId" id="extra" class="select2 form-control" required>
                             @foreach ($orderFoods->food->extras as $extra)
                             @if (!$orderFoods->foodOrderExtra->pluck('extra_id')->contains($extra->id))
                               <option value="{{ $extra->id }}">{{ $extra->name}}</option>
@@ -107,14 +107,21 @@
     
 <script>
   function changeQuantity(oldQuantity ,oldPrice ,orderFoodId) {
-    console.log("hi");
     var new_quantity = $('#quantity_new_'+orderFoodId).val()
+    if(new_quantity == ''){
+      return
+    }
     var new_price = (oldPrice * new_quantity) / oldQuantity
     $('#order_foor_price_'+orderFoodId).val(new_price.toFixed(2))
 
   }
   function updateQuantity(oldQuantity ,oldPrice ,orderFoodId) {
+    
     var new_quantity = $('#quantity_new_'+orderFoodId).val()
+    if(new_quantity == "" || new_quantity <= 0) {
+      alert("hi");
+      return;
+    }
     var new_price = (oldPrice * new_quantity) / oldQuantity
     $('#btn_update_'+orderFoodId).html('update <i class="fa fa-spinner fa-spin"></i>');
     $('#btn_update_'+orderFoodId).prop('disabled', true);
@@ -130,7 +137,6 @@
       },
       dataType: "json",
       success: function (response) {
-        console.log(response);
         $('#btn_update_'+orderFoodId).html('update <i class="fa fa-edit"></i>');
         $('#btn_update_'+orderFoodId).prop('disabled', false);
       }
@@ -138,6 +144,7 @@
   }
 
   $(document).ready(function () {
+    
     $('select#restaurant_foood').change(function () { 
       var foodId = $(this).val();
       var url = "{{ route('foods.get-one', ":foodId") }}";
