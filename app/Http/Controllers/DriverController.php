@@ -164,14 +164,13 @@ class DriverController extends Controller
     public function edit($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->pluck('name', 'id');
-
-
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
         if (empty($driver)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.driver')]));
 
             return redirect(route('drivers.index'));
         }
+
         $customFieldsValues = $driver->customFieldsValues()->with('customField')->get();
         $customFields =  $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         $hasCustomField = in_array($this->driverRepository->model(), setting('custom_field_models', []));
@@ -193,17 +192,29 @@ class DriverController extends Controller
      */
     public function update($id, UpdateDriverRequest $request)
     {
-        $driver = $this->driverRepository->findWithoutFail($id);
 
-        if (empty($driver)) {
+
+        $driver = $this->driverRepository->findWithoutFail($id);
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
+
+        if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
             return redirect(route('drivers.index'));
         }
         $input = $request->all();
+
+        if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
+            $request->validated(['password' => 'confirmed']);
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            unset($input['password']);
+            unset($input['password_confirmation']);
+        }
+
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->update($input, $id);
-
+            $user = $this->userRepository->update($input, $driver->user_id);
 
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $driver->customFieldsValues()

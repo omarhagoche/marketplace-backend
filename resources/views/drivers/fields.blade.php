@@ -7,7 +7,7 @@
     <div class="form-group row ">
         {!! Form::label('name', trans('lang.full_name'), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('lang.full_name_placeholder')]) !!}
+            {!! Form::text('name', $user->name ?? null, ['class' => 'form-control', 'placeholder' => trans('lang.full_name_placeholder')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.full_name_help') }}
             </div>
@@ -18,7 +18,7 @@
     <div class="form-group row ">
         {!! Form::label('phone_number', trans('lang.phone_number'), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::Text('phone_number', null, ['class' => 'form-control', 'placeholder' => trans('lang.phone_number_placeholder')]) !!}
+            {!! Form::Text('phone_number', $user->phone_number ?? null, ['class' => 'form-control', 'placeholder' => trans('lang.phone_number_placeholder')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.phone_number_help') }}
             </div>
@@ -28,7 +28,7 @@
     <div class="form-group row ">
         {!! Form::label('email', trans('lang.email'), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::Email('email', null, ['class' => 'form-control', 'placeholder' => trans('lang.email_placeholder')]) !!}
+            {!! Form::Email('email', $user->email ?? null, ['class' => 'form-control', 'placeholder' => trans('lang.email_placeholder')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.email_help') }}
             </div>
@@ -101,7 +101,7 @@
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('active', 0) !!}
-                {!! Form::checkbox('active', 1, null) !!}
+                {!! Form::checkbox('active', 1, $user->active) !!}
             </label>
         </div>
     </div>

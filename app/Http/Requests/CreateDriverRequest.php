@@ -31,6 +31,5 @@ class CreateDriverRequest extends FormRequest
         $user_rules['password'] .= '|confirmed';
         $rules = array_merge(Driver::$rules,  $user_rules);
         return  $rules;
-        return [];
     }
 }
