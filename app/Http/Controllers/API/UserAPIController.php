@@ -229,21 +229,17 @@ class UserAPIController extends Controller
 
     function logout(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
         try {
-
+            $user = auth()->user();
             if ($request->has('device_token')) {
-                auth()->user()->deviceTokens()->where('token', $request->input('device_token'))->delete();
+                $user->deviceTokens()->where('token', $request->input('device_token'))->delete();
             }
             // logout user
-            auth()->logout();
+            //auth()->logout();
+            return $this->sendResponse($user->name, 'User logout successfully');
         } catch (\Exception $e) {
             $this->sendError($e->getMessage(), 401);
         }
-        return $this->sendResponse($user['name'], 'User logout successfully');
     }
 
     function user(Request $request)
