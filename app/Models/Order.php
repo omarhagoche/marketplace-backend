@@ -255,6 +255,27 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Coupon::class, 'restaurant_coupon_id', 'id');
     }
+    public function coupons()
+    {
+        if ($this->deliveryCoupon()->exists()) {
+           $data[]=[
+               'code'=>$this->deliveryCoupon->code,
+               'value'=>$this->delivery_coupon_value,
+               'date'=>$this->created_at->calendar() ,
+               'for'=>'delivery'
+
+           ];
+        }
+        if ($this->restaurantCoupon()->exists()) {
+            $data[]=[
+                'code'=>$this->restaurantCoupon->code,
+                'value'=>$this->restaurant_coupon_value,
+                'date'=>$this->created_at->calendar() ,
+                'for'=>'restaurant'
+            ];
+         }
+         return isset($data)?$data:null;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

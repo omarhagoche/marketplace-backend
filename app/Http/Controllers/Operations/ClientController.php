@@ -21,6 +21,7 @@ use App\DataTables\Operations\NoteDataTable;
 use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\DataTables\Operations\OrderDataTable;
 use App\DataTables\Operations\ClientDataTable;
+use App\DataTables\Operations\CouponsDataTable;
 use App\DataTables\Operations\FavoriteDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 
@@ -173,39 +174,28 @@ class ClientController extends Controller
         return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('user','role','rolesSelected'));
 
     }
-
-    /**
-     * Show the form for creating a new resource.
+       /**
+     * Display the specified Favorite.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * @param int $id
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function store(Request $request)
+    public function coupons(CouponsDataTable $couponDataTable,$userId)
     {
-        //
-    }
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
 
+    }
     
     /**
      * Show the form for editing the specified User.

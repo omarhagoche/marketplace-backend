@@ -9,7 +9,7 @@
         <a class="nav-link {{ Route::is('operations.users.profile.orders') ? 'active' : '' }}" href="{!! route('operations.users.profile.orders',$user->id) !!}"><i class="fa fa-first-order mr-2"></i>{{trans('lang.client_orders')}}</a>
     </li>
     <li class="nav-item ">
-        <a class="nav-link {{ Route::is('operations.users.profile.coupons') ? 'active' : '' }}" href="{!! url()->current().'/coupons' !!}"><i class="fa fa-credit-card mr-2"></i>{{trans('lang.client_coupons')}}</a>
+        <a class="nav-link {{ Route::is('operations.users.profile.coupons') ? 'active' : '' }}" href="{!! route('operations.users.profile.coupons',$user->id) !!}"><i class="fa fa-credit-card mr-2"></i>{{trans('lang.client_coupons')}}</a>
     </li>
     <li class="nav-item ">
         <a class="nav-link {{ Route::is('operations.users.profile.notes') ? 'active' : '' }}" href="{!! route('operations.users.profile.notes',$user->id)!!}"><i class="fa fa-commenting-o  mr-2"></i>{{trans('lang.client_notes')}}</a>

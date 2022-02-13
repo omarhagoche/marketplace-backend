@@ -9,14 +9,15 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Order;
+use App\Traits\SkipAppends;
 use Laravel\Cashier\Billable;
 use Spatie\Image\Manipulations;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Permission\Traits\HasRoles;
-use App\Traits\SkipAppends;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
@@ -273,6 +274,30 @@ class User extends Authenticatable implements HasMedia
     public function notes()
     {
         return $this->hasMany(\App\Models\Note::class, 'user_id');
+    }
+    /**
+     * Get all of the order for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+    public function coupons()
+    {
+        $coupons=collect();
+        $orders=$this->orders;
+        foreach ($orders as $order) {
+            if ($order->coupons()!= null) {
+                $coupons->push($order->coupons()[0]);
+                if (isset($order->coupons()[1])) {
+                    $coupons->push($order->coupons()[1]);
+                }
+            }
+        }
+        return $coupons;
+
     }
     
 }
