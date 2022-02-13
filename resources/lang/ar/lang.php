@@ -1058,6 +1058,7 @@ return [
     'extra_group_name_placeholder' => 'Color',
     'extra_group_name_help' => 'Insert the extra group name (ex: color, size, taste)',
     'extra_group' => 'Extra Group',
+    'statistics' => 'Statistics',
     'order_pending' => 'Waiting for costumer',
     'order_active' => 'Active',
     'order_for_restaurants' => 'For restaurants',

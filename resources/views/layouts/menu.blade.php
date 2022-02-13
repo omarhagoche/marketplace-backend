@@ -145,6 +145,15 @@
                             <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_waitting_drivers_plural')}}</p></a>
                 </li>
             @endcan
+            
+
+            @can('orders.statistics')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('orders/statistics*') ? 'active' : '' }}" href="{!! route('orders.statistics') !!}">@if($icons)
+                            <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.statistics')}}</p></a>
+                </li>
+            @endcan
+
             @can('orderStatuses.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('orderStatuses*') ? 'active' : '' }}" href="{!! route('orderStatuses.index') !!}">@if($icons)
