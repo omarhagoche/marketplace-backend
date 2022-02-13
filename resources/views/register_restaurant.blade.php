@@ -132,10 +132,10 @@
 
             <hr />
 
-            <div class="row">
+            <div class="row {{ request()->has('added_by')? 'd-none' : '' }}">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">أضيف بواسطة</label>
-                    <input type="text" class="form-control" name="added_by" value="{{ request()->old('added_by') }}"
+                    <input type="text" class="form-control" name="added_by" value="{{ request()->get('added_by', request()->old('added_by')) }}"
                         minlength="3" maxlength="32" required>
                     <div class="invalid-feedback">يجب أن يكون الاسم بين 3 إلى 100 حرف</div>
                 </div>

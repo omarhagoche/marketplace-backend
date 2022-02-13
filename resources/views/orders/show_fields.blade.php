@@ -31,12 +31,17 @@
 
     {!! Form::label('order_client_phone', trans('lang.order_client_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-    <p>{!! $order->unregistered_customer->phone ?? (isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "") !!}</p>
+    <p>{!! $order->unregistered_customer->phone ?? (isset($order->user->phone_number) ? $order->user->phone_number : "") !!}</p>
   </div>
 
     {!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
     <p>{!! $order->deliveryAddress ? $order->deliveryAddress->address : '' !!}</p>
+  </div>
+
+  {!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}
+  <div class="col-8">
+      <a href="https://maps.google.com/?q={{ $order->deliveryAddress->latitude }},{{ $order->deliveryAddress->longitude }}" target="_blank" class="btn btn-{{setting('theme_color')}}">Location on google map</a>
   </div>
 
     {!! Form::label('order_date', trans('lang.order_date'), ['class' => 'col-4 control-label']) !!}
@@ -111,8 +116,8 @@
 
     {!! Form::label('restaurant_phone', trans('lang.restaurant_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-        @if(isset($order->foodOrders[0]))
-            <p>{!! $order->foodOrders[0]->food->restaurant->phone !!}</p>
+        @if(isset($order->restaurant))
+            <p>{!! $order->restaurant->phone !!}</p>
         @endif
     </div>
 
