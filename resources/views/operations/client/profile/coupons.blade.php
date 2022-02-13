@@ -72,7 +72,7 @@
                                 </div>
                                 @endforeach
                             </div> --}}
-                            <table class="table table-hover">
+                            {{-- <table class="table table-hover">
                                 <thead>
                                   <tr>
                                     <th scope="col">Code</th>
@@ -92,8 +92,8 @@
                                     @endforeach
                                  
                                 </tbody>
-                              </table>
-
+                            </table> --}}
+                            @include('operations.settings.client.profile.coupon.table')
                             <div class="clearfix"></div>
                           </div>
                     </div>

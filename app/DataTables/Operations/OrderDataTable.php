@@ -10,8 +10,10 @@
 
 namespace App\DataTables\Operations;
 
-use App\Models\CustomField;
 use App\Models\Order;
+use App\Models\CustomField;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
 use Barryvdh\DomPDF\Facade as PDF;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
@@ -34,6 +36,9 @@ class OrderDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
+        // return 
+        // datatables()
+        // ->eloquent($query)
         $dataTable = $dataTable
             ->editColumn('id', function ($order) {
                 return "#" . $order->id;
@@ -71,9 +76,9 @@ class OrderDataTable extends DataTable
             // ->editColumn('payment.status', function ($order) {
             //     return getPayment($order->payment, 'status');
             // })
-            ->editColumn('active', function ($food) {
-                return getBooleanColumn($food, 'active');
-            })
+            // ->editColumn('active', function ($food) {
+            //     return getBooleanColumn($food, 'active');
+            // })
             ->addColumn('action', 'operations.settings.order.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
@@ -95,7 +100,7 @@ class OrderDataTable extends DataTable
             ],
             [
                 'data' => 'restaurant.name',
-                'name' => 'restaurant.name',
+                'name' => 'restaurant Name',
                 'title' => trans('lang.restaurant'),
             ],
             // [
@@ -119,12 +124,12 @@ class OrderDataTable extends DataTable
                 'searchable' => false,
 
             ], */
-            [
-                'data' => 'delivery_fee',
-                'title' => trans('lang.order_delivery_fee'),
-                'searchable' => false,
+            // [
+            //     'data' => 'delivery_fee',
+            //     'title' => trans('lang.order_delivery_fee'),
+            //     'searchable' => false,
 
-            ],
+            // ],
             /*  [
                 'data' => 'payment.status',
                 'name' => 'payment.status',
@@ -149,13 +154,13 @@ class OrderDataTable extends DataTable
                 'searchable' => false,
                 'orderable' => true,
             ],
-            [
-                'name' => 'orders.updated_at',
-                'data' => 'updated_at',
-                'title' => trans('lang.order_updated_at'),
-                'searchable' => false,
-                'orderable' => true,
-            ]
+            // [
+            //     'name' => 'orders.updated_at',
+            //     'data' => 'updated_at',
+            //     'title' => trans('lang.order_updated_at'),
+            //     'searchable' => false,
+            //     'orderable' => true,
+            // ]
         ];
 
         /* $hasCustomField = in_array(Order::class, setting('custom_field_models', []));
@@ -170,6 +175,12 @@ class OrderDataTable extends DataTable
                 ]]);
             }
         } */
+        return[
+            Column::make('id'),
+            Column::make('restaurant.name'),
+            Column::make('driver.name'),
+            // Column::make('for'),
+        ];
         return $columns;
     }
 
@@ -181,14 +192,8 @@ class OrderDataTable extends DataTable
      */
     public function query(Order $model)
     {
-            // return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
-            //     ->where('orders.user_id', $this->id)
-            //     ->groupBy('orders.id')
-            //     ->select('orders.*');
-
-            return $model->newQuery()->with("user")->with('restaurant')->with("orderStatus")->with('payment')
-                ->where('orders.user_id', $this->id)
-              ;
+        return $model->newQuery()->with("user")->with('restaurant')->with("orderStatus")->with('payment')
+            ->where('orders.user_id', $this->id);
        
     }
 
@@ -200,21 +205,14 @@ class OrderDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-            ->columns($this->getColumns())
-            ->minifiedAjax()
-            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
-            ->parameters(array_merge(
-                [
-                    'language' => json_decode(
-                        file_get_contents(
-                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ),
-                        true
-                    ),
-                    'order' => [[0, 'desc']],
-                ],
-                config('datatables-buttons.parameters')
-            ));
+                    ->setTableId('test-table')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->dom('Bfrtip')
+                    ->orderBy(1)
+                    ->buttons(
+                        Button::make('reload')
+                    );
     }
 
     /**

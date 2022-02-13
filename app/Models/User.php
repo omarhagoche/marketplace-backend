@@ -296,7 +296,7 @@ class User extends Authenticatable implements HasMedia
                 }
             }
         }
-        return $coupons;
+        return collect($coupons) ;
 
     }
     

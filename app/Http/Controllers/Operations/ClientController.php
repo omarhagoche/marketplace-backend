@@ -192,8 +192,9 @@ class ClientController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
+        return $couponDataTable->with('userId', $userId)->render('operations.client.profile.coupons', compact('user','role','rolesSelected'));
 
-        return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
+        // return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
 
     }
     

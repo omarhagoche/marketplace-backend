@@ -50,14 +50,8 @@ class FavoriteDataTable extends DataTable
      */
     public function query(Favorite $model)
     {
-
-      
-            return $model->newQuery()->with("food")->with("user")
-                // ->join("foods","foods.id","=","favorites.food_id")
-                // ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
-                ->where('user_id', $this->userId);
-                // ->select("favorites.*");
-   
+        return $model->newQuery()->with("food")->with("user")
+        ->where('user_id', $this->userId);   
     }
 
     /**

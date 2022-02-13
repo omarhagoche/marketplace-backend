@@ -5,6 +5,7 @@ namespace App\DataTables\Operations;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Coupon;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\EloquentDataTable;
@@ -22,17 +23,9 @@ class CouponsDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
-        $columns = array_column($this->getColumns(), 'data');
-        $dataTable = $dataTable
-        ->editColumn('updated_at', function ($favorite) {
-            return getDateColumn($favorite, 'updated_at');
-        })
-        // ->addColumn('action', 'operations.settings.favorite.datatables_actions')
-        ->rawColumns(array_merge($columns, ['action']));
-
-
-        return $dataTable;
+        return datatables()
+        ->collection($query);
+        // ->addColumn('action', 'test.action');
     }
 
     /**
@@ -43,10 +36,8 @@ class CouponsDataTable extends DataTable
      */
     public function query(User $model)
     { 
-        $model2=User::find($this->userId);
-        return $model2->coupons();
-        // return $model->newQuery()->find($this->userId)->coupons();
-
+        $model2= $model->newQuery()->where('id',$this->userId)->first();
+        return  $model2->coupons()->all();
     }
 
     /**
@@ -57,9 +48,14 @@ class CouponsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-        ->columns($this->getColumns())
-        ->minifiedAjax();
-        
+                    ->setTableId('test-table')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->dom('Bfrtip')
+                    ->orderBy(1)
+                    ->buttons(
+                        Button::make('reload')
+                    );
     }
 
     /**
@@ -70,15 +66,15 @@ class CouponsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            // Column::computed('action')
+            //       ->exportable(false)
+            //       ->printable(false)
+            //       ->width(60)
+            //       ->addClass('text-center'),
+            // Column::make('id'),
+            Column::make('code'),
+            Column::make('value'),
+            Column::make('date'),
         ];
     }
 

@@ -172,7 +172,6 @@ return [
         App\Providers\DistanceServiceProvider::class,
         App\Providers\FirebaseServiceProvider::class,
 
-
     ],
 
     /*
@@ -228,7 +227,6 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'HTMLFieldGenerator' => InfyOm\Generator\Utils\HTMLFieldGenerator::class,
         //        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
-
     ],
 
 ];

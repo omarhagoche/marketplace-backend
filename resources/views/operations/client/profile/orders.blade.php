@@ -41,7 +41,7 @@
                             @include('operations.client.profile.include.links')
                         </div>
                         <div class="card-body">
-                            @include('orders.table')
+                            @include('operations.settings.client.profile.order.table')
                             <div class="clearfix"></div>
                           </div>
                     </div>
