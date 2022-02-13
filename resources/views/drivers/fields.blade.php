@@ -101,7 +101,7 @@
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('active', 0) !!}
-                {!! Form::checkbox('active', 1, $user->active) !!}
+                {!! Form::checkbox('active', 1, $user->active ?? 0) !!}
             </label>
         </div>
     </div>
