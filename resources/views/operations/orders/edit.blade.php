@@ -54,7 +54,7 @@
           <a class="nav-link" href="{!! route('orders.edit-order-foods',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$order->id." " }}{{trans('lang.order_edit_foods')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('orders.show-order-coupon',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$order->id." " }}{{trans('lang.coupon_create')}}</a>
+          <a class="nav-link" href="{!! route('orders.show-order-coupon',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$order->id." " }}{{trans('lang.coupon_plural')}}</a>
         </li>
       </ul>
     </div>

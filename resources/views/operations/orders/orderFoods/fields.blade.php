@@ -120,7 +120,7 @@
       return;
     }
     var new_price = (oldPrice * new_quantity) / oldQuantity
-    $('#btn_update_'+orderFoodId).html('update <i class="fa fa-spinner fa-spin"></i>');
+    $('#btn_update_'+orderFoodId).html('<i class="fa fa-spinner fa-spin"></i>');
     $('#btn_update_'+orderFoodId).prop('disabled', true);
     
     $.ajax({
@@ -134,7 +134,7 @@
       },
       dataType: "json",
       success: function (response) {
-        $('#btn_update_'+orderFoodId).html('update <i class="fa fa-edit"></i>');
+        $('#btn_update_'+orderFoodId).html('<i class="fa fa-edit"></i>');
         $('#btn_update_'+orderFoodId).prop('disabled', false);
       }
     });

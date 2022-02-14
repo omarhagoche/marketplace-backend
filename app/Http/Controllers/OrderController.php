@@ -16,6 +16,7 @@ use App\Criteria\Users\DriversOfRestaurantCriteria;
 use App\DataTables\OrderDataTable;
 use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
+use App\Http\Requests\CreateCouponRequest;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\DeliveryAddress;
@@ -27,6 +28,7 @@ use App\Models\User;
 use App\Notifications\AssignedOrder;
 use App\Notifications\OrderNeedsToAccept;
 use App\Notifications\StatusChangedOrder;
+use App\Repositories\CouponRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
@@ -64,7 +66,9 @@ class OrderController extends Controller
     /** @var  PaymentRepository */
     private $paymentRepository;
 
-    public function __construct(OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
+    private $couponRepository;
+
+    public function __construct(CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
         , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
     {
         parent::__construct();
@@ -74,6 +78,7 @@ class OrderController extends Controller
         $this->orderStatusRepository = $orderStatusRepo;
         $this->notificationRepository = $notificationRepo;
         $this->paymentRepository = $paymentRepo;
+        $this->couponRepository = $couponRepository;
     }
 
     /**
@@ -434,14 +439,50 @@ class OrderController extends Controller
     }
 
     /**
-    * add coupon to order -> quantity.
+    * Restaurant coupon to order.
     *
+    * @param  int  $order_id -> order id
     * @param  Request  $request
     * @return Response
     */
-    public function addCouponOrder($order_id)
+    public function storeRestaurantCouponOrderFoods(CreateCouponRequest $request, $order_id)
     {
-        return view('operations.orders.orderCoupon.add');
+        try {
+            DB::beginTransaction();
+            $order = Order::find($order_id);
+            $coupon = $this->couponRepository->create($request->all());
+            $order->restaurant_coupon_id = $coupon->id;
+            $order->update();
+            DB::commit();
+            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
+            return redirect(route('orders.show-order-coupon',$order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
+    }
+    /**
+    * Delivery coupon to order.
+    *
+    * @param  int  $order_id -> order id
+    * @param  Request  $request
+    * @return Response
+    */
+    public function storeDeliveryCouponOrderFoods(CreateCouponRequest $request, $order_id)
+    {
+        try {
+            DB::beginTransaction();
+            $order = Order::find($order_id);
+            $coupon = $this->couponRepository->create($request->all());
+            $order->delivery_coupon_id = $coupon->id;
+            $order->update();
+            DB::commit();
+            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
+            return redirect(route('orders.show-order-coupon',$order_id));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $th;
+        }
     }
 
     /**
