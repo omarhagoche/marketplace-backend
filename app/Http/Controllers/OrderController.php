@@ -84,7 +84,7 @@ class OrderController extends Controller
      */
     public function index(OrderDataTable $orderDataTable)
     {
-        return $orderDataTable->render('orders.index');
+        return $orderDataTable->render('operations.orders.index');
     }
 
     /**
@@ -104,7 +104,7 @@ class OrderController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('orders.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
+        return view('operations.orders.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
     }
 
     /**
@@ -158,7 +158,7 @@ class OrderController extends Controller
         $taxAmount  = $data["taxAmount"];
         $foodOrderDataTable->id = $id;
 
-        return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
+        return $foodOrderDataTable->render('operations.orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
     }
 
     /**
@@ -202,7 +202,7 @@ class OrderController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
         $userAddresses = DeliveryAddress::where('user_id',$order->user->id)->pluck('address','id');
-        return view('orders.edit')->with('userAddresses', $userAddresses)->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
+        return view('operations.orders.edit')->with('userAddresses', $userAddresses)->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
     }
 
     /**
@@ -322,7 +322,7 @@ class OrderController extends Controller
     public function ordersWaittingForDrivers()
     {
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
-        return view('orders.watting_drivers')->with('drivers', $drivers);
+        return view('operations.orders.watting_drivers')->with('drivers', $drivers);
     }
 
 
@@ -370,7 +370,7 @@ class OrderController extends Controller
             "orderFoods" =>  $orderFoods,
             "orderId"       =>  $id
         ];
-        return view('orders.orderFoods.edit')->with($data);   
+        return view('operations.orders.orderFoods.edit')->with($data);   
     }
     /**
     * add extra to foodOrder.
@@ -441,7 +441,20 @@ class OrderController extends Controller
     */
     public function addCouponOrder($order_id)
     {
-        return view('orders.orderCoupon.add');
+        return view('operations.orders.orderCoupon.add');
+    }
+
+    /**
+    * show edit coupon order page -> quantity.
+    *
+    * @param  int  $order_id -> order id
+    * @param  Request  $request
+    * @return Response
+    */
+    public function showCouponOrderFoods($order_id)
+    {
+        $order = $this->orderRepository->findWithoutFail($order_id);
+        return view('operations.orders.orderCoupon.edit')->with(["order" => $order]);
     }
     
 }

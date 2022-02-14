@@ -51,16 +51,15 @@
           <a class="nav-link " href="{!! route('orders.edit',$orderId) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{!!  url()->current() !!}"><i class="fa fa-edit mr-2"></i>Order {{$orderId." " }}{{trans('lang.order_edit_foods')}}</a>
+          <a class="nav-link active" href="{!!  url()->current() !!}"><i class="fa fa-product-hunt mr-2"></i>{{trans('lang.order_edit_foods')}}</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      {{-- {!! Form::model($orderFoods ,['route' => ['orders.update', $orderId], 'method' => 'patch']) !!} --}}
       <div class="row">
-        @include('orders.orderFoods.fields')
+        
+        @include('operations.orders.orderCoupon.fields')
       </div>
-      {{-- {!! Form::close() !!} --}}
       <div class="clearfix"></div>
     </div>
   </div>

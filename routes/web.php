@@ -234,6 +234,9 @@ Route::middleware('auth')->group(function () {
     Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
     
     Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
+    Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
+    Route::post('orders/create/coupon/restaurant/{order_id}', 'OrderController@createRestaurantCouponOrderFoods')->name('orders.create-order-restaurant-coupon');
+    Route::post('orders/create/coupon/delivery/{order_id}', 'OrderController@createDeliveryCouponOrderFoods')->name('orders.create-order-delivery-coupon');
     Route::resource('foodOrders', 'FoodOrderController');
     Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
 
