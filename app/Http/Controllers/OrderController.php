@@ -112,9 +112,9 @@ class OrderController extends Controller
             ]);
         }
 
-        $condations .= " AND DATE(o.created_at) > ? ";
+        $condations .= " AND DATE(o.created_at) >= ? ";
         $params[] = $request->from_date;
-        $condations .= " AND DATE(o.created_at) < ? ";
+        $condations .= " AND DATE(o.created_at) <= ? ";
         $params[] = $request->to_date;
 
         $statistics = \DB::select("
