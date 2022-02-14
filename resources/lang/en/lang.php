@@ -786,6 +786,7 @@ return [
     'order_user_id' => 'Client',
     'order_user_id_help' => 'Insert Client',
     'order_user_id_placeholder' => 'Insert Client',
+    'order_edit_foods' => 'Edit Order Foods',
     'password' => 'Password',
     'payment' => 'Payment',
     'payment_create' => 'Create Payment',

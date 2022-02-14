@@ -132,8 +132,6 @@
     </div>
 @endif
 
-
-
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
     <!-- 'Confirm Field' -->
@@ -148,3 +146,4 @@
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.order')}}</button>
     <a href="{!! route('orders.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>
+

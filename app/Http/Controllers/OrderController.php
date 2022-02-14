@@ -152,7 +152,7 @@ class OrderController extends Controller
         }
         $subtotal = 0;
         $taxAmount = 0;
-        $data = $this->orderRepository->calculateOrderTotal($order, $subtotal,$taxAmount);
+        $data = $order->calculateOrderTotal();
         $total      = $data["total"];
         $subtotal   = $data["subtotal"];
         $taxAmount  = $data["taxAmount"];
@@ -399,7 +399,7 @@ class OrderController extends Controller
             return $th;
         }
     }
-
+    
     public function removeExtraInOrderFood(Request $request)
     {
         try {
@@ -431,6 +431,17 @@ class OrderController extends Controller
         $orderFood->quantity = $request->new_quantity;
         $orderFood->update();
         return response()->json($request, 200);
+    }
+
+    /**
+    * add coupon to order -> quantity.
+    *
+    * @param  Request  $request
+    * @return Response
+    */
+    public function addCouponOrder($order_id)
+    {
+        return view('orders.orderCoupon.add');
     }
     
 }

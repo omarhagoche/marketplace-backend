@@ -39,17 +39,5 @@ class OrderRepository extends BaseRepository
         return Order::class;
     }
 
-    public function calculateOrderTotal($order, $subtotal,$taxAmount) {
-        foreach ($order->foodOrders as $foodOrder) {
-            foreach ($foodOrder->extras as $extra) {
-                $foodOrder->price += $extra->price;
-            }
-            $subtotal += $foodOrder->price * $foodOrder->quantity;
-        }
-
-        $total = $subtotal + $order['delivery_fee'];
-        $taxAmount = $total * $order['tax'] / 100;
-        $total += $taxAmount - $order->delivery_coupon_value - $order->restaurant_coupon_value;
-        return ["total" => $total, "taxAmount" =>$taxAmount , "order" => $order, "subtotal" => $subtotal];
-    }
+    
 }

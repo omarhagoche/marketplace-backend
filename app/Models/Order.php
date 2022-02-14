@@ -298,4 +298,20 @@ class Order extends Model
 
         return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
     }
+
+    public function calculateOrderTotal() {
+        $subtotal=0;
+        $taxAmount=0;
+        foreach ($this->foodOrders as $foodOrder) {
+            foreach ($foodOrder->extras as $extra) {
+                $foodOrder->price += $extra->price;
+            }
+            $subtotal += $foodOrder->price * $foodOrder->quantity;
+        }
+
+        $total = $subtotal + $this['delivery_fee'];
+        $taxAmount = $total * $this['tax'] / 100;
+        $total += $taxAmount - $this->delivery_coupon_value - $this->restaurant_coupon_value;
+        return ["total" => $total, "taxAmount" =>$taxAmount , "order" => $this, "subtotal" => $subtotal];
+    }
 }

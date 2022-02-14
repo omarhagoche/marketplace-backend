@@ -232,7 +232,8 @@ Route::middleware('auth')->group(function () {
     Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
     Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
     Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
-
+    
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
     Route::resource('foodOrders', 'FoodOrderController');
     Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
 
