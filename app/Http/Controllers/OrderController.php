@@ -450,6 +450,14 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::find($order_id);
+            if($request->discount_type == "fixed") {
+                $data = $order->calculateOrderTotal();
+                $total      = $data["total"];
+                if($total < $request->discount) {
+                    Flash::error('discount is bigger than order total');
+                    return redirect(route('orders.show-order-coupon',$order_id));
+                }
+            }
             $coupon = $this->couponRepository->create($request->all());
             $order->restaurant_coupon_id = $coupon->id;
             $order->update();
@@ -473,6 +481,14 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::find($order_id);
+            if($request->discount_type == "fixed") {
+                $data = $order->calculateOrderTotal();
+                $total      = $data["total"];
+                if($total < $request->discount) {
+                    Flash::error('discount is bigger than order total');
+                    return redirect(route('orders.show-order-coupon',$order_id));
+                }
+            }
             $coupon = $this->couponRepository->create($request->all());
             $order->delivery_coupon_id = $coupon->id;
             $order->update();
