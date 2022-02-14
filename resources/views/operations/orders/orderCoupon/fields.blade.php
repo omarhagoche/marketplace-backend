@@ -4,7 +4,7 @@
 
 <div disabled style="flex: 50%;max-width: 50%;padding:17px; border-style: solid; border-width: 1px; border-radius: 9px; border-color: #b5b5b538;" class="column">
    {!! Form::open(['route' => ['orders.store-order-restaurant-coupon',$order->id], 'method' => 'post']) !!}
-   <div class="form-group row ">
+   <div class="form-group row" style="place-content: center; font-size: 27px;">
        <span>{{ trans('lang.coupon_restaurant') }}</span>
    </div>
     @if (!$order->restaurantCoupon)
@@ -80,7 +80,7 @@
     {!! Form::close() !!}
 </div>
 <div style="flex: 50%;max-width: 50%;padding:17px; border-style: solid; border-width: 1px; border-radius: 9px; border-color: #b5b5b538;" class="column">
-    <div class="form-group row ">
+    <div class="form-group row" style="place-content: center; font-size: 27px;">
         <span>{{ trans('lang.coupon_delivery') }}</span>
     </div>
     {!! Form::open(['route' => ['orders.store-order-delivery-coupon',$order->id], 'method' => 'post']) !!}
