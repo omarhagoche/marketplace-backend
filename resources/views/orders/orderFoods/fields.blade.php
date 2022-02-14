@@ -51,14 +51,13 @@
                   </td>
                   <td style="width: 270px">
                     <div class="row">
-                      <div class="col col-md-6 m-1">
-                        <input type="number" class="form-control" min="1" oninput="validity.valid||(value='');"  id="quantity_new_{{$orderFoods->id}}" value="{{$orderFoods->quantity}}" onkeyup="changeQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" style="width: 114px;">
-                      </div>
-                      <div class="col col-md-6 m-1">
+                      <div class="col col-md-12 m-1">
+                        <input type="number" class="form-control" min="1" oninput="validity.valid||(value='');"  id="quantity_new_{{$orderFoods->id}}" value="{{$orderFoods->quantity}}" onkeyup="changeQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" style="width: 114px; display: inline;">
                         <button id="btn_update_{{$orderFoods->id}}" type="submit" onclick="updateQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" class="btn btn-primary" style="border-color: #33456b; background-color: #33456b;">
-                          update <span id="waiting_{{$orderFoods->id}}"> <i class="fa fa-edit"></i></span>
+                           <div id="waiting_{{$orderFoods->id}}"> <i class="fa fa-edit"></i></div>
                         </button>
                       </div>
+                      
                     </div>
                   </td>
                   <td>
@@ -73,17 +72,15 @@
                       @endforeach
                       {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
                       <div class="row">
-                        <div class="col col-md-6 m-1">
-                          <select name="extraId" id="extra" class="select2 form-control" required>
+                        <div class="col col-md-12">
+                          <select name="extraId" id="extra" class=" form-control" required style="width: 289px; display: inline;">
                             @foreach ($orderFoods->food->extras as $extra)
                             @if (!$orderFoods->foodOrderExtra->pluck('extra_id')->contains($extra->id))
                               <option value="{{ $extra->id }}">{{ $extra->name}}</option>
                             @endif
                             @endforeach
                           </select>
-                        </div>
-                        <div class="col col-md-6 m-1">
-                          <button style="background-color: #3c4b71; border-color: #3c4b71;" id="addExtra" class="btn btn-primary">Add Extra <i class="fa fa-plus"></i></button>
+                          <button style="background-color: #3c4b71; border-color: #3c4b71;" id="addExtra" class="btn btn-primary"><i class="fa fa-plus"></i></button>
                         </div>
                       </div>
                       {!! Form::close() !!}
