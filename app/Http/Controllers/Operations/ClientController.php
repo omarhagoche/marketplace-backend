@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Operations;
 
-use Flash;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use App\Models\DeliveryAddress;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
@@ -24,6 +25,7 @@ use App\DataTables\Operations\ClientDataTable;
 use App\DataTables\Operations\CouponsDataTable;
 use App\DataTables\Operations\FavoriteDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\DataTables\Operations\DeliveryAddressDataTable;
 
 class ClientController extends Controller
 {
@@ -196,6 +198,49 @@ class ClientController extends Controller
 
         // return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
 
+    }
+    public function address(DeliveryAddressDataTable $deliveryAddressDataTable,$userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+        return $deliveryAddressDataTable->with('userId', $userId)->render('operations.client.profile.address', compact('user','role','rolesSelected'));
+
+    }
+    public function setAddressDefault($userId,$addressId)
+    {
+        try {
+            DeliveryAddress::where('user_id', $userId)->update(['is_default'=>0]);
+            DeliveryAddress::where('id', $addressId)->update(['is_default'=>1]);
+            Flash::success(__('lang.updated_successfully',['operator'=>'Address']));
+        } catch (\Throwable $th) {
+            Flash::error($th->getMessage());
+        }
+        return redirect(route('operations.users.profile.address',$userId));
+    }
+    public function deleteAddress($userId,$addressId)
+    {
+        try {
+            $address=DeliveryAddress::find($addressId);
+            if ($address->orders()->exists()) {
+                Flash::error('You have order on this address');
+            }else {
+                $address->delete();
+                Flash::success(__('lang.deleted_successfully'));
+            }
+        } catch (\Throwable $th) {
+            Flash::error($th->getMessage());
+        }
+      
+       
+
+        return redirect(route('operations.users.profile.address',$userId));
     }
     
     /**

@@ -236,6 +236,12 @@ Route::middleware('auth')->group(function () {
             Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
             Route::get('users/profile/{userId}/coupons', 'Operations\ClientController@coupons')->name('operations.users.profile.coupons');
             Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
+            Route::get('users/profile/{userId}/address', 'Operations\ClientController@address')->name('operations.users.profile.address');
+            Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
+            Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
+
+
+
             Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
 
             Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);

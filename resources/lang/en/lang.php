@@ -4,6 +4,8 @@ return [
     'actions' => 'Actions',
     'active' => 'Active',
     'add' => 'Add',
+    'default' => 'Default',
+    'set_default' => 'Set Default',
     'app_management' => 'App Management',
     'app_setting' => 'Settings',
     'app_setting_accent_color' => 'Accent Color',

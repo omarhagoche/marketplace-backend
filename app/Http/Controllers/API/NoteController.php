@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\NoteRequest;
+use App\Http\Controllers\Controller;
+use App\Repositories\NoteRepository;
+use App\Repositories\FoodOrderRepository;
 
 class NoteController extends Controller
 {

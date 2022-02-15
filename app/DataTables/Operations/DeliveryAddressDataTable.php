@@ -2,18 +2,14 @@
 
 namespace App\DataTables\Operations;
 
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Coupon;
-use Yajra\DataTables\DataTables;
+use App\Models\DeliveryAddress;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Html\Editor\Editor;
 
-class CouponsDataTable extends DataTable
+class DeliveryAddressDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -24,20 +20,19 @@ class CouponsDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables()
-        ->collection($query);
-        // ->addColumn('action', 'test.action');
+            ->eloquent($query)
+            ->addColumn('action', 'operations.settings.client.profile.address.datatables_actions');
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Coupon $model
+     * @param \App\Models\DeliveryAddress $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(User $model)
-    { 
-        $model2= $model->newQuery()->where('id',$this->userId)->first();
-        return  $model2->coupons()->all();
+    public function query(DeliveryAddress $model)
+    {
+        return $model->newQuery()->with("user")->where('user_id',$this->userId);
     }
 
     /**
@@ -48,12 +43,16 @@ class CouponsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('test-table')
+                    // ->setTableId('operations/deliveryaddress-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
+                        // Button::make('create'),
+                        // Button::make('export'),
+                        // Button::make('print'),
+                        // Button::make('reset'),
                         Button::make('reload')
                     );
     }
@@ -71,12 +70,12 @@ class CouponsDataTable extends DataTable
             //       ->printable(false)
             //       ->width(60)
             //       ->addClass('text-center'),
-            // Column::make('id'),
-            Column::make('code'),
-            Column::make('value'),
-            Column::make('date'),
-            Column::make('for'),
+            Column::make('id'),
+            Column::make('address'),
+            Column::make('description'),
 
+            Column::make('action'),
+            // Column::make('updated_at'),
         ];
     }
 
@@ -87,6 +86,6 @@ class CouponsDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Operations/Coupons_' . date('YmdHis');
+        return 'Operations/DeliveryAddress_' . date('YmdHis');
     }
 }
