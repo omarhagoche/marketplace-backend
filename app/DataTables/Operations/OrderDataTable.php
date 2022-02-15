@@ -36,26 +36,17 @@ class OrderDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
-        // return 
-        // datatables()
-        // ->eloquent($query)
+
         $dataTable = $dataTable
             ->editColumn('id', function ($order) {
                 return "#" . $order->id;
             })
-            ->editColumn('restaurant.name', function ($order) {
+            ->addColumn('restaurant.name', function ($order) {
                 if ($order->restaurant) {
                     return $order->restaurant->name;
                 }
                 return '-------';
-            })
-            // ->editColumn('user.name', function ($order) {
-            //     if (!$order->user) {
-            //         return $order->unregistered_customer->name ?? '----';
-            //     }
-            //     return getLinksColumnByRouteName([$order->user], "users.edit", 'id', 'name');
-            // })
-            ->editColumn('driver.name', function ($order) {
+            })->addColumn('driver.name', function ($order) {
                 if (!$order->driver) {
                     return '---'; // trans('lang.order_driver_not_assigned');
                 }
@@ -100,7 +91,7 @@ class OrderDataTable extends DataTable
             ],
             [
                 'data' => 'restaurant.name',
-                'name' => 'restaurant Name',
+                'name' => 'restaurant.name',
                 'title' => trans('lang.restaurant'),
             ],
             // [
@@ -175,12 +166,12 @@ class OrderDataTable extends DataTable
                 ]]);
             }
         } */
-        return[
-            Column::make('id'),
-            Column::make('restaurant.name'),
-            Column::make('driver.name'),
-            // Column::make('for'),
-        ];
+        // return[
+        //     Column::make('id'),
+        //     Column::make('restaurant.name'),
+        //     Column::make('driver.name'),
+        //     // Column::make('for'),
+        // ];
         return $columns;
     }
 
