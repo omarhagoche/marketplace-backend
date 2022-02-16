@@ -14,21 +14,9 @@
                 </div>
             </div>
         </div>
-
         <!--  User phone_number Field -->
         <div class="form-group row ">
-            {!! Form::label('Name', trans('lang.user_phone_number'), ['class' => 'col-3 control-label text-right']) !!}
-            <div class="col-9">
-                {!! Form::Text('phone_number', null, ['class' => 'form-control', 'placeholder' => trans('lang.user_phone_number_placeholder')]) !!}
-                <div class="form-text text-muted">
-                    {{ trans('lang.user_phone_number_help') }}
-                </div>
-            </div>
-        </div>
-
-        <!--  User phone_number Field -->
-        <div class="form-group row ">
-            {!! Form::label('Name', trans('lang.user_phone_number'), ['class' => 'col-3 control-label text-right']) !!}
+            {!! Form::label('Phone', trans('lang.user_phone_number'), ['class' => 'col-3 control-label text-right']) !!}
             <div class="col-9">
                 {!! Form::Text('phone_number', null, ['class' => 'form-control', 'placeholder' => trans('lang.user_phone_number_placeholder')]) !!}
                 <div class="form-text text-muted">
