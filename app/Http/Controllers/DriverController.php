@@ -19,7 +19,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
 use App\Models\Order;
 use App\Repositories\DriverTypeRepository;
-
+use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
@@ -84,9 +84,9 @@ class DriverController extends Controller
                 $this->driverRepository->firstOrCreate(['user_id' => $driver->id]);
             }
         }
-
         $types = $this->driverTypeRepository->pluck('name', 'id');
-        return redirect(route('drivers.index'))->with('types', $types);
+        return view('drivers.create')->with('types', $types)->with('customFields', 0);
+        // return redirect(route('drivers.create'))->with('types', $types);
     }
 
     /**
@@ -99,8 +99,11 @@ class DriverController extends Controller
     public function store(CreateDriverRequest $request)
     {
         $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
+            $user = $this->userRepository->create($input);
+            $input['user_id'] = $user->id;
             $driver = $this->driverRepository->create($input);
             $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
         } catch (ValidatorException $e) {
