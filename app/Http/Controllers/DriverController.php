@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
+use App\Models\Order;
 use App\Repositories\DriverTypeRepository;
 
 
@@ -128,9 +129,16 @@ class DriverController extends Controller
 
             return redirect(route('drivers.index'));
         }
+        $orders = Order::where('driver_id', $id)->with('user', 'restaurant')->orderby('created_at', 'desc')->paginate(10);
+        $lastOrder = $orders->first();
 
-        return view('drivers.show')->with('driver', $driver)->with('user', $user);
+
+        return view('drivers.show')->with('driver', $driver)
+            ->with('user', $user)
+            ->with('orders', $orders)
+            ->with('lastOrder', $lastOrder);
     }
+
 
     /**
      * Show the form for editing the specified Driver.
