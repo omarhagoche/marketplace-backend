@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Operations;
 
+use App\Models\Order;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Models\DeliveryAddress;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
@@ -211,6 +213,34 @@ class ClientController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
         return $deliveryAddressDataTable->with('userId', $userId)->render('operations.client.profile.address', compact('user','role','rolesSelected'));
+
+    }
+    public function statistics($userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+        $data['total_money']=0;
+        $data['orderCount']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',1)->count();
+        $data['orderCanceled']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',110)
+                            ->orWhere('order_status_id',120)
+                            ->orWhere('order_status_id',130)
+                            ->orWhere('order_status_id',140)
+                            ->count();
+        $data['visited']=Order::where('user_id',$userId)->where('user_id',$userId)->groupBy('restaurant_id')->count();
+        $data['total_money']=0;
+        
+        foreach (Order::where('user_id',$userId)->where('order_status_id',1)->get() as $order) {
+            $data['total_money']+=$order->calculateOrderTotal()["total"];
+        }
+
+        return view('operations.client.profile.statistics', compact('data','user','role','rolesSelected'));
 
     }
     public function setAddressDefault($userId,$addressId)

@@ -1375,4 +1375,9 @@ return [
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
     'drivers_map' => 'Drivers map',
+    'delivery_success' => 'Delivery success',
+    'total_money_for_user'=>'Total money',
+    'visited_restaurants'=>'Visited',
+    'cancel_order'=>'Cancel order',
+
 ];

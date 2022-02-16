@@ -18,7 +18,7 @@
         <a class="nav-link {{ Route::is('operations.users.profile.address') ? 'active' : '' }}" href="{!! route('operations.users.profile.address',$user->id) !!}"><i class="fa fa-map-marker  mr-2"></i>{{trans('lang.client_address')}}</a>
     </li>
     <li class="nav-item ">
-        <a class="nav-link {{ Route::is('operations.users.profile.statistics') ? 'active' : '' }}" href="{!! url()->current().'/statistics' !!}"><i class="fa fa-percent  mr-2"></i>{{trans('lang.client_statistics')}}</a>
+        <a class="nav-link {{ Route::is('operations.users.profile.statistics') ? 'active' : '' }}" href="{!! route('operations.users.profile.statistics',$user->id) !!}"><i class="fa fa-percent  mr-2"></i>{{trans('lang.client_statistics')}}</a>
     </li>
    
     @hasrole('client')
