@@ -121,15 +121,10 @@ class ClientController extends Controller
      */
     public function orders(OrderDataTable $orderDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
 
         return $orderDataTable->with('id', $userId)->render('operations.client.profile.orders', compact('user','role','rolesSelected'));
  
@@ -143,15 +138,10 @@ class ClientController extends Controller
      */
     public function favorites(FavoriteDataTable $favoriteDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
 
         return $favoriteDataTable->with('userId', $userId)->render('operations.client.profile.favorites', compact('user','role','rolesSelected'));
 
@@ -165,15 +155,10 @@ class ClientController extends Controller
      */
     public function notes(NoteDataTable $noteDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
 
         return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('user','role','rolesSelected'));
 
@@ -187,15 +172,10 @@ class ClientController extends Controller
      */
     public function coupons(CouponsDataTable $couponDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
         return $couponDataTable->with('userId', $userId)->render('operations.client.profile.coupons', compact('user','role','rolesSelected'));
 
         // return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
@@ -203,29 +183,19 @@ class ClientController extends Controller
     }
     public function address(DeliveryAddressDataTable $deliveryAddressDataTable,$userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
         return $deliveryAddressDataTable->with('userId', $userId)->render('operations.client.profile.address', compact('user','role','rolesSelected'));
 
     }
     public function statistics($userId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
+        $getData=$this->getData($userId);
+        $user=$getData['user'];
+        $role=$getData['role']; 
+        $rolesSelected=$getData['rolesSelected'];
         $data['total_money']=0;
         $data['orderCount']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',1)->count();
         $data['orderCanceled']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',110)
@@ -444,5 +414,18 @@ class ClientController extends Controller
             $customFields = generateCustomField($customFields, $customFieldsValues);
         }
         return view('operations.client.profile.index', compact(['user', 'role', 'rolesSelected', 'customFields', 'customFieldsValues']));
+    }
+    public function getData($userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+        $role = $this->roleRepository->pluck('name', 'name');
+        $rolesSelected = $user->getRoleNames()->toArray();
+        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+        return compact('user','role','rolesSelected');
     }
 }
