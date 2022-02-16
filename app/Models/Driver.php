@@ -61,7 +61,7 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
-        'type' => 'required|in:bicycle,motorcycle,car',
+        // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
     ];
