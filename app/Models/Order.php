@@ -172,6 +172,14 @@ class Order extends Model
     }
 
     /**
+     * return user name
+     * @return string 
+     **/
+    public function userName()
+    {
+        return $this->user ? $this->user->name : '';
+    }
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function unregisteredCustomer()
@@ -204,7 +212,14 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
-
+    /**
+     * return name of restaurant
+     * @return string
+     **/
+    public function restaurantName()
+    {
+        return $this->restaurant ? $this->restaurant->name : "";
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
