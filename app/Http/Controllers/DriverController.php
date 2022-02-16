@@ -121,14 +121,15 @@ class DriverController extends Controller
     public function show($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
 
-        if (empty($driver)) {
+        if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
 
             return redirect(route('drivers.index'));
         }
 
-        return view('drivers.show')->with('driver', $driver);
+        return view('drivers.show')->with('driver', $driver)->with('user', $user);
     }
 
     /**
