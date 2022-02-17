@@ -30,6 +30,8 @@ use App\Notifications\OrderNeedsToAccept;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CouponRepository;
 use App\Repositories\CustomFieldRepository;
+use App\Repositories\ExtraRepository;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\OrderStatusRepository;
@@ -65,10 +67,16 @@ class OrderController extends Controller
     private $notificationRepository;
     /** @var  PaymentRepository */
     private $paymentRepository;
-
+    
     private $couponRepository;
+    
+    /** @var  FoodOrderRepository */
+    private $foodOrderRepository;
 
-    public function __construct(CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
+    /** @var  ExtraRepository */
+    private $extraRepository;
+
+    public function __construct(ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
         , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
     {
         parent::__construct();
@@ -79,6 +87,8 @@ class OrderController extends Controller
         $this->notificationRepository = $notificationRepo;
         $this->paymentRepository = $paymentRepo;
         $this->couponRepository = $couponRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
+        $this->extraRepository = $extraRepository;
     }
 
     /**
@@ -368,8 +378,8 @@ class OrderController extends Controller
     */
     public function editOrderFoods($id)
     {
-        $orderFoods = FoodOrder::where('order_id',$id)->get();
-        $order = Order::find($id);
+        $orderFoods =$this->foodOrderRepository->findByField('order_id',$id);
+        $order = $this->orderRepository->findWithoutFail($id);
         $data = [
             "restaurantFooods" =>  [null => 'select food' , $order->restaurant->foods->pluck('name','id')],
             "orderFoods" =>  $orderFoods,
@@ -387,8 +397,8 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $extra = Extra::find($request->extraId);
-            $orderFood = FoodOrder::find($orderFoodId);
+            $extra = $this->extraRepository->findWithoutFail($request->extraId);
+            $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
             $foodOrderExtras = new FoodOrderExtra();
             $foodOrderExtras->food_order_id = $orderFoodId;
             $foodOrderExtras->extra_id = $request->extraId;
