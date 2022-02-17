@@ -30,6 +30,8 @@ use App\Notifications\OrderNeedsToAccept;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CouponRepository;
 use App\Repositories\CustomFieldRepository;
+use App\Repositories\ExtraRepository;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\OrderStatusRepository;
@@ -65,10 +67,18 @@ class OrderController extends Controller
     private $notificationRepository;
     /** @var  PaymentRepository */
     private $paymentRepository;
-
+    
     private $couponRepository;
+    
+    /** @var  FoodOrderRepository */
+    private $foodOrderRepository;
 
-    public function __construct(CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
+    /** @var  ExtraRepository */
+    private $extraRepository;
+    /** @var  FoodOrderExtra */
+    private $foodOrderExtra;
+
+    public function __construct(FoodOrderExtra $foodOrderExtra,ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
         , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
     {
         parent::__construct();
@@ -79,6 +89,9 @@ class OrderController extends Controller
         $this->notificationRepository = $notificationRepo;
         $this->paymentRepository = $paymentRepo;
         $this->couponRepository = $couponRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
+        $this->extraRepository = $extraRepository;
+        $this->foodOrderExtra = $foodOrderExtra;
     }
 
     /**
@@ -432,8 +445,8 @@ class OrderController extends Controller
     */
     public function editOrderFoods($id)
     {
-        $orderFoods = FoodOrder::where('order_id',$id)->get();
-        $order = Order::find($id);
+        $orderFoods =$this->foodOrderRepository->findByField('order_id',$id);
+        $order = $this->orderRepository->findWithoutFail($id);
         $data = [
             "restaurantFooods" =>  [null => 'select food' , $order->restaurant->foods->pluck('name','id')],
             "orderFoods" =>  $orderFoods,
@@ -451,15 +464,13 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $extra = Extra::find($request->extraId);
-            $orderFood = FoodOrder::find($orderFoodId);
-            $foodOrderExtras = new FoodOrderExtra();
-            $foodOrderExtras->food_order_id = $orderFoodId;
-            $foodOrderExtras->extra_id = $request->extraId;
-            $foodOrderExtras->price = $extra->price;
-            $foodOrderExtras->save();
-            $orderFood->price = $orderFood->price + $extra->price;
-            $orderFood->save();
+            $extra = $this->extraRepository->findWithoutFail($request->extraId);
+            $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
+            $this->foodOrderExtra->create([
+                "food_order_id" => $orderFoodId,
+                "extra_id" => $request->extraId,
+                "price" => $extra->price,
+            ]);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$orderFood->order_id));
@@ -474,10 +485,11 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $foodOrderExtra = FoodOrderExtra::where('food_order_id', $request->food_order_id)->where('extra_id',$request->extra_id)->get()->first();
-            $foodOrder = FoodOrder::find($foodOrderExtra->food_order_id);
-            $foodOrder->price = $foodOrder->price - $foodOrderExtra->price;
+            $foodOrder = $this->foodOrderRepository->findWithoutFail($foodOrderExtra->food_order_id);
             DB::delete('delete from food_order_extras where food_order_id = ? and extra_id = ?', [$request->food_order_id,$request->extra_id]);
-            $foodOrder->update();
+            $this->foodOrderRepository->update([
+                "price" => $foodOrder->price - $foodOrderExtra->price,
+            ], $foodOrder->id);
             DB::commit();
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
@@ -495,10 +507,10 @@ class OrderController extends Controller
     */
     public function updateOrderFoods(Request $request)
     {
-        $orderFood = FoodOrder::find($request->orderFoodId);
-        $orderFood->price = $request->new_price;
-        $orderFood->quantity = $request->new_quantity;
-        $orderFood->update();
+        $this->foodOrderRepository->update([
+            "price" => $request->new_price,
+            "quantity" => $request->new_quantity,
+        ], $request->orderFoodId);
         return response()->json($request, 200);
     }
 
@@ -513,7 +525,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $order = Order::find($order_id);
+            $order = $this->orderRepository->findWithoutFail($order_id);
             if($request->discount_type == "fixed") {
                 $data = $order->calculateOrderTotal();
                 $total      = $data["total"];
@@ -523,8 +535,9 @@ class OrderController extends Controller
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
-            $order->restaurant_coupon_id = $coupon->id;
-            $order->update();
+            $this->orderRepository->update([
+                "restaurant_coupon_id" => $coupon->id,
+            ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
             return redirect(route('orders.show-order-coupon',$order_id));
@@ -544,7 +557,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $order = Order::find($order_id);
+            $order = $this->orderRepository->findWithoutFail($order_id);
             if($request->discount_type == "fixed") {
                 $data = $order->calculateOrderTotal();
                 $total      = $data["total"];
@@ -554,8 +567,9 @@ class OrderController extends Controller
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
-            $order->delivery_coupon_id = $coupon->id;
-            $order->update();
+            $this->orderRepository->update([
+                "delivery_coupon_id" => $coupon->id,
+            ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
             return redirect(route('orders.show-order-coupon',$order_id));
