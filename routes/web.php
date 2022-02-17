@@ -165,9 +165,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('orders/waitting-drivers', 'OrderController@ordersWaittingForDrivers')->name('orders.waitting_drivers');
     Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
-
+    
     Route::resource('orders', 'OrderController');
-
+    
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',
     ]);;
@@ -227,4 +227,17 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
+    
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
+    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
+    Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
+    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
+    
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
+    Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
+    Route::post('orders/store/coupon/restaurant/{order_id}', 'OrderController@storeRestaurantCouponOrderFoods')->name('orders.store-order-restaurant-coupon');
+    Route::post('orders/store/coupon/delivery/{order_id}', 'OrderController@storeDeliveryCouponOrderFoods')->name('orders.store-order-delivery-coupon');
+    Route::resource('foodOrders', 'FoodOrderController');
+    Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
+
 });

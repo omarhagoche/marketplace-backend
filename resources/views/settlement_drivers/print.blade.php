@@ -50,11 +50,33 @@
         </tbody>
     </table>
 
+    {{-- Start Coupons --}}
+    <table class="table" style="margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #bbb;">
+                <th>عدد كوبونات التوصيل</th>
+                <th>عدد كوبونات المطاعم</th>
+                <th>قيمة كوبونات التوصيل</th>
+                <th>قيمة كوبونات المطاعم</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $settlement->count_delivery_coupons }}</td>
+                <td>{{ $settlement->count_restaurant_coupons }}</td>
+                <td>{{ $settlement->amount_delivery_coupons }}<bdi>د.ل</bdi></td>
+                <td>{{ $settlement->amount_restaurant_coupons }}<bdi>د.ل</bdi></td>
+            </tr>
+        </tbody>
+    </table>
+    {{-- End Coupons --}}
+
     <table class="table" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: #bbb;">
                 <th>العمولة</th>
                 <th>العدد</th>
+                <th>القيمة</th>
                 <th>الإجمالي</th>
                 <th>الموظف</th>
                 <th>التاريخ</th>
@@ -66,6 +88,7 @@
                 <td>{{ $settlement->fee }}<bdi>%</bdi></td>
                 <td>{{ $settlement->count }}</td>
                 <td>{{ $settlement->amount }} <bdi>د.ل</bdi></td>
+                <td>{{ $settlement->total_amount }} <bdi>د.ل</bdi></td>
                 <td><bdi>{{ Auth::user()->name }}</bdi></td>
                 <td><bdi>{{ date('Y-m-d g:ia') }}</bdi></td>
             </tr>

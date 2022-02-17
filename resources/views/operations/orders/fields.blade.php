@@ -32,6 +32,13 @@
         </div>
     </div>
 
+
+    <div class="form-group row ">
+        {!! Form::label('costumer_adresses', trans("lang.delivery_address"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::select('delivery_address_id', $userAddresses, $order->deliveryAddress->id,['class' => 'select2 form-control']) !!}
+        </div>
+    </div>
     <!-- Status Field -->
     <div class="form-group row ">
         {!! Form::label('status', trans("lang.payment_status"),['class' => 'col-3 control-label text-right']) !!}
@@ -70,8 +77,19 @@
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
-    <!-- Tax Field -->
+    <!-- Processing time Field -->
     <div class="form-group row ">
+        {!! Form::label('processing_time', trans("lang.order_processing_time"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('processing_time', null,  ['class' => 'form-control', 'min' => 0, 'placeholder'=>  trans("lang.order_processing_time_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.order_processing_time_help") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Field -->
+    {{-- <div class="form-group row ">
         {!! Form::label('tax', trans("lang.order_tax"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
             {!! Form::number('tax', null,  ['class' => 'form-control', 'step'=>"any",'placeholder'=>  trans("lang.order_tax_placeholder")]) !!}
@@ -79,7 +97,7 @@
                 {{ trans("lang.order_tax_help") }}
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- delivery_fee Field -->
     <div class="form-group row ">
@@ -108,8 +126,19 @@
         {!! $customFields !!}
     </div>
 @endif
+
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
+    <!-- 'Confirm Field' -->
+    <div class="form-group row ">
+        {!! Form::label('for_restaurants', 'I am sure the order status is compatible with the driver' ,['class' => 'col-auto control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col ml-2 form-check-inline">
+                {!! Form::checkbox('confirm', 0, 0, ['required']) !!}
+            </label>
+        </div>
+    </div>
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.order')}}</button>
     <a href="{!! route('orders.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>
+

@@ -31,10 +31,12 @@ use App\Events\UpdatedOrderEvent;
  * @property double restaurant_coupon_value
  * @property double delivery_fee
  * @property double restaurant_delivery_fee
+ * @property int processing_time
  * @property string id
  * @property int delivery_address_id
  * @property int restaurant_id
  * @property string hint
+ * @property string reason
  * @property boolean for_restaurants
  */
 class Order extends Model
@@ -52,6 +54,7 @@ class Order extends Model
         'delivery_coupon_value',
         'restaurant_coupon_value',
         'hint',
+        'reason',
         'for_restaurants',
         'delivery_coupon_id',
         'restaurant_coupon_id',
@@ -59,6 +62,7 @@ class Order extends Model
         'restaurant_id',
         'delivery_fee',
         'restaurant_delivery_fee',
+        'processing_time',
         'active',
         'driver_id',
     ];
@@ -76,6 +80,7 @@ class Order extends Model
         'delivery_coupon_value' => 'double',
         'restaurant_coupon_value' => 'double',
         'hint' => 'string',
+        'reason' => 'string',
         'for_restaurants' => 'boolean',
         'status' => 'string',
         'delivery_coupon_id' => 'integer',
@@ -84,6 +89,7 @@ class Order extends Model
         'restaurant_id' => 'integer',
         'delivery_fee' => 'double',
         'restaurant_delivery_fee' => 'double',
+        'processing_time' => 'double',
         'active' => 'boolean',
         'driver_id' => 'integer',
     ];
@@ -95,7 +101,7 @@ class Order extends Model
      */
     public static $rules = [
         'user_id' => 'nullable|exists:users,id',
-        'unregistered_customer' => 'required_without:user_id',
+        //'unregistered_customer' => 'required_without:user_id',
         'order_status_id' => 'required|exists:order_statuses,id',
         'delivery_coupon_id' => 'exists:coupons,id',
         'restaurant_coupon_id' => 'exists:coupons,id',
@@ -153,7 +159,8 @@ class Order extends Model
          */
         static::saving(function ($model) {
             // set status value depends on order_status_id automatically 
-            $model->active = !$model->isStatusCanceled(); // canceled status 
+            $model->active = !$model->isStatusCanceled(); // canceled status
+            $model->last_user_updated = auth()->user()->id; // last user make update or insert
         });
     }
 
@@ -281,5 +288,30 @@ class Order extends Model
         };
 
         return ($this->getOriginal('order_status_id') ?? false) == 80; // 80 : delivered
+    }
+
+    public function isStatusWasCanceled()
+    {
+        if (!$this->wasChanged('order_status_id')) {
+            return false;
+        };
+
+        return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
+    }
+
+    public function calculateOrderTotal() {
+        $subtotal=0;
+        $taxAmount=0;
+        foreach ($this->foodOrders as $foodOrder) {
+            foreach ($foodOrder->extras as $extra) {
+                $foodOrder->price += $extra->price;
+            }
+            $subtotal += $foodOrder->price * $foodOrder->quantity;
+        }
+
+        $total = $subtotal + $this['delivery_fee'];
+        $taxAmount = $total * $this['tax'] / 100;
+        $total += $taxAmount - $this->delivery_coupon_value - $this->restaurant_coupon_value;
+        return ["total" => $total, "taxAmount" =>$taxAmount , "order" => $this, "subtotal" => $subtotal];
     }
 }

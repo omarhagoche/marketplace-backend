@@ -15,7 +15,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.order_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.order_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.order')}} {{ isset($order->id) ? $order->id: ''}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.order_desc')}}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -48,16 +48,21 @@
         </li>
         @endcan
         <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
+          <a class="nav-link " href="{!! route('orders.edit',$order->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{!! route('orders.edit-order-foods',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$order->id." " }}{{trans('lang.order_edit_foods')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$order->id." " }}{{trans('lang.coupon_plural')}}</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::model($order, ['route' => ['orders.update', $order->id], 'method' => 'patch']) !!}
       <div class="row">
-        @include('orders.fields')
+        
+        @include('operations.orders.orderCoupon.fields')
       </div>
-      {!! Form::close() !!}
       <div class="clearfix"></div>
     </div>
   </div>

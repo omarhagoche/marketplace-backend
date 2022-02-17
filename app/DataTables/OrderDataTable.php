@@ -74,7 +74,7 @@ class OrderDataTable extends DataTable
             ->editColumn('active', function ($food) {
                 return getBooleanColumn($food, 'active');
             })
-            ->addColumn('action', 'orders.datatables_actions')
+            ->addColumn('action', 'operations.orders.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;

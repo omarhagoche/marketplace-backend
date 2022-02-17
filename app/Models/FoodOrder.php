@@ -111,4 +111,9 @@ class FoodOrder extends Model
     {
         return $this->belongsTo(\App\Models\Order::class, 'order_id', 'id');
     }
+
+    public function foodOrderExtra()
+    {
+        return $this->hasMany(\App\Models\FoodOrderExtra::class);
+    }
 }

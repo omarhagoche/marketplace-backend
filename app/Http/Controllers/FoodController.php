@@ -260,4 +260,24 @@ class FoodController extends Controller
             Log::error($e->getMessage());
         }
     }
+
+    /**
+     * Get Food Data.
+     *
+     * @param int $id
+     *
+     * @return Response json
+     */
+    public function showFood($id)
+    {
+        $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+        $food = $this->foodRepository->findWithoutFail($id);
+
+        if (empty($food)) {
+            Flash::error('Food not found');
+
+            return redirect(route('foods.index'));
+        }
+        return response()->json($food, 200);
+    }
 }

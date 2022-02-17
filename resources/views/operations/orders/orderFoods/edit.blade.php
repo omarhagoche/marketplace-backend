@@ -15,14 +15,14 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.order_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.order_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.order')}} {{ isset($orderId) ? $orderId: ''}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.order_desc')}}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
           <li class="breadcrumb-item"><a href="{!! route('orders.index') !!}">{{trans('lang.order_plural')}}</a>
           </li>
-          <li class="breadcrumb-item active">{{trans('lang.order_create')}}</li>
+          <li class="breadcrumb-item active">{{trans('lang.order_edit')}}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -42,17 +42,26 @@
           <a class="nav-link" href="{!! route('orders.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
         </li>
         @endcan
+        @can('orders.create')
         <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.order_create')}}</a>
+          <a class="nav-link" href="{!! route('orders.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.order_create')}}</a>
+        </li>
+        @endcan
+        <li class="nav-item">
+          <a class="nav-link " href="{!! route('orders.edit',$orderId) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{!!  url()->current() !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$orderId." " }}{{trans('lang.order_edit_foods')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{!! route('orders.show-order-coupon',$orderId) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order')}} {{$orderId." " }}{{trans('lang.coupon_plural')}}</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::open(['route' => 'orders.store']) !!}
       <div class="row">
-        @include('orders.fields')
+        @include('operations.orders.orderFoods.fields')
       </div>
-      {!! Form::close() !!}
       <div class="clearfix"></div>
     </div>
   </div>

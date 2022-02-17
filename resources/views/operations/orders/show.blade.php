@@ -39,7 +39,7 @@
     </div>
     <div class="card-body">
       <div class="row">
-        @include('orders.show_fields')
+        @include('operations.orders.show_fields')
       </div>
       @include('food_orders.table')
       <div class="row">
