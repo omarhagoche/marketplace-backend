@@ -422,9 +422,10 @@ class OrderController extends Controller
             DB::beginTransaction();
             $foodOrderExtra = FoodOrderExtra::where('food_order_id', $request->food_order_id)->where('extra_id',$request->extra_id)->get()->first();
             $foodOrder = $this->foodOrderRepository->findWithoutFail($foodOrderExtra->food_order_id);
-            $foodOrder->price = $foodOrder->price - $foodOrderExtra->price;
             DB::delete('delete from food_order_extras where food_order_id = ? and extra_id = ?', [$request->food_order_id,$request->extra_id]);
-            $foodOrder->update();
+            $this->foodOrderRepository->update([
+                "price" => $foodOrder->price - $foodOrderExtra->price,
+            ], $foodOrder->id);
             DB::commit();
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
