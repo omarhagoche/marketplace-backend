@@ -460,7 +460,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $order = Order::find($order_id);
+            $order = $this->orderRepository->findWithoutFail($order_id);
             if($request->discount_type == "fixed") {
                 $data = $order->calculateOrderTotal();
                 $total      = $data["total"];
@@ -470,8 +470,9 @@ class OrderController extends Controller
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
-            $order->restaurant_coupon_id = $coupon->id;
-            $order->update();
+            $this->orderRepository->update([
+                "restaurant_coupon_id" => $coupon->id,
+            ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
             return redirect(route('orders.show-order-coupon',$order_id));
@@ -491,7 +492,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $order = Order::find($order_id);
+            $order = $this->orderRepository->findWithoutFail($order_id);
             if($request->discount_type == "fixed") {
                 $data = $order->calculateOrderTotal();
                 $total      = $data["total"];
@@ -501,8 +502,9 @@ class OrderController extends Controller
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
-            $order->delivery_coupon_id = $coupon->id;
-            $order->update();
+            $this->orderRepository->update([
+                "delivery_coupon_id" => $coupon->id,
+            ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
             return redirect(route('orders.show-order-coupon',$order_id));
