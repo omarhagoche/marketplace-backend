@@ -31,6 +31,7 @@ use App\Notifications\StatusChangedOrder;
 use App\Repositories\CouponRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\ExtraRepository;
+use App\Repositories\FoodOrderExtraRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
@@ -78,7 +79,10 @@ class OrderController extends Controller
     /** @var  FoodOrderExtra */
     private $foodOrderExtra;
 
-    public function __construct(FoodOrderExtra $foodOrderExtra,ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
+    /** @var  FoodOrderExtraRepository */
+    private $foodOrderExtraRepository;
+
+    public function __construct(FoodOrderExtraRepository $foodOrderExtraRepository,ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
         , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
     {
         parent::__construct();
@@ -91,7 +95,7 @@ class OrderController extends Controller
         $this->couponRepository = $couponRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->extraRepository = $extraRepository;
-        $this->foodOrderExtra = $foodOrderExtra;
+        $this->foodOrderExtraRepository = $foodOrderExtraRepository;
     }
 
     /**
@@ -466,7 +470,7 @@ class OrderController extends Controller
             DB::beginTransaction();
             $extra = $this->extraRepository->findWithoutFail($request->extraId);
             $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
-            $this->foodOrderExtra->create([
+            $this->foodOrderExtraRepository->create([
                 "food_order_id" => $orderFoodId,
                 "extra_id" => $request->extraId,
                 "price" => $extra->price,
