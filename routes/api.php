@@ -152,4 +152,7 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::post('logout', 'API\UserAPIController@logout');
+// this api for save note for user 
+    Route::post('user/note', 'API\NoteController@store');
+
 });

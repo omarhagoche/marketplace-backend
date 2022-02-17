@@ -10,6 +10,7 @@
 namespace App\Models;
 
 use App\Models\DeviceToken;
+use App\Models\Order;
 use App\Traits\SkipAppends;
 use Laravel\Cashier\Billable;
 use Spatie\Image\Manipulations;
@@ -281,4 +282,37 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->deviceTokens()->pluck('token')->toArray();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\Note::class, 'user_id');
+    }
+    /**
+     * Get all of the order for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+    public function coupons()
+    {
+        $coupons=collect();
+        $orders=$this->orders;
+        foreach ($orders as $order) {
+            if ($order->coupons()!= null) {
+                $coupons->push($order->coupons()[0]);
+                if (isset($order->coupons()[1])) {
+                    $coupons->push($order->coupons()[1]);
+                }
+            }
+        }
+        return collect($coupons) ;
+
+    }
+    
 }

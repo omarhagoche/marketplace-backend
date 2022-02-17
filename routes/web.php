@@ -231,15 +231,38 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
     
     Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
-    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
-    Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
-    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
-    
-    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
     Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
     Route::post('orders/store/coupon/restaurant/{order_id}', 'OrderController@storeRestaurantCouponOrderFoods')->name('orders.store-order-restaurant-coupon');
     Route::post('orders/store/coupon/delivery/{order_id}', 'OrderController@storeDeliveryCouponOrderFoods')->name('orders.store-order-delivery-coupon');
     Route::resource('foodOrders', 'FoodOrderController');
     Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
+    
+    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
+    Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
+    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
+    
+    //// new Dashboard for operations
+    // Route::group(['middleware' => ['permission:operations']], function () {
+        Route::prefix('operations')->group(function () {
+            Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
+            Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
+            Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
+            Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
+            Route::get('users/profile/{userId}/coupons', 'Operations\ClientController@coupons')->name('operations.users.profile.coupons');
+            Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
+            Route::get('users/profile/{userId}/address', 'Operations\ClientController@address')->name('operations.users.profile.address');
+            Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
+            Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
+
+
+
+            Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
+
+            Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
+
+        });
+
+    // });
+
 
 });
