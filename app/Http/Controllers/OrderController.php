@@ -92,6 +92,70 @@ class OrderController extends Controller
         return $orderDataTable->render('operations.orders.index');
     }
 
+
+
+    /**
+     * Display a Statistics of the Order.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function statistics(Request $request)
+    {
+        $orderStatus = $this->orderStatusRepository->pluck('status', 'id')->prepend(null, "");
+        $condations = '';
+        $params = [];
+        if ($request->order_status_id) {
+            $condations .= " AND os.id=? ";
+            $params[] = $request->order_status_id;
+        }
+
+        // set default value for dates if no values set
+        if (!$request->from_date) {
+            $request->merge([
+                "from_date" => now()->addDays()->format('Y-m-d'),
+            ]);
+        }
+        if (!$request->to_date) {
+            $request->merge([
+                "to_date" => now()->addDays()->format('Y-m-d'),
+            ]);
+        }
+
+        $condations .= " AND DATE(o.created_at) >= ? ";
+        $params[] = $request->from_date;
+        $condations .= " AND DATE(o.created_at) <= ? ";
+        $params[] = $request->to_date;
+
+        $statistics = \DB::select("
+            SELECT
+                count(o.id) count,
+                os.status order_status,
+                date(o.created_at) date,
+                SUM(delivery_fee) delivery_fee
+            FROM
+                orders o,
+                order_statuses os
+            WHERE
+                o.order_status_id = os.id $condations
+            GROUP BY
+                date(o.created_at),
+                os.status
+            ORDER BY
+                date(o.created_at) DESC,
+                os.status
+        ", $params);
+
+
+        return view(
+            'orders.statistics',
+            [
+                'orderStatus' => $orderStatus,
+                'statistics' => collect($statistics),
+            ]
+        );
+    }
+
     /**
      * Show the form for creating a new Order.
      *
