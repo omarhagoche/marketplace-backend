@@ -75,8 +75,10 @@ class OrderController extends Controller
 
     /** @var  ExtraRepository */
     private $extraRepository;
+    /** @var  FoodOrderExtra */
+    private $foodOrderExtra;
 
-    public function __construct(ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
+    public function __construct(FoodOrderExtra $foodOrderExtra,ExtraRepository $extraRepository,FoodOrderRepository $foodOrderRepository,CouponRepository $couponRepository, OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
         , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
     {
         parent::__construct();
@@ -89,6 +91,7 @@ class OrderController extends Controller
         $this->couponRepository = $couponRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->extraRepository = $extraRepository;
+        $this->foodOrderExtra = $foodOrderExtra;
     }
 
     /**
@@ -399,13 +402,11 @@ class OrderController extends Controller
             DB::beginTransaction();
             $extra = $this->extraRepository->findWithoutFail($request->extraId);
             $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
-            $foodOrderExtras = new FoodOrderExtra();
-            $foodOrderExtras->food_order_id = $orderFoodId;
-            $foodOrderExtras->extra_id = $request->extraId;
-            $foodOrderExtras->price = $extra->price;
-            $foodOrderExtras->save();
-            $orderFood->price = $orderFood->price + $extra->price;
-            $orderFood->save();
+            $this->foodOrderExtra->create([
+                "food_order_id" => $orderFoodId,
+                "extra_id" => $request->extraId,
+                "price" => $extra->price,
+            ]);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$orderFood->order_id));
@@ -420,7 +421,7 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $foodOrderExtra = FoodOrderExtra::where('food_order_id', $request->food_order_id)->where('extra_id',$request->extra_id)->get()->first();
-            $foodOrder = FoodOrder::find($foodOrderExtra->food_order_id);
+            $foodOrder = $this->foodOrderRepository->findWithoutFail($foodOrderExtra->food_order_id);
             $foodOrder->price = $foodOrder->price - $foodOrderExtra->price;
             DB::delete('delete from food_order_extras where food_order_id = ? and extra_id = ?', [$request->food_order_id,$request->extra_id]);
             $foodOrder->update();
@@ -441,10 +442,10 @@ class OrderController extends Controller
     */
     public function updateOrderFoods(Request $request)
     {
-        $orderFood = FoodOrder::find($request->orderFoodId);
-        $orderFood->price = $request->new_price;
-        $orderFood->quantity = $request->new_quantity;
-        $orderFood->update();
+        $this->foodOrderRepository->update([
+            "price" => $request->new_price,
+            "quantity" => $request->new_quantity,
+        ], $request->orderFoodId);
         return response()->json($request, 200);
     }
 
