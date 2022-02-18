@@ -138,7 +138,7 @@ class DriverController extends Controller
 
             return redirect(route('drivers.index'));
         }
-        $orders = $this->orderRepository->with('user')->with('restaurant')->findByField('driver_id', $driver->id);
+        $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
         $lastOrder = $orders->first();
         return view('drivers.show')->with('driver', $driver)
             ->with('user', $user)
