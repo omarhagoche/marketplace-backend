@@ -27,8 +27,8 @@ class DriverDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            ->editColumn('user.name', function ($driver) {
-                return getLinksColumnByRouteName([$driver->user], "users.edit", 'id', 'name');
+            ->editColumn('id', function ($driver) {
+                return getLinksColumnByRouteName([$driver], "drivers.show", 'id', 'id');
             })
             ->editColumn('updated_at', function ($driver) {
                 return getDateColumn($driver, 'updated_at');
@@ -60,8 +60,13 @@ class DriverDataTable extends DataTable
     {
         $columns = [
             [
-                'data' => 'user.name',
+                'data' => 'id',
                 'title' => trans('lang.driver_user_id'),
+
+            ],
+            [
+                'data' => 'user.name',
+                'title' => trans('lang.user_name'),
 
             ],
             [
