@@ -35,7 +35,8 @@ class Driver extends Model
         'total_orders',
         'earning',
         'available',
-        'working_on_order'
+        'working_on_order',
+        'note',
     ];
 
     /**
@@ -47,6 +48,7 @@ class Driver extends Model
         'user_id' => 'integer',
         'driver_type_id' => 'integer',
         'delivery_fee' => 'double',
+        'note' => 'string',
         'type' => 'string',
         'total_orders' => 'integer',
         'earning' => 'double',
@@ -61,6 +63,7 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
+        'note' => '',
         // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'

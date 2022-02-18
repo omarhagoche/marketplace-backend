@@ -16,6 +16,16 @@
             </div>
         </div>
     </div>
+    <!-- Note Field -->
+    <div class="form-group row ">
+        {!! Form::label('note', trans('lang.driver_note'), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::Text('note', null, ['class' => 'form-control', 'placeholder' => trans('lang.driver_note_placeholder')]) !!}
+            <div class="form-text text-muted">
+                {{ trans('lang.driver_note_help') }}
+            </div>
+        </div>
+    </div>
 
 
     <!-- Driver type ID Field -->

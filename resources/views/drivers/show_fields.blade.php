@@ -98,11 +98,11 @@
     {!! Form::label('available', 'Available:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         @if ($driver->available)
-            <p>{{ trans('lang.yes') }}</p>
+        <p>{{ trans('lang.yes') }}</p>
         @else
-            <p>{{ trans('lang.no') }}</p>
+        <p>{{ trans('lang.no') }}</p>
         @endif
-
+        
     </div>
 </div>
 
@@ -119,5 +119,11 @@
     {!! Form::label('updated_at', 'Updated At:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->updated_at !!}</p>
+    </div>
+</div>
+<div class="form-group row col-6">
+    {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->note ??  "" !!}</p>
     </div>
 </div>
