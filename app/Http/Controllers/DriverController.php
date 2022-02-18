@@ -138,12 +138,20 @@ class DriverController extends Controller
 
             return redirect(route('drivers.index'));
         }
+        
+        $ordersOfDay =  $driver->getOrdersBetweenDaysCount(1);
+        $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
+        $ordersOfMount = $driver->getOrdersBetweenDaysCount(30);
+
         $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
         $lastOrder = $orders->first();
         return view('drivers.show')->with('driver', $driver)
             ->with('user', $user)
             ->with('orders', $orders)
-            ->with('lastOrder', $lastOrder);
+            ->with('lastOrder', $lastOrder)
+            ->with('ordersOfDay', $ordersOfDay)
+            ->with('ordersOfWeek', $ordersOfWeek)
+            ->with('ordersOfMount', $ordersOfMount);
     }
 
 

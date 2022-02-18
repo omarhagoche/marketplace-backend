@@ -121,9 +121,30 @@
         <p>{!! $driver->updated_at !!}</p>
     </div>
 </div>
-<div class="form-group row col-6">
+<div class="form-group row col-12">
     {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->note ??  "" !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-4">
+        <p>{!! $ordersOfDay  !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-4">
+        <p>{!! $ordersOfWeek  !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfMount', 'Orders Of This Mount:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-3">
+        <p>{!! $ordersOfMount !!}</p>
     </div>
 </div>

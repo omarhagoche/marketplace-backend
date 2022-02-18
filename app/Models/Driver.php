@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
+use Carbon\Carbon;
 
 /**
  * Class Driver
@@ -154,5 +155,13 @@ class Driver extends Model
     public function types()
     {
         return $this->drivers_types;
+    }
+
+    public function getOrdersBetweenDaysCount(int $days): int
+    {
+        return $this->orders()
+            ->where('order_status_id', 80)
+            ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
+            ->count();
     }
 }
