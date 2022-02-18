@@ -19,6 +19,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
 use App\Models\Order;
 use App\Repositories\DriverTypeRepository;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
@@ -38,14 +39,19 @@ class DriverController extends Controller
      * @var UserRepository
      */
     private $userRepository;
+    /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
 
-    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo)
+    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo, OrderRepository $orderRepository)
     {
         parent::__construct();
         $this->driverRepository = $driverRepo;
         $this->driverTypeRepository = $driverTypeRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->userRepository = $userRepo;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -132,10 +138,8 @@ class DriverController extends Controller
 
             return redirect(route('drivers.index'));
         }
-        $orders = Order::where('driver_id', $id)->with('user', 'restaurant')->orderby('created_at', 'desc')->paginate(10);
+        $orders = $this->orderRepository->with('user')->with('restaurant')->findByField('driver_id', $driver->id);
         $lastOrder = $orders->first();
-
-
         return view('drivers.show')->with('driver', $driver)
             ->with('user', $user)
             ->with('orders', $orders)
