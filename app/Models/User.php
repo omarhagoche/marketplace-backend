@@ -135,6 +135,12 @@ class User extends Authenticatable implements HasMedia, JWTSubject
     ];
 
     /**
+     * The attribute for save authorization token of logged user , instead of calculate it many times (caching)
+     */
+    protected $bearer_token = "";
+
+
+    /**
      * Allowed attributes to skip appends attributes 
      * This method useful to skip load extra data , also skip load relations when will not be useful
      */
@@ -254,6 +260,24 @@ class User extends Authenticatable implements HasMedia, JWTSubject
 
         return null;
     }
+
+    /**
+     * Get token of user
+     * 
+     * @return string
+     */
+    public function token()
+    {
+        if ($this->bearer_token) {
+            return $this->bearer_token;
+        }
+        $old_guard = auth()->getDefaultDriver();
+        auth()->shouldUse('api');
+        $this->bearer_token = auth()->tokenById($this->id);
+        auth()->shouldUse($old_guard);
+        return $this->bearer_token;
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
