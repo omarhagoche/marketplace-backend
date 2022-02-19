@@ -89,7 +89,7 @@ class CouponController extends Controller
         $this->restaurantRepository->pushCriteria(new ActiveCriteria());
         $restaurant = $this->restaurantRepository->pluck('name', 'id');
 
-        $category = $this->categoryRepository->pluck('name', 'id');
+        //$category = $this->categoryRepository->pluck('name', 'id');
 
         $foodsSelected = [];
         $restaurantsSelected = [];
@@ -100,7 +100,7 @@ class CouponController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->couponRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('coupons.create')->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("restaurant", $restaurant)->with("category", $category)->with("foodsSelected", $foodsSelected)->with("restaurantsSelected", $restaurantsSelected)->with("categoriesSelected", $categoriesSelected);
+        return view('coupons.create')->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("restaurant", $restaurant)/* ->with("category", $category) */->with("foodsSelected", $foodsSelected)->with("restaurantsSelected", $restaurantsSelected)->with("categoriesSelected", $categoriesSelected);
     }
 
     /**
@@ -192,9 +192,9 @@ class CouponController extends Controller
 
         $category = $this->categoryRepository->pluck('name', 'id');
 
-        $foodsSelected = $coupon->discountables()->where("discountable_type","App\Models\Food")->pluck('discountable_id');
-        $restaurantsSelected = $coupon->discountables()->where("discountable_type","App\Models\Restaurant")->pluck('discountable_id');
-        $categoriesSelected = $coupon->discountables()->where("discountable_type","App\Models\Category")->pluck('discountable_id');
+        $foodsSelected = $coupon->discountables()->where("discountable_type", "App\Models\Food")->pluck('discountable_id');
+        $restaurantsSelected = $coupon->discountables()->where("discountable_type", "App\Models\Restaurant")->pluck('discountable_id');
+        //$categoriesSelected = $coupon->discountables()->where("discountable_type","App\Models\Category")->pluck('discountable_id');
 
         $customFieldsValues = $coupon->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->couponRepository->model());
@@ -203,7 +203,7 @@ class CouponController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('coupons.edit')->with('coupon', $coupon)->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("restaurant", $restaurant)->with("category", $category)->with("foodsSelected", $foodsSelected)->with("restaurantsSelected", $restaurantsSelected)->with("categoriesSelected", $categoriesSelected);
+        return view('coupons.edit')->with('coupon', $coupon)->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("restaurant", $restaurant)/* ->with("category", $category) */->with("foodsSelected", $foodsSelected)->with("restaurantsSelected", $restaurantsSelected)/* ->with("categoriesSelected", $categoriesSelected) */;
     }
 
     /**
