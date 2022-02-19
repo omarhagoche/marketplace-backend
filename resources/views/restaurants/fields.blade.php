@@ -309,15 +309,12 @@
             <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
         </div>
     </div>
-
-    @isset($restaurant->latitude)
     <!-- Google map link -->
     <div class="form-group row justify-content-center">
         <div class="col-auto">
             <a href="https://maps.google.com/?q={{ $restaurant->latitude }},{{ $restaurant->longitude }}" target="_blank" class="btn btn-{{setting('theme_color')}}">Location on google map</a>
         </div>
     </div>
-    @endisset
 
 </div>
 
