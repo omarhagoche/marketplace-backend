@@ -64,10 +64,7 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
-<<<<<<< HEAD
-=======
         'note' => '',
->>>>>>> Sabek/driver
         // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
@@ -155,11 +152,6 @@ class Driver extends Model
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
     public function lastOrder()
     {
         return $this->orders()->orderby('created_at', 'desc')->first();
@@ -169,17 +161,11 @@ class Driver extends Model
         return $this->drivers_types;
     }
 
-<<<<<<< HEAD
-    public function reviews()
-    {
-        return $this->hasMany(DriverReview::class);
-=======
     public function getOrdersBetweenDaysCount(int $days): int
     {
         return $this->orders()
             ->where('order_status_id', 80)
             ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
             ->count();
->>>>>>> Sabek/driver
     }
 }

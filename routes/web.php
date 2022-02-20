@@ -181,12 +181,6 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-<<<<<<< HEAD
-    // Route::resource('drivers', 'DriverController')->except([
-    //     'show'
-    // ]);
-=======
->>>>>>> Sabek/driver
     Route::resource('drivers', 'DriverController');
 
     Route::get('drivers/map', 'DriverController@map')->name('drivers.map');

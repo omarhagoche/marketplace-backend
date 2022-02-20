@@ -177,14 +177,6 @@ class Order extends Model
         return $this->user ? $this->user->name : '';
     }
     /**
-     * return user name
-     * @return string 
-     **/
-    public function userName()
-    {
-        return $this->user ? $this->user->name : '';
-    }
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function unregisteredCustomer()

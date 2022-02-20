@@ -35,7 +35,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string api_token
  * @property string device_token
  */
-class User extends Authenticatable implements HasMedia, JWTSubject
+class User extends Authenticatable implements HasMedia
 {
     use Notifiable;
     use Billable;
