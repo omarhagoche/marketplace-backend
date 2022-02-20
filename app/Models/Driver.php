@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
 /**
  * Class Driver
@@ -61,7 +62,7 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
-        'type' => 'required|in:bicycle,motorcycle,car',
+        // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
     ];
@@ -143,8 +144,22 @@ class Driver extends Model
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function lastOrder()
+    {
+        return $this->orders()->orderby('created_at', 'desc')->first();
+    }
     public function types()
     {
         return $this->drivers_types;
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(DriverReview::class);
     }
 }

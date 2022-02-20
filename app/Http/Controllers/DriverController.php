@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
+use App\Models\Order;
+use App\Models\User;
 use App\Repositories\DriverTypeRepository;
-
+use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
@@ -85,7 +87,7 @@ class DriverController extends Controller
         }
 
         $types = $this->driverTypeRepository->pluck('name', 'id');
-        return redirect(route('drivers.index'))->with('types', $types);
+        return view('drivers.create')->with('types', $types);
     }
 
     /**
@@ -97,14 +99,31 @@ class DriverController extends Controller
      */
     public function store(CreateDriverRequest $request)
     {
-        $input = $request->all();
+
+        /*
+        old code 
+                dd($request->all());
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->create($input);
             $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
-        }
+        }*/
+        $input = $request->all();
+        $user = User::create([
+            'name' => $input['name'],
+            'phone_number' => $input['phone_number'],
+            'password' => Hash::make($input['password']),
+            'email' => $input['email'],
+            'active' => $input['active'],
+        ]);
+        Driver::create([
+            'user_id' => $user->id,
+            'driver_type_id' => $input['driver_type_id'],
+            'available' => $input['available'],
+            'delivery_fee' => $input['delivery_fee'],
+        ]);
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.driver')]));
 
@@ -120,15 +139,19 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        $driver = $this->driverRepository->findWithoutFail($id);
-
+        // $driver = $this->driverRepository->findWithoutFail($id);
+        $driver = Driver::find($id);
         if (empty($driver)) {
             Flash::error('Driver not found');
 
             return redirect(route('drivers.index'));
         }
+        $orders = Order::where('driver_id', $id)->with('user', 'restaurant')->orderby('created_at', 'desc')->paginate(10);
+        $lastOrder = $orders->first();
 
-        return view('drivers.show')->with('driver', $driver);
+        return view('drivers.show')->with('driver', $driver)
+            ->with('orders', $orders)
+            ->with('lastOrder', $lastOrder);
     }
 
     /**
@@ -141,14 +164,13 @@ class DriverController extends Controller
     public function edit($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->pluck('name', 'id');
-
-
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
         if (empty($driver)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.driver')]));
 
             return redirect(route('drivers.index'));
         }
+
         $customFieldsValues = $driver->customFieldsValues()->with('customField')->get();
         $customFields =  $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         $hasCustomField = in_array($this->driverRepository->model(), setting('custom_field_models', []));
@@ -170,17 +192,29 @@ class DriverController extends Controller
      */
     public function update($id, UpdateDriverRequest $request)
     {
-        $driver = $this->driverRepository->findWithoutFail($id);
 
-        if (empty($driver)) {
+
+        $driver = $this->driverRepository->findWithoutFail($id);
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
+
+        if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
             return redirect(route('drivers.index'));
         }
         $input = $request->all();
+
+        if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
+            $request->validated(['password' => 'confirmed']);
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            unset($input['password']);
+            unset($input['password_confirmation']);
+        }
+
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->update($input, $id);
-
+            $user = $this->userRepository->update($input, $driver->user_id);
 
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $driver->customFieldsValues()
