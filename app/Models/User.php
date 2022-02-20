@@ -34,7 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string api_token
  * @property string device_token
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia, JWTSubject
 {
     use Notifiable;
     use Billable;
@@ -43,6 +43,31 @@ class User extends Authenticatable implements HasMedia
     }
     use HasRoles;
     use SkipAppends;
+
+
+
+    // Rest omitted for brevity
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 
 
     /**
