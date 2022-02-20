@@ -12,6 +12,7 @@ namespace App\Models;
 use App\Models\DeviceToken;
 use App\Models\Order;
 use App\Traits\SkipAppends;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Laravel\Cashier\Billable;
 use Spatie\Image\Manipulations;
 use Spatie\Permission\Traits\HasRoles;
