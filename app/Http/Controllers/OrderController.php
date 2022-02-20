@@ -103,12 +103,12 @@ class OrderController extends Controller
         // set default value for dates if no values set
         if (!$request->from_date) {
             $request->merge([
-                "from_date" => now()->addDays()->format('Y-m-d'),
+                "from_date" => now()->format('Y-m-d'),
             ]);
         }
         if (!$request->to_date) {
             $request->merge([
-                "to_date" => now()->addDays()->format('Y-m-d'),
+                "to_date" => now()->format('Y-m-d'),
             ]);
         }
 
