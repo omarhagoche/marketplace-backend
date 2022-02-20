@@ -84,11 +84,7 @@ class ClientController extends Controller
 
     public function viewOrders(FoodOrderDataTable $foodOrderDataTable, $userId,$orderId)
     {
-        $user = $this->userRepository->findWithoutFail($userId);
-        $role = $this->roleRepository->pluck('name', 'name');
-        $rolesSelected = $user->getRoleNames()->toArray();
-        $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
         $this->orderRepository->pushCriteria(new OrdersOfUserCriteria($userId));
         $order = $this->orderRepository->findWithoutFail($orderId);
         if (empty($order)) {
@@ -121,12 +117,8 @@ class ClientController extends Controller
      */
     public function orders(OrderDataTable $orderDataTable,$userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
-
-        return $orderDataTable->with('id', $userId)->render('operations.client.profile.orders', compact('user','role','rolesSelected'));
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $orderDataTable->with('id', $userId)->render('operations.client.profile.orders', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
  
     }
      /**
@@ -138,12 +130,9 @@ class ClientController extends Controller
      */
     public function favorites(FavoriteDataTable $favoriteDataTable,$userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
-
-        return $favoriteDataTable->with('userId', $userId)->render('operations.client.profile.favorites', compact('user','role','rolesSelected'));
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+    
+        return $favoriteDataTable->with('userId', $userId)->render('operations.client.profile.favorites', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
     }
       /**
@@ -155,12 +144,8 @@ class ClientController extends Controller
      */
     public function notes(NoteDataTable $noteDataTable,$userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
-
-        return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('user','role','rolesSelected'));
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
     }
        /**
@@ -172,45 +157,31 @@ class ClientController extends Controller
      */
     public function coupons(CouponsDataTable $couponDataTable,$userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
-        return $couponDataTable->with('userId', $userId)->render('operations.client.profile.coupons', compact('user','role','rolesSelected'));
-
-        // return view('operations.client.profile.coupons', compact('user','role','rolesSelected'));
-
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $couponDataTable->with('userId', $userId)->render('operations.client.profile.coupons', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
     }
     public function address(DeliveryAddressDataTable $deliveryAddressDataTable,$userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
-        return $deliveryAddressDataTable->with('userId', $userId)->render('operations.client.profile.address', compact('user','role','rolesSelected'));
-
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $deliveryAddressDataTable->with('userId', $userId)->render('operations.client.profile.address', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
     }
     public function statistics($userId)
     {
-        $getData=$this->getData($userId);
-        $user=$getData['user'];
-        $role=$getData['role']; 
-        $rolesSelected=$getData['rolesSelected'];
+        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
         $data['total_money']=0;
-        $data['orderCount']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',1)->count();
-        $data['orderCanceled']=Order::where('user_id',$userId)->where('user_id',$userId)->where('order_status_id',110)
+        $data['orderCount']=Order::where('user_id',$userId)->where('order_status_id',1)->count();
+        $data['orderCanceled']=Order::where('user_id',$userId)->where('order_status_id',110)
                             ->orWhere('order_status_id',120)
                             ->orWhere('order_status_id',130)
                             ->orWhere('order_status_id',140)
                             ->count();
-        $data['visited']=Order::where('user_id',$userId)->where('user_id',$userId)->groupBy('restaurant_id')->count();
+        $data['visited']=Order::where('user_id',$userId)->groupBy('restaurant_id')->count();
         $data['total_money']=0;
         
         foreach (Order::where('user_id',$userId)->where('order_status_id',1)->get() as $order) {
             $data['total_money']+=$order->calculateOrderTotal()["total"];
         }
-
-        return view('operations.client.profile.statistics', compact('data','user','role','rolesSelected'));
+        return view('operations.client.profile.statistics', compact('html','customFields','customFieldsValues','data','user','role','rolesSelected'));
 
     }
     public function setAddressDefault($userId,$addressId)
@@ -415,8 +386,9 @@ class ClientController extends Controller
         }
         return view('operations.client.profile.index', compact(['user', 'role', 'rolesSelected', 'customFields', 'customFieldsValues']));
     }
-    public function getData($userId)
+    public function getData($userId,&$user=null,&$role=null,&$rolesSelected=null,&$customFieldsValues=null,&$html=null,&$customFields)
     {
+
         $user = $this->userRepository->findWithoutFail($userId);
         $role = $this->roleRepository->pluck('name', 'name');
         $rolesSelected = $user->getRoleNames()->toArray();
@@ -426,6 +398,5 @@ class ClientController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        return compact('user','role','rolesSelected');
     }
 }
