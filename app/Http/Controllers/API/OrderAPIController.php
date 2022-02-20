@@ -12,6 +12,7 @@ namespace App\Http\Controllers\API;
 
 use App\Criteria\Orders\OrdersOfStatusesCriteria;
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AdminsCriteria;
 use App\Events\OrderChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -297,9 +298,20 @@ class OrderAPIController extends Controller
             // so we can clear cart by manager id (auth user = manager) 
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id ?? auth()->user()->id]);
 
+
+            // start load users who will receive notification
+            $this->userRepository->pushCriteria(new AdminsCriteria());
+            $this->userRepository->scopeQuery(function ($q) {
+                return $q->where('active', true)
+                    ->with('deviceTokens')
+                    ->select('id', 'name');
+            });
+            $users_for_notifications = $this->userRepository->all();
+
             if ($order->user_id) {
-                Notification::send($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications(), new NewOrder($order));
+                $users_for_notifications->merge($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications());
             }
+            Notification::send($users_for_notifications, new NewOrder($order));
 
             // start update number of use for coupons
             if ($order->delivery_coupon_id) {
