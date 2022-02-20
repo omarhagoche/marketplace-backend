@@ -5,8 +5,8 @@
   </a>
   @endcan
 
-  @can('restaurants.edit')
-  <a data-toggle="tooltip" data-placement="bottom" title="{{trans('lang.restaurant_edit')}}" href="{{ route('restaurants.edit', $id) }}" class='btn btn-link'>
+  @can('operations.restaurant_profile.edit')
+  <a data-toggle="tooltip" data-placement="bottom" title="{{trans('lang.restaurant_edit')}}" href="{{ route('operations.restaurant_profile.edit', $id) }}" class='btn btn-link'>
     <i class="fa fa-edit"></i>
   </a>
   @endcan

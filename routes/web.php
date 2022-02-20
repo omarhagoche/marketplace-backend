@@ -230,6 +230,9 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
     
     // operations
-    Route::resource('restaurantProfile', 'Operations/RestaurantProfileController');
+    Route::prefix('operations')->group(function () {
+        Route::resource('restaurantProfile', 'Operations\RestaurantProfileController',['names' => 'operations.restaurant_profile']);
+       
+    });
 
 });
