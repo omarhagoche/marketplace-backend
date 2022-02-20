@@ -8,6 +8,15 @@
 <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.css')}}">
 {{--dropzone--}}
 <link rel="stylesheet" href="{{asset('plugins/dropzone/bootstrap.min.css')}}">
+<style>
+.avatar {
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+</style>
+
 @endpush
 @section('content')
 <!-- Content Header (Page header) -->
@@ -37,10 +46,13 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
-                <div class="card-header">
-                kj
-                   {{$restaurant->media}}
-                   div.
+                <div class="card-header" style="align-self: center;"> 
+                    <div class="col-12" style="align-self: center;"> 
+                        <img src="{{ $restaurant->media->first()->getUrl()}}" alt="Avatar" class="avatar">
+                    </div>
+                    <div class="col-12">
+                        
+                    </div>
                 </div>
             </div>
         </div>
