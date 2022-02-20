@@ -12,7 +12,6 @@
     </thead>
     <tbody>
         @if ($lastOrder)
-
             <tr>
                 <td>{{ $lastOrder->id }}</td>
                 <td>{{ $lastOrder->userName() }}</td>
@@ -43,8 +42,6 @@
                 <td>{{ $order->restaurantName() }}</td>
             </tr>
         @empty
-
-            <H3> no orders</H3>
         @endforelse
 
 

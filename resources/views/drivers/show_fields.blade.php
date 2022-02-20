@@ -10,7 +10,7 @@
 <div class="form-group row col-6">
     {!! Form::label('user_id', 'User Id:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->user_id !!}</p>
+        <p>{!! $user->id !!}</p>
     </div>
 </div>
 
@@ -18,46 +18,62 @@
 <div class="form-group row col-6">
     {!! Form::label('user_name', 'User Name:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->user->name !!}</p>
-    </div>
-</div>
-<!-- User Phone Field -->
-<div class="form-group row col-6">
-    {!! Form::label('phone', 'User Phone:', ['class' => 'col-3 control-label text-right']) !!}
-    <div class="col-9">
-        <p>{!! $driver->user->phone_number !!}</p>
+        <p>{!! $user->name !!}</p>
     </div>
 </div>
 
-<!-- User on order Field -->
+<!-- User Phone Field -->
+<div class="form-group row col-6">
+    {!! Form::label('phone_number', 'User Phone:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $user->phone_number !!}</p>
+    </div>
+</div>
+
+<!-- User Email Field -->
+<div class="form-group row col-6">
+    {!! Form::label('Email', 'User Email:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $user->email !!}</p>
+    </div>
+</div>
+
+<!-- User On_Order Field -->
 <div class="form-group row col-6">
     {!! Form::label('on_order', 'is he/she on Order:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         @if ($driver->working_on_order)
-            <p> Yes</p>
+            <p>{{ trans('lang.yes') }}</p>
         @else
-            <p>No</p>
+            <p>{{ trans('lang.no') }}</p>
         @endif
     </div>
 </div>
 
-<!-- User active Field -->
+<!-- User Active Field -->
 <div class="form-group row col-6">
-    {!! Form::label('on_order', 'is he/she Active:', ['class' => 'col-3 control-label text-right']) !!}
+    {!! Form::label('Active', 'is he/she Active:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        @if ($driver->user->active)
-            <p> Yes</p>
+        @if ($user->active)
+            <p>{{ trans('lang.yes') }}</p>
         @else
-            <p>No</p>
+            <p>{{ trans('lang.no') }}</p>
         @endif
     </div>
 </div>
-
 <!-- Delivery Fee Field -->
 <div class="form-group row col-6">
     {!! Form::label('delivery_fee', 'Delivery Fee:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->delivery_fee !!}</p>
+    </div>
+</div>
+
+<!-- Driver Type Field -->
+<div class="form-group row col-6">
+    {!! Form::label('type', 'Driver Type:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->driverType->name !!}</p>
     </div>
 </div>
 
@@ -82,11 +98,11 @@
     {!! Form::label('available', 'Available:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         @if ($driver->available)
-            <p> Yes</p>
+        <p>{{ trans('lang.yes') }}</p>
         @else
-            <p>No</p>
+        <p>{{ trans('lang.no') }}</p>
         @endif
-
+        
     </div>
 </div>
 
@@ -105,5 +121,30 @@
         <p>{!! $driver->updated_at !!}</p>
     </div>
 </div>
-<!-- Order Tables -->
-@include('drivers.show_order_table')
+<div class="form-group row col-12">
+    {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->note ??  "" !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-4">
+        <p>{!! $ordersOfDay  !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-4">
+        <p>{!! $ordersOfWeek  !!}</p>
+    </div>
+</div>
+
+<div class="form-group row col-4">
+    {!! Form::label('ordersOfMount', 'Orders Of This Mount:', ['class' => 'col-4 control-label text-right']) !!}
+    <div class="col-3">
+        <p>{!! $ordersOfMount !!}</p>
+    </div>
+</div>

@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Models\DriverType;
 use App\Models\Order;
-use App\Models\User;
 use App\Repositories\DriverTypeRepository;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
@@ -39,14 +39,19 @@ class DriverController extends Controller
      * @var UserRepository
      */
     private $userRepository;
+    /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
 
-    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo)
+    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo, OrderRepository $orderRepository)
     {
         parent::__construct();
         $this->driverRepository = $driverRepo;
         $this->driverTypeRepository = $driverTypeRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->userRepository = $userRepo;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -85,9 +90,13 @@ class DriverController extends Controller
                 $this->driverRepository->firstOrCreate(['user_id' => $driver->id]);
             }
         }
-
         $types = $this->driverTypeRepository->pluck('name', 'id');
+<<<<<<< HEAD
         return view('drivers.create')->with('types', $types);
+=======
+        return view('drivers.create')->with('types', $types)->with('customFields', 0);
+        // return redirect(route('drivers.create'))->with('types', $types);
+>>>>>>> Sabek/driver
     }
 
     /**
@@ -99,12 +108,19 @@ class DriverController extends Controller
      */
     public function store(CreateDriverRequest $request)
     {
+<<<<<<< HEAD
 
         /*
         old code 
                 dd($request->all());
+=======
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+>>>>>>> Sabek/driver
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
+            $user = $this->userRepository->create($input);
+            $input['user_id'] = $user->id;
             $driver = $this->driverRepository->create($input);
             $driver->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
         } catch (ValidatorException $e) {
@@ -139,20 +155,45 @@ class DriverController extends Controller
      */
     public function show($id)
     {
+<<<<<<< HEAD
         // $driver = $this->driverRepository->findWithoutFail($id);
         $driver = Driver::find($id);
         if (empty($driver)) {
+=======
+        $driver = $this->driverRepository->findWithoutFail($id);
+        $user = $this->userRepository->findWithoutFail($driver->user_id);
+
+        if (empty($driver) || empty($user)) {
+>>>>>>> Sabek/driver
             Flash::error('Driver not found');
 
             return redirect(route('drivers.index'));
         }
+<<<<<<< HEAD
         $orders = Order::where('driver_id', $id)->with('user', 'restaurant')->orderby('created_at', 'desc')->paginate(10);
         $lastOrder = $orders->first();
 
         return view('drivers.show')->with('driver', $driver)
             ->with('orders', $orders)
             ->with('lastOrder', $lastOrder);
+=======
+        
+        $ordersOfDay =  $driver->getOrdersBetweenDaysCount(1);
+        $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
+        $ordersOfMount = $driver->getOrdersBetweenDaysCount(30);
+
+        $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
+        $lastOrder = $orders->first();
+        return view('drivers.show')->with('driver', $driver)
+            ->with('user', $user)
+            ->with('orders', $orders)
+            ->with('lastOrder', $lastOrder)
+            ->with('ordersOfDay', $ordersOfDay)
+            ->with('ordersOfWeek', $ordersOfWeek)
+            ->with('ordersOfMount', $ordersOfMount);
+>>>>>>> Sabek/driver
     }
+
 
     /**
      * Show the form for editing the specified Driver.

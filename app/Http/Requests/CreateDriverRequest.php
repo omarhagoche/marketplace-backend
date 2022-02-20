@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Driver;
 use Kreait\Firebase\Request\CreateUser;
 
-class CreateDriverRequest extends FormRequest
+class   CreateDriverRequest extends FormRequest
 {
 
     /**
