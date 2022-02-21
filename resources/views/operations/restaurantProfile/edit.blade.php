@@ -46,14 +46,10 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
-                <div class="card-header" style="align-self: center;"> 
-                    <div class="col-12" style="align-self: center;"> 
-                        <img src="{{ $restaurant->media->first()->getUrl()}}" alt="Avatar" class="avatar">
-                    </div>
-                    <div class="col-12">
-                        
-                    </div>
-                </div>
+              {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
+              <div class="row">
+                @include('operations.restaurantProfile.profile')
+              </div>
             </div>
         </div>
         <div class="col-md-9">
@@ -62,11 +58,10 @@
                 @include('operations.restaurantProfile.links')
 
                 <div class="card-body">
-                    {{-- {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!} --}}
                     <div class="row">
                       @include('operations.restaurantProfile.fields')
                     </div>
-                    {{-- {!! Form::close() !!} --}}
+                    {!! Form::close() !!}
                     <div class="clearfix"></div>
                 </div>
             </div>
