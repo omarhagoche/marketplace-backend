@@ -112,13 +112,13 @@ google.maps.event.addListener(marker, 'dragend', function(a) {
 
 $(document).ready(function () {
     $("#latitude").keyup(function () { 
-        console.log("hi")
         var latlng = new google.maps.LatLng($('#latitude').val(), $('#longitude').val());
+        map.setCenter(new google.maps.LatLng($('#latitude').val(), $('#longitude').val()));
         marker.setPosition(latlng);
     });
     $("#longitude").keyup(function () { 
-        console.log("hi")
         var latlng = new google.maps.LatLng($('#latitude').val(), $('#longitude').val());
+        map.setCenter(new google.maps.LatLng($('#latitude').val(), $('#longitude').val()));
         marker.setPosition(latlng);
     });
 });
