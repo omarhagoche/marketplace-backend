@@ -12,7 +12,26 @@
     </div>
     @hasanyrole('admin|manager')
     
+    <!-- 'Private_drivers Field' -->
+    <div class="form-group row private-drivers">
+        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('private_drivers', 0) !!}
+                {!! Form::checkbox('private_drivers', 1,, null) !!}
+            </label>
+        </div>
+    </div>
 
+
+    <!-- Users Field -->
+    <div class="form-group row" id='restaurant-body-drivers'>
+        {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+            <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
+        </div>
+    </div>
     <div class="form-group row ">
         {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
@@ -64,55 +83,7 @@
             <div class="form-text text-muted">{{ trans("lang.restaurant_description_help") }}</div>
         </div>
     </div>
-    <div class="form-group row ">
-        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('available_for_delivery', 0) !!}
-                {!! Form::checkbox('available_for_delivery', 1, null) !!}
-            </label>
-        </div>
-        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('private_drivers', 0) !!}
-                {!! Form::checkbox('private_drivers', 1) !!}
-            </label>
-        </div>
-        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('active', 0) !!}
-                {!! Form::checkbox('active', 1, null) !!}
-            </label>
-        </div>
-    </div>
-    <div class="form-group row ">
-        <!-- 'Boolean closed Field' -->
-        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-3 control-label']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('closed', 0) !!}
-                {!! Form::checkbox('closed', 1, null) !!}
-            </label>
-        </div>
-        <!-- 'Boolean featured Field' -->
-        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-3  control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('featured', 0) !!}
-                {!! Form::checkbox('featured', 1, null) !!}
-            </label>
-        </div>
-        <!-- 'Boolean is_restaurant Field' -->
-        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('is_restaurant', 0) !!}
-                {!! Form::checkbox('is_restaurant', 1, null) !!}
-            </label>
-        </div>
-    </div>
+    
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
@@ -229,7 +200,49 @@
         </div>
     </div>
   
-
+    <div class="form-group row ">
+        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('available_for_delivery', 0) !!}
+                {!! Form::checkbox('available_for_delivery', 1, null) !!}
+            </label>
+        </div>
+        
+        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('active', 0) !!}
+                {!! Form::checkbox('active', 1, null) !!}
+            </label>
+        </div>
+    </div>
+    <div class="form-group row ">
+        <!-- 'Boolean closed Field' -->
+        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-3 control-label']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('closed', 0) !!}
+                {!! Form::checkbox('closed', 1, null) !!}
+            </label>
+        </div>
+        <!-- 'Boolean featured Field' -->
+        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-3  control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('featured', 0) !!}
+                {!! Form::checkbox('featured', 1, null) !!}
+            </label>
+        </div>
+        <!-- 'Boolean is_restaurant Field' -->
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('is_restaurant', 0) !!}
+                {!! Form::checkbox('is_restaurant', 1, null) !!}
+            </label>
+        </div>
+    </div>
 @if($customFields)
     <div class="clearfix"></div>
     <div class="col-12 custom-field-container">

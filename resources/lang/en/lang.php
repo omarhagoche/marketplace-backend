@@ -1374,4 +1374,5 @@ return [
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
     'drivers_map' => 'Drivers map',
+    'map' => 'map',
 ];

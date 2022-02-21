@@ -140,7 +140,7 @@ class RestaurantController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.restaurant')]));
 
-        return redirect(route('restaurants.index'));
+        return redirect(route('operations.restaurant_profile_edit',$restaurant->id));
     }
 
     /**
@@ -218,12 +218,13 @@ class RestaurantController extends Controller
     {
         $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $oldRestaurant = $this->restaurantRepository->findWithoutFail($id);
-
+        
         if (empty($oldRestaurant)) {
             Flash::error('Restaurant not found');
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
+        return $input;
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
 
@@ -308,6 +309,9 @@ class RestaurantController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
+        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
+        $driversSelected = $restaurant->drivers()->pluck('users.id')->toArray();
+
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
         $cuisinesSelected = $restaurant->cuisines()->pluck('cuisines.id')->toArray();
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
@@ -316,6 +320,6 @@ class RestaurantController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        return view('operations.restaurantProfile.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('operations.restaurantProfile.edit')->with('driversSelected', $driversSelected)->with('drivers', $drivers)->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
     }
 }

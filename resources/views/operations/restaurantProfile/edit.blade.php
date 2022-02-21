@@ -46,6 +46,7 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
+              {{$restaurant->private_drivers}}
               {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
               <div class="row">
                 @include('operations.restaurantProfile.profile')
