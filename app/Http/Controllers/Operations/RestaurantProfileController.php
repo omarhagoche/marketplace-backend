@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Operations;
 
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
 use App\Entities\UploadRepository;
+use App\Events\RestaurantChangedEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\CuisineRepository;
@@ -11,6 +12,7 @@ use App\Repositories\CustomFieldRepository;
 use App\Repositories\RestaurantRepository;
 use App\Repositories\UserRepository;
 use Laracasts\Flash\Flash;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 class RestaurantProfileController extends Controller
 {
@@ -121,7 +123,36 @@ class RestaurantProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
+        $oldRestaurant = $this->restaurantRepository->findWithoutFail($id);
+
+        if (empty($oldRestaurant)) {
+            Flash::error('Restaurant not found');
+            return redirect(route('restaurants.index'));
+        }
+        $input = $request->all();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        try {
+
+            $restaurant = $this->restaurantRepository->update($input, $id);
+            if (isset($input['image']) && $input['image']) {
+                $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
+                $mediaItem = $cacheUpload->getMedia('image')->first();
+                $mediaItem->copy($restaurant, 'image');
+            }
+            foreach (getCustomFieldsValues($customFields, $request) as $value) {
+                $restaurant->customFieldsValues()
+                    ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
+            }
+            event(new RestaurantChangedEvent($restaurant, $oldRestaurant));
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
+
+        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.restaurant')]));
+
+        return redirect(route('operations.restaurant_profile.edit',$id));
+        
     }
 
     /**
