@@ -231,6 +231,8 @@ Route::middleware('auth')->group(function () {
     
     // operations
     Route::prefix('operations')->group(function () {
+        Route::get('restaurantProfile/{restaurantId}/users', 'Operations\RestaurantProfileController@users')->name('operations.restaurant_profile.users');
+
         Route::resource('restaurantProfile', 'Operations\RestaurantProfileController',['names' => 'operations.restaurant_profile']);
        
     });

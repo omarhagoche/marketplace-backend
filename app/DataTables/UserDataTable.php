@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Models\CustomField;
 use App\Models\User;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
+use App\Models\CustomField;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Route;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Services\DataTable;
 
 class UserDataTable extends DataTable
 {
@@ -41,7 +42,7 @@ class UserDataTable extends DataTable
             ->editColumn('avatar', function ($user) {
                 return getMediaColumn($user, 'avatar', 'img-circle elevation-2');
             })
-            ->addColumn('action', 'settings.users.datatables_actions')
+            ->addColumn('action', $this->getActionPage())
             ->rawColumns(array_merge($columns, ['action']));
     }
 
@@ -53,7 +54,7 @@ class UserDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return $model->newQuery()->with('roles');
+        return $this->getQuery($model);
     }
 
     /**
@@ -149,5 +150,27 @@ class UserDataTable extends DataTable
         $data = $this->getDataForPrint();
         $pdf = PDF::loadView($this->printPreview, compact('data'));
         return $pdf->download($this->filename() . '.pdf');
+    }
+    public function getActionPage()
+    {
+        switch (Route::currentRouteName()) {
+            case "users.index":
+                return 'settings.users.datatables_actions';
+                break;
+            case "operations.restaurants.users":
+                return 'operations.settings.restaurantProfile.datatables_actions';
+                break;
+        }
+    }
+    public function getQuery($model)
+    {
+        switch (Route::currentRouteName()) {
+            case "users.index":
+                return $model->newQuery()->with('roles');
+                break;
+            case "operations.restaurants.users":
+                return $model->newQuery()->where()->with('roles');
+                break;
+        }
     }
 }
