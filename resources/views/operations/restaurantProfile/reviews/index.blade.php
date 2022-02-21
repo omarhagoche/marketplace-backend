@@ -71,7 +71,7 @@
                     <a class="nav-link" href="{!!  route('operations.restaurant_profile_edit',$restaurant->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_edit')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_review')}}</a>
+                    <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.restaurant_review')}}</a>
                 </li>
               @include('layouts.right_toolbar', compact('dataTable'))
             </ul>
