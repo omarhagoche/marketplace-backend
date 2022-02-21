@@ -69,6 +69,9 @@
                       <li class="nav-item">
                         <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_edit')}}</a>
                       </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{!! route('operations.restaurant_review',$restaurant->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_edit')}}</a>
+                      </li>
                     </ul>
                   </div>
                 <div class="card-body">

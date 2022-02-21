@@ -232,6 +232,7 @@ Route::middleware('auth')->group(function () {
     // operations
     Route::prefix('operations')->group(function () {
         Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+        Route::get('restaurantProfile/review/{id}', 'RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
        
     });
 

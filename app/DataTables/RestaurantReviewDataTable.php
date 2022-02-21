@@ -15,6 +15,8 @@ use App\Models\CustomField;
 use App\Models\RestaurantReview;
 use App\Repositories\RestaurantReviewRepository;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route as FacadesRoute;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 
@@ -79,6 +81,9 @@ class RestaurantReviewDataTable extends DataTable
     public function query(RestaurantReview $model)
     {
         $this->restaurantReviewRepo->pushCriteria(new OrderRestaurantReviewsOfUserCriteria(auth()->id()));
+        if(FacadesRoute::currentRouteName() == "operations.restaurant_review"){
+            return $this->restaurantReviewRepo->where("restaurant_id",$this->id)->with("user")->with("restaurant")->newQuery();
+        }
         return $this->restaurantReviewRepo->with("user")->with("restaurant")->newQuery();
 
     }
