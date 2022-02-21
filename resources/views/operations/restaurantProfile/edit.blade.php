@@ -46,7 +46,7 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
-              {!! Form::model($restaurant, ['route' => ['operations.restaurant_profile.update', $restaurant->id], 'method' => 'patch']) !!}
+              {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
               <div class="row">
                 @include('operations.restaurantProfile.profile')
               </div>

@@ -55,7 +55,16 @@
 
     @endhasanyrole
 
-    
+        <!-- 'Private_drivers Field' -->
+        <div class="form-group row private-drivers">
+            {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label text-right']) !!}
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('private_drivers', 0) !!}
+                    {!! Form::checkbox('private_drivers', 1) !!}
+                </label>
+            </div>
+        </div>
 
     <!-- 'Boolean available_for_delivery Field' -->
     <div class="form-group row ">

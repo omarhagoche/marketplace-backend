@@ -231,7 +231,7 @@ Route::middleware('auth')->group(function () {
     
     // operations
     Route::prefix('operations')->group(function () {
-        Route::resource('restaurantProfile', 'Operations\RestaurantProfileController',['names' => 'operations.restaurant_profile']);
+        Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
        
     });
 
