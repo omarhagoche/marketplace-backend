@@ -18,7 +18,7 @@
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('private_drivers', 0) !!}
-                {!! Form::checkbox('private_drivers', 1,, null) !!}
+                {!! Form::checkbox('private_drivers', 1, null) !!}
             </label>
         </div>
     </div>
