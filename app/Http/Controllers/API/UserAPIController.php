@@ -70,8 +70,7 @@ class UserAPIController extends Controller
             }
 
             if ($request->has('device_token')) {
-                //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->setDeviceToken();
             }
             return $this->sendResponse($user, 'User retrieved successfully');
         }
@@ -166,7 +165,7 @@ class UserAPIController extends Controller
 
             if ($request->has('device_token')) {
                 //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->setDeviceToken();
             }
 
             $user->driver()->create([
@@ -215,8 +214,7 @@ class UserAPIController extends Controller
         //$verfication->delete();
 
         if ($request->has('device_token')) {
-            //save decvice token on table
-            $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+            $user->setDeviceToken();
         }
 
         $defaultRoles = $this->roleRepository->findByField('default', '1');
@@ -232,7 +230,7 @@ class UserAPIController extends Controller
         try {
             $user = auth()->user();
             if ($request->has('device_token')) {
-                $user->deviceTokens()->where('token', $request->input('device_token'))->delete();
+                $user->setDeviceToken();
             }
             // logout user
             //auth()->logout();
@@ -341,7 +339,7 @@ class UserAPIController extends Controller
         $input = $request->except(['password', 'api_token']);
         try {
             if ($request->has('device_token')) {
-                $user = $this->userRepository->update($request->only('device_token'), $id);
+                $user->setDeviceToken();
             } else {
                 $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
                 $user = $this->userRepository->update($input, $id);
