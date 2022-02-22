@@ -237,6 +237,8 @@ Route::middleware('auth')->group(function () {
 
         // Route::resource('restaurantProfile', 'RestaurantController');
 
+        Route::get('restaurantProfile/review/{id}', 'RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
+       
     });
 
 });

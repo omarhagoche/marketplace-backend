@@ -35,54 +35,54 @@
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
-  </div>
-  <!-- /.container-fluid -->
+  </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
 <div class="content">
-  <div class="clearfix"></div>
-  @include('flash::message')
-  @include('adminlte-templates::common.errors')
-  <div class="clearfix"></div>
+    <div class="clearfix"></div>
+    @include('flash::message')
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
-              {{$restaurant->private_drivers}}
-              {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
+              {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
+              <fieldset disabled>
               <div class="row">
                 @include('operations.restaurantProfile.profile')
               </div>
+              </fieldset>
+              {!! Form::close() !!}
             </div>
         </div>
         <div class="col-md-9">
-            <div class="card">
-                
-                @include('operations.restaurantProfile.links',['id'=>$restaurant->id,'restaurant' =>$restaurant])
-
-                <div class="card-body">
-                    <div class="row">
-                      @include('operations.restaurantProfile.fields')
-                    </div>
-                    {!! Form::close() !!}
-                    <div class="clearfix"></div>
-                </div>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+                @can('restaurants.index')
+                <li class="nav-item">
+                    <a class="nav-link" href="{!! route('restaurants.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+                </li>
+                @endcan
+                @can('restaurants.create')
+                <li class="nav-item">
+                    <a class="nav-link" href="{!! route('restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+                </li>
+                @endcan
+                <li class="nav-item">
+                    <a class="nav-link" href="{!!  route('operations.restaurant_profile_edit',$restaurant->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_edit')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.restaurant_review')}}</a>
+                </li>
+              @include('layouts.right_toolbar', compact('dataTable'))
+            </ul>
+          </div>
+          <div class="card-body">
+            @include('restaurant_reviews.table')
+            <div class="clearfix"></div>
+          </div>
         </div>
     </div>
 </div>
 @include('layouts.media_modal')
+
 @endsection
-@push('scripts_lib')
-<!-- iCheck -->
-<script src="{{asset('plugins/iCheck/icheck.min.js')}}"></script>
-<!-- select2 -->
-<script src="{{asset('plugins/select2/select2.min.js')}}"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
-{{--dropzone--}}
-<script src="{{asset('plugins/dropzone/dropzone.js')}}"></script>
-<script type="text/javascript">
-    Dropzone.autoDiscover = false;
-    var dropzoneFields = [];
-</script>
-@endpush
