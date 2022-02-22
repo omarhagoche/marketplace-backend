@@ -35,7 +35,8 @@
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
 <div class="content">
@@ -46,7 +47,7 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card ">
-              {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
+              {!! Form::model($restaurant, ['route' => ['restaurants.update', $id], 'method' => 'patch']) !!}
               <div class="row">
                 @include('operations.restaurantProfile.profile')
               </div>
@@ -55,7 +56,7 @@
         <div class="col-md-9">
             <div class="card">
                 
-                @include('operations.restaurantProfile.links')
+                @include('operations.restaurantProfile.links',['id'=>$id])
 
                 <div class="card-body">
                     <div class="row">

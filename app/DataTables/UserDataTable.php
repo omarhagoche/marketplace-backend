@@ -54,7 +54,9 @@ class UserDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return $this->getQuery($model);
+        // return $model->newQuery()->with('roles');
+
+        return $this->getQuery($model,$this->id);
     }
 
     /**
@@ -86,12 +88,12 @@ class UserDataTable extends DataTable
     {
         // TODO custom element generator
         $columns = [
-            [
-                'data' => 'avatar',
-                'title' => trans('lang.user_avatar'),
-                'orderable' => false, 'searchable' => false,
+            // [
+            //     'data' => 'avatar',
+            //     'title' => trans('lang.user_avatar'),
+            //     'orderable' => false, 'searchable' => false,
 
-            ],
+            // ],
             [
                 'data' => 'name',
                 'title' => trans('lang.user_name'),
@@ -157,19 +159,21 @@ class UserDataTable extends DataTable
             case "users.index":
                 return 'settings.users.datatables_actions';
                 break;
-            case "operations.restaurants.users":
-                return 'operations.settings.restaurantProfile.datatables_actions';
+            case "operations.restaurant_profile.users":
+                return 'operations.restaurantProfile.users.datatables_actions';
                 break;
         }
     }
-    public function getQuery($model)
+    public function getQuery($model,$id)
     {
         switch (Route::currentRouteName()) {
             case "users.index":
                 return $model->newQuery()->with('roles');
                 break;
-            case "operations.restaurants.users":
-                return $model->newQuery()->where()->with('roles');
+            case "operations.restaurant_profile.users":
+                return $model->newQuery()->whereHas('restaurants', function ($query) use ($id){
+                    return $query->where('restaurant_id', $id);
+                })->with('roles');
                 break;
         }
     }

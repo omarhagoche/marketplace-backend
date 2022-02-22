@@ -9,27 +9,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use Flash;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\DataTables\UserDataTable;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Route;
 use App\Criteria\Users\AdminsCriteria;
+use App\Events\RestaurantChangedEvent;
+use App\Repositories\UploadRepository;
 use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
-use App\Criteria\Users\ManagersClientsCriteria;
-use App\Criteria\Users\ManagersCriteria;
 use App\DataTables\RestaurantDataTable;
-use App\DataTables\RequestedRestaurantDataTable;
-use App\Events\RestaurantChangedEvent;
+use App\Repositories\CuisineRepository;
+use App\Criteria\Users\ManagersCriteria;
+use Illuminate\Support\Facades\Response;
+use App\Repositories\RestaurantRepository;
+use App\Repositories\CustomFieldRepository;
 use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\CuisineRepository;
-use App\Repositories\RestaurantRepository;
-use App\Repositories\UploadRepository;
-use App\Repositories\UserRepository;
-use Flash;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
+use App\Criteria\Users\ManagersClientsCriteria;
+use App\DataTables\RequestedRestaurantDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
 
 class RestaurantController extends Controller
 {
@@ -316,6 +319,33 @@ class RestaurantController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        return view('operations.restaurantProfile.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('operations.restaurantProfile.edit',compact('id','restaurant','restaurant','customFields','cuisine','cuisinesSelected'));
+        // ->with->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+    }
+    public function users(UserDataTable $userDataTable,$id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        if (empty($restaurant)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
+            return redirect(route('restaurants.index'));
+        }
+        $users=User::whereHas('restaurants', function ($query) use ($id){
+            return $query->where('restaurant_id', $id);
+        })->pluck('name','id');
+        $cuisine = $this->cuisineRepository->pluck('name', 'id');
+        $cuisinesSelected = $restaurant->cuisines()->pluck('cuisines.id')->toArray();
+        $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+        // $user->restaurants()->attach($request->restaurant_id, [
+        //     'enable_notifications' => $request->get('enable_notifications', 1)
+        // ]);
+        //$restaurant = auth()->user()->restaurants()->where('id', $request->restaurant_id)->first();
+
+        return $userDataTable->with('id',$id)->render('operations.restaurantProfile.users.index',compact('users','id','restaurant','restaurant','customFields','cuisine','cuisinesSelected'));
+
     }
 }

@@ -11,7 +11,7 @@
       </li>
       @endcan
       <li class="nav-item">
-        <a class="nav-link " href="{!! route('operations.restaurants.users') !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.user')}}</a>
+        <a class="nav-link " href="{!! route('operations.restaurant_profile.users',$id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.user')}}</a>
       </li>
       
     </ul>

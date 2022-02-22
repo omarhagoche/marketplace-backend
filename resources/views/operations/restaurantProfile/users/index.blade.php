@@ -48,7 +48,7 @@
             <div class="card ">
                 <div class="card-header" style="align-self: center;"> 
                     <div class="col-12" style="align-self: center;"> 
-                        <img src="{{ $restaurant->media->first()->getUrl()}}" alt="Avatar" class="avatar">
+                      <img src="{{ $restaurant->media->first()?$restaurant->media->first()->getUrl():''}}" alt="Avatar" class="avatar">
                     </div>
                     <div class="col-12">
                         
@@ -62,11 +62,23 @@
                 @include('operations.restaurantProfile.links')
 
                 <div class="card-body">
-                    {{-- {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!} --}}
+                  <div class="row">
+                    {!! Form::open() !!}
+                    {!! Form::select('user_id', $users, 'name') !!}
+                    {!! Form::button('<i class="fa fa-trash"></i>', [
+                      'data-toggle' => 'tooltip',
+                      'data-placement' => 'bottom',
+                      'title' => trans('lang.user_delete'),
+                      'type' => 'submit',
+                      'class' => 'btn btn-link text-danger',
+                      'onclick' => "swal({title: ".trans('lang.error').", confirmButtonText: ".trans('lang.ok').",
+                                              text: data.message,type: 'error', confirmButtonClass: 'btn-danger'});"
+                      ]) !!}
+                    {!! Form::close() !!}
+                  </div>
                     <div class="row">
-                      @include('operations.restaurantProfile.fields')
+                      @include('settings.users.table')
                     </div>
-                    {{-- {!! Form::close() !!} --}}
                     <div class="clearfix"></div>
                 </div>
             </div>
