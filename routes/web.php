@@ -234,6 +234,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
         Route::get('restaurantProfile/{id}/users', 'RestaurantController@users')->name('operations.restaurant_profile.users');
+        Route::get('restaurantProfile/{id}/users/create', 'RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
 
         // Route::resource('restaurantProfile', 'RestaurantController');
 

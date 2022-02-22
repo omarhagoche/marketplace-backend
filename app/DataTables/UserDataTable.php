@@ -72,7 +72,7 @@ class UserDataTable extends DataTable
             ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters([
                 'dom'          => 'Bfrtip',
-                'buttons'      => ['export', 'print',  'reload'],
+                'buttons'      => ['create'],
             //     array_merge(
             //     config('datatables-buttons.parameters'), [
             //         'language' => json_decode(

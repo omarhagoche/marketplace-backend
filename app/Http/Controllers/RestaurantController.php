@@ -347,4 +347,8 @@ class RestaurantController extends Controller
 
 
     }
+    public function usersCreate($id)
+    {
+        return view('operations.restaurantProfile.users.create');
+    }
 }
