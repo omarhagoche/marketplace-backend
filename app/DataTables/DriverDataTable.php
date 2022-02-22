@@ -45,7 +45,7 @@ class DriverDataTable extends DataTable
             ->editColumn('working_on_order', function ($driver) {
                 return getBooleanColumn($driver, 'working_on_order');
             })
-            ->addColumn('action', 'drivers.datatables_actions')
+            ->addColumn('action', 'operations.drivers.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;

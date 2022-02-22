@@ -22,7 +22,7 @@
     </li>
 @endcan
 
-@can('restaurants.index')
+{{-- @can('restaurants.index')
     <li class="nav-item has-treeview {{ (Request::is('restaurants*') || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ (Request::is('restaurants*') || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*')? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-cutlery"></i>@endif
@@ -59,14 +59,14 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcan --}}
 
-@can('categories.index')
+{{-- @can('categories.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('categories*') ? 'active' : '' }}" href="{!! route('categories.index') !!}">@if($icons)
                 <i class="nav-icon fa fa-folder"></i>@endif<p>{{trans('lang.category_plural')}}</p></a>
     </li>
-@endcan
+@endcan --}}
 
 {{-- @can('foods.index')
     <li class="nav-item has-treeview {{ Request::is('foods*') || Request::is('extra*') || Request::is('foodReviews*') || Request::is('nutrition*') ? 'menu-open' : '' }}">
@@ -162,7 +162,7 @@
 @endcan --}}
 
 
-{{-- @can('drivers.index')
+@can('drivers.index')
     <li class="nav-item has-treeview {{ Request::is('driver*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('driver*') ? 'active' : '' }}"> @if($icons)
             <i class="nav-icon fa fa-car"></i>@endif
@@ -171,30 +171,30 @@
         <ul class="nav nav-treeview">
             @can('drivers.index')
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} </p></a>
+                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('operations.drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} </p></a>
             </li>
             @endcan
             
             @can('drivers.map')
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.map') !!}">@if($icons)<i class="nav-icon fa fa-map"></i>@endif<p>{{trans('lang.drivers_map')}} </p></a>
+                <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('operations.drivers.map') !!}">@if($icons)<i class="nav-icon fa fa-map"></i>@endif<p>{{trans('lang.drivers_map')}} </p></a>
             </li>
             @endcan
 
-            @can('driverReviews.index')
+            {{-- @can('driverReviews.index')
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('driverReviews*') ? 'active' : '' }}" href="{!! route('driverReviews.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.driver_review_plural')}}</p></a>
+                    <a class="nav-link {{ Request::is('driverReviews*') ? 'active' : '' }}" href="{!! route('operations.driverReviews.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.driver_review_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
 
-            @can('driverTypes.index')
+            {{-- @can('driverTypes.index')
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('driverTypes*') ? 'active' : '' }}" href="{!! route('driverTypes.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.driver_type_plural')}}</p></a>
+                <a class="nav-link {{ Request::is('driverTypes*') ? 'active' : '' }}" href="{!! route('operations.driverTypes.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.driver_type_plural')}}</p></a>
             </li>
-            @endcan
+            @endcan --}}
         </ul>
     </li>
-@endcan --}}
+@endcan
 
 
 {{-- @can('settlement.index')
@@ -288,7 +288,7 @@
 
             @can('driversPayouts.index')
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('driversPayouts*') ? 'active' : '' }}" href="{!! route('driversPayouts.index') !!}">@if($icons)
+                    <a class="nav-link {{ Request::is('driversPayouts*') ? 'active' : '' }}" href="{!! route('operations.driversPayouts.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-dollar"></i>@endif<p>{{trans('lang.drivers_payout_plural')}}</p></a>
                 </li>
             @endcan
