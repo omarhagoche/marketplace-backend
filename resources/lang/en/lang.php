@@ -1383,5 +1383,7 @@ return [
     'total_money_for_user'=>'Total money',
     'visited_restaurants'=>'Visited',
     'cancel_order'=>'Cancel order',
+    'operations'=>'Operation',
+    'users'=>'Users',
 
 ];

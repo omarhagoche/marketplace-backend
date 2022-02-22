@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 
 @section('content')
 
@@ -25,9 +25,7 @@
     @include('flash::message')
     <div class="clearfix"></div>
     <div class="row">
-        {{-- <div class="col-md-3">
-            @include('layouts.settings.menu')
-        </div> --}}
+       
         <div class="col-md-12">
             @yield('settings_content')
         </div>

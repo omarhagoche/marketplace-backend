@@ -6,10 +6,10 @@
     </li>
 @endcan
 
-@can('favorites.index')
+@can('operations.users.index')
     <li class="nav-item">
-        <a class="nav-link {{ Request::is('favorites*') ? 'active' : '' }}" href="{!! route('favorites.index') !!}">@if($icons)
-                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.favorite_plural')}}</p></a>
+        <a class="nav-link {{ Request::is('operations.users*') ? 'active' : '' }}" href="{!! route('operations.users.index') !!}">@if($icons)
+                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.users')}}</p></a>
     </li>
 @endcan
 
@@ -68,7 +68,7 @@
     </li>
 @endcan
 
-@can('foods.index')
+{{-- @can('foods.index')
     <li class="nav-item has-treeview {{ Request::is('foods*') || Request::is('extra*') || Request::is('foodReviews*') || Request::is('nutrition*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('foods*') || Request::is('extra*') || Request::is('foodReviews*') || Request::is('nutrition*') ? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-fire"></i>@endif
@@ -113,9 +113,9 @@
 
         </ul>
     </li>
-@endcan
+@endcan --}}
 
-@can('orders.index')
+{{-- @can('orders.index')
     <li class="nav-item has-treeview {{ Request::is('orders*') || Request::is('orderStatuses*') || Request::is('deliveryAddresses*')? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('orders*') || Request::is('orderStatuses*') || Request::is('deliveryAddresses*')? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-shopping-basket"></i>@endif
@@ -153,16 +153,16 @@
 
         </ul>
     </li>
-@endcan
+@endcan --}}
 
-@can('coupons.index')
+{{-- @can('coupons.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('coupons*') ? 'active' : '' }}" href="{!! route('coupons.index') !!}">@if($icons)<i class="nav-icon fa fa-ticket"></i>@endif<p>{{trans('lang.coupon_plural')}} <span class="right badge badge-danger">New</span></p></a>
     </li>
-@endcan
+@endcan --}}
 
 
-@can('drivers.index')
+{{-- @can('drivers.index')
     <li class="nav-item has-treeview {{ Request::is('driver*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('driver*') ? 'active' : '' }}"> @if($icons)
             <i class="nav-icon fa fa-car"></i>@endif
@@ -194,10 +194,10 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcan --}}
 
 
-@can('settlement.index')
+{{-- @can('settlement.index')
     <li class="nav-item has-treeview {{ Request::is('settlement*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('settlement*') ? 'active' : '' }}"> @if($icons)
             <i class="nav-icon fa fa-handshake-o"></i>@endif
@@ -226,9 +226,9 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcan --}}
 
-@can('faqs.index')
+{{-- @can('faqs.index')
     <li class="nav-item has-treeview {{ Request::is('faqCategories*') || Request::is('faqs*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('faqs*') || Request::is('faqCategories*') ? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-support"></i>@endif
@@ -252,17 +252,17 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcan --}}
 
 <li class="nav-header">{{trans('lang.app_setting')}}</li>
-@can('medias')
+{{-- @can('medias')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('medias*') ? 'active' : '' }}" href="{!! url('medias') !!}">@if($icons)<i class="nav-icon fa fa-picture-o"></i>@endif
             <p>{{trans('lang.media_plural')}}</p></a>
     </li>
-@endcan
+@endcan --}}
 
-@can('payments.index')
+{{-- @can('payments.index')
     <li class="nav-item has-treeview {{ Request::is('earnings*') || Request::is('driversPayouts*') || Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('earnings*') || Request::is('driversPayouts*') || Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-credit-card"></i>@endif
@@ -302,9 +302,9 @@
 
         </ul>
     </li>
-@endcan
+@endcan --}}
 
-@can('app-settings')
+{{-- @can('app-settings')
     <li class="nav-item has-treeview {{ Request::is('settings/mobile*') || Request::is('slides*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('settings/mobile*') || Request::is('slides*') ? 'active' : '' }}">
             @if($icons)<i class="nav-icon fa fa-mobile"></i>@endif
@@ -457,5 +457,5 @@
 
         </ul>
     </li>
-@endcan
+@endcan --}}
 

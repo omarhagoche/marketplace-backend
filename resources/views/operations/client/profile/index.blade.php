@@ -29,7 +29,7 @@
                         <div class="card-body">
                             {!! Form::model($user, ['route' => ['users.update', $user->id], 'method' => 'patch']) !!}
                             <div class="row">
-                                @include('settings.users.fields')
+                                @include('operations.settings.client.fields')
                             </div>
                             {!! Form::close() !!}
                             <div class="clearfix"></div>

@@ -240,8 +240,8 @@ Route::middleware('auth')->group(function () {
     Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
     
     //// new Dashboard for operations
-    // Route::group(['middleware' => ['permission:operations']], function () {
         Route::prefix('operations')->group(function () {
+            Route::view('/', 'operations.index')->name('operations.index');
             Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
             Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
             Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
