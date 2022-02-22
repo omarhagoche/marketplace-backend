@@ -24,9 +24,9 @@ class UserDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
-        return $dataTable
+        return  datatables()
+        ->eloquent($query)
             ->editColumn('activated_at', function ($user) {
                 return getDateColumn($user, 'activated_at');
             })
@@ -70,13 +70,17 @@ class UserDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
-            ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
-                    'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                    ),true)
-                ]
-            ));
+            ->parameters([
+                'dom'          => 'Bfrtip',
+                'buttons'      => ['export', 'print',  'reload'],
+            //     array_merge(
+            //     config('datatables-buttons.parameters'), [
+            //         'language' => json_decode(
+            //             file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
+            //         ),true)
+            //     ]
+            // )
+            ]);
     }
 
     /**
@@ -88,12 +92,12 @@ class UserDataTable extends DataTable
     {
         // TODO custom element generator
         $columns = [
-            // [
-            //     'data' => 'avatar',
-            //     'title' => trans('lang.user_avatar'),
-            //     'orderable' => false, 'searchable' => false,
+            [
+                'data' => 'avatar',
+                'title' => trans('lang.user_avatar'),
+                'orderable' => false, 'searchable' => false,
 
-            // ],
+            ],
             [
                 'data' => 'name',
                 'title' => trans('lang.user_name'),

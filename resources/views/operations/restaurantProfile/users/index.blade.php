@@ -59,10 +59,10 @@
         <div class="col-md-9">
             <div class="card">
                 
-                @include('operations.restaurantProfile.links')
+                @include('operations.restaurantProfile.links',compact('id','restaurant'))
 
                 <div class="card-body">
-                  <div class="row">
+                  {{-- <div class="row">
                     {!! Form::open() !!}
                     {!! Form::select('user_id', $users, 'name') !!}
                     {!! Form::button('<i class="fa fa-trash"></i>', [
@@ -75,7 +75,7 @@
                                               text: data.message,type: 'error', confirmButtonClass: 'btn-danger'});"
                       ]) !!}
                     {!! Form::close() !!}
-                  </div>
+                  </div> --}}
                     <div class="row">
                       @include('settings.users.table')
                     </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> 
 @include('layouts.media_modal')
 @endsection
 @push('scripts_lib')
