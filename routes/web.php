@@ -181,9 +181,9 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
+    Route::get('drivers/map', 'DriverController@map')->name('drivers.map');
     Route::resource('drivers', 'DriverController');
 
-    Route::get('drivers/map', 'DriverController@map')->name('drivers.map');
     Route::get('drivers/update-data-in-firestore', 'DriverController@updateDataInFirestore')->name('drivers.update_data_in_firestore');
 
     Route::resource('driverTypes', 'DriverTypeController');
