@@ -10,7 +10,6 @@
 namespace App\Models;
 
 use App\Models\DeviceToken;
-use App\Models\Order;
 use App\Traits\SkipAppends;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Laravel\Cashier\Billable;
@@ -35,7 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string api_token
  * @property string device_token
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia, JWTSubject
 {
     use Notifiable;
     use Billable;
@@ -134,6 +133,12 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * The attribute for save authorization token of logged user , instead of calculate it many times (caching)
+     */
+    protected $bearer_token = "";
+
 
     /**
      * Allowed attributes to skip appends attributes 
@@ -274,6 +279,24 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
+    /** 
+     * Get token of user
+     * 
+     * @return string
+     */
+    public function token()
+    {
+        if ($this->bearer_token) {
+            return $this->bearer_token;
+        }
+        $old_guard = auth()->getDefaultDriver();
+        auth()->shouldUse('api');
+        $this->bearer_token = auth()->tokenById($this->id);
+        auth()->shouldUse($old_guard);
+        return $this->bearer_token;
+    }
+
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
@@ -345,18 +368,16 @@ class User extends Authenticatable implements HasMedia
     }
     public function coupons()
     {
-        $coupons=collect();
-        $orders=$this->orders;
+        $coupons = collect();
+        $orders = $this->orders;
         foreach ($orders as $order) {
-            if ($order->coupons()!= null) {
+            if ($order->coupons() != null) {
                 $coupons->push($order->coupons()[0]);
                 if (isset($order->coupons()[1])) {
                     $coupons->push($order->coupons()[1]);
                 }
             }
         }
-        return collect($coupons) ;
-
+        return collect($coupons);
     }
-    
 }
