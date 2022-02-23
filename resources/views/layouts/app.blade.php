@@ -212,6 +212,12 @@
                 if (currentToken) {
                     saveToken(currentToken);
                     console.log(currentToken);
+                    /* {{-- 
+                        Add device_token to logout form to send it on logout submit and remove device_tokne from user to skip receive notificaitons
+                        after user logged out 
+                    --}} 
+                    */
+                    document.getElementById('logout-form').innerHTML += `<input type="hidden" name="device_token" value="${currentToken}" />`;
                 } else {
                     console.log('No Instance ID token available. Request permission to generate one.');
                 }

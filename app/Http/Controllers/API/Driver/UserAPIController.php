@@ -78,8 +78,7 @@ class UserAPIController extends Controller
                     return $this->sendError('User not driver', 401);
                 }
                 if ($request->has('device_token')) {
-                    //save decvice token on table
-                    $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                    $user->setDeviceToken();
                 }
                 $user->load('driver');
 
@@ -115,8 +114,7 @@ class UserAPIController extends Controller
             $user->save();
 
             if ($request->has('device_token')) {
-                //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->setDeviceToken();
             }
 
             $user->assignRole('driver');
@@ -209,7 +207,7 @@ class UserAPIController extends Controller
         $input = $request->except(['password', 'api_token']);
         try {
             if ($request->has('device_token')) {
-                $user = $this->userRepository->update($request->only('device_token'), $id);
+                $user->setDeviceToken();
             } else {
                 $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
                 $user = $this->userRepository->update($input, $id);

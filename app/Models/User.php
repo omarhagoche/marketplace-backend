@@ -257,6 +257,24 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
+     * Set device token for user 
+     * check if token exists and linked to another user , update it to be linked to current user 
+     
+     * @param $token 
+     * @return DeviceToken instance
+     */
+    public function setDeviceToken($token = null)
+    {
+        if (!$token) {
+            $token =  request()->input('device_token');
+        }
+        return  DeviceToken::updateOrCreate(
+            ['token' => $token],
+            ['token' => $token, 'user_id' => $this->id]
+        );
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
     public function restaurants()
