@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 
 @section('content')
 <!-- Content Header (Page header) -->
@@ -10,8 +10,8 @@
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
-          <li class="breadcrumb-item"><a href="{!! route('orders.index') !!}">{{trans('lang.order_plural')}}</a>
+          <li class="breadcrumb-item"><a href="{{url('operations/')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
+          <li class="breadcrumb-item"><a href="{!! route('operations.orders.index') !!}">{{trans('lang.order_plural')}}</a>
           </li>
           <li class="breadcrumb-item active">{{trans('lang.order_table')}}</li>
         </ol>
@@ -32,10 +32,10 @@
         </li>
         @can('orders.create')
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('orders.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.order_create')}}</a>
+          <a class="nav-link" href="{!! route('operations.orders.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.order_create')}}</a>
         </li>
         @endcan
-        @include('layouts.right_toolbar', compact('dataTable'))
+        @include('operations.layouts.right_toolbar', compact('dataTable'))
       </ul>
     </div>
     <div class="card-body">

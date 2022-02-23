@@ -258,8 +258,15 @@ Route::middleware('auth')->group(function () {
             //section driver
             Route::get('drivers/map', 'Operations\DriverController@map')->name('operations.drivers.map');
             Route::resource('drivers', 'Operations\DriverController',['names' => 'operations.drivers']);
-            // Route::resource('driverReviews', 'DriverReviewController',['names' => 'operations.DriverReview']);
 
+            // section order
+            Route::get('orders/show/coupon/{order_id}', 'Operations\OrderController@showCouponOrderFoods')->name('operations.orders.show-order-coupon');
+
+            Route::get('orders/edit/foods/{order_id}', 'Operations\OrderController@editOrderFoods')->name('operations.orders.edit-order-foods');
+            Route::get('orders/waitting-drivers', 'Operations\OrderController@ordersWaittingForDrivers')->name('operations.orders.waitting_drivers');
+            Route::get('orders/set-driver/{order_id}/{driver_id}', 'Operations\OrderController@setDriverForOrder');
+            Route::get('orders/statistics', 'Operations\OrderController@statistics')->name('operations.orders.statistics');
+            Route::resource('orders', 'Operations\OrderController',['names' => 'operations.orders']);
 
         });
 

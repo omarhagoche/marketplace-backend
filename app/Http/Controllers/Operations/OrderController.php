@@ -6,44 +6,45 @@
  * Copyright (c) 2020
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Operations;
 
-use App\Criteria\Orders\OrdersOfUserCriteria;
-use App\Criteria\Users\AvailableCriteria;
-use App\Criteria\Users\ClientsCriteria;
-use App\Criteria\Users\DriversCriteria;
-use App\Criteria\Users\DriversOfRestaurantCriteria;
-use App\DataTables\OrderDataTable;
-use App\DataTables\FoodOrderDataTable;
-use App\Events\OrderChangedEvent;
-use App\Http\Requests\CreateCouponRequest;
-use App\Http\Requests\CreateOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
-use App\Models\DeliveryAddress;
-use App\Models\Extra;
-use App\Models\FoodOrder;
-use App\Models\FoodOrderExtra;
-use App\Models\Order;
-use App\Models\User;
-use App\Notifications\AssignedOrder;
-use App\Notifications\OrderNeedsToAccept;
-use App\Notifications\StatusChangedOrder;
-use App\Repositories\CouponRepository;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\ExtraRepository;
-use App\Repositories\FoodOrderExtraRepository;
-use App\Repositories\FoodOrderRepository;
-use App\Repositories\NotificationRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\OrderStatusRepository;
-use App\Repositories\PaymentRepository;
-use App\Repositories\UserRepository;
 use Flash;
+use App\Models\User;
+use App\Models\Extra;
+use App\Models\Order;
+use App\Models\FoodOrder;
 use Illuminate\Http\Request;
+use App\Models\FoodOrderExtra;
+use App\Models\DeliveryAddress;
+use App\Events\OrderChangedEvent;
+use App\DataTables\OrderDataTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
+use App\Http\Controllers\Controller;
+use App\Notifications\AssignedOrder;
+use App\Repositories\UserRepository;
+use App\Repositories\ExtraRepository;
+use App\Repositories\OrderRepository;
+use App\DataTables\FoodOrderDataTable;
+use App\Repositories\CouponRepository;
+use App\Criteria\Users\ClientsCriteria;
+use App\Criteria\Users\DriversCriteria;
+use App\Repositories\PaymentRepository;
 use Illuminate\Support\Facades\Response;
+use App\Criteria\Users\AvailableCriteria;
+use App\Http\Requests\CreateOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
+use App\Notifications\OrderNeedsToAccept;
+use App\Notifications\StatusChangedOrder;
+use App\Repositories\FoodOrderRepository;
+use App\Http\Requests\CreateCouponRequest;
+use App\Repositories\CustomFieldRepository;
+use App\Repositories\OrderStatusRepository;
+use App\Repositories\NotificationRepository;
+use Illuminate\Support\Facades\Notification;
+use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Repositories\FoodOrderExtraRepository;
+use App\Criteria\Users\DriversOfRestaurantCriteria;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class OrderController extends Controller

@@ -6,21 +6,16 @@
     </li>
 @endcan
 
-@can('operations.users.index')
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('operations.users*') ? 'active' : '' }}" href="{!! route('operations.users.index') !!}">@if($icons)
-                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.users')}}</p></a>
-    </li>
-@endcan
+
 
 <li class="nav-header">{{trans('lang.app_management')}}</li>
 
-@can('cuisines.index')
+{{-- @can('cuisines.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('cuisines*') ? 'active' : '' }}" href="{!! route('cuisines.index') !!}">@if($icons)
                 <i class="nav-icon fa fa-globe"></i>@endif<p>{{trans('lang.cuisine_plural')}}</p></a>
     </li>
-@endcan
+@endcan --}}
 
 {{-- @can('restaurants.index')
     <li class="nav-item has-treeview {{ (Request::is('restaurants*') || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*') ? 'menu-open' : '' }}">
@@ -114,8 +109,13 @@
         </ul>
     </li>
 @endcan --}}
-
-{{-- @can('orders.index')
+@can('operations.users.index')
+    <li class="nav-item">
+        <a class="nav-link {{ Request::is('operations.users*') ? 'active' : '' }}" href="{!! route('operations.users.index') !!}">@if($icons)
+                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.users')}}</p></a>
+    </li>
+@endcan
+@can('orders.index')
     <li class="nav-item has-treeview {{ Request::is('orders*') || Request::is('orderStatuses*') || Request::is('deliveryAddresses*')? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('orders*') || Request::is('orderStatuses*') || Request::is('deliveryAddresses*')? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-shopping-basket"></i>@endif
@@ -126,34 +126,34 @@
 
             @can('orders.index')
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('orders*') ? 'active' : '' }}" href="{!! route('orders.index') !!}">@if($icons)
+                    <a class="nav-link {{ Request::is('orders*') ? 'active' : '' }}" href="{!! route('operations.orders.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_plural')}}</p></a>
                 </li>
             @endcan
 
             @can('orders.waitting_drivers')
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('orders/waitting-drivers*') ? 'active' : '' }}" href="{!! route('orders.waitting_drivers') !!}">@if($icons)
+                    <a class="nav-link {{ Request::is('orders/waitting-drivers*') ? 'active' : '' }}" href="{!! route('operations.orders.waitting_drivers') !!}">@if($icons)
                             <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_waitting_drivers_plural')}}</p></a>
                 </li>
             @endcan
-            @can('orderStatuses.index')
+            {{-- @can('orderStatuses.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('orderStatuses*') ? 'active' : '' }}" href="{!! route('orderStatuses.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-server"></i>@endif<p>{{trans('lang.order_status_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
 
-            @can('deliveryAddresses.index')
+            {{-- @can('deliveryAddresses.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('deliveryAddresses*') ? 'active' : '' }}" href="{!! route('deliveryAddresses.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-map"></i>@endif<p>{{trans('lang.delivery_address_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
 
         </ul>
     </li>
-@endcan --}}
+@endcan
 
 {{-- @can('coupons.index')
     <li class="nav-item">

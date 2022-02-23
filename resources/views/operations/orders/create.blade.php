@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 @push('css_lib')
 <!-- iCheck -->
 <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">
@@ -19,8 +19,8 @@
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
-          <li class="breadcrumb-item"><a href="{!! route('orders.index') !!}">{{trans('lang.order_plural')}}</a>
+          <li class="breadcrumb-item"><a href="{{url('operations/')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
+          <li class="breadcrumb-item"><a href="{!! route('operations.orders.index') !!}">{{trans('lang.order_plural')}}</a>
           </li>
           <li class="breadcrumb-item active">{{trans('lang.order_create')}}</li>
         </ol>
@@ -39,7 +39,7 @@
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
         @can('orders.index')
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('orders.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
+          <a class="nav-link" href="{!! route('operations.orders.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
         </li>
         @endcan
         <li class="nav-item">
