@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: CreateRestaurantRequest.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -33,7 +34,13 @@ class CreateRestaurantRequest extends FormRequest
     public function rules()
     {
         if (auth()->user()->hasRole('admin')) {
-            return Restaurant::$adminRules;
+
+            $user_rules = new CreateUserRequest();
+            $user_rules = $user_rules->rules();
+            $user_rules['password'] .= '|confirmed';
+            $rules = array_merge(Restaurant::$adminRules,  $user_rules);
+            
+            return $rules;
         } elseif (auth()->user()->hasAnyRole(['manager', 'client'])) {
             return Restaurant::$managerRules;
         }
