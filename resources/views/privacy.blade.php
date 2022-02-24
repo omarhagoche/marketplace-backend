@@ -10,6 +10,7 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             padding: 1em;
         }
+
     </style>
 </head>
 
@@ -85,6 +86,16 @@
             <!---->
         </ul>
     </div>
+    <p><strong>GPS (Global Positioning System)</strong></p>
+    <p>
+        For a better experience, while using our service as a driver, we track your location in the background to send
+        you notifications about orders available for delivery
+    </p>
+    <p>
+        The main purpose of drivers location tracking is to know the nearest available driver near the restaurant or
+        store that the customer ordered, so it will send the nearest available driver to pick up the order and deliver
+        it to the customer, so it will reduce the delay.
+    </p>
     <p><strong>Log Data</strong></p>
     <p>
         We want to inform you that whenever you
