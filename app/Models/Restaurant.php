@@ -116,7 +116,7 @@ class Restaurant extends Model implements HasMedia
      * @var array
      */
     public static $adminRules = [
-        'name' => 'required',
+        'name' => '',
         //'description' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',

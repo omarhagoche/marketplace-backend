@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantController.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -27,6 +28,7 @@ use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -93,8 +95,10 @@ class RestaurantController extends Controller
      */
     public function create()
     {
-
         $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+        // dd(get_class($user));
+        // $user = $this->userRepository->with('restaurants')->findWhereIn('id', [140, 139, 129]);
+        // dd($user);
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
         $usersSelected = [];
@@ -120,10 +124,21 @@ class RestaurantController extends Controller
      */
     public function store(CreateRestaurantRequest $request)
     {
+        $input['users'] = [];
         $input = $request->all();
-        if (auth()->user()->hasRole(['manager','client'])) {
+        if (auth()->user()->hasRole(['manager', 'client'])) {
             $input['users'] = [auth()->id()];
         }
+        $user = $this->userRepository->create([
+            'name' => $input['name'],
+            'phone_number' => $input['phone_number'],
+            'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+            'active' => true,
+        ]);
+        $user->assignRole('manager');
+        $input['users'] = [$user->id];
+        // dd($input);
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->create($input);
@@ -182,10 +197,10 @@ class RestaurantController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
-        if($restaurant['active'] == 0){
+        if ($restaurant['active'] == 0) {
             $user = $this->userRepository->getByCriteria(new ManagersClientsCriteria())->pluck('name', 'id');
         } else {
-        $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+            $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         }
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');

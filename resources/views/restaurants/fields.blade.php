@@ -1,7 +1,9 @@
 @if($customFields)
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
+
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+
     <!-- Name Field -->
     <div class="form-group row ">
         {!! Form::label('name', trans("lang.restaurant_name"), ['class' => 'col-3 control-label text-right']) !!}
@@ -183,7 +185,10 @@
             </label>
         </div>
     </div>
-
+        {{-- create new user --}}
+        @if (request()->is('*/create'))
+        @include('restaurants.user_fields')
+    @endif
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
