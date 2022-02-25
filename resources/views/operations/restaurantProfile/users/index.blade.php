@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 @push('css_lib')
 <!-- iCheck -->
 <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">
@@ -44,7 +44,7 @@
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
     <div class="row">
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card ">
                 <div class="card-header" style="align-self: center;"> 
                     <div class="col-12" style="align-self: center;"> 
@@ -55,8 +55,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-9">
+        </div> --}}
+        <div class="col-md-12">
             <div class="card">
                 
                 @include('operations.restaurantProfile.links',compact('id','restaurant'))
@@ -76,7 +76,7 @@
                     {!! Form::close() !!}
                   </div> --}}
                     <div class="row">
-                      @include('settings.users.table')
+                      @include('operations.restaurantProfile.users.table')
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -84,7 +84,7 @@
         </div>
     </div>
 </div> 
-@include('layouts.media_modal')
+@include('operations.layouts.media_modal')
 @endsection
 @push('scripts_lib')
 <!-- iCheck -->

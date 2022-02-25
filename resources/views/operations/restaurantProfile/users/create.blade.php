@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 @push('css_lib')
 <!-- iCheck -->
 <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">
@@ -78,7 +78,7 @@
                   </div> --}}
                   {!! Form::open(['route' => ['operations.restaurant_profile.users.store',$id,$userId]]) !!}
                   <div class="row">
-                    @include('settings.users.fields',compact('user'))
+                    @include('operations.restaurantProfile.users.fields',compact('user'))
                   </div>
                   {!! Form::close() !!}
                 </div>

@@ -8,15 +8,6 @@
 <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.css')}}">
 {{--dropzone--}}
 <link rel="stylesheet" href="{{asset('plugins/dropzone/bootstrap.min.css')}}">
-<style>
-.avatar {
-    vertical-align: middle;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-}
-</style>
-
 @endpush
 @section('content')
 <!-- Content Header (Page header) -->
@@ -35,8 +26,7 @@
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
-  </div>
-  <!-- /.container-fluid -->
+  </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
 <div class="content">
@@ -44,33 +34,22 @@
   @include('flash::message')
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card ">
-              {{$restaurant->private_drivers}}
-              {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
-              <div class="row">
-                @include('operations.restaurantProfile.profile')
-              </div>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="card">
-                
-              @include('operations.restaurantProfile.links',compact('id','restaurant'))
+  <div class="card">
+    <div class="card-header">
+      @include('operations.restaurantProfile.links',compact('id','restaurant'))
 
-                <div class="card-body">
-                    <div class="row">
-                      @include('operations.restaurantProfile.fields')
-                    </div>
-                    {!! Form::close() !!}
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </div>
     </div>
+    <div class="card-body">
+      {!! Form::model($restaurant, ['route' => ['restaurants.update', $restaurant->id], 'method' => 'patch']) !!}
+      <div class="row">
+        @include('operations.restaurants.fields')
+      </div>
+      {!! Form::close() !!}
+      <div class="clearfix"></div>
+    </div>
+  </div>
 </div>
-@include('operations.layouts.media_modal')
+@include('layouts.media_modal')
 @endsection
 @push('scripts_lib')
 <!-- iCheck -->

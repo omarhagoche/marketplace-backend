@@ -268,18 +268,17 @@ Route::middleware('auth')->group(function () {
             Route::get('orders/statistics', 'Operations\OrderController@statistics')->name('operations.orders.statistics');
             Route::resource('orders', 'Operations\OrderController',['names' => 'operations.orders']);
 
+            //Restaurant
+            Route::get('restaurantProfile/{id}', 'Operations\RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+            Route::get('restaurantProfile/{id}/users', 'Operations\RestaurantController@users')->name('operations.restaurant_profile.users');
+            Route::get('restaurantProfile/{id}/users/create/{userId?}', 'Operations\RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+            Route::post('restaurantProfile/{id}/users/store/{userId?}', 'Operations\RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
+            Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
+            Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
+            Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
+            
+            // Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
 
-            Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
-            Route::get('restaurantProfile/{id}/users', 'RestaurantController@users')->name('operations.restaurant_profile.users');
-            Route::get('restaurantProfile/{id}/users/create/{userId?}', 'RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
-            Route::post('restaurantProfile/{id}/users/store/{userId?}', 'RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
-            Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
-
-
-        // Route::resource('restaurantProfile', 'RestaurantController');
-
-        Route::get('restaurantProfile/review/{id}', 'RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
-       
     });
 
 });
