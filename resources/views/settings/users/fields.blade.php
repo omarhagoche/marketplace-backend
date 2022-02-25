@@ -6,7 +6,7 @@
     <div class="form-group row ">
         {!! Form::label('name', trans("lang.user_name"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.user_name_placeholder")]) !!}
+            {!! Form::text('name',isset($user)? $user->name:'',  ['class' => 'form-control','placeholder'=>  trans("lang.user_name_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.user_name_help") }}
             </div>
@@ -17,7 +17,8 @@
     <div class="form-group row ">
         {!! Form::label('email', trans("lang.user_email"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('email', null,  ['class' => 'form-control','placeholder'=>  trans("lang.user_email_placeholder")]) !!}
+            {!! Form::text('email', isset($user)?$user->email:'',  ['class' => 'form-control','placeholder'=>  trans("lang.user_email_placeholder"),'disabled' => isset($user)?'disabled':false]) !!}
+            {!! isset($user)? Form::hidden('email', $user->email):'' !!}
             <div class="form-text text-muted">
                 {{ trans("lang.user_email_help") }}
             </div>
@@ -28,13 +29,12 @@
     <div class="form-group row ">
         {!! Form::label('phone_number', trans("lang.user_phone_number"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('phone_number', null,  ['class' => 'form-control','placeholder'=>  trans("lang.user_phone_number_placeholder")]) !!}
+            {!! Form::text('phone_number',isset($user)? $user->phone_number:'',  ['class' => 'form-control ','placeholder'=>  trans("lang.user_phone_number_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.user_phone_number_help") }}
             </div>
         </div>
     </div>
-
     <!-- Password Field -->
     <div class="form-group row ">
         {!! Form::label('password', trans("lang.user_password"), ['class' => 'col-3 control-label text-right']) !!}
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    @if(!empty($user) && $user->hasAnyRole(['driver','manager']) && !$user->activated_at)
+    {{-- @if(!empty($user) && $user->hasAnyRole(['driver','manager']) && !$user->activated_at)
     <!-- 'Activated at Field' -->
     <div class="form-group row">
         {!! Form::label('activated_at', trans("lang.user_activated_at"),['class' => 'col-3 control-label text-right']) !!}
@@ -57,7 +57,7 @@
             </label>
         </div>
     </div>
-    @endif
+    @endif --}}
     
     <!-- 'Active Field' -->
     <div class="form-group row">
@@ -129,12 +129,14 @@
         dz_user_avatar[0].mockFile = user_avatar;
         dropzoneFields['avatar'] = dz_user_avatar;
     </script>
-@endprepend
+    @endprepend
     @can('permissions.index')
 <!-- Roles Field -->
     <div class="form-group row ">
         {!! Form::label('roles[]', trans("lang.user_role_id"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
+            {{-- {!! Form::select('roles[]', $role, $user->roles->pluck('name')->toArray(), ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!} --}}
+
             {!! Form::select('roles[]', $role, $rolesSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
             <div class="form-text text-muted">{{ trans("lang.user_role_id_help") }}</div>
         </div>
@@ -152,16 +154,15 @@
     @endisset
 
 </div>
-@if($customFields)
-    {{--TODO generate custom field--}}
+{{-- @if($customFields)
     <div class="clearfix"></div>
     <div class="col-12 custom-field-container">
         <h5 class="col-12 pb-4">{!! trans('lang.custom_field_plural') !!}</h5>
         {!! $customFields !!}
     </div>
-@endif
+@endif --}}
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.user')}}</button>
-    <a href="{!! route('users.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
+    <a href="{!! route('operations.restaurant_profile.users',$id) !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>

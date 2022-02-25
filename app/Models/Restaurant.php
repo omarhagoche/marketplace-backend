@@ -121,8 +121,8 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
-        'admin_commission' => 'required|numeric|min:0',
-        'private_drivers' => 'required|boolean'
+        // 'admin_commission' => 'required|numeric|min:0',
+        // 'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -136,7 +136,7 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
-        'private_drivers' => 'required|boolean'
+        // 'private_drivers' => 'required|boolean'
     ];
 
     /**

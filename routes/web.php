@@ -268,9 +268,18 @@ Route::middleware('auth')->group(function () {
             Route::get('orders/statistics', 'Operations\OrderController@statistics')->name('operations.orders.statistics');
             Route::resource('orders', 'Operations\OrderController',['names' => 'operations.orders']);
 
-        });
 
-    // });
+            Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+            Route::get('restaurantProfile/{id}/users', 'RestaurantController@users')->name('operations.restaurant_profile.users');
+            Route::get('restaurantProfile/{id}/users/create/{userId?}', 'RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+            Route::post('restaurantProfile/{id}/users/store/{userId?}', 'RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
+            Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
 
+
+        // Route::resource('restaurantProfile', 'RestaurantController');
+
+        Route::get('restaurantProfile/review/{id}', 'RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
+       
+    });
 
 });

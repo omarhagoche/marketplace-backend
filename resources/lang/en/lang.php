@@ -1386,4 +1386,5 @@ return [
     'operations'=>'Operation',
     'users'=>'Users',
 
+    'map' => 'map',
 ];
