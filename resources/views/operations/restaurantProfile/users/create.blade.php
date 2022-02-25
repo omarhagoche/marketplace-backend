@@ -60,6 +60,7 @@
             <div class="card">
                 
                 @include('operations.restaurantProfile.links',compact('id','restaurant'))
+
                 <div class="card-body">
                   {{-- <div class="row">
                     {!! Form::open() !!}
@@ -75,16 +76,62 @@
                       ]) !!}
                     {!! Form::close() !!}
                   </div> --}}
-                    <div class="row">
-                      @include('settings.users.table')
-                    </div>
-                    <div class="clearfix"></div>
+                  {!! Form::open(['route' => ['operations.restaurant_profile.users.store',$id,$userId]]) !!}
+                  <div class="row">
+                    @include('settings.users.fields',compact('user'))
+                  </div>
+                  {!! Form::close() !!}
                 </div>
             </div>
         </div>
     </div>
 </div> 
 @include('layouts.media_modal')
+@prepend('scripts')
+<script type="text/javascript">
+    var user_avatar = '';
+    @if(isset($user) && $user->hasMedia('avatar'))
+        user_avatar = {
+        name: "{!! $user->getFirstMedia('avatar')->name !!}",
+        size: "{!! $user->getFirstMedia('avatar')->size !!}",
+        type: "{!! $user->getFirstMedia('avatar')->mime_type !!}",
+        collection_name: "{!! $user->getFirstMedia('avatar')->collection_name !!}"
+    };
+            @endif
+    var dz_user_avatar = $(".dropzone.avatar").dropzone({
+            url: "{!!url('uploads/store')!!}",
+            addRemoveLinks: true,
+            maxFiles: 1,
+            init: function () {
+                @if(isset($user) && $user->hasMedia('avatar'))
+                dzInit(this, user_avatar, '{!! url($user->getFirstMediaUrl('avatar','thumb')) !!}')
+                @endif
+            },
+            accept: function (file, done) {
+                dzAccept(file, done, this.element, "{!!config('medialibrary.icons_folder')!!}");
+            },
+            sending: function (file, xhr, formData) {
+                dzSending(this, file, formData, '{!! csrf_token() !!}');
+            },
+            maxfilesexceeded: function (file) {
+                dz_user_avatar[0].mockFile = '';
+                dzMaxfile(this, file);
+            },
+            complete: function (file) {
+                dzComplete(this, file, user_avatar, dz_user_avatar[0].mockFile);
+                dz_user_avatar[0].mockFile = file;
+            },
+            removedfile: function (file) {
+                dzRemoveFile(
+                    file, user_avatar, '{!! url("users/remove-media") !!}',
+                    'avatar', '{!! isset($user) ? $user->id : 0 !!}', '{!! url("uplaods/clear") !!}', '{!! csrf_token() !!}'
+                );
+            }
+        });
+    dz_user_avatar[0].mockFile = user_avatar;
+    dropzoneFields['avatar'] = dz_user_avatar;
+</script>
+@endprepend
 @endsection
 @push('scripts_lib')
 <!-- iCheck -->

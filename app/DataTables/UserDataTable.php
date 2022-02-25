@@ -42,7 +42,10 @@ class UserDataTable extends DataTable
             ->editColumn('avatar', function ($user) {
                 return getMediaColumn($user, 'avatar', 'img-circle elevation-2');
             })
-            ->addColumn('action', $this->getActionPage())
+            // ->addColumn('action', $this->getActionPage())
+            ->addColumn('action', function ($user) {
+                return view($this->getActionPage(), ['id'=>$user->id,'restaurant_id'=>$this->id]);
+            })
             ->rawColumns(array_merge($columns, ['action']));
     }
 
@@ -92,12 +95,12 @@ class UserDataTable extends DataTable
     {
         // TODO custom element generator
         $columns = [
-            [
-                'data' => 'avatar',
-                'title' => trans('lang.user_avatar'),
-                'orderable' => false, 'searchable' => false,
+            // [
+            //     'data' => 'avatar',
+            //     'title' => trans('lang.user_avatar'),
+            //     'orderable' => false, 'searchable' => false,
 
-            ],
+            // ],
             [
                 'data' => 'name',
                 'title' => trans('lang.user_name'),
@@ -169,12 +172,13 @@ class UserDataTable extends DataTable
         }
     }
     public function getQuery($model,$id)
-    {
+    { 
         switch (Route::currentRouteName()) {
             case "users.index":
                 return $model->newQuery()->with('roles');
                 break;
             case "operations.restaurant_profile.users":
+               
                 return $model->newQuery()->whereHas('restaurants', function ($query) use ($id){
                     return $query->where('restaurant_id', $id);
                 })->with('roles');

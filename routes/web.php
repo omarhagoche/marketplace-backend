@@ -234,7 +234,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
         Route::get('restaurantProfile/{id}/users', 'RestaurantController@users')->name('operations.restaurant_profile.users');
-        Route::get('restaurantProfile/{id}/users/create', 'RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+        Route::get('restaurantProfile/{id}/users/create/{userId?}', 'RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+        Route::post('restaurantProfile/{id}/users/store/{userId?}', 'RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
+        Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
+
 
         // Route::resource('restaurantProfile', 'RestaurantController');
 
