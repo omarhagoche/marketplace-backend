@@ -61,13 +61,15 @@ class RestaurantReviewDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            ->editColumn('updated_at', function ($restaurant_review) {
-                return getDateColumn($restaurant_review, 'updated_at');
-            })->addColumn('action', function ($restaurant_review) {
+        ->editColumn('updated_at', function ($restaurant_review) {
+            return getDateColumn($restaurant_review, 'updated_at');
+        })
+        ->rawColumns(array_merge($columns, ['action']));
+        if(FacadesRoute::currentRouteName() != "operations.restaurant_review"){
+            $dataTable = $dataTable->addColumn('action', function ($restaurant_review) {
                 return view('restaurant_reviews.datatables_actions', ['id' => $restaurant_review->id, 'myReviews' => $this->myReviews])->render();
-            })
-            ->rawColumns(array_merge($columns, ['action']));
-
+            });
+        }
         return $dataTable;
     }
 

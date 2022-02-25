@@ -224,7 +224,6 @@ class RestaurantController extends Controller
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
-        return $input;
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
 
