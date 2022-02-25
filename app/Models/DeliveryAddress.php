@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 /**
  * Class DeliveryAddress
@@ -19,9 +21,10 @@ use Eloquent as Model;
  */
 class DeliveryAddress extends Model
 {
+    use SoftDeletes;
 
     public $table = 'delivery_addresses';
-    
+
 
 
     public $fillable = [
