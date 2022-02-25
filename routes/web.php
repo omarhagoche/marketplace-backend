@@ -165,10 +165,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('orders/waitting-drivers', 'OrderController@ordersWaittingForDrivers')->name('orders.waitting_drivers');
     Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
+    
     Route::get('orders/statistics', 'OrderController@statistics')->name('orders.statistics');
 
     Route::resource('orders', 'OrderController');
-
+    
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',
     ]);;
@@ -180,11 +181,9 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::resource('drivers', 'DriverController')->except([
-        'show'
-    ]);
-
     Route::get('drivers/map', 'DriverController@map')->name('drivers.map');
+    Route::resource('drivers', 'DriverController');
+
     Route::get('drivers/update-data-in-firestore', 'DriverController@updateDataInFirestore')->name('drivers.update_data_in_firestore');
 
     Route::resource('driverTypes', 'DriverTypeController');
@@ -229,11 +228,57 @@ Route::middleware('auth')->group(function () {
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
     
-    // operations
-    Route::prefix('operations')->group(function () {
-        Route::get('restaurantProfile/{id}', 'RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
-        Route::get('restaurantProfile/review/{id}', 'RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
-       
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
+    Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
+    Route::post('orders/store/coupon/restaurant/{order_id}', 'OrderController@storeRestaurantCouponOrderFoods')->name('orders.store-order-restaurant-coupon');
+    Route::post('orders/store/coupon/delivery/{order_id}', 'OrderController@storeDeliveryCouponOrderFoods')->name('orders.store-order-delivery-coupon');
+    Route::resource('foodOrders', 'FoodOrderController');
+    Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
+    
+    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
+    Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
+    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
+    
+    //// new Dashboard for operations
+        Route::prefix('operations')->group(function () {
+            // section users
+            Route::view('/', 'operations.index')->name('operations.index');
+            Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
+            Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
+            Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
+            Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
+            Route::get('users/profile/{userId}/coupons', 'Operations\ClientController@coupons')->name('operations.users.profile.coupons');
+            Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
+            Route::get('users/profile/{userId}/address', 'Operations\ClientController@address')->name('operations.users.profile.address');
+            Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
+            Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
+            Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
+            Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
+
+            //section driver
+            Route::get('drivers/map', 'Operations\DriverController@map')->name('operations.drivers.map');
+            Route::resource('drivers', 'Operations\DriverController',['names' => 'operations.drivers']);
+
+            // section order
+            Route::get('orders/show/coupon/{order_id}', 'Operations\OrderController@showCouponOrderFoods')->name('operations.orders.show-order-coupon');
+
+            Route::get('orders/edit/foods/{order_id}', 'Operations\OrderController@editOrderFoods')->name('operations.orders.edit-order-foods');
+            Route::get('orders/waitting-drivers', 'Operations\OrderController@ordersWaittingForDrivers')->name('operations.orders.waitting_drivers');
+            Route::get('orders/set-driver/{order_id}/{driver_id}', 'Operations\OrderController@setDriverForOrder');
+            Route::get('orders/statistics', 'Operations\OrderController@statistics')->name('operations.orders.statistics');
+            Route::resource('orders', 'Operations\OrderController',['names' => 'operations.orders']);
+
+            //Restaurant
+            Route::get('restaurantProfile/{id}', 'Operations\RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+            Route::get('restaurantProfile/{id}/users', 'Operations\RestaurantController@users')->name('operations.restaurant_profile.users');
+            Route::get('restaurantProfile/{id}/users/create/{userId?}', 'Operations\RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+            Route::post('restaurantProfile/{id}/users/store/{userId?}', 'Operations\RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
+            Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
+            Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
+            Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
+            
+            // Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
+
     });
 
 });

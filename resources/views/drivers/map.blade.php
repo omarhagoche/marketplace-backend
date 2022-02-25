@@ -83,11 +83,49 @@
           </div>
         </div>
         
-        <div class="col-12">
+        <div class="col-4 mb-4">
+            <input type="text" name="" id="search-input" class="form-control">
+        </div>
+        <div class="col-2 mb-4">
+            {!! Form::select('searchType', [""=>"Select Serch Type"
+            ,"name" =>"Name",
+            "phone_number"  =>"Phone Number"
+            ], null,["class"=>"select2 form-control","id" => "search-type"]) !!}
+        </div>
+        <div class="col-2 mb-4">
+            {!! Form::submit("Search", ["id" => "search-btn", "class" => "btn btn-primary"]) !!}
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <div class="card-header no-border">
+                    <h3 class="card-title">Restaurants</h3>
+                    <div class="card-tools">
+                        <a href="http://127.0.0.1:8000/restaurants" class="btn btn-tool btn-sm"><i class="fa fa-bars"></i> </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-valign-middle">
+                        <thead>
+                        <tr>
+                            <th>order NO</th>
+                            <th>driver</th>
+                            <th>driver</th>
+                            <th>driver</th>
+                            <th>total</th>
+                            <th>Find Driver</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orders">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-7">
             <div id="map" style="width: 100%; height: 500px;"></div>
         </div>
         
-
 
         <!-- Back Field -->
         <div class="form-group col-12 text-right">
@@ -95,6 +133,7 @@
         </div>
       </div>
       <div class="clearfix"></div>
+
     </div>
   </div>
 </div>
@@ -114,7 +153,64 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+    function searchDriverById(driverId){
+        console.log(driverId)
+        db.collection('drivers').where("id", "==", `${driverId}`).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                lats = doc.data().latitude;
+                longs = doc.data().longitude;
+                map.setCenter(new google.maps.LatLng(lats, longs));
+                map.setZoom(20);
+            });
 
+        }).catch(e => {
+            console.log(e);
+            alert(e.message);
+        });        
+    }
+    $(document).ready(function () {
+
+        db.collection('current_orders').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                if(doc.data().order_status_id != 80 && doc.data().order_status_id != 110 && doc.data().order_status_id != 100 && doc.data().order_status_id != 10 && doc.data().order_status_id != 20 && doc.data().order_status_id != 105 && doc.data().order_status_id != 120 && doc.data().order_status_id != 130 && doc.data().order_status_id != 140 )
+                {
+                    db.collection('drivers').where("id", "==", doc.data().driver_id).get().then((querySnapshot) => {
+                        querySnapshot.forEach((docorder) => {
+                            $("#orders").append(`<tr>
+                            <td>${doc.data().id}</td>
+                            <td>${doc.data().driver_id}</td>
+                            <td>${docorder.data().name}</td>
+                            <td>${docorder.data().phone_number}</td>
+                            <td>${doc.data().total}</td>
+                            <td><button class="btn btn-primary" onclick="searchDriverById(${doc.data().driver_id})"> <i class="fa fa-search"></i></button></td>
+                            <tr>`);
+                        });
+                    });
+                }
+            });
+        });
+        $("#search-btn").click(function () { 
+            if($("#search-type").val() == "" || $("#search-input").val() == ""){
+                alert("fields cannot be empty")
+            }
+            db.collection('drivers').where($("#search-type").val(), "==", $("#search-input").val()).get().then((querySnapshot) => {
+                db_driver = [];
+                querySnapshot.forEach((doc) => {
+                    db_driver.push(doc.data());
+                });
+                if(db_driver[0].available == true) {
+                lats = db_driver[0].latitude;
+                longs = db_driver[0].longitude;
+                map.setCenter(new google.maps.LatLng(lats, longs));
+                map.setZoom(20);
+                }
+            }).catch(e => {
+                console.log(e);
+                alert(e.message);
+            });        
+        });
+    });
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 11,
         center: new google.maps.LatLng(32.8078757,13.2627382),

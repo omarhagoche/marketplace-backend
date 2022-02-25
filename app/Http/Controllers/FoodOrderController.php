@@ -101,7 +101,7 @@ private $orderRepository;
 
         Flash::success(__('lang.saved_successfully',['operator' => __('lang.food_order')]));
 
-        return redirect(route('foodOrders.index'));
+        return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
     }
 
     /**
@@ -209,8 +209,8 @@ private $orderRepository;
         $this->foodOrderRepository->delete($id);
 
         Flash::success(__('lang.deleted_successfully',['operator' => __('lang.food_order')]));
-
-        return redirect(route('foodOrders.index'));
+        
+        return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
     }
 
         /**

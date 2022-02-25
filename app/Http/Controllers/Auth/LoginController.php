@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Repositories\RoleRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -95,5 +95,24 @@ class LoginController extends Controller
         }
         auth()->login($user,true);
         return redirect(route('users.profile'));
+    }
+
+    /**
+     * Log the user out of the application.
+     * We override logout method to remove device_token of logged user , to skip send notifications to user after he logged out  
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        if ($request->has('device_token')) {
+            auth()->user()->deviceTokens()->where('token', $request->input('device_token'))->delete();
+        }
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        return $this->loggedOut($request) ?: redirect('/');
     }
 }

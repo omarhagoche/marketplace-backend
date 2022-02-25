@@ -172,6 +172,10 @@ class Order extends Model
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
 
+    public function userName()
+    {
+        return $this->user ? $this->user->name : '';
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -205,7 +209,14 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
-
+    /**
+     * return name of restaurant
+     * @return string
+     **/
+    public function restaurantName()
+    {
+        return $this->restaurant ? $this->restaurant->name : "";
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -262,7 +273,24 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Coupon::class, 'restaurant_coupon_id', 'id');
     }
-
+    public function coupons()
+    {
+        
+        $this->deliveryCoupon()->exists() ? $data[]=$this->setDataForCoupon('delivery','deliveryCoupon'):'';
+     
+        $this->restaurantCoupon()->exists() ? $data[]=$this->setDataForCoupon('restaurant','restaurantCoupon'):'';
+        return isset($data)?$data:null;
+    }
+    public function setDataForCoupon($for,$relations)
+    {
+        $value=$for.'_coupon_value';
+        return [
+            'code'=>$this->$relations->code,
+            'value'=>$this->$value,
+            'date'=>$this->created_at->calendar() ,
+            'for'=>$for
+        ];
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -297,5 +325,21 @@ class Order extends Model
         };
 
         return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
+    }
+
+    public function calculateOrderTotal() {
+        $subtotal=0;
+        $taxAmount=0;
+        foreach ($this->foodOrders as $foodOrder) {
+            foreach ($foodOrder->extras as $extra) {
+                $foodOrder->price += $extra->price;
+            }
+            $subtotal += $foodOrder->price * $foodOrder->quantity;
+        }
+
+        $total = $subtotal + $this['delivery_fee'];
+        $taxAmount = $total * $this['tax'] / 100;
+        $total += $taxAmount - $this->delivery_coupon_value - $this->restaurant_coupon_value;
+        return ["total" => round($total,2), "taxAmount" =>$taxAmount , "order" => $this, "subtotal" => $subtotal];
     }
 }

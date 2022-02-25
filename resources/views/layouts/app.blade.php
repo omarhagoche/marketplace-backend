@@ -178,6 +178,12 @@
 
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js')}}"></script>
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-firestore.js')}}"></script>
+    <script>
+        /*{{-- Set default token for user to call apis without problems --}}*/
+        $.ajaxSetup({
+            headers: { "Authorization": "Bearer {{ auth()->user()->token() }}" }
+        });
+    </script>
 
     <script type="text/javascript">@include('vendor.notifications.init_firebase')</script>
 
@@ -212,6 +218,12 @@
                 if (currentToken) {
                     saveToken(currentToken);
                     console.log(currentToken);
+                    /* {{-- 
+                        Add device_token to logout form to send it on logout submit and remove device_tokne from user to skip receive notificaitons
+                        after user logged out 
+                    --}} 
+                    */
+                    document.getElementById('logout-form').innerHTML += `<input type="hidden" name="device_token" value="${currentToken}" />`;
                 } else {
                     console.log('No Instance ID token available. Request permission to generate one.');
                 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
+use Carbon\Carbon;
 
 /**
  * Class Driver
@@ -35,7 +36,8 @@ class Driver extends Model
         'total_orders',
         'earning',
         'available',
-        'working_on_order'
+        'working_on_order',
+        'note',
     ];
 
     /**
@@ -47,6 +49,7 @@ class Driver extends Model
         'user_id' => 'integer',
         'driver_type_id' => 'integer',
         'delivery_fee' => 'double',
+        'note' => 'string',
         'type' => 'string',
         'total_orders' => 'integer',
         'earning' => 'double',
@@ -61,7 +64,8 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
-        'type' => 'required|in:bicycle,motorcycle,car',
+        'note' => '',
+        // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
     ];
@@ -97,6 +101,11 @@ class Driver extends Model
         'car' => 'Car'
     ];
 
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 
 
     public function customFieldsValues()
@@ -143,8 +152,20 @@ class Driver extends Model
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
+    public function lastOrder()
+    {
+        return $this->orders()->orderby('created_at', 'desc')->first();
+    }
     public function types()
     {
         return $this->drivers_types;
+    }
+
+    public function getOrdersBetweenDaysCount(int $days): int
+    {
+        return $this->orders()
+            ->where('order_status_id', 80)
+            ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
+            ->count();
     }
 }

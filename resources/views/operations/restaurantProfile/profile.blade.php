@@ -1,6 +1,6 @@
 <div class="card-header"> 
     <div class="col-12" style="text-align: center;"> 
-        <img src="{{ $restaurant->media->first()->getUrl()}}" alt="Avatar" class="avatar">
+        <img src="{{ $restaurant->media->first()?$restaurant->media->first()->getUrl():''}}" alt="Avatar" class="avatar">
     </div>
     <!-- Name Field -->
     <div class="form-group row ">

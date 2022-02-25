@@ -27,8 +27,8 @@ class DriverDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            ->editColumn('user.name', function ($driver) {
-                return getLinksColumnByRouteName([$driver->user], "users.edit", 'id', 'name');
+            ->editColumn('id', function ($driver) {
+                return getLinksColumnByRouteName([$driver], "drivers.show", 'id', 'id');
             })
             ->editColumn('updated_at', function ($driver) {
                 return getDateColumn($driver, 'updated_at');
@@ -45,7 +45,7 @@ class DriverDataTable extends DataTable
             ->editColumn('working_on_order', function ($driver) {
                 return getBooleanColumn($driver, 'working_on_order');
             })
-            ->addColumn('action', 'drivers.datatables_actions')
+            ->addColumn('action', 'operations.drivers.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;
@@ -60,8 +60,13 @@ class DriverDataTable extends DataTable
     {
         $columns = [
             [
-                'data' => 'user.name',
+                'data' => 'id',
                 'title' => trans('lang.driver_user_id'),
+
+            ],
+            [
+                'data' => 'user.name',
+                'title' => trans('lang.user_name'),
 
             ],
             [

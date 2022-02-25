@@ -11,6 +11,7 @@ namespace App\Models;
 
 use App\Models\DeviceToken;
 use App\Traits\SkipAppends;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Laravel\Cashier\Billable;
 use Spatie\Image\Manipulations;
 use Spatie\Permission\Traits\HasRoles;
@@ -33,7 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string api_token
  * @property string device_token
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia, JWTSubject
 {
     use Notifiable;
     use Billable;
@@ -42,6 +43,31 @@ class User extends Authenticatable implements HasMedia
     }
     use HasRoles;
     use SkipAppends;
+
+
+
+    // Rest omitted for brevity
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 
 
     /**
@@ -107,6 +133,12 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * The attribute for save authorization token of logged user , instead of calculate it many times (caching)
+     */
+    protected $bearer_token = "";
+
 
     /**
      * Allowed attributes to skip appends attributes 
@@ -230,6 +262,42 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
+     * Set device token for user 
+     * check if token exists and linked to another user , update it to be linked to current user 
+     
+     * @param $token 
+     * @return DeviceToken instance
+     */
+    public function setDeviceToken($token = null)
+    {
+        if (!$token) {
+            $token =  request()->input('device_token');
+        }
+        return  DeviceToken::updateOrCreate(
+            ['token' => $token],
+            ['token' => $token, 'user_id' => $this->id]
+        );
+    }
+
+    /** 
+     * Get token of user
+     * 
+     * @return string
+     */
+    public function token()
+    {
+        if ($this->bearer_token) {
+            return $this->bearer_token;
+        }
+        $old_guard = auth()->getDefaultDriver();
+        auth()->shouldUse('api');
+        $this->bearer_token = auth()->tokenById($this->id);
+        auth()->shouldUse($old_guard);
+        return $this->bearer_token;
+    }
+
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
     public function restaurants()
@@ -280,5 +348,36 @@ class User extends Authenticatable implements HasMedia
     public function getDeviceTokens()
     {
         return $this->deviceTokens()->pluck('token')->toArray();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function notes()
+    {
+        return $this->hasMany(\App\Models\Note::class, 'user_id');
+    }
+    /**
+     * Get all of the order for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+    public function coupons()
+    {
+        $coupons = collect();
+        $orders = $this->orders;
+        foreach ($orders as $order) {
+            if ($order->coupons() != null) {
+                $coupons->push($order->coupons()[0]);
+                if (isset($order->coupons()[1])) {
+                    $coupons->push($order->coupons()[1]);
+                }
+            }
+        }
+        return collect($coupons);
     }
 }

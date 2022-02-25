@@ -18,6 +18,11 @@
 |
 */
 
+
+if (request()->segment(1) == 'api') { // if request for starts with api , set "api guard" as default guard
+    auth()->shouldUse('api');
+}
+
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
@@ -152,4 +157,7 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::post('logout', 'API\UserAPIController@logout');
+// this api for save note for user 
+    Route::post('user/note', 'API\NoteController@store');
+
 });

@@ -226,7 +226,9 @@ class UserController extends Controller
 
 
         return view('settings.users.edit')
-            ->with('user', $user)->with("role", $role)
+            ->with('user', $user)
+            ->with('id', $id)
+            ->with("role", $role)
             ->with("rolesSelected", $rolesSelected)
             ->with("customFields", $html);
     }

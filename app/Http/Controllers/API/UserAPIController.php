@@ -58,22 +58,29 @@ class UserAPIController extends Controller
                 $q->where("name", "client");
             })->first();
             if ($u) {
-                return $this->sendResponse($u, 'User retrieved successfully');
+                return $this->sendResponse(
+                    [
+                        'token' => auth()->tokenById($u->id),
+                        'user' => $u,
+                    ],
+                    'User retrieved successfully'
+                );
             }
         }
 
-        if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
+        if ($token =  auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
             // Authentication passed...
             $user = auth()->user();
             if (!$user->hasRole('client')) {
                 return $this->sendError('User not client', 401);
             }
-
             if ($request->has('device_token')) {
-                //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->setDeviceToken();
             }
-            return $this->sendResponse($user, 'User retrieved successfully');
+            return $this->sendResponse([
+                'token' => $token,
+                'user' => $user,
+            ], 'User retrieved successfully');
         }
         return $this->sendError(trans('auth.failed'), 422);
     }
@@ -160,13 +167,12 @@ class UserAPIController extends Controller
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
             $user->save();
             $verfication->delete();
 
             if ($request->has('device_token')) {
                 //save decvice token on table
-                $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+                $user->setDeviceToken();
             }
 
             $user->driver()->create([
@@ -210,13 +216,11 @@ class UserAPIController extends Controller
         $user->phone_number = $request->input('phone_number'); // $verfication->phone;
         $user->email = $request->email ?? "$request->phone_number." . time();
         $user->password = Hash::make($request->input('password'));
-        $user->api_token = str_random(60);
         $user->save();
         //$verfication->delete();
 
         if ($request->has('device_token')) {
-            //save decvice token on table
-            $user->deviceTokens()->firstOrCreate(['token' => $request->input('device_token')]);
+            $user->setDeviceToken();
         }
 
         $defaultRoles = $this->roleRepository->findByField('default', '1');
@@ -232,7 +236,7 @@ class UserAPIController extends Controller
         try {
             $user = auth()->user();
             if ($request->has('device_token')) {
-                $user->deviceTokens()->where('token', $request->input('device_token'))->delete();
+                $user->setDeviceToken();
             }
             // logout user
             //auth()->logout();
@@ -244,13 +248,7 @@ class UserAPIController extends Controller
 
     function user(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
-
-        return $this->sendResponse($user, 'User retrieved successfully');
+        return $this->sendResponse(auth()->user(), 'User retrieved successfully');
     }
 
     function settings(Request $request)
@@ -341,7 +339,7 @@ class UserAPIController extends Controller
         $input = $request->except(['password', 'api_token']);
         try {
             if ($request->has('device_token')) {
-                $user = $this->userRepository->update($request->only('device_token'), $id);
+                $user->setDeviceToken();
             } else {
                 $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
                 $user = $this->userRepository->update($input, $id);

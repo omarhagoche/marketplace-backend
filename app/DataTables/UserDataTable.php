@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Models\CustomField;
 use App\Models\User;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
+use App\Models\CustomField;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Route;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Services\DataTable;
 
 class UserDataTable extends DataTable
 {
@@ -23,9 +24,9 @@ class UserDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
-        return $dataTable
+        return  datatables()
+        ->eloquent($query)
             ->editColumn('activated_at', function ($user) {
                 return getDateColumn($user, 'activated_at');
             })
@@ -41,7 +42,10 @@ class UserDataTable extends DataTable
             ->editColumn('avatar', function ($user) {
                 return getMediaColumn($user, 'avatar', 'img-circle elevation-2');
             })
-            ->addColumn('action', 'settings.users.datatables_actions')
+            // ->addColumn('action', $this->getActionPage())
+            ->addColumn('action', function ($user) {
+                return view($this->getActionPage(), ['id'=>$user->id,'restaurant_id'=>$this->id]);
+            })
             ->rawColumns(array_merge($columns, ['action']));
     }
 
@@ -53,7 +57,9 @@ class UserDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return $model->newQuery()->with('roles');
+        // return $model->newQuery()->with('roles');
+
+        return $this->getQuery($model,$this->id);
     }
 
     /**
@@ -67,13 +73,17 @@ class UserDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
-            ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
-                    'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                    ),true)
-                ]
-            ));
+            ->parameters([
+                'dom'          => 'Bfrtip',
+                'buttons'      => ['create'],
+            //     array_merge(
+            //     config('datatables-buttons.parameters'), [
+            //         'language' => json_decode(
+            //             file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
+            //         ),true)
+            //     ]
+            // )
+            ]);
     }
 
     /**
@@ -85,12 +95,12 @@ class UserDataTable extends DataTable
     {
         // TODO custom element generator
         $columns = [
-            [
-                'data' => 'avatar',
-                'title' => trans('lang.user_avatar'),
-                'orderable' => false, 'searchable' => false,
+            // [
+            //     'data' => 'avatar',
+            //     'title' => trans('lang.user_avatar'),
+            //     'orderable' => false, 'searchable' => false,
 
-            ],
+            // ],
             [
                 'data' => 'name',
                 'title' => trans('lang.user_name'),
@@ -149,5 +159,30 @@ class UserDataTable extends DataTable
         $data = $this->getDataForPrint();
         $pdf = PDF::loadView($this->printPreview, compact('data'));
         return $pdf->download($this->filename() . '.pdf');
+    }
+    public function getActionPage()
+    {
+        switch (Route::currentRouteName()) {
+            case "users.index":
+                return 'settings.users.datatables_actions';
+                break;
+            case "operations.restaurant_profile.users":
+                return 'operations.restaurantProfile.users.datatables_actions';
+                break;
+        }
+    }
+    public function getQuery($model,$id)
+    { 
+        switch (Route::currentRouteName()) {
+            case "users.index":
+                return $model->newQuery()->with('roles');
+                break;
+            case "operations.restaurant_profile.users":
+               
+                return $model->newQuery()->whereHas('restaurants', function ($query) use ($id){
+                    return $query->where('restaurant_id', $id);
+                })->with('roles');
+                break;
+        }
     }
 }
