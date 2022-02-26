@@ -40,6 +40,14 @@
                             <i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.restaurant_plural')}}</p></a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ Request::is('restaurants*') ? 'active' : '' }}" target="_blank" href="{!! url('/register-restaurant?added_by=0001020') !!}">
+                        @if($icons)
+                            <i class="nav-icon fa fa-cutlery"></i>
+                        @endif
+                        <p>{{trans('lang.restaurant_register')}}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ Request::is('RestaurantDistancePrices*') ? 'active' : '' }}"
                        href="{!! route('restaurantDistancePrices.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-money"></i>@endif<p>{{trans('lang.restaurant_distance_price_plural')}}</p></a>
@@ -137,6 +145,15 @@
                             <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.order_waitting_drivers_plural')}}</p></a>
                 </li>
             @endcan
+            
+
+            @can('orders.statistics')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('orders/statistics*') ? 'active' : '' }}" href="{!! route('orders.statistics') !!}">@if($icons)
+                            <i class="nav-icon fa fa-shopping-basket"></i>@endif<p>{{trans('lang.statistics')}}</p></a>
+                </li>
+            @endcan
+
             @can('orderStatuses.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('orderStatuses*') ? 'active' : '' }}" href="{!! route('orderStatuses.index') !!}">@if($icons)

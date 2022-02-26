@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AvailableCriteria;
 use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
 use App\Criteria\Users\DriversOfRestaurantCriteria;
@@ -79,6 +80,70 @@ class OrderController extends Controller
     public function index(OrderDataTable $orderDataTable)
     {
         return $orderDataTable->render('orders.index');
+    }
+
+
+
+    /**
+     * Display a Statistics of the Order.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function statistics(Request $request)
+    {
+        $orderStatus = $this->orderStatusRepository->pluck('status', 'id')->prepend(null, "");
+        $condations = '';
+        $params = [];
+        if ($request->order_status_id) {
+            $condations .= " AND os.id=? ";
+            $params[] = $request->order_status_id;
+        }
+
+        // set default value for dates if no values set
+        if (!$request->from_date) {
+            $request->merge([
+                "from_date" => now()->format('Y-m-d'),
+            ]);
+        }
+        if (!$request->to_date) {
+            $request->merge([
+                "to_date" => now()->format('Y-m-d'),
+            ]);
+        }
+
+        $condations .= " AND DATE(o.created_at) >= ? ";
+        $params[] = $request->from_date;
+        $condations .= " AND DATE(o.created_at) <= ? ";
+        $params[] = $request->to_date;
+
+        $statistics = \DB::select("
+            SELECT
+                count(o.id) count,
+                os.status order_status,
+                date(o.created_at) date,
+                SUM(delivery_fee) delivery_fee
+            FROM
+                orders o,
+                order_statuses os
+            WHERE
+                o.order_status_id = os.id $condations
+            GROUP BY
+                date(o.created_at),
+                os.status
+            ORDER BY
+                date(o.created_at) DESC,
+                os.status
+        ", $params);
+
+
+        return view(
+            'orders.statistics',
+            [
+                'orderStatus' => $orderStatus,
+                'statistics' => collect($statistics),
+            ]
+        );
     }
 
     /**
@@ -179,11 +244,19 @@ class OrderController extends Controller
             return redirect(route('orders.index'));
         }
 
-        $restaurant = $order->foodOrders()->first();
-        $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
+        $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
+        if ($order->restaurant->private_drivers) {
+            $driver = $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
+        } else {
+            $driver = $this->userRepository->pushCriteria(new DriversCriteria());
+        }
+        $driver = $driver->select('users.name', 'users.id')->pluck('name', 'id');
+        // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
+        $driver->prepend(null, "");
+
+
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
@@ -222,7 +295,8 @@ class OrderController extends Controller
             $order = $this->orderRepository->update($input, $id);
 
             if (setting('enable_notifications', false)) {
-                if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                    // we send notifications for only users who are clients , not unregisterd customer
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 

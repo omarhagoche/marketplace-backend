@@ -94,8 +94,10 @@ class SettlementDriverDataTable extends DataTable
 
             ],
             [
-                'data' => 'amount',
+                'data' => 'total_amount',
                 'title' => trans('lang.settlement_driver_amount'),
+                'searchable' => false,
+                'orderable' => false,
 
             ],
             [

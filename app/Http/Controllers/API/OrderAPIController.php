@@ -12,6 +12,7 @@ namespace App\Http\Controllers\API;
 
 use App\Criteria\Orders\OrdersOfStatusesCriteria;
 use App\Criteria\Orders\OrdersOfUserCriteria;
+use App\Criteria\Users\AdminsCriteria;
 use App\Events\OrderChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -281,28 +282,48 @@ class OrderAPIController extends Controller
                 }
             }
 
-            $this->orderRepository->update(array_merge(
-                [
-                    'payment_id' => $payment->id,
-                    'restaurant_id' => $restaurant_id,
-                    'unregistered_customer_id' => $unregistered_customer->id ?? null,
-                ],
-                (isset($delivery_address->id) ? ['delivery_address_id' => $delivery_address->id] : [])
-            ), $order->id);
-
+            if ($order->user_id) {
+                $order->order_status_id =  20; // 20 : waiting_for_restaurant
+            } else {
+                $order->order_status_id =  30; // 30 : accepted_from_restaurant
+            }
+            $order->restaurant_id =  $restaurant_id;
+            $order->unregistered_customer_id =  $unregistered_customer->id ?? null;
+            $order->delivery_address_id =  $delivery_address->id ?? $request->get('delivery_address_id');
+            $order->payment_id = $payment->id;
+            $order->save();
 
             // if order dose not have user_id , that means order for unregistered_customer from restaurant
             // so user_id of cart is restaurant (manager users) id 
             // so we can clear cart by manager id (auth user = manager) 
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id ?? auth()->user()->id]);
 
+
+            // start load users who will receive notification
+            $this->userRepository->pushCriteria(new AdminsCriteria());
+            $this->userRepository->scopeQuery(function ($q) {
+                return $q->where('active', true)
+                    ->with('deviceTokens')
+                    ->select('id', 'name');
+            });
+            $users_for_notifications = $this->userRepository->all();
+
             if ($order->user_id) {
-                Notification::send($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications(), new NewOrder($order));
+                $users_for_notifications->merge($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications());
             }
-            $order->unregistered_customer_id =  $unregistered_customer->id ?? null;
-            $order->delivery_address_id =  $delivery_address->id ?? $request->get('delivery_address_id');
-            $order->payment_id = $payment->id;
-            event(new CreatedOrderEvent($order));
+            Notification::send($users_for_notifications, new NewOrder($order));
+
+            // start update number of use for coupons
+            if ($order->delivery_coupon_id) {
+                $order->deliveryCoupon->count_used += 1;
+                $order->deliveryCoupon->save();
+            }
+            if ($order->restaurant_coupon_id) {
+                $order->restaurantCoupon->count_used += 1;
+                $order->restaurantCoupon->save();
+            }
+            // end update number of use for coupons
+
             DB::commit();
         } catch (ValidatorException $e) {
             DB::rollback();
@@ -366,24 +387,22 @@ class OrderAPIController extends Controller
      */
     public function delivery($id, Request $request)
     {
-        $order = Order::where('order_status_id', 10)->findOrFail($id);
+        $order = Order::where('order_status_id', 10)->findOrFail($id);  // 10 : waiting_for_drivers
 
-        /* $order->foodOrders()->firstOrFail() // validate restauran dose not have private drivers
-            ->food()->firstOrFail()
-            ->restaurant()->select('id')->where('private_drivers', false)->firstOrFail(); */
-
-        if ($order->user_id) {
+        /* if ($order->user_id) {
             $order->order_status_id = 20; // 20 : waiting_for_restaurant
             if (setting('send_sms_notifications_for_restaurants', false) || setting('send_whatsapp_notifications_for_restaurants', false)) {
                 Notification::send($order->restaurant->getUsersWhoEnabledNotifications(), new OrderNeedsToAccept($order));
             }
         } else {
             $order->order_status_id = 30; // 30 : accepted_from_restaurant
-        }
+        } */
+
+        $order->order_status_id = 40; // 40 : driver_assigned
         $order->driver_id = auth()->user()->id;
         $order->save();
 
-        app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
+        //app('firebase.firestore')->getFirestore()->collection('orders')->document($order->id)->delete();
 
         return $this->sendResponse([], __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }

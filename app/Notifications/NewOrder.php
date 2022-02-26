@@ -57,15 +57,16 @@ class NewOrder extends Notification
     {
         $message = new FcmMessage();
         $notification = [
-            'title'        => "New Order #" . $this->order->id . " to " . $this->order->foodOrders[0]->food->restaurant->name,
-            'body'         => $this->order->user->name,
+            'title'        => "هناك طلبية جديدة بالرقم #" . $this->order->id . " لمطعم " . $this->order->foodOrders[0]->food->restaurant->name,
+            //'body'         => $this->order->user->name,
             'icon'         => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
-            "sound" => "swiftly",
+            "sound" => "default",
             'id' => '1',
             'status' => 'done',
         ];
         $message->content($notification)->data($notification)->priority(FcmMessage::PRIORITY_HIGH);
+        $message->timeToLive(900); // 15 minutes 
 
         return $message;
     }
