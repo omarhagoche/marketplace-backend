@@ -268,7 +268,7 @@ class Order extends Model
      **/
     public function deliveryAddress()
     {
-        return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
+        return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id')->withTrashed();
     }
 
     public function isStatusDone()
