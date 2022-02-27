@@ -17,7 +17,6 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::resource('restaurants', 'API\RestaurantAPIController');
 
 
 if (request()->segment(1) == 'api') { // if request for starts with api , set "api guard" as default guard
@@ -69,7 +68,7 @@ Route::get('distance', 'API\DistanceAPIController@getDistanceBetweenTwoPoints');
 
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
-// Route::resource('restaurants', 'API\RestaurantAPIController');
+Route::resource('restaurants', 'API\RestaurantAPIController');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
 Route::get('foods/categories', 'API\FoodAPIController@categories');

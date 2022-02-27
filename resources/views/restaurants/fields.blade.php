@@ -2,17 +2,31 @@
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
-    <!-- Name Field -->
+    @if (isset($isCreate))
+       <!-- Name Field -->
     <div class="form-group row ">
-        {!! Form::label('name', trans("lang.restaurant_name"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('email', trans("lang.email"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_name_placeholder")]) !!}
+            {!! Form::text('email', null,  ['class' => 'form-control','placeholder'=>  trans("lang.email")]) !!}
             <div class="form-text text-muted">
-                {{ trans("lang.restaurant_name_help") }}
+                {{ trans("lang.email") }}
             </div>
         </div>
-    </div>
+    </div> 
+    @endif
+    
 
+
+  <!-- Name Field -->
+  <div class="form-group row ">
+    {!! Form::label('name', trans("lang.restaurant_name"), ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_name_placeholder")]) !!}
+        <div class="form-text text-muted">
+            {{ trans("lang.restaurant_name_help") }}
+        </div>
+    </div>
+</div>
 
     <!-- Phone Field -->
     <div class="form-group row ">
@@ -46,6 +60,29 @@
             </div>
         </div>
     </div>
+
+  <!-- Address Field -->
+    <div class="form-group row ">
+        {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::time('open_at', '10:30',  ['class' => 'form-control','placeholder'=>  trans("lang.open_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.open_at_help") }}
+            </div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        {!! Form::label('close_at', trans("lang.close_at"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::time('close_at', '23:30',  ['class' => 'form-control','placeholder'=>  trans("lang.close_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.close_at_help") }}
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!-- Latitude Field -->
     <div class="form-group row ">

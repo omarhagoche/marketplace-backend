@@ -120,7 +120,9 @@ class Restaurant extends Model implements HasMedia
      */
     public static $adminRules = [
         'name' => 'required',
-        //'description' => 'required',
+        'close_at' => 'required',
+        'open_at' => 'required',
+        'phone' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
@@ -135,7 +137,10 @@ class Restaurant extends Model implements HasMedia
      */
     public static $managerRules = [
         'name' => 'required',
-        //'description' => 'required',
+        'close_at' => 'required',
+        'open_at' => 'required',
+
+        'phone' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
