@@ -247,6 +247,6 @@ class RestaurantReviewController extends Controller
     public function indexByRestaurant(RestaurantReviewDataTable $restaurantReviewDataTable, $id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
-        return $restaurantReviewDataTable->with(["id" => $id])->render('operations.restaurantProfile.reviews.index',["restaurant"=> $restaurant]);
+        return $restaurantReviewDataTable->with(["id" => $id])->render('operations.restaurantProfile.reviews.index',["restaurant"=> $restaurant, "id" => $restaurant->id]);
     }
 }

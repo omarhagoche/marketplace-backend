@@ -277,7 +277,15 @@ Route::middleware('auth')->group(function () {
             Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
             Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
-            // Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
+            Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsindex')->name('operations.restaurant_foods_index');
+            Route::get('restaurantFoods/create/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsCreate')->name('operations.restaurant.foods.create');
+            Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsStore')->name('operations.restaurant.foods.store');
+            Route::get('restaurantFoods/edit/{restaurant_id}/{food_id}', 'Operations\RestaurantController@restaurantFoodsEdit')->name('operations.restaurant.foods.edit');
+            Route::put('restaurantFoods/update/{restaurant_id}/{food_id}', 'Operations\RestaurantController@restaurantFoodsUpdate')->name('operations.restaurant.foods.update');
+            Route::post('restaurantFoods/extra/store', 'Operations\RestaurantController@restaurantFoodsExtraStore')->name('operations.restaurant.foods.extra.store');
+            Route::put('restaurantFoods/extra/update/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraUpdate')->name('operations.restaurant.foods.extra.update');
+            Route::delete('restaurantFoods/extra/delete/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraDelete')->name('operations.restaurant.foods.extra.delete');
+            Route::delete('restaurantFoods/delete/{food_id}/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsDelete')->name('operations.restaurant.foods.delete');
 
     });
 

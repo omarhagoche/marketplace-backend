@@ -174,4 +174,9 @@ class Extra extends Model implements HasMedia
     {
         return $this->hasMany(\App\Models\FoodOrderExtra::class);
     }
+
+    public function extrasFood()
+    {
+        return $this->hasMany(\App\Models\ExtraFood::class, 'extra_id');
+    }
 }

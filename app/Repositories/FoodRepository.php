@@ -55,6 +55,14 @@ class FoodRepository extends BaseRepository implements CacheableInterface
             ->where('user_restaurants.user_id', auth()->id())->get();
     }
 
+    /**
+     * get restaurant foods By id
+     **/
+    public function restaurantFoods($id)
+    {
+        return Food::where('restaurant_id', $id)->get();
+    }
+
     public function groupedByRestaurants()
     {
         $foods = [];

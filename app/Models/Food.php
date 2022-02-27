@@ -291,4 +291,10 @@ class Food extends Model implements HasMedia
         }
         return $this;
     }
+
+    
+    public function extrasFood()
+    {
+        return $this->hasMany(\App\Models\ExtraFood::class, 'food_id')->orderBy('id','desc');
+    }
 }

@@ -9,6 +9,7 @@
 
 namespace App\Http\Controllers\Operations;
 
+use App\Criteria\Foods\FoodsOfUserCriteria;
 use Flash;
 use App\Models\User;
 use App\Rules\PhoneNumber;
@@ -39,6 +40,15 @@ use App\DataTables\RequestedRestaurantDataTable;
 use App\DataTables\Operations\RestaurantDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use App\Http\Requests\CreateFoodRequest;
+use App\Http\Requests\UpdateFoodRequest;
+use App\Models\Extra;
+use App\Models\ExtraFood;
+use App\Models\ExtraGroup;
+use App\Models\Food;
+use App\Repositories\CategoryRepository;
+use App\Repositories\ExtraGroupRepository;
+use App\Repositories\FoodRepository;
 
 class RestaurantController extends Controller
 {
@@ -63,7 +73,22 @@ class RestaurantController extends Controller
      */
     private $cuisineRepository;
 
-    public function __construct(RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    /**
+     * @var FoodRepository
+     */
+    private $foodRepository;
+
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+
+    /**
+     * @var ExtraGroupRepository
+     */
+    private $extraGroupRepository;
+
+    public function __construct(ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -72,6 +97,9 @@ class RestaurantController extends Controller
         $this->uploadRepository = $uploadRepo;
         $this->userRepository = $userRepo;
         $this->cuisineRepository = $cuisineRepository;
+        $this->foodRepository = $foodRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->extraGroupRepository = $extraGroupRepository;
     }
 
     /**
@@ -471,5 +499,180 @@ class RestaurantController extends Controller
                 Flash::error('Have error on User delete form restaurant');
                 return redirect(route('operations.restaurant_profile.users',$id));
             }
+    }
+
+    public function restaurantFoodsindex($id) {
+
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        $foods = $this->foodRepository->restaurantFoods($id);
+        $category = $this->categoryRepository->pluck('name', 'id');
+        return view('operations.restaurantProfile.foods.index',compact('id','restaurant','foods','category'));
+    }
+
+    public function restaurantFoodsCreate($id) {
+        $category = $this->categoryRepository->pluck('name', 'id');
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
+        $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
+        if ($hasCustomField) {
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+            $html = generateCustomField($customFields);
+        }
+        return view('operations.restaurantProfile.foods.create',compact('id','restaurant','category','extraGroup'))->with("customFields", isset($html) ? $html : false);
+    }
+    
+    public function restaurantFoodsStore(Request $request, $id) {
+        try {
+            DB::beginTransaction();
+            $inputFood = $request->all();
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+            $food = $this->foodRepository->create($inputFood);
+            $food->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+            if (isset($inputFood['image']) && $inputFood['image']) {
+                $cacheUpload = $this->uploadRepository->getByUuid($inputFood['image']);
+                $mediaItem = $cacheUpload->getMedia('image')->first();
+                $mediaItem->copy($food, 'image');
+            }
+            if(isset($request->name_extra)){
+                foreach($request->name_extra as $index => $extraname )
+                {
+                    $extra = new Extra();
+                    $extra->name =$extraname;
+                    $extra->price =$request->price_extra[$index];
+                    $extra->extra_group_id =$request->group_extra[$index];
+                    $extra->restaurant_id =$id;
+                    $extra->save();
+                    $extraFood = new ExtraFood();
+                    $extraFood->extra_id = $extra->id;
+                    $extraFood->food_id =$food->id;
+                    $extraFood->save();
+                }
+            }
+            DB::commit();
+        } catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.food')]));
+        return redirect(route('operations.restaurant.foods.create',$id));
+    }
+
+    public function restaurantFoodsEdit($id, $food_id) {        
+            $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+            $food = $this->foodRepository->findWithoutFail($food_id);
+            if (empty($food)) {
+                Flash::error(__('lang.not_found', ['operator' => __('lang.food')]));
+                return redirect(route('foods.index'));
+            }
+            $category = $this->categoryRepository->pluck('name', 'id');
+            $restaurant = $this->restaurantRepository->findWithoutFail($id);
+            $customFieldsValues = $food->customFieldsValues()->with('customField')->get();
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+            $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
+            if ($hasCustomField) {
+                $html = generateCustomField($customFields, $customFieldsValues);
+            }
+            $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
+            $extraGroupArray = ExtraGroup::get(['name','id']);
+            return view('operations.restaurantProfile.foods.edit',compact('extraGroupArray','id','restaurant','category','extraGroup','food'))->with("customFields", isset($html) ? $html : false);
+
+    }
+    public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id) { 
+        
+        $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+        $food = $this->foodRepository->findWithoutFail($food_id);
+
+        if (empty($food)) {
+            Flash::error('Food not found');
+            return redirect(route('foods.index'));
+        }
+        $input = $request->all();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+        try {
+            DB::beginTransaction();  
+            $food = $this->foodRepository->update($input, $food_id);
+
+            if (isset($input['image']) && $input['image']) {
+                $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
+                $mediaItem = $cacheUpload->getMedia('image')->first();
+                $mediaItem->copy($food, 'image');
+            }
+            foreach (getCustomFieldsValues($customFields, $request) as $value) {
+                $food->customFieldsValues()
+                    ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
+            }
+            DB::commit();
+        } catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
+
+        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.food')]));
+        return redirect(route('operations.restaurant_foods_index',$id));
+    }
+    public function restaurantFoodsExtraStore(Request $request) {   
+        try {
+            DB::beginTransaction();
+            $extra = new Extra();
+            $extra->name    =   $request->name;
+            $extra->price   =   $request->price;
+            $extra->extra_group_id  = $request->group_extra;
+            $extra->restaurant_id   = $request->restaurant_id;
+            $extra->save();
+            $extraFood = new ExtraFood();
+            $extraFood->extra_id    =   $extra->id;
+            $extraFood->food_id     =   $request->foodId;
+            $extraFood->save();
+            DB::commit();
+            return response()->json(['extraFoodId' => $extraFood->id, "extraId" => $extra->id], 200);
+        } 
+        catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
+    }
+
+    public function restaurantFoodsExtraUpdate(Request $request, $extra_id) {   
+        try {
+            DB::beginTransaction();
+            $extra = Extra::find($extra_id);
+            $extra->name    =   $request->name;
+            $extra->price   =   $request->price;
+            $extra->extra_group_id  = $request->group_extra;
+            $extra->update();
+            DB::commit();
+            return response()->json($request, 200);
+        } 
+        catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
+    }
+    public function restaurantFoodsExtraDelete($extra_id) {   
+
+        $extra = Extra::find($extra_id);
+        $extra->delete();
+        return response()->json($extra_id, 200);
+    }
+
+    public function restaurantFoodsDelete($id,$restaurantId) {   
+        if (!env('APP_DEMO', false)) {
+            $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+            $food = $this->foodRepository->findWithoutFail($id);
+
+            if (empty($food)) {
+                Flash::error('Food not found');
+
+                return redirect(route('operations.restaurant_foods_index',$restaurantId));
+            }
+
+            $this->foodRepository->delete($id);
+
+            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.food')]));
+
+        } else {
+            Flash::warning('This is only demo app you can\'t change this section ');
+        }
+        return redirect(route('operations.restaurant_foods_index',$restaurantId));
     }
 }

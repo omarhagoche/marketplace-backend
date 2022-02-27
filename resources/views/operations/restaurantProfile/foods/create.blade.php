@@ -58,7 +58,12 @@
           <div class="card-header">
             @include('operations.restaurantProfile.links',compact('id','restaurant'))
           <div class="card-body">
-            @include('restaurant_reviews.table')
+                @include('operations.restaurantProfile.foods.links')
+                {!! Form::open(['route' => ['operations.restaurant.foods.store',$id]]) !!}
+                <div class="row">
+                    @include('operations.restaurantProfile.foods.fields')
+                </div>
+                {!! Form::close() !!}
             <div class="clearfix"></div>
           </div>
         </div>

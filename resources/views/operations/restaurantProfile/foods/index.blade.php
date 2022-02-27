@@ -58,7 +58,8 @@
           <div class="card-header">
             @include('operations.restaurantProfile.links',compact('id','restaurant'))
           <div class="card-body">
-            @include('restaurant_reviews.table')
+            @include('operations.restaurantProfile.foods.links')
+            @include('operations.restaurantProfile.foods.table')
             <div class="clearfix"></div>
           </div>
         </div>
