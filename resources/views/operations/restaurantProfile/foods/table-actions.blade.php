@@ -4,16 +4,16 @@
         actions
       </button>
       <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-        <a class="dropdown-item" href="{{route('operations.restaurant.foods.edit',[$id,$food->id])}}">{{trans('lang.food_edit')}}</a>
+        <a class="dropdown-item" href="{{route('operations.restaurant.foods.edit',[$id,$food->id])}}"><i class="fa fa-edit"></i> {{trans('lang.food_edit')}}</a>
         @can('operations.restaurant.foods.delete')
         {!! Form::open(['route' => ['operations.restaurant.foods.delete', $food->id,$id], 'method' => 'delete']) !!}
-          {!! Form::button('<i class="fa fa-trash"></i>', [
+          {!! Form::button('<i class="fa fa-trash"></i>  '.trans('lang.delete'), [
           'type' => 'submit',
           'class' => 'btn btn-link text-danger',
           'onclick' => "return confirm('Are you sure?')"
           ]) !!}
         {!! Form::close() !!}
-@endcan
+        @endcan
       </div>
     </div>
 </div>

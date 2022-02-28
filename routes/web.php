@@ -286,6 +286,8 @@ Route::middleware('auth')->group(function () {
             Route::put('restaurantFoods/extra/update/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraUpdate')->name('operations.restaurant.foods.extra.update');
             Route::delete('restaurantFoods/extra/delete/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraDelete')->name('operations.restaurant.foods.extra.delete');
             Route::delete('restaurantFoods/delete/{food_id}/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsDelete')->name('operations.restaurant.foods.delete');
+            
+            Route::post('restaurantFoods/update', 'Operations\RestaurantController@restaurantFoodUpdate')->name('operations.restaurant.food.update');
 
     });
 

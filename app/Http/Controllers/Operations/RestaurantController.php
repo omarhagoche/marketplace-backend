@@ -654,25 +654,37 @@ class RestaurantController extends Controller
         $extra->delete();
         return response()->json($extra_id, 200);
     }
-
+    
     public function restaurantFoodsDelete($id,$restaurantId) {   
         if (!env('APP_DEMO', false)) {
             $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
             $food = $this->foodRepository->findWithoutFail($id);
-
+            
             if (empty($food)) {
                 Flash::error('Food not found');
 
                 return redirect(route('operations.restaurant_foods_index',$restaurantId));
             }
-
+            
             $this->foodRepository->delete($id);
-
+            
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.food')]));
-
+            
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
         return redirect(route('operations.restaurant_foods_index',$restaurantId));
+    }
+
+    public function restaurantFoodUpdate(Request $request) {   
+        $food = $this->foodRepository->findWithoutFail($request->id);
+        $food->name = $request->name;
+        $food->price = $request->price;
+        $food->discount_price = $request->discount_price;
+        $food->category_id = $request->category_id;
+        $food->package_items_count = $request->package_items_count;
+        $food->available = $request->available;
+        $food->update();
+        return response()->json($food, 200);
     }
 }
