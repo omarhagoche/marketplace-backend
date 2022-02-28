@@ -34,33 +34,47 @@
   @include('flash::message')
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
-  <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-        @can('extras.index')
-        <li class="nav-item">
-          <a class="nav-link" href="{!! route('extras.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
-        </li>
-        @endcan
-        @can('extras.create')
-        <li class="nav-item">
-          <a class="nav-link" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
-        </li>
-        @endcan
-        <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
-        </li>
-      </ul>
-    </div>
-    <div class="card-body">
-      {!! Form::model($extra, ['route' => ['operations.extras.update', $extra->id], 'method' => 'patch']) !!}
-      <div class="row">
-        @include('operations.restaurantProfile.extras.fields')
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card ">
+        {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
+        <fieldset disabled>
+        <div class="row">
+          @include('operations.restaurantProfile.profile')
+        </div>
+        </fieldset>
+        {!! Form::close() !!}
       </div>
-      {!! Form::close() !!}
-      <div class="clearfix"></div>
     </div>
-  </div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+            @can('extras.index')
+            <li class="nav-item">
+              <a class="nav-link" href="{!! route('extras.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
+            </li>
+            @endcan
+            @can('extras.create')
+            <li class="nav-item">
+              <a class="nav-link" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
+            </li>
+            @endcan
+            <li class="nav-item">
+              <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          {!! Form::model($extra, ['route' => ['operations.extras.update', $extra->id], 'method' => 'patch']) !!}
+          <div class="row">
+            @include('operations.restaurantProfile.extras.fields')
+          </div>
+          {!! Form::close() !!}
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
 </div>
 @include('layouts.media_modal')
 @endsection

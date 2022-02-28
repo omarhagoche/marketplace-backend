@@ -292,7 +292,8 @@ Route::middleware('auth')->group(function () {
             Route::post('extras/remove-media', 'Operations\ExtraController@removeMedia');
             Route::resource('extras', 'Operations\ExtraController',['names' => 'operations.extras']);
             Route::get('extrasindex/{restaurant_id}', 'Operations\ExtraController@indexByRestaurant')->name('operations.restaurant.extra.index');
-            Route::get('extrascreate/{restaurant_id}', 'Operations\ExtraController@createByrestuarant')->name('operations.restaurant.create');
+            Route::get('extrascreate/{restaurant_id}', 'Operations\ExtraController@createByrestuarant')->name('operations.restaurant.extra.create');
+            Route::get('extrasedit/{id}/{restaurant_id}', 'Operations\ExtraController@editByRestuarant')->name('operations.restaurant.extra.edit');
     });
 
 });

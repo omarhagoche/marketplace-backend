@@ -145,7 +145,7 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('operations.restaurant.create',$request->restaurant_id));
+        return redirect(route('operations.restaurant.extra.create',$request->restaurant_id));
     }
 
     /**
@@ -171,6 +171,31 @@ class ExtraController extends Controller
         return view('extras.show')->with('extra', $extra);
     }
 
+    
+    public function editByRestuarant($id,$restaurant_id)
+    {
+        $this->extraRepository->pushCriteria(new ExtrasOfUserCriteria(auth()->id()));
+        $extra = $this->extraRepository->findWithoutFail($id);
+        if (empty($extra)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.extra')]));
+            return redirect(route('extras.index'));
+        }
+        #$this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
+        #$food = $this->foodRepository->groupedByRestaurants();
+        $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
+        
+        $restaurant = $this->restaurantRepository->findWithoutFail($restaurant_id);
+
+        $customFieldsValues = $extra->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
+        $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+
+        return view('operations.restaurantProfile.extras.edit')->with("id", $restaurant->id)->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
+    }
+
     /**
      * Show the form for editing the specified Extra.
      *
@@ -179,6 +204,7 @@ class ExtraController extends Controller
      * @return Response
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
+
     public function edit($id)
     {
         $this->extraRepository->pushCriteria(new ExtrasOfUserCriteria(auth()->id()));
@@ -242,7 +268,7 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('operations.restaurant.extra.index',$request->restaurant_id));
     }
 
     /**
@@ -268,7 +294,7 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('operations.restaurant.extra.index',$extra->restaurant_id));
     }
 
     /**

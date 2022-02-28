@@ -50,7 +50,9 @@ class ExtraDataTable extends DataTable
             ->editColumn('updated_at', function ($extra) {
                 return getDateColumn($extra, 'updated_at');
             })
-            ->addColumn('action', 'extras.datatables_actions')
+            ->addColumn('action', function ($extra) {
+                return view('operations.restaurantProfile.extras.datatables_actions',["id"=>$this->id,"extra" => $extra]);
+            })
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;
