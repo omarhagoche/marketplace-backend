@@ -35,6 +35,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\UpdatedDriverEvent' => [
             'App\Listeners\UpdateDriverStatusInFirebaseListener',
+            'App\Listeners\UpdateDriverWorkTimeListener',
         ],
 
     ];
