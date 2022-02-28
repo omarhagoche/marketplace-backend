@@ -160,8 +160,7 @@ class Order extends Model
         static::saving(function ($model) {
             // set status value depends on order_status_id automatically 
             $model->active = !$model->isStatusCanceled(); // canceled status
-            $user_id = auth()->user()->id ?? 1; // 1 : system user for current jobs
-            $model->last_user_updated = $user_id; // last user make update or insert
+            $model->last_user_updated = auth()->user()->id; // last user make update or insert
         });
     }
 
