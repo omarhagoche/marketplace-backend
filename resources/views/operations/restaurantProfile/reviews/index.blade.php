@@ -43,15 +43,15 @@
     @include('flash::message')
     <div class="row">
         <div class="col-md-3">
-            <div class="card ">
-              {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
-              <fieldset disabled>
-              <div class="row">
-                @include('operations.restaurantProfile.profile')
-              </div>
-              </fieldset>
-              {!! Form::close() !!}
+          <div class="card ">
+            {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
+            <fieldset disabled>
+            <div class="row">
+              @include('operations.restaurantProfile.profile')
             </div>
+            </fieldset>
+            {!! Form::close() !!}
+          </div>
         </div>
         <div class="col-md-9">
         <div class="card">

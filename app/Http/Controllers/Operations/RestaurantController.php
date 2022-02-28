@@ -48,6 +48,7 @@ use App\Models\ExtraGroup;
 use App\Models\Food;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ExtraGroupRepository;
+use App\Repositories\ExtraRepository;
 use App\Repositories\FoodRepository;
 
 class RestaurantController extends Controller
@@ -87,8 +88,12 @@ class RestaurantController extends Controller
      * @var ExtraGroupRepository
      */
     private $extraGroupRepository;
+    /**
+     * @var ExtraRepository
+     */
+    private $extraRepository;
 
-    public function __construct(ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    public function __construct(ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -100,6 +105,7 @@ class RestaurantController extends Controller
         $this->foodRepository = $foodRepository;
         $this->categoryRepository = $categoryRepository;
         $this->extraGroupRepository = $extraGroupRepository;
+        $this->extraRepository = $extraRepository;
     }
 
     /**
@@ -341,7 +347,6 @@ class RestaurantController extends Controller
      */ 
     public function editProfileRestaurant($id)
     {
-        $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
@@ -511,6 +516,7 @@ class RestaurantController extends Controller
 
     public function restaurantFoodsCreate($id) {
         $category = $this->categoryRepository->pluck('name', 'id');
+        $extra = $this->extraRepository->findByField('restaurant_id', $id)->pluck('name', 'id');
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
@@ -518,7 +524,7 @@ class RestaurantController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('operations.restaurantProfile.foods.create',compact('id','restaurant','category','extraGroup'))->with("customFields", isset($html) ? $html : false);
+        return view('operations.restaurantProfile.foods.create',compact('extra','id','restaurant','category','extraGroup'))->with("customFields", isset($html) ? $html : false);
     }
     
     public function restaurantFoodsStore(Request $request, $id) {
@@ -536,14 +542,8 @@ class RestaurantController extends Controller
             if(isset($request->name_extra)){
                 foreach($request->name_extra as $index => $extraname )
                 {
-                    $extra = new Extra();
-                    $extra->name =$extraname;
-                    $extra->price =$request->price_extra[$index];
-                    $extra->extra_group_id =$request->group_extra[$index];
-                    $extra->restaurant_id =$id;
-                    $extra->save();
                     $extraFood = new ExtraFood();
-                    $extraFood->extra_id = $extra->id;
+                    $extraFood->extra_id = $extraname;
                     $extraFood->food_id =$food->id;
                     $extraFood->save();
                 }
@@ -564,6 +564,7 @@ class RestaurantController extends Controller
                 Flash::error(__('lang.not_found', ['operator' => __('lang.food')]));
                 return redirect(route('foods.index'));
             }
+            $extra = $this->extraRepository->findByField('restaurant_id', $id)->pluck('name', 'id');
             $category = $this->categoryRepository->pluck('name', 'id');
             $restaurant = $this->restaurantRepository->findWithoutFail($id);
             $customFieldsValues = $food->customFieldsValues()->with('customField')->get();
@@ -573,8 +574,7 @@ class RestaurantController extends Controller
                 $html = generateCustomField($customFields, $customFieldsValues);
             }
             $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
-            $extraGroupArray = ExtraGroup::get(['name','id']);
-            return view('operations.restaurantProfile.foods.edit',compact('extraGroupArray','id','restaurant','category','extraGroup','food'))->with("customFields", isset($html) ? $html : false);
+            return view('operations.restaurantProfile.foods.edit',compact('extra','id','restaurant','category','extraGroup','food'))->with("customFields", isset($html) ? $html : false);
 
     }
     public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id) { 
@@ -613,18 +613,12 @@ class RestaurantController extends Controller
     public function restaurantFoodsExtraStore(Request $request) {   
         try {
             DB::beginTransaction();
-            $extra = new Extra();
-            $extra->name    =   $request->name;
-            $extra->price   =   $request->price;
-            $extra->extra_group_id  = $request->group_extra;
-            $extra->restaurant_id   = $request->restaurant_id;
-            $extra->save();
             $extraFood = new ExtraFood();
-            $extraFood->extra_id    =   $extra->id;
-            $extraFood->food_id     =   $request->foodId;
+            $extraFood->extra_id = $request->name_extras;
+            $extraFood->food_id =$request->foodId;
             $extraFood->save();
             DB::commit();
-            return response()->json(['extraFoodId' => $extraFood->id, "extraId" => $extra->id], 200);
+            return response()->json(['extraFoodId' => $extraFood->id], 200);
         } 
         catch (ValidatorException $e) {
             DB::rollback();
@@ -632,14 +626,12 @@ class RestaurantController extends Controller
         }
     }
 
-    public function restaurantFoodsExtraUpdate(Request $request, $extra_id) {   
+    public function restaurantFoodsExtraUpdate(Request $request, $extraFoodId) {   
         try {
             DB::beginTransaction();
-            $extra = Extra::find($extra_id);
-            $extra->name    =   $request->name;
-            $extra->price   =   $request->price;
-            $extra->extra_group_id  = $request->group_extra;
-            $extra->update();
+            $extraFood = ExtraFood::find($extraFoodId);
+            $extraFood->extra_id = $request->extraId;
+            $extraFood->update();
             DB::commit();
             return response()->json($request, 200);
         } 
@@ -648,11 +640,11 @@ class RestaurantController extends Controller
             Flash::error($e->getMessage());
         }
     }
-    public function restaurantFoodsExtraDelete($extra_id) {   
+    public function restaurantFoodsExtraDelete($extraFoodId) {   
 
-        $extra = Extra::find($extra_id);
-        $extra->delete();
-        return response()->json($extra_id, 200);
+        $extraFood = ExtraFood::find($extraFoodId);
+        $extraFood->delete();
+        return response()->json($extraFoodId, 200);
     }
     
     public function restaurantFoodsDelete($id,$restaurantId) {   

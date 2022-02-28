@@ -22,7 +22,7 @@
           <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
           <li class="breadcrumb-item"><a href="{!! route('extras.index') !!}">{{trans('lang.extra_plural')}}</a>
           </li>
-          <li class="breadcrumb-item active">{{trans('lang.extra_create')}}</li>
+          <li class="breadcrumb-item active">{{trans('lang.extra_edit')}}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -42,15 +42,20 @@
           <a class="nav-link" href="{!! route('extras.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
         </li>
         @endcan
+        @can('extras.create')
         <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
+          <a class="nav-link" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
+        </li>
+        @endcan
+        <li class="nav-item">
+          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::open(['route' => 'extras.store']) !!}
+      {!! Form::model($extra, ['route' => ['operations.extras.update', $extra->id], 'method' => 'patch']) !!}
       <div class="row">
-        @include('extras.fields')
+        @include('operations.restaurantProfile.extras.fields')
       </div>
       {!! Form::close() !!}
       <div class="clearfix"></div>

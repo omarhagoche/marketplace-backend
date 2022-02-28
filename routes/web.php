@@ -144,8 +144,7 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::post('extras/remove-media', 'ExtraController@removeMedia');
-    Route::resource('extras', 'ExtraController');
+   
 
     Route::resource('payments', 'PaymentController')->except([
         'create', 'store', 'edit', 'destroy'
@@ -206,11 +205,7 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::post('extras/remove-media', 'ExtraController@removeMedia');
-
-    Route::resource('extras', 'ExtraController')->except([
-        'show'
-    ]);
+    
     Route::resource('coupons', 'CouponController'); //->except(['show']);
     Route::post('slides/remove-media', 'SlideController@removeMedia');
     Route::resource('slides', 'SlideController')->except([
@@ -283,12 +278,21 @@ Route::middleware('auth')->group(function () {
             Route::get('restaurantFoods/edit/{restaurant_id}/{food_id}', 'Operations\RestaurantController@restaurantFoodsEdit')->name('operations.restaurant.foods.edit');
             Route::put('restaurantFoods/update/{restaurant_id}/{food_id}', 'Operations\RestaurantController@restaurantFoodsUpdate')->name('operations.restaurant.foods.update');
             Route::post('restaurantFoods/extra/store', 'Operations\RestaurantController@restaurantFoodsExtraStore')->name('operations.restaurant.foods.extra.store');
-            Route::put('restaurantFoods/extra/update/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraUpdate')->name('operations.restaurant.foods.extra.update');
-            Route::delete('restaurantFoods/extra/delete/{extra_id}', 'Operations\RestaurantController@restaurantFoodsExtraDelete')->name('operations.restaurant.foods.extra.delete');
+            Route::put('restaurantFoods/extra/update/{extraFoodId}', 'Operations\RestaurantController@restaurantFoodsExtraUpdate')->name('operations.restaurant.foods.extra.update');
+            Route::delete('restaurantFoods/extra/delete/{extraFoodId}', 'Operations\RestaurantController@restaurantFoodsExtraDelete')->name('operations.restaurant.foods.extra.delete');
             Route::delete('restaurantFoods/delete/{food_id}/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsDelete')->name('operations.restaurant.foods.delete');
             
             Route::post('restaurantFoods/update', 'Operations\RestaurantController@restaurantFoodUpdate')->name('operations.restaurant.food.update');
 
+            Route::post('extras/remove-media', 'Operations\ExtraController@removeMedia');
+
+            Route::resource('extras', 'Operations\ExtraController')->except([
+                'show'
+            ]);
+            Route::post('extras/remove-media', 'Operations\ExtraController@removeMedia');
+            Route::resource('extras', 'Operations\ExtraController',['names' => 'operations.extras']);
+            Route::get('extrasindex/{id}', 'Operations\ExtraController@indexByRestaurant')->name('operations.restaurant.extra.index');
+            Route::get('extrascreate/{id}', 'Operations\ExtraController@createByrestuarant')->name('operations.restaurant.create');
     });
 
 });

@@ -104,7 +104,7 @@ class ExtraDataTable extends DataTable
 
         $hasCustomField = in_array(Extra::class, setting('custom_field_models', []));
         if ($hasCustomField) {
-            $customFieldsCollection = CustomField::where('custom_field_model', Extra::class)->where('in_table', '=', true)->get();
+            $customFieldsCollection = CustomField::where('custom_field_model', Extra::class)->where('in_table', '=', true)->where('restaurant_id',$this->id)->get();
             foreach ($customFieldsCollection as $key => $field) {
                 array_splice($columns, $field->order - 1, 0, [[
                     'data' => 'custom_fields.' . $field->name . '.view',
@@ -126,16 +126,17 @@ class ExtraDataTable extends DataTable
     public function query(Extra $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("restaurant")->with("extraGroup");
+            return $model->newQuery()->with("restaurant")->with("extraGroup")->where('restaurant_id',$this->id);
         } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()->with("restaurant")->with("extraGroup")
                 ->join("restaurants", "extras.restaurant_id", "=", "restaurants.id")
                 ->join("user_restaurants", "foods.restaurant_id", "=", "user_restaurants.restaurant_id")
                 ->where('user_restaurants.user_id', auth()->id())
+                ->where('restaurant_id',$this->id)
                 ->groupBy("extras.id")
                 ->select('extras.*');
         } else {
-            return $model->newQuery()->with("restaurant")->with("extraGroup");
+            return $model->newQuery()->with("restaurant")->with("extraGroup")->where('restaurant_id',$this->id);
         }
     }
 

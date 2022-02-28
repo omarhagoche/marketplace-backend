@@ -7,11 +7,12 @@
  *
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Operations;
 
 use App\Criteria\Extras\ExtrasOfUserCriteria;
 use App\Criteria\Foods\FoodsOfUserCriteria;
 use App\DataTables\ExtraDataTable;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateExtraRequest;
 use App\Http\Requests\UpdateExtraRequest;
 use App\Models\Restaurant;
@@ -19,6 +20,7 @@ use App\Repositories\CustomFieldRepository;
 use App\Repositories\ExtraGroupRepository;
 use App\Repositories\ExtraRepository;
 use App\Repositories\FoodRepository;
+use App\Repositories\RestaurantRepository;
 use App\Repositories\UploadRepository;
 use Flash;
 use Illuminate\Http\Request;
@@ -48,8 +50,12 @@ class ExtraController extends Controller
      * @var ExtraGroupRepository
      */
     private $extraGroupRepository;
+    /**
+     * @var RestaurantRepository
+     */
+    private $restaurantRepository;
 
-    public function __construct(ExtraRepository $extraRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo
+    public function __construct(RestaurantRepository $restaurantRepository, ExtraRepository $extraRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo
         , FoodRepository $foodRepo
         , ExtraGroupRepository $extraGroupRepo)
     {
@@ -59,6 +65,7 @@ class ExtraController extends Controller
         $this->uploadRepository = $uploadRepo;
         $this->foodRepository = $foodRepo;
         $this->extraGroupRepository = $extraGroupRepo;
+        $this->restaurantRepository = $restaurantRepository;
     }
 
     /**
@@ -69,7 +76,13 @@ class ExtraController extends Controller
      */
     public function index(ExtraDataTable $extraDataTable)
     {
-        return $extraDataTable->render('extras.index');
+        return $extraDataTable->render('operations.restaurantProfile.extras.index');
+    }
+
+    public function indexByRestaurant(ExtraDataTable $extraDataTable, $id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        return $extraDataTable->with(['id'=>$id])->render('operations.restaurantProfile.extras.index',compact('id','restaurant'));
     }
 
     /**
@@ -90,7 +103,21 @@ class ExtraController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
+        
+        return view('operations.restaurantProfile.extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
+    }
+    public function createByrestuarant($id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
+
+        $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
+            $html = generateCustomField($customFields);
+        }
+        
+        return view('operations.restaurantProfile.extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup)->with('id',$id);
     }
 
     /**
@@ -118,7 +145,7 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('operations.restaurant.create',$request->restaurant_id));
     }
 
     /**

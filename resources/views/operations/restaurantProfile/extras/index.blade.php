@@ -24,23 +24,33 @@
 <div class="content">
   <div class="clearfix"></div>
   @include('flash::message')
-  <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-        <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
-        </li>
-        @can('extras.create')
-        <li class="nav-item">
-          <a class="nav-link" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
-        </li>
-        @endcan
-        @include('layouts.right_toolbar', compact('dataTable'))
-      </ul>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card ">
+        {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
+        <fieldset disabled>
+        <div class="row">
+          @include('operations.restaurantProfile.profile')
+        </div>
+        </fieldset>
+        {!! Form::close() !!}
+      </div>
     </div>
-    <div class="card-body">
-      @include('extras.table')
-      <div class="clearfix"></div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          @include('operations.restaurantProfile.links',compact('id','restaurant'))
+          <div class="card-body">
+            <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+            @include('operations.restaurantProfile.extras.links')
+            @include('layouts.right_toolbar', compact('dataTable'))
+            </ul>
+            <br>
+            @include('operations.restaurantProfile.extras.table')
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

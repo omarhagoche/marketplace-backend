@@ -97,10 +97,8 @@
 
     <!-- restaurant Id Field -->
     <div class="form-group row ">
-        {!! Form::label('restaurant_id', trans("lang.extra_restaurant_id"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('restaurant_id', $restaurant, null, ['class' => 'select2 form-control']) !!}
-            <div class="form-text text-muted">{{ trans("lang.extra_restaurant_id_help") }}</div>
+            <input type="hidden" name="restaurant_id" value="{{$id}}">
         </div>
     </div>
 

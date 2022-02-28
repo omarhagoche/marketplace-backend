@@ -3,22 +3,13 @@
       <thead>
         <tr>
           <th>name</th>
-          <th>Extra Group</th>
-          <th>price</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr id="addRow">
           <td class="col-xs-3">
-            <input class="form-control addName" type="text" placeholder="Enter title" />
-          </td>
-          
-          <td class="col-xs-3">
-            {!! Form::select('extra_group', $extraGroup, null, ['class' => 'select2 form-control extra_group']) !!}
-          </td>
-          <td class="col-xs-5">
-            <input class="form-control addPrice"  type="number" placeholder="Enter title" />
+            {!! Form::select('name_extras', $extra, null, ['class' => 'select2 form-control addName']) !!}
           </td>
           <td class="col-xs-1 text-center">
             <span class="addBtn">
@@ -28,12 +19,10 @@
         </tr>
         @foreach ($food->extrasFood as $extraFood) 
         <tr>
-            <td class="col-xs-3"><input id="name{{$extraFood->id}}" type="text" value="{{$extraFood->extra->name}}" name="name_extra[]" class="form-control editable" /></td>
-            <td class="col-xs-3">{!! Form::select('group_extra[]', $extraGroup, $extraFood->extra->extra_group_id, ['id' => 'group_extra'.$extraFood->id,'class' => 'select2 form-control extra_group']) !!}</td>
-            <td class="col-xs-3"><input id="price{{$extraFood->id}}" type="number" value="{{$extraFood->extra->price}}" name="price_extra[]" class="form-control editable" /></td>
+            <td class="col-xs-3">{!! Form::select('name_extra[]', $extra, $extraFood->extra_id, ['id'=>'name'.$extraFood->id,'class' => 'select2 form-control editable']) !!}</td>
             <td class="col-xs-1 text-center"><a  href="javascript:void(0)" onClick="EditRow({{$extraFood->id }},{{$extraFood->extra->id}})"> 
             <i class="fa fa-edit" aria-hidden="true"></a></td>
-            <td class="col-xs-1 text-center"><a href="javascript:void(0)" onClick="deleteRow(this,{{$extraFood->extra->id}})"> 
+            <td class="col-xs-1 text-center"><a href="javascript:void(0)" onClick="deleteRow(this,{{$extraFood->id}})"> 
             <i class="fa fa-trash-o" aria-hidden="true"></a></td>
         </tr>
         @endforeach
@@ -47,11 +36,11 @@
   var price;
 
 
-function deleteRow(trash,extraid) {
-  console.log(extraid)
+function deleteRow(trash,extraFoodId) {
+  console.log(extraFoodId)
   $(trash).closest('tr').remove();
-  var urlbase = '{{ route("operations.restaurant.foods.extra.delete", ":extraId") }}';
-  urlbase = urlbase.replace(':extraId', extraid);
+  var urlbase = '{{ route("operations.restaurant.foods.extra.delete", ":extraFoodId") }}';
+  urlbase = urlbase.replace(':extraFoodId', extraFoodId);
   $.ajax({
     type: "DELETE",
     url: urlbase,
@@ -63,16 +52,14 @@ function deleteRow(trash,extraid) {
     }
   });
 };
-function EditRow(extraFoodId, extraId) {
-  var urlbase = '{{ route("operations.restaurant.foods.extra.update", ":extraId") }}';
-  urlbase = urlbase.replace(':extraId', extraId);
+function EditRow(extraFoodId) {
+  var urlbase = '{{ route("operations.restaurant.foods.extra.update", ":extraFoodId") }}';
+  urlbase = urlbase.replace(':extraFoodId', extraFoodId);
   $.ajax({
     type: "PUT",
     url: urlbase,
     data: {
-      "name": $(`#name${extraFoodId}`).val(),
-      "group_extra": $(`#group_extra${extraFoodId}`).val(),
-      "price": $(`#price${extraFoodId}`).val(),
+      "extraId": $(`#name${extraFoodId}`).val(),
        _token: '{{csrf_token()}}'
     },
     dataType: "json",
@@ -83,17 +70,12 @@ function EditRow(extraFoodId, extraId) {
 
 $('.addBtn').click(function()  {
   name = $('.addName').val();
-  extraGroup = $('.extra_group').val();
-  price = $('.addPrice').val();
   $.ajax({
     type: "POST",
     url: "{{route('operations.restaurant.foods.extra.store')}}",
     data: {
-      "name": name,
-      "group_extra": extraGroup,
-      "price": price,
+      "name_extras": name,
       "foodId": '{{$food->id}}',
-      "restaurant_id": '{{$id}}',
        _token: '{{csrf_token()}}'
     },
     dataType: "json",
