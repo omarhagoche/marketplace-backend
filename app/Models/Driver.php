@@ -149,7 +149,7 @@ class Driver extends Model
      **/
     public function driverWorkTime()
     {
-        return $this->hasMany(\App\Models\DriverWorkTime::class, 'user_id', 'id');
+        return $this->hasMany(\App\Models\DriverWorkTime::class, 'user_id', 'user_id');
     }
 
     public function types()
