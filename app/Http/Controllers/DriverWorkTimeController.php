@@ -66,14 +66,15 @@ class DriverWorkTimeController extends Controller
                 ]);
             }
 
-            $driverWorkTimes =  $this->driverWorkTimeRepository->select('user_id', 'from_time', 'to_time')
+            $this->driverWorkTimeRepository->scopeQuery(function ($query) use ($request) {
+                $query->where('user_id', $request->driver);
+                $query->whereDate('from_time', '>=', $request->input('from_date', now()->format('Y-m-d')));
+                $query->whereDate('to_time', '<=', $request->input('to_date', now()->format('Y-m-d')));
+                return $query;
+            })
                 ->with('user:id,name')
-                ->scopeQuery(function ($query) use ($request) {
-                    $query->where('user_id', $request->driver);
-                    $query->whereDate('from_time', '>=', $request->input('from_date', now()->format('Y-m-d')));
-                    $query->whereDate('to_time', '<=', $request->input('to_date', now()->format('Y-m-d')));
-                    return $query;
-                })->all();
+                ->select('user_id', 'from_time', 'to_time');
+            $driverWorkTimes = $this->driverWorkTimeRepository->all();
         }
 
         return view(
