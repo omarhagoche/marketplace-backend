@@ -38,7 +38,9 @@ class DriverWorkTime extends Model
     protected $casts = [
         'user_id' => 'integer',
         'created_by_id' => 'integer',
-        'updated_by_id' => 'integer'
+        'updated_by_id' => 'integer',
+        'from_time' => 'datetime',
+        'to_time' => 'datetime'
     ];
 
     /**
@@ -59,6 +61,7 @@ class DriverWorkTime extends Model
      */
     protected $appends = [
         //  'custom_fields',
+        'time',
 
     ];
 
@@ -81,6 +84,14 @@ class DriverWorkTime extends Model
         return convertToAssoc($array, 'name');
     }
 
+
+    public function getTimeAttribute()
+    {
+        if ($this->to_time) {
+            return $this->to_time->diffInSeconds($this->from_time);
+        }
+        return '0';
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

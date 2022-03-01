@@ -128,6 +128,7 @@ class Driver extends Model
     }
 
     /**
+     * user is driver 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function user()
