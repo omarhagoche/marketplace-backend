@@ -1334,6 +1334,8 @@ return [
     'settlement_manager_available_fee' => 'Fee',
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
+    'open_at'=>'Open at',
+    'close_at'=>'Close at',
     'driver_work_time' => 'Driver Work Time',
     'driver_work_time_plural' => 'Driver Work Times',
     'driver_work_time_desc' => 'Driver Work Times Management',

@@ -40,8 +40,21 @@ class RestaurantDataTable extends DataTable
             ->editColumn('updated_at', function ($restaurant) {
                 return getDateColumn($restaurant, 'updated_at');
             })
-            ->editColumn('closed', function ($food) {
-                return getNotBooleanColumn($food, 'closed');
+            ->editColumn('closed', function ($restaurant) {
+                if ($restaurant->open_at <= date("H:i") && $restaurant->close_at >= date("H:i") ) {
+                    // return 0;
+                    $restaurant->closed=0;
+
+                }elseif ($restaurant->open_at <= date("H:i") && $restaurant->close_at <= date("H:i") && $restaurant->open_at > $restaurant->close_at ) {
+                    $restaurant->closed=0;
+
+                }else {
+                    $restaurant->closed=0;
+                }
+                $restaurant->save();
+                return getNotBooleanColumn($restaurant,'closed');
+
+                // return getNotBooleanColumn($food, 'closed');
             })
             ->editColumn('featured', function ($food) {
                 return getBooleanColumn($food, 'featured');
