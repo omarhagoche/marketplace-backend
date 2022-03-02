@@ -17,8 +17,6 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::resource('restaurants', 'API\RestaurantAPIController');
-
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
@@ -67,7 +65,7 @@ Route::get('distance', 'API\DistanceAPIController@getDistanceBetweenTwoPoints');
 
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
-// Route::resource('restaurants', 'API\RestaurantAPIController');
+Route::resource('restaurants', 'API\RestaurantAPIController');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
 Route::get('foods/categories', 'API\FoodAPIController@categories');
