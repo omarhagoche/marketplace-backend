@@ -159,7 +159,8 @@ class Order extends Model
          */
         static::saving(function ($model) {
             // set status value depends on order_status_id automatically 
-            $model->active = !$model->isStatusCanceled(); // canceled status 
+            $model->active = !$model->isStatusCanceled(); // canceled status
+            $model->last_user_updated = auth()->user()->id; // last user make update or insert
         });
     }
 
@@ -267,7 +268,7 @@ class Order extends Model
      **/
     public function deliveryAddress()
     {
-        return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
+        return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id')->withTrashed();
     }
 
     public function isStatusDone()
@@ -287,6 +288,15 @@ class Order extends Model
         };
 
         return ($this->getOriginal('order_status_id') ?? false) == 80; // 80 : delivered
+    }
+
+    public function isStatusWasWaittingDriver()
+    {
+        if (!$this->wasChanged('order_status_id')) {
+            return false;
+        };
+
+        return ($this->getOriginal('order_status_id') ?? false) == 10; // 10 : waiting_for_drivers
     }
 
     public function isStatusWasCanceled()

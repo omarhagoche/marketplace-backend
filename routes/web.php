@@ -165,6 +165,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('orders/waitting-drivers', 'OrderController@ordersWaittingForDrivers')->name('orders.waitting_drivers');
     Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
+    Route::get('orders/statistics', 'OrderController@statistics')->name('orders.statistics');
 
     Route::resource('orders', 'OrderController');
 
@@ -227,4 +228,5 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
+    Route::get('driverWorkTimes/statistics', 'DriverWorkTimeController@statistics')->name('driverWorkTimes.statistics');
 });

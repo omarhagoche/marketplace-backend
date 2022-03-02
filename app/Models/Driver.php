@@ -128,6 +128,7 @@ class Driver extends Model
     }
 
     /**
+     * user is driver 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function user()
@@ -141,6 +142,14 @@ class Driver extends Model
     public function driverType()
     {
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function driverWorkTime()
+    {
+        return $this->hasMany(\App\Models\DriverWorkTime::class, 'user_id', 'user_id');
     }
 
     public function types()

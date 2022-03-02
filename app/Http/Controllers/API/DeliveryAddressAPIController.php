@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\DeliveryAddress;
+use App\Models\Order;
 use App\Repositories\DeliveryAddressRepository;
 use Flash;
 use Illuminate\Http\Request;
@@ -138,7 +139,12 @@ class DeliveryAddressAPIController extends Controller
             return $this->sendError('Delivery Address Not found');
         }
 
-        $this->deliveryAddressRepository->delete($id);
+        // if address not used in orders , then delete it from database
+        if (Order::where('delivery_address_id', $address->id)->count()) {
+            $address->delete();
+        } else {
+            $address->forceDelete();
+        }
 
         return $this->sendResponse($address, __('lang.deleted_successfully', ['operator' => __('lang.delivery_address')]));
     }

@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -868,6 +868,7 @@ return [
     'restaurant_phone_help' => 'Insert Phone',
     'restaurant_phone_placeholder' => 'Insert Phone',
     'restaurant_plural' => 'Restaurants',
+    'restaurant_register' => 'Register',
     'restaurant_review' => 'Restaurant Review',
     'restaurant_review_create' => 'Create Restaurant Review',
     'restaurant_review_desc' => 'Restaurant Reviews Management',
@@ -1378,4 +1379,19 @@ return [
     'open_at_help'=>'insert open at',
     'close_at_help'=>'insert close at',
     'map' => 'map',
+    'driver_work_time' => 'Driver Work Time',
+    'driver_work_time_plural' => 'Driver Work Times',
+    'driver_work_time_desc' => 'Driver Work Times Management',
+    'driver_work_time_edit' => 'Edit Driver Work Time',
+    'driver_work_time_table' => 'Driver Work Times List',
+    'driver_work_time_create' => 'Create Driver Work Time',
+    'driver_work_time_user_id' => 'User Id',
+    'driver_work_time_user_id_help' => 'Insert User Id',
+    'driver_work_time_user_id_placeholder' => 'Insert User Id',
+    'driver_work_time_from_time' => 'From Time',
+    'driver_work_time_from_time_help' => 'Insert From Time',
+    'driver_work_time_from_time_placeholder' => 'Insert From Time',
+    'driver_work_time_to_time' => 'To Time',
+    'driver_work_time_to_time_help' => 'Insert To Time',
+    'driver_work_time_to_time_placeholder' => 'Insert To Time',
 ];

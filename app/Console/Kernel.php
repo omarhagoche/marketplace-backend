@@ -7,6 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\CloseUnassignedOrders;
 use App\Jobs\RemoveOldOrdersInFirebase;
 use App\Jobs\SetDriversToUnavailable;
+use App\Models\User;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,6 +30,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        // we log using system user to log anything in system by his name
+        auth()->login(User::findOrFail(1)); // 1 : system user
+
         $schedule->job(new CloseUnassignedOrders)->everyMinute();
         $schedule->job(new RemoveOldOrdersInFirebase)->everyMinute();
         $schedule->job(new SetDriversToUnavailable)->everyMinute();

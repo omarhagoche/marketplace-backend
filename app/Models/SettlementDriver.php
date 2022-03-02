@@ -97,7 +97,7 @@ class SettlementDriver extends Model
 
     public function getTotalAmountAttribute()
     {
-        return $this->amount + $this->amount_restaurant_coupons + $this->amount_delivery_coupons;
+        return $this->amount + $this->amount_restaurant_coupons - $this->amount_delivery_coupons;
     }
 
 
