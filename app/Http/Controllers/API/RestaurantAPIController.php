@@ -79,6 +79,10 @@ class RestaurantAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
 
+        if ($restaurants->count() == 0) {
+            return abort(404, "No resoults found");
+        }
+
         return RestaurantResource::collection($restaurants)->filter(function ($r) {
             return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
         })->sortBy(function ($r) {
