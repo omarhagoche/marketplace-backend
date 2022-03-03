@@ -49,7 +49,7 @@ class RestaurantDataTable extends DataTable
                     $restaurant->closed=0;
 
                 }else {
-                    $restaurant->closed=0;
+                    $restaurant->closed=1;
                 }
                 $restaurant->save();
                 return getNotBooleanColumn($restaurant,'closed');
