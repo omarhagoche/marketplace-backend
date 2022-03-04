@@ -9,8 +9,9 @@
 
 namespace App\DataTables;
 
-use App\Models\CustomField;
+use Carbon\Carbon;
 use App\Models\Restaurant;
+use App\Models\CustomField;
 use Barryvdh\DomPDF\Facade as PDF;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
@@ -41,16 +42,13 @@ class RestaurantDataTable extends DataTable
                 return getDateColumn($restaurant, 'updated_at');
             })
             ->editColumn('closed', function ($restaurant) {
-                if ($restaurant->open_at <= date("H:i") && $restaurant->close_at >= date("H:i") ) {
-                    // return 0;
-                    $restaurant->closed=0;
-
-                }elseif ($restaurant->open_at <= date("H:i") && $restaurant->close_at <= date("H:i") && $restaurant->open_at > $restaurant->close_at ) {
-                    $restaurant->closed=0;
-
-                }else {
-                    $restaurant->closed=1;
-                }
+                $open=Carbon::createFromTimeString($restaurant->open_at);
+                if ($restaurant->open_at >$restaurant->close_at)
+                    $close=Carbon::createFromTimeString($restaurant->close_at)->addDay();
+                else
+                    $close=Carbon::createFromTimeString($restaurant->close_at);
+                $time = Carbon::now()->between( $open, $close);
+                $time? $restaurant->closed=0: $restaurant->closed=1;
                 $restaurant->save();
                 return getNotBooleanColumn($restaurant,'closed');
 
