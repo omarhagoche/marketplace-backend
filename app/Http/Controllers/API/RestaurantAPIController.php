@@ -75,22 +75,7 @@ class RestaurantAPIController extends Controller
                 $this->restaurantRepository->pushCriteria(new NearCriteria($request));
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
-            // $restaurants = $this->restaurantRepository->all();
-            $restaurants = Restaurant::where('active','1')->get();
-
-            $restaurants->map(function($restaurant){
-                if ($restaurant->closed==0) {
-                    $open=Carbon::createFromTimeString($restaurant->open_at);
-                    if ($restaurant->open_at >$restaurant->close_at)
-                        $close=Carbon::createFromTimeString($restaurant->close_at)->addDay();
-                    else
-                        $close=Carbon::createFromTimeString($restaurant->close_at);
-                    $time = Carbon::now()->between( $open, $close);
-                    $time? $restaurant->closed=0: $restaurant->closed=1;
-                }
-                return $restaurant;
-            });
-
+            $restaurants = $this->restaurantRepository->all();
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
