@@ -1342,4 +1342,6 @@ return [
     'settlement_manager_available_fee' => 'Fee',
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
+    'open_at'=>'Open at',
+    'close_at'=>'Close at',
 ];
