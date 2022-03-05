@@ -42,25 +42,7 @@ class RestaurantDataTable extends DataTable
                 return getDateColumn($restaurant, 'updated_at');
             })
             ->editColumn('closed', function ($restaurant) {
-                if ($restaurant->closed==0) {
-                    $now=Carbon::now();
-                    if ($restaurant->open_at >$restaurant->close_at){
-                      if (!$now->lte($restaurant->close_at)) {
-                            $restaurant->closed=0;
-                            return getNotBooleanColumn($restaurant,'closed');
-                        }
-                        $open=Carbon::createFromTimeString($restaurant->open_at);
-                        $close=Carbon::createFromTimeString($restaurant->close_at)->addDay();
-                    }else{
-                        $open=Carbon::createFromTimeString($restaurant->open_at);
-                        $close=Carbon::createFromTimeString($restaurant->close_at);
-                    }
-                    $time = $now->between( $open, $close);
-                    $time? $restaurant->closed=0: $restaurant->closed=1;
-                    return getNotBooleanColumn($restaurant,'closed');
-                }
                 return getNotBooleanColumn($restaurant,'closed');
-
             })
             ->editColumn('featured', function ($food) {
                 return getBooleanColumn($food, 'featured');
