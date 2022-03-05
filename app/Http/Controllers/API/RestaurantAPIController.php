@@ -76,17 +76,18 @@ class RestaurantAPIController extends Controller
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
             // $restaurants = $this->restaurantRepository->all();
-            $restaurants = Restaurant::where('restaurants.active','1')->get();
+            $restaurants = Restaurant::where('active','1')->get();
 
             $restaurants->map(function($restaurant){
-
-                $open=Carbon::createFromTimeString($restaurant->open_at);
-                if ($restaurant->open_at >$restaurant->close_at)
-                    $close=Carbon::createFromTimeString($restaurant->close_at)->addDay();
-                else
-                    $close=Carbon::createFromTimeString($restaurant->close_at);
-                $time = Carbon::now()->between( $open, $close);
-                $time? $restaurant->closed=0: $restaurant->closed=1;
+                if ($restaurant->closed==0) {
+                    $open=Carbon::createFromTimeString($restaurant->open_at);
+                    if ($restaurant->open_at >$restaurant->close_at)
+                        $close=Carbon::createFromTimeString($restaurant->close_at)->addDay();
+                    else
+                        $close=Carbon::createFromTimeString($restaurant->close_at);
+                    $time = Carbon::now()->between( $open, $close);
+                    $time? $restaurant->closed=0: $restaurant->closed=1;
+                }
                 return $restaurant;
             });
 
@@ -94,11 +95,11 @@ class RestaurantAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
         return RestaurantResource::collection($restaurants) 
-        // ->filter(function ($r) {
-        //     return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
-        // })->sortBy(function ($r) {
-        //     return $r->getDistance()['distance']['distance']['value'] ?? null;
-        // })
+        ->filter(function ($r) {
+            return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
+        })->sortBy(function ($r) {
+            return $r->getDistance()['distance']['distance']['value'] ?? null;
+        })
         ->values();
     }
 
