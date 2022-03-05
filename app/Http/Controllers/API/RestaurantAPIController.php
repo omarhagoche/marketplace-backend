@@ -75,35 +75,31 @@ class RestaurantAPIController extends Controller
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
             $restaurants = $this->restaurantRepository
-            
-            ->where(function ($query){
-                $query
-                ->where('open_at','<',date("H:i"))
-                ->where('close_at','>',date("H:i"))
-                ->orWhere(function ($query){
+                ->where(function ($query) {
                     $query
-                    ->where('open_at','<',date("H:i"))
-                    ->where('close_at','<',date("H:i"))
-                    ->where('open_at','>','close_at');
-                })
-                ;
-            })->get();
-            // $restaurants = $this->restaurantRepository->all();
+                        ->where('open_at', '<', date("H:i"))
+                        ->where('close_at', '>', date("H:i"))
+                        ->orWhere(function ($query) {
+                            $query
+                                ->where('open_at', '<', date("H:i"))
+                                ->where('close_at', '<', date("H:i"))
+                                ->where('open_at', '>', 'close_at');
+                        });
+                })->get();
 
+
+            if ($restaurants->count() == 0) {
+                return response()->json($restaurants, 404);
+            }
+
+            return RestaurantResource::collection($restaurants)->filter(function ($r) {
+                return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
+            })->sortBy(function ($r) {
+                return $r->getDistance()['distance']['distance']['value'] ?? null;
+            })->values();
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
-
-        if ($restaurants->count() == 0) {
-            return abort(404, "No resoults found");
-        }
-
-        return RestaurantResource::collection($restaurants)->filter(function ($r) {
-            return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
-        })->sortBy(function ($r) {
-            return $r->getDistance()['distance']['distance']['value'] ?? null;
-        })
-        ->values();
     }
 
     /**
