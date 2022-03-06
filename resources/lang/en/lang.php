@@ -1385,6 +1385,9 @@ return [
     'cancel_order'=>'Cancel order',
     'operations'=>'Operation',
     'users'=>'Users',
-
+    'open_at'=>'Open at',
+    'close_at'=>'Close at',
+    'open_at_help'=>'insert open at',
+    'close_at_help'=>'insert close at',
     'map' => 'map',
 ];
