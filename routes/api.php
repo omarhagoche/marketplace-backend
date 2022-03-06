@@ -17,7 +17,6 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
@@ -108,7 +107,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('unregistered-customer/{phone}', 'API\UnregisteredCustomerAPIController@show');
             Route::get('users/drivers_of_restaurant/{id}', 'API\Manager\UserAPIController@driversOfRestaurant');
             Route::get('dashboard/{id}', 'API\DashboardAPIController@manager');
-            Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
+            // Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             Route::resource('faq_categories', 'API\FaqCategoryAPIController');
             Route::resource('faqs', 'API\FaqAPIController');
             Route::get('statistics', 'API\Manager\StatisticAPIController@index');

@@ -10,13 +10,14 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
-use Illuminate\Support\Facades\DB;
+use App\Traits\SkipAppends;
 use Spatie\Image\Manipulations;
+use Illuminate\Support\Facades\DB;
+use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\Models\Media;
-use App\Traits\SkipAppends;
 
 /**
  * Class Restaurant
@@ -81,6 +82,8 @@ class Restaurant extends Model implements HasMedia
         'private_drivers',
         'featured',
         'is_restaurant',
+        'close_at',
+        'open_at'
     ];
 
     /**
@@ -118,11 +121,14 @@ class Restaurant extends Model implements HasMedia
     public static $adminRules = [
         'name' => 'required',
         //'description' => 'required',
+        'close_at' => 'required',
+        'open_at' => 'required',
+        'phone' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
-        'admin_commission' => 'required|numeric|min:0',
-        'private_drivers' => 'required|boolean'
+        // 'admin_commission' => 'required|numeric|min:0',
+        // 'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -133,10 +139,12 @@ class Restaurant extends Model implements HasMedia
     public static $managerRules = [
         'name' => 'required',
         //'description' => 'required',
+        'close_at' => 'required',
+        'open_at' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
-        'private_drivers' => 'required|boolean'
+        // 'private_drivers' => 'required|boolean'
     ];
 
     /**
@@ -170,8 +178,6 @@ class Restaurant extends Model implements HasMedia
     {
         return ['id', 'name'];
     }
-
-
     /**
      * @param Media|null $media
      * @throws \Spatie\Image\Exceptions\InvalidManipulation

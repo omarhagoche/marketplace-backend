@@ -228,4 +228,5 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
+    Route::get('driverWorkTimes/statistics', 'DriverWorkTimeController@statistics')->name('driverWorkTimes.statistics');
 });

@@ -802,3 +802,19 @@ function getCriteriaSearchParams()
     }
     return $params;
 }
+
+
+/**
+ * This function to return time seconds to minutes or hours
+ * @return string 
+ */
+function time_to_human_hours_or_minutes($seconds)
+{
+    if ($seconds >= 3600) {
+        return number_format($seconds / 3600, 2) . ' h ';
+    }
+    if ($seconds >= 60) {
+        return number_format($seconds / 60, 2) . ' m ';
+    }
+    return $seconds . ' s ';
+}

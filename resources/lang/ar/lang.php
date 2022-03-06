@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -753,8 +753,8 @@ return [
     'order_status_updated_at' => 'Updated At',
     'order_subtotal' => 'Subtotal',
     'order_table' => 'Orders List',
-    "delivery_coupon_value" => "Delivery Coupon",
-    "restaraunt_coupon_value" => "Restaurant Coupon",
+    'delivery_coupon_value' => 'Delivery Coupon',
+    'restaraunt_coupon_value' => 'Restaurant Coupon',
     'order_tax' => 'Tax',
     'order_tax_help' => 'Insert Tax',
     'order_tax_placeholder' => 'Insert Tax',
@@ -1334,4 +1334,21 @@ return [
     'settlement_manager_available_fee' => 'Fee',
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
+    'open_at'=>'Open at',
+    'close_at'=>'Close at',
+    'driver_work_time' => 'Driver Work Time',
+    'driver_work_time_plural' => 'Driver Work Times',
+    'driver_work_time_desc' => 'Driver Work Times Management',
+    'driver_work_time_edit' => 'Edit Driver Work Time',
+    'driver_work_time_table' => 'Driver Work Times List',
+    'driver_work_time_create' => 'Create Driver Work Time',
+    'driver_work_time_user_id' => 'User Id',
+    'driver_work_time_user_id_help' => 'Insert User Id',
+    'driver_work_time_user_id_placeholder' => 'Insert User Id',
+    'driver_work_time_from_time' => 'From Time',
+    'driver_work_time_from_time_help' => 'Insert From Time',
+    'driver_work_time_from_time_placeholder' => 'Insert From Time',
+    'driver_work_time_to_time' => 'To Time',
+    'driver_work_time_to_time_help' => 'Insert To Time',
+    'driver_work_time_to_time_placeholder' => 'Insert To Time',
 ];
