@@ -32,15 +32,15 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      */
     public function handle()
     {
-        Log::channel('OpenAndCloseRestaurant')->info("Started OpenAndCloseRestaurant Job");
+        Log::channel('openAndCloseRestaurant')->info("Started OpenAndCloseRestaurant Job");
         try {
             DB::transaction(function () {
                 Restaurant::where('open_at','=',date("H:i"))->update(['closed'=>0]);
                 Restaurant::where('close_at','=',date("H:i"))->update(['closed'=>1]);
-                Log::channel('OpenAndCloseRestaurant')->info("Started OpenAndCloseRestaurant Job");
             });
+            Log::channel('openAndCloseRestaurant')->info("close OpenAndCloseRestaurant Job");
         } catch (\Throwable $th) {
-            Log::channel('OpenAndCloseRestaurant')->error("Error OpenAndCloseRestaurant Job, Error:$th");
+            Log::channel('openAndCloseRestaurant')->error("Error OpenAndCloseRestaurant Job, Error:$th");
         }
        
     }
