@@ -2,12 +2,13 @@
 
 namespace App\Console;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\CloseUnassignedOrders;
-use App\Jobs\RemoveOldOrdersInFirebase;
 use App\Jobs\SetDriversToUnavailable;
 use App\Models\User;
+use App\Jobs\RemoveOldOrdersInFirebase;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Jobs\OpenAndCloseRestaurantAutomtion;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
@@ -34,6 +35,7 @@ class Kernel extends ConsoleKernel
         // we log using system user to log anything in system by his name
         auth()->login(User::findOrFail(1)); // 1 : system user
 
+        $schedule->job(new OpenAndCloseRestaurantAutomtion)->everyMinute();
         $schedule->job(new CloseUnassignedOrders)->everyMinute();
         $schedule->job(new RemoveOldOrdersInFirebase)->everyMinute();
         $schedule->job(new SetDriversToUnavailable)->everyMinute();

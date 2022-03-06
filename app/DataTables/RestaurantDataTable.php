@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantDataTable.php
  * Last modified: 2020.04.30 at 08:21:09
@@ -9,8 +10,9 @@
 
 namespace App\DataTables;
 
-use App\Models\CustomField;
+use Carbon\Carbon;
 use App\Models\Restaurant;
+use App\Models\CustomField;
 use Barryvdh\DomPDF\Facade as PDF;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
@@ -41,20 +43,7 @@ class RestaurantDataTable extends DataTable
                 return getDateColumn($restaurant, 'updated_at');
             })
             ->editColumn('closed', function ($restaurant) {
-                if ($restaurant->open_at <= date("H:i") && $restaurant->close_at >= date("H:i") ) {
-                    // return 0;
-                    $restaurant->closed=0;
-
-                }elseif ($restaurant->open_at <= date("H:i") && $restaurant->close_at <= date("H:i") && $restaurant->open_at > $restaurant->close_at ) {
-                    $restaurant->closed=0;
-
-                }else {
-                    $restaurant->closed=0;
-                }
-                $restaurant->save();
-                return getNotBooleanColumn($restaurant,'closed');
-
-                // return getNotBooleanColumn($food, 'closed');
+                return getNotBooleanColumn($restaurant, 'closed');
             })
             ->editColumn('featured', function ($food) {
                 return getBooleanColumn($food, 'featured');
@@ -81,13 +70,13 @@ class RestaurantDataTable extends DataTable
     {
         if (auth()->user()->hasRole('admin')) {
             return $model->newQuery();
-        } else if (auth()->user()->hasRole('manager')){
+        } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()
                 ->join("user_restaurants", "restaurant_id", "=", "restaurants.id")
                 ->where('user_restaurants.user_id', auth()->id())
                 ->groupBy("restaurants.id")
                 ->select("restaurants.*");
-        }else if(auth()->user()->hasRole('driver')){
+        } else if (auth()->user()->hasRole('driver')) {
             return $model->newQuery()
                 ->join("driver_restaurants", "restaurant_id", "=", "restaurants.id")
                 ->where('driver_restaurants.user_id', auth()->id())
@@ -116,12 +105,16 @@ class RestaurantDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['title'=>trans('lang.actions'),'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
+            ->addAction(['title' => trans('lang.actions'), 'width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
+                config('datatables-buttons.parameters'),
+                [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
-                        ), true)
+                        file_get_contents(
+                            base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ),
+                        true
+                    )
                 ]
             ));
     }

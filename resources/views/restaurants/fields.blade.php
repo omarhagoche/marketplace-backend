@@ -66,7 +66,7 @@
     <div class="form-group row ">
         {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::time('open_at', '10:30',  ['class' => 'form-control','placeholder'=>  trans("lang.open_at")]) !!}
+            {!! Form::time('open_at', null,  ['class' => 'form-control','placeholder'=>  trans("lang.open_at")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.open_at_help") }}
             </div>
@@ -75,7 +75,7 @@
     <div class="form-group row ">
         {!! Form::label('close_at', trans("lang.close_at"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::time('close_at', '23:30',  ['class' => 'form-control','placeholder'=>  trans("lang.close_at")]) !!}
+            {!! Form::time('close_at',null,  ['class' => 'form-control','placeholder'=>  trans("lang.close_at")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.close_at_help") }}
             </div>
@@ -214,8 +214,57 @@
             $(prviateDriversElement).trigger('ifChanged')
         </script>
         {{-- End events of private drivers --}}
-@endprepend
+    @endprepend
 
+</div>
+<div class="col-12 pb-4">
+    <!-- 'Boolean is_restaurant Field' -->
+    <div class="form-group row mr-3">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('is_restaurant', 0) !!}
+                {!! Form::checkbox('is_restaurant', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'control-label text-right']) !!}
+       
+    </div>
+
+    <!-- 'Boolean closed Field' -->
+    <div class="form-group row ">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('closed', 0) !!}
+                {!! Form::checkbox('closed', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => ' control-label text-right']) !!}
+        
+    </div>
+    
+    <!-- 'Boolean featured Field' -->
+    <div class="form-group row ">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('featured', 0) !!}
+                {!! Form::checkbox('featured', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'control-label text-right']) !!}
+      
+    </div>
+
+    <!-- 'Boolean available_for_delivery Field' -->
+    <div class="form-group row ">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('available_for_delivery', 0) !!}
+                {!! Form::checkbox('available_for_delivery', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => ' control-label text-right']) !!}
+      
+    </div>
 </div>
 
 <!-- Submit Field -->
