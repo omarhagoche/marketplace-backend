@@ -28,7 +28,61 @@
         </div>
     </div>
 </div>
+@hasanyrole('admin|manager')
+    
 
+    
+
+
+    <!-- Users Field -->
+    <div class="form-group row" id='restaurant-body-drivers'>
+        {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+            <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::select('delivery_price_type', getDeliveryPriceTypes(),$restaurant->delivery_price_type?? null, ['class' => 'form-control']) !!}
+            <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_price_type_help") }}</div>
+        </div>
+    </div>
+    <!-- delivery_fee Field -->
+    <div class="form-group row " id="delivery_fee_form_group">
+        {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('delivery_fee', null,  ['class' => 'form-control','step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_delivery_fee_help") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- delivery_range Field -->
+    <div class="form-group row ">
+        {!! Form::label('delivery_range', trans("lang.restaurant_delivery_range"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('delivery_range', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_range_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_delivery_range_help") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- default_tax Field -->
+    <div class="form-group row ">
+        {!! Form::label('default_tax', trans("lang.restaurant_default_tax"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('default_tax', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_default_tax_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_default_tax_help") }}
+            </div>
+        </div>
+    </div>
+
+@endhasanyrole
     <!-- Phone Field -->
     <div class="form-group row ">
         {!! Form::label('phone', trans("lang.restaurant_phone"), ['class' => 'col-3 control-label text-right']) !!}
@@ -106,7 +160,69 @@
             </div>
         </div>
     </div>
-
+    {{-- <div class="col-12 pb-4"> --}}
+        <!-- 'Boolean is_restaurant Field' -->
+        <div class="form-group row mr-3">
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('is_restaurant', 0) !!}
+                    {!! Form::checkbox('is_restaurant', 1, null) !!}
+                </label>
+            </div>
+            {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'control-label text-right']) !!}
+           
+        </div>
+    
+        <!-- 'Boolean closed Field' -->
+        <div class="form-group row ">
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('closed', 0) !!}
+                    {!! Form::checkbox('closed', 1, null) !!}
+                </label>
+            </div>
+            {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => ' control-label text-right']) !!}
+            
+        </div>
+        
+        <!-- 'Boolean featured Field' -->
+        <div class="form-group row ">
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('featured', 0) !!}
+                    {!! Form::checkbox('featured', 1, null) !!}
+                </label>
+            </div>
+            {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'control-label text-right']) !!}
+          
+        </div>
+    
+        <!-- 'Boolean available_for_delivery Field' -->
+        <div class="form-group row ">
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('available_for_delivery', 0) !!}
+                    {!! Form::checkbox('available_for_delivery', 1, null) !!}
+                </label>
+            </div>
+            {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => ' control-label text-right']) !!}
+          
+        </div>
+        @hasanyrole('admin|manager')
+        
+        <!-- 'Private_drivers Field' -->
+        <div class="form-group row ">
+            <div class="checkbox icheck">
+                <label class="col-9  form-check-inline">
+                    {!! Form::hidden('private_drivers', 0) !!}
+                    {!! Form::checkbox('private_drivers', 1) !!}
+                </label>
+            </div>
+            {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => ' control-label']) !!}
+    
+        </div>
+        @endhasanyrole
+    {{-- </div> --}}
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
@@ -128,6 +244,25 @@
         <div class="col-9" >
             <div  id="map" style="width: 100%; height: 300px;"></div>
         </div>
+
+        <!-- Description Field -->
+            <div class="form-group row ">
+                {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-3 control-label text-right']) !!}
+                <div class="col-9">
+                    {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
+                    trans("lang.restaurant_description_placeholder")  ]) !!}
+                    <div class="form-text text-muted w-50">{{ trans("lang.restaurant_description_help") }}</div>
+                </div>
+            </div>
+            <!-- Information Field -->
+            <div class="form-group row ">
+                {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}
+                <div class="col-9">
+                    {!! Form::textarea('information', null, ['class' => 'form-control','placeholder'=>
+                    trans("lang.restaurant_information_placeholder")  ]) !!}
+                    <div class="form-text text-muted w-50">{{ trans("lang.restaurant_information_help") }}</div>
+                </div>
+            </div>
     </div>
     @prepend('scripts')
         <script type="text/javascript">
@@ -217,7 +352,7 @@
     @endprepend
 
 </div>
-<div class="col-12 pb-4">
+{{-- <div class="col-12 pb-4">
     <!-- 'Boolean is_restaurant Field' -->
     <div class="form-group row mr-3">
         <div class="checkbox icheck">
@@ -265,7 +400,21 @@
         {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => ' control-label text-right']) !!}
       
     </div>
-</div>
+    @hasanyrole('admin|manager')
+    
+    <!-- 'Private_drivers Field' -->
+    <div class="form-group row ">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('private_drivers', 0) !!}
+                {!! Form::checkbox('private_drivers', 1) !!}
+            </label>
+        </div>
+        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label']) !!}
+
+    </div>
+    @endhasanyrole
+</div> --}}
 
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
