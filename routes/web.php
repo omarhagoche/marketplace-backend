@@ -272,7 +272,7 @@ Route::middleware('auth')->group(function () {
             Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
             Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
-            Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsindex')->name('operations.restaurant_foods_index');
+            Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsindex')->name('operations.restaurant.foods.index');
             Route::get('restaurantFoods/create/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsCreate')->name('operations.restaurant.foods.create');
             Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantController@restaurantFoodsStore')->name('operations.restaurant.foods.store');
             Route::get('restaurantFoods/edit/{restaurant_id}/{food_id}', 'Operations\RestaurantController@restaurantFoodsEdit')->name('operations.restaurant.foods.edit');

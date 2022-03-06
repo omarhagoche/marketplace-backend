@@ -25,14 +25,14 @@
         <a class="nav-link" href="{!! route('operations.restaurant_review',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.restaurant_review')}}</a>
       </li> 
       @endcan
-      @can('operations.restaurant_foods_index')
+      @can('operations.restaurant.foods.index')
       <li class="nav-item">
-        <a class="nav-link" href="{!! route('operations.restaurant_foods_index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.food_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.restaurant.foods.*') ? 'active' : '' }}" href="{!! route('operations.restaurant.foods.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.food_table')}}</a>
       </li> 
       @endcan
       @can('operations.restaurant.extra.index')
       <li class="nav-item">
-        <a class="nav-link" href="{!! route('operations.restaurant.extra.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.extra_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.restaurant.extra.*') ? 'active' : '' }}" href="{!! route('operations.restaurant.extra.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.extra_table')}}</a>
       </li> 
       @endcan
       

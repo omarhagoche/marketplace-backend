@@ -511,6 +511,7 @@ class RestaurantController extends Controller
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         $foods = $this->foodRepository->restaurantFoods($id);
         $category = $this->categoryRepository->pluck('name', 'id');
+        $category = [null => "" , $category];
         return view('operations.restaurantProfile.foods.index',compact('id','restaurant','foods','category'));
     }
 
@@ -608,7 +609,7 @@ class RestaurantController extends Controller
         }
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.food')]));
-        return redirect(route('operations.restaurant_foods_index',$id));
+        return redirect(route('operations.restaurant.foods.index',$id));
     }
     public function restaurantFoodsExtraStore(Request $request) {   
         try {
@@ -655,7 +656,7 @@ class RestaurantController extends Controller
             if (empty($food)) {
                 Flash::error('Food not found');
 
-                return redirect(route('operations.restaurant_foods_index',$restaurantId));
+                return redirect(route('operations.restaurant.foods.index',$restaurantId));
             }
             
             $this->foodRepository->delete($id);
@@ -665,7 +666,7 @@ class RestaurantController extends Controller
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
-        return redirect(route('operations.restaurant_foods_index',$restaurantId));
+        return redirect(route('operations.restaurant.foods.index',$restaurantId));
     }
 
     public function restaurantFoodUpdate(Request $request) {   
