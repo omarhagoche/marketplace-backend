@@ -2,11 +2,12 @@
 
 namespace App\Console;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\CloseUnassignedOrders;
-use App\Jobs\RemoveOldOrdersInFirebase;
 use App\Jobs\SetDriversToUnavailable;
+use App\Jobs\RemoveOldOrdersInFirebase;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Jobs\OpenAndCloseRestaurantAutomtion;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->job(new OpenAndCloseRestaurantAutomtion)->everyMinute();
         $schedule->job(new CloseUnassignedOrders)->everyMinute();
         $schedule->job(new RemoveOldOrdersInFirebase)->everyMinute();
         $schedule->job(new SetDriversToUnavailable)->everyMinute();
