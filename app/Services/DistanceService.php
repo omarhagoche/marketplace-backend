@@ -48,12 +48,12 @@ class DistanceService
         try {
             return $this->setNewDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude)->getDistance();
         } catch (Exception $e) {
-            if(!$skip_exceptions){
+            if (!$skip_exceptions) {
                 throw $e;
             }
-            return new Distance::make([
+            return Distance::make([
                 'distance_text' => "Nan",
-                'distance_value' => 1000000,// 1000KM
+                'distance_value' => 1000000, // 1000KM
                 'duration_text' => "Nan",
                 'duration_value' => 604800, // 1 week
             ])->getDistance();
