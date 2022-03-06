@@ -103,7 +103,7 @@ return [
         ],
         'openAndCloseRestaurant' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/restaurant/open_close.log'),
+            'path' => storage_path('logs/restaurants/open_close.log'),
         ],
 
         'canceledOrdersDetails' => [
