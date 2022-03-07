@@ -6,7 +6,7 @@
     </li>
 @endcan
 <li class="nav-item">
-    <a class="nav-link {{ Request::is('operations*') ? 'active' : '' }}" href="{!! route('operations.index') !!}">@if($icons)
+    <a class="nav-link {{ Request::is('operations*') ? 'active' : '' }}" href="{!! route('operations.dashboard.index') !!}">@if($icons)
             <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.operations')}}</p></a>
 </li>
 @can('favorites.index')
