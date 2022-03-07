@@ -15,14 +15,14 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.extra_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.extra_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.restaurant_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.restaurant_desc')}}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
-          <li class="breadcrumb-item"><a href="{!! route('extras.index') !!}">{{trans('lang.extra_plural')}}</a>
+          <li class="breadcrumb-item"><a href="{!! route('restaurants.index') !!}">{{trans('lang.restaurant_plural')}}</a>
           </li>
-          <li class="breadcrumb-item active">{{trans('lang.extra_create')}}</li>
+          <li class="breadcrumb-item active">{{trans('lang.restaurant_create')}}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -34,35 +34,28 @@
   @include('flash::message')
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
-  <div class="row">
-    <div class="col-md-3">
-      <div class="card ">
-        {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
-        <fieldset disabled>
-        <div class="row">
-          @include('operations.restaurantProfile.profile')
-        </div>
-        </fieldset>
-        {!! Form::close() !!}
-      </div>
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+        @can('restaurants.index')
+        <li class="nav-item">
+          <a class="nav-link" href="{!! route('restaurants.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+        </li>
+        @endcan
+        <li class="nav-item">
+          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+        </li>
+      </ul>
     </div>
-    <div class="col-md-9">
-      <div class="card">
-        <div class="card-header">
-          @include('operations.restaurantProfile.links',compact('id','restaurant'))
-        </div>
-        <div class="card-body"> 
-          {!! Form::open(['route' => 'operations.extras.store']) !!}
-          <div class="row">
-            <ul class="nav nav-tabs align-items-end card-header-tabs w-100" style="margin-bottom: 10px;">
-            @include('operations.restaurantProfile.extras.links')
-            </ul>
-            @include('operations.restaurantProfile.extras.fields')
-          </div>
-          {!! Form::close() !!}
-          <div class="clearfix"></div>
-        </div>
+    <div class="card-body">
+      {!! Form::open(['route' => 'restaurants.store']) !!}
+      <div class="row">
+        <!-- Phone Field -->
+ 
+        @include('restaurants.fields',['isCreate'=>true])
       </div>
+      {!! Form::close() !!}
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>

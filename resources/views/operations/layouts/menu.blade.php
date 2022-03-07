@@ -18,8 +18,8 @@
 @endcan --}}
 
 @can('operations.restaurant_profile.index')
-    <li class="nav-item has-treeview {{ (Request::is('restaurants*') || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*') ? 'menu-open' : '' }}">
-        <a href="#" class="nav-link {{ (Request::is('restaurants*') || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*')? 'active' : '' }}"> @if($icons)
+    <li class="nav-item has-treeview {{  (request()->routeIs('restaurant*') || request()->routeIs('operations.restaurant*')  || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*'))  ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{  (request()->routeIs('restaurant*')  || request()->routeIs('operations.restaurant*')  || Request::is('requestedRestaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) ? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-cutlery"></i>@endif
             <p>{{trans('lang.restaurant_plural')}} <i class="right fa fa-angle-left"></i>
             </p>

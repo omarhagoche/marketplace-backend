@@ -8,7 +8,7 @@
     @endcan
     @isset($extra)
     <li class="nav-item">
-      <a class="nav-link active" href="{!! route('operations.restaurant.extra.edit',$extra->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
+      <a class="nav-link active" href="{!! route('operations.restaurant.extra.edit',[$extra->id,$id]) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
     </li>
     @endisset
     

@@ -680,4 +680,6 @@ class RestaurantController extends Controller
         $food->update();
         return response()->json($food, 200);
     }
+
+    
 }

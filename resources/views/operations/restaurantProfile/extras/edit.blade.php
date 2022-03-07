@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('operations.layouts.app')
 @push('css_lib')
 <!-- iCheck -->
 <link rel="stylesheet" href="{{asset('plugins/iCheck/flat/blue.css')}}">
@@ -49,24 +49,15 @@
     <div class="col-md-9">
       <div class="card">
         <div class="card-header">
-          <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-            @can('extras.index')
-            <li class="nav-item">
-              <a class="nav-link" href="{!! route('extras.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
-            </li>
-            @endcan
-            @can('extras.create')
-            <li class="nav-item">
-              <a class="nav-link" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
-            </li>
-            @endcan
-            <li class="nav-item">
-              <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.extra_edit')}}</a>
-            </li>
-          </ul>
+          @include('operations.restaurantProfile.links',compact('id','restaurant'))
         </div>
         <div class="card-body">
           {!! Form::model($extra, ['route' => ['operations.extras.update', $extra->id], 'method' => 'patch']) !!}
+          
+          <ul class="nav nav-tabs align-items-end card-header-tabs w-100" style="margin-bottom: 10px;">
+            @include('operations.restaurantProfile.extras.links')
+          </ul>
+          <hr>
           <div class="row">
             @include('operations.restaurantProfile.extras.fields')
           </div>

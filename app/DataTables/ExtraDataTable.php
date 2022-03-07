@@ -89,12 +89,14 @@ class ExtraDataTable extends DataTable
             [
                 'data' => 'restaurant.name',
                 'title' => trans('lang.restaurant'),
+                'searchable' => false
 
             ],
             [
                 'data' => 'extra_group.name',
                 'name' => 'extraGroup.name',
                 'title' => trans('lang.extra_group'),
+                
 
             ],
             [
@@ -161,7 +163,25 @@ class ExtraDataTable extends DataTable
                             base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
                         ),
                         true
-                    )
+                    ),
+                    'initComplete' => 'function () {
+                        var columns = this.api().init().columns;
+                        this.api().columns().every(function (index) {
+                          var column = this;
+                          var input = document.createElement("input");
+                          input.setAttribute("style","width:150px;")
+                          input.classList.add("form-control")
+                          input.placeholder = columns[index]["name"]
+                          console.log(columns[index]["name"])
+                          if(columns[index].searchable){
+                          $(input).
+                            appendTo($(column.footer()).empty()).
+                            on(\'keyup\', function () {
+                              column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                        });
+                      }'
                 ]
             ));
     }

@@ -76,6 +76,24 @@ class UserDataTable extends DataTable
             ->parameters([
                 'dom'          => 'Bfrtip',
                 'buttons'      => ['create'],
+                'initComplete' => 'function () {
+                    var columns = this.api().init().columns;
+                    this.api().columns().every(function (index) {
+                      var column = this;
+                      var input = document.createElement("input");
+                      input.setAttribute("style","width:150px;")
+                      input.classList.add("form-control")
+                      input.placeholder = columns[index]["name"]
+                      console.log(columns[index]["name"])
+                      if(columns[index].searchable){
+                      $(input).
+                        appendTo($(column.footer()).empty()).
+                        on(\'keyup\', function () {
+                          column.search($(this).val(), false, false, true).draw();
+                        });
+                    }
+                    });
+                  }'
             //     array_merge(
             //     config('datatables-buttons.parameters'), [
             //         'language' => json_decode(
