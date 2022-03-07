@@ -44,19 +44,18 @@
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
     <div class="row">
-        {{-- <div class="col-md-3">
-            <div class="card ">
-                <div class="card-header" style="align-self: center;"> 
-                    <div class="col-12" style="align-self: center;"> 
-                      <img src="{{ $restaurant->media->first()?$restaurant->media->first()->getUrl():''}}" alt="Avatar" class="avatar">
-                    </div>
-                    <div class="col-12">
-                        
-                    </div>
-                </div>
+      <div class="col-md-3">
+        <div class="card ">
+          {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
+            <fieldset disabled>
+            <div class="row">
+              @include('operations.restaurantProfile.profile')
             </div>
-        </div> --}}
-        <div class="col-md-12">
+            </fieldset>
+            {!! Form::close() !!}
+        </div>
+      </div>
+        <div class="col-md-9">
             <div class="card">
                 
                 @include('operations.restaurantProfile.links',compact('id','restaurant'))
@@ -75,10 +74,10 @@
                       ]) !!}
                     {!! Form::close() !!}
                   </div> --}}
+                  <div class="clearfix"></div>
                     <div class="row">
                       @include('operations.restaurantProfile.users.table')
                     </div>
-                    <div class="clearfix"></div>
                 </div>
             </div>
         </div>

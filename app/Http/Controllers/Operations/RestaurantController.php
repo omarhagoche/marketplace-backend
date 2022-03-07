@@ -372,6 +372,7 @@ class RestaurantController extends Controller
         ->with('cuisine', $cuisine)
         ->with('cuisinesSelected', $cuisinesSelected);
     }
+    
     public function users(UserDataTable $userDataTable,$id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
@@ -386,11 +387,8 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
         return $userDataTable
-        ->with(['id'=>$id])
+        ->with(['id'=>$id, 'restaurant'=> $restaurant,"customFields"=> isset($html) ? $html : false])
         ->render('operations.restaurantProfile.users.index',compact('id','restaurant','customFields'));
-        // ->with('id',$id)
-        // ->with('restaurant', $restaurant)
-        // ->with("customFields", isset($html) ? $html : false);
 
 
     }
