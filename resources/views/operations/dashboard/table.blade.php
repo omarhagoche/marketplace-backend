@@ -4,11 +4,11 @@
 
 @php
     $searchFields = [
-        ["name" => "restaurant","data-column" => 1, "title" => trans('lang.restaurant'),'type'=>'text'],
-        ["name" => "client","data-column" => 2, "title" => trans('lang.order_user_id'),'type'=>'text'],
-        ["name" => "driver","data-column" => 3, "title" => trans('lang.order_driver_id'),'type'=>'text'],
-        ["name" => "order status","data-column" => 4, "title" => trans('lang.order_order_status_id'),'type'=>'select','collection'=>$orderStatuses,'property'=>'status'],
-        // ["name" => "date from ","data-column" => 6, "title" =>"Date of order",'type'=>'date'],
+        ["name" => "restaurant","data-column" => 1, "title" => trans('lang.restaurant'),'type'=>'text','value'=>''],
+        ["name" => "client","data-column" => 2, "title" => trans('lang.order_user_id'),'type'=>'text','value'=>''],
+        ["name" => "driver","data-column" => 3, "title" => trans('lang.order_driver_id'),'type'=>'text','value'=>''],
+        ["name" => "order status","data-column" => 4, "title" => trans('lang.order_order_status_id'),'type'=>'select','collection'=>$orderStatuses,'property'=>'status','value'=>''],
+        ["name" => "datefrom ","data-column" => 6, "title" =>"Date of order",'type'=>'date','value'=>date("Y/m/d")],
 
     ];
 
@@ -28,10 +28,13 @@
                         @endforeach
                     </select> 
                 @else           
-                <input type="{{$f['type']}}" class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
+                <input type="{{$f['type']}}" value="{{$f['value']}}" class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
                @endif
             </div>
         @endforeach
+          {{-- <div class="col-auto align-self-end">
+            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+        </div> --}}
     </div>
 </form>
 {{-- End customer search fields --}}
@@ -45,14 +48,17 @@
 {!! $dataTable->scripts() !!}
 
 <script> 
-   /*  $('#myCustomeSearchForm').submit(function(e){
-        e.preventDefault();
-        LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
-        .search($(this).val())
-        .draw();
-    }); */
+
+    // $('#myCustomeSearchForm').submit(function(e){
+    //     e.preventDefault();
+    //     console.log('ewgewtgrqeg');
+    //     LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
+    //     .search($(this).val())
+    //     .draw();
+    // }); 
+   
      $(".searchDTFields").change(function(){
-        //  console.log('value =>',$(this).val(),'column =>',$(this).data('column'));
+         console.log('value =>',$(this).val(),'column =>',$(this).data('column'));
         LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
         .search($(this).val())
         .draw();

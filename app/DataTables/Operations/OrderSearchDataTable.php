@@ -29,7 +29,6 @@ class OrderSearchDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         return datatables()->eloquent($query)
-        ->startsWithSearch()
             ->editColumn('id', function ($order) {
                 return "#" . $order->id;
             })
@@ -120,7 +119,7 @@ class OrderSearchDataTable extends DataTable
             [
                 'data' => 'delivery_fee',
                 'title' => trans('lang.order_delivery_fee'),
-                'searchable' => false,
+                'searchable' => true,
 
             ],
             /*  [
@@ -144,16 +143,16 @@ class OrderSearchDataTable extends DataTable
                 'name' => 'orders.created_at',
                 'data' => 'created_at',
                 'title' => trans('lang.order_date'),
-                'searchable' => false,
-                'orderable' => true,
+                // 'searchable' => true,
+                // 'orderable' => true,
             ],
-            [
-                'name' => 'orders.updated_at',
-                'data' => 'updated_at',
-                'title' => trans('lang.order_updated_at'),
-                'searchable' => false,
-                'orderable' => true,
-            ]
+            // [
+            //     'name' => 'orders.updated_at',
+            //     'data' => 'updated_at',
+            //     'title' => trans('lang.order_updated_at'),
+            //     'searchable' => false,
+            //     'orderable' => false,
+            // ]
         ];
 
         /* $hasCustomField = in_array(Order::class, setting('custom_field_models', []));

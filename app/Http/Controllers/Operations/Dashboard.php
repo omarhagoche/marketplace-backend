@@ -19,6 +19,6 @@ class Dashboard extends Controller
     {
  
         $orderStatuses=$this->orderStatusRepository->all();
-        return $orderDataTable->with('request', $request)->render('operations.dashboard.order',compact('orderStatuses'));
+        return $orderDataTable->render('operations.dashboard.order',compact('orderStatuses'));
     }
 }
