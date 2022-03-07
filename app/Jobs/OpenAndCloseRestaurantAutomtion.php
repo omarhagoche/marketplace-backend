@@ -15,6 +15,12 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * Id of close unassigend orders operation , to use it in tracking in log system
+     */
+    protected $operationId;
+
+
+    /**
      * @var
      */
     protected $from_time;
@@ -32,6 +38,7 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      */
     public function __construct()
     {
+        $this->operationId = strtoupper(uniqid());
         $this->from_time = now()->addMinutes(-5)->format("H:i"); // to update restaurants that should be close or open before 5 minutes
         $this->to_time =  now()->addMinutes(2)->format("H:i"); // to update restaurants that should be close or open after 2 minutes
     }
@@ -43,7 +50,7 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      */
     public function handle()
     {
-        Log::channel('openAndCloseRestaurant')->info("Start OpenAndCloseRestaurant Job");
+        Log::channel('openAndCloseRestaurant')->info("Start OpenAndCloseRestaurant Job: id => #$this->operationId");
         try {
             DB::transaction(function () {
 
@@ -71,10 +78,10 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
                     'closed_restaurants' => $restaurants_will_close->toArray(),
                 ]);
 
-                Log::channel('openAndCloseRestaurant')->info("End OpenAndCloseRestaurant Job");
+                Log::channel('openAndCloseRestaurant')->info("End OpenAndCloseRestaurant Job: id => #$this->operationId");
             });
         } catch (\Throwable $th) {
-            Log::channel('openAndCloseRestaurant')->error("Error OpenAndCloseRestaurant Job, Error:$th");
+            Log::channel('openAndCloseRestaurantErrors')->error("Error OpenAndCloseRestaurant Job: id => #$this->operationId \n Error:$th");
         }
     }
 

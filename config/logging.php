@@ -105,6 +105,10 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/restaurants/open_close.log'),
         ],
+        'openAndCloseRestaurantErrors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/restaurants/errors/open_close.log'),
+        ],
 
         'canceledOrdersDetails' => [
             'driver' => 'daily',
