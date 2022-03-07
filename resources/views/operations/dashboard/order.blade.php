@@ -3,7 +3,7 @@
 @section('settings_content') 
   @include('flash::message')
   <div class="card">
-    <div class="card-header">
+    {{-- <div class="card-header">
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
         <li class="nav-item">
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.user_table')}}</a>
@@ -13,12 +13,13 @@
         </li>
         @include('operations.layouts.right_toolbar', compact('dataTable'))
       </ul>
-    </div>
+    </div> --}}
     <div class="card-body">
-      @include('settings.users.table')
+      @include('operations.dashboard.table')
       <div class="clearfix"></div>
     </div>
   </div>
+
 {{-- </div> --}}
 @endsection
 
