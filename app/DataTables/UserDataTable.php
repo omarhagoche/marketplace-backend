@@ -88,7 +88,7 @@ class UserDataTable extends DataTable
                       if(columns[index].searchable){
                       $(input).
                         appendTo($(column.footer()).empty()).
-                        on(\'keyup\', function () {
+                        on(\'change\', function () {
                           column.search($(this).val(), false, false, true).draw();
                         });
                     }
