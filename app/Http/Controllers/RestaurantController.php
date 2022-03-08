@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantController.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -30,6 +31,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
+use DB;
 
 class RestaurantController extends Controller
 {
@@ -119,7 +121,7 @@ class RestaurantController extends Controller
      * @return Response
      */
     public function store(CreateRestaurantRequest $request)
-    {       
+    {
         $this->validate($request, [
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
@@ -127,46 +129,32 @@ class RestaurantController extends Controller
 
         ]);
 
-            $input = $request->all();
-            if (auth()->user()->hasRole(['manager','client'])) {
-                $input['users'] = [auth()->id()];
-            }
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        $input = $request->all();
+        if (auth()->user()->hasRole(['manager', 'client'])) {
+            $input['users'] = [auth()->id()];
+        }
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
 
-                try {
-                    $restaurant = $this->restaurantRepository->create($input);
-                    DB::transaction(function () use ($request,$restaurant,$customFields,$input) {
+        try {
+            $restaurant = $this->restaurantRepository->create($input);
+            DB::transaction(function () use ($request, $restaurant, $customFields, $input) {
 
-                    $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
-                    if (isset($input['image']) && $input['image']) {
-                        $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
-                        $mediaItem = $cacheUpload->getMedia('image')->first();
-                        $mediaItem->copy($restaurant, 'image');
-                    }
-                    
-                        $user=User::Create([
-                        'email'=>$request['email'],
-                        'name'=>$request['name'],
-                        'phone_number'=>$request['phone'],
-                        'active'=>true,
-                        'password'=>Hash::make($request['email'])
-                        ]);
-
-                        $defaultRoles = $this->roleRepository->findByField('name', 'admin');
-                        $defaultRoles = $defaultRoles->pluck('name')->toArray();
-                        $user->assignRole($defaultRoles);
-                        $user->restaurants()->attach($restaurant->id);
-                    event(new RestaurantChangedEvent($restaurant, $restaurant));
-                     });
-                } catch (ValidatorException $e) {
-                    Flash::error($e->getMessage());
-                    return redirect()->back()->withInput();
+                $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+                if (isset($input['image']) && $input['image']) {
+                    $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
+                    $mediaItem = $cacheUpload->getMedia('image')->first();
+                    $mediaItem->copy($restaurant, 'image');
                 }
-        
-            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.restaurant')]));
+                event(new RestaurantChangedEvent($restaurant, $restaurant));
+            });
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+            return redirect()->back()->withInput();
+        }
 
-            return redirect(route('operations.restaurant_profile_edit',$restaurant->id));
-        
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.restaurant')]));
+
+        return redirect(route('restaurants.index'));
     }
 
     /**
@@ -208,10 +196,10 @@ class RestaurantController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
-        if($restaurant['active'] == 0){
+        if ($restaurant['active'] == 0) {
             $user = $this->userRepository->getByCriteria(new ManagersClientsCriteria())->pluck('name', 'id');
         } else {
-        $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+            $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         }
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');

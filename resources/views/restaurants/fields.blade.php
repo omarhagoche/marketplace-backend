@@ -416,6 +416,45 @@
     @endhasanyrole
 </div> --}}
 
+
+@hasrole('admin')
+<div class="col-12 custom-field-container">
+    <h5 class="col-12 pb-4">{!! trans('lang.admin_area') !!}</h5>
+    <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+        <!-- Users Field -->
+        <div class="form-group row ">
+            {!! Form::label('users[]', trans("lang.restaurant_users"),['class' => 'col-3 control-label text-right']) !!}
+            <div class="col-9">
+                {!! Form::select('users[]', $user, $usersSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+                <div class="form-text text-muted">{{ trans("lang.restaurant_users_help") }}</div>
+            </div>
+        </div>
+
+    </div>
+    <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+        <!-- admin_commission Field -->
+        <div class="form-group row ">
+            {!! Form::label('admin_commission', trans("lang.restaurant_admin_commission"), ['class' => 'col-3 control-label text-right']) !!}
+            <div class="col-9">
+                {!! Form::number('admin_commission', null,  ['class' => 'form-control', 'step'=>'any', 'placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
+                <div class="form-text text-muted">
+                    {{ trans("lang.restaurant_admin_commission_help") }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row ">
+            {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-3 control-label text-right']) !!}
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('active', 0) !!}
+                    {!! Form::checkbox('active', 1, null) !!}
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+@endhasrole
+
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.restaurant')}}</button>
