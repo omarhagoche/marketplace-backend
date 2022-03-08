@@ -899,6 +899,8 @@ return [
     'restaurants_payout_restaurant_id_placeholder' => 'Insert Restaurant Id',
     'restaurants_payout_table' => 'Restaurants Payouts List',
     'restaurants_payout_updated_at' => 'Updated At',
+    'restaurant_no_data_message_notes' => 'ملاحظة',
+    'restaurant_no_data_message' => 'إذا لم تظهر أي معلومات في الجدول ، يرجى ملء جميع الحقول ثم حذفها أو استخدام متصفح آخر',
     'role' => 'Role',
     'role_create' => 'Create Role',
     'role_default' => 'default role',
@@ -1342,6 +1344,6 @@ return [
     'settlement_manager_available_fee' => 'Fee',
     'settlement_manager_available_fee_help' => 'Insert Fee',
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
-    'open_at'=>'Open at',
-    'close_at'=>'Close at',
+    'open_at' => 'Open at',
+    'close_at' => 'Close at',
 ];
