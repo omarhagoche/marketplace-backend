@@ -197,6 +197,15 @@
             <div class="form-text text-muted">{{ trans("lang.food_category_id_help") }}</div>
         </div>
     </div>
+    
+    <div class="form-group row ">
+        {!! Form::label('extra[]', trans("lang.food_extra_id"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::select('extra[]', $extra, null, ['class' => 'select2 form-control', 'multiple'=>'multiple']) !!}
+            <div class="form-text text-muted">{{ trans("lang.food_category_id_help") }}</div>
+        </div>
+    </div>
+    
 
 </div>
 @if($customFields)
@@ -206,11 +215,7 @@
         {!! $customFields !!}
     </div>
 @endif
-@if (isset($food))
-@include('operations.restaurantProfile.foods.extras.edit')
-@else
-@include('operations.restaurantProfile.foods.extras.create')
-@endif
+
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.food')}}</button>
