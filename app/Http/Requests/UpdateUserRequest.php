@@ -25,9 +25,11 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        User::$rules['phone_number'] .= ',' . $this->route('user');
-        User::$rules['email'] .= ',' . $this->route('user');
+        $id=$this->route('user')?$this->route('user'): $this->route('client');
+        User::$rules['phone_number'] .= ',' . $id;
+        User::$rules['email'] .= ',' . $id;
         User::$rules['password'] = str_replace('required', 'nullable', User::$rules['password']);
+    //    dd(User::$rules,$id);
         return User::$rules;
     }
 }

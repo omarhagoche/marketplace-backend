@@ -249,7 +249,7 @@ Route::middleware('auth')->group(function () {
             Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
             Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
             Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
-            Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
+            Route::resource('clients', 'Operations\ClientController',['names' => 'operations.users']);
 
             //section driver
             Route::get('drivers/map', 'Operations\DriverController@map')->name('operations.drivers.map');
