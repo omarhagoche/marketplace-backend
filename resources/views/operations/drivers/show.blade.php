@@ -36,8 +36,8 @@
                     </li>
                 </ul>
             </div>
-         
-            
+
+
             <div class="card-body">
                 <div class="row">
                     @include('operations.drivers.show_fields')
@@ -47,6 +47,13 @@
                     @include('operations.drivers.show_order_table')
                 @else
                     <H3>{{ trans('lang.no_orders') }}</H3>
+                @endif
+
+                @if ($reviews->count())
+                    <H3>{{ trans('lang.Reviews') }}</H3>
+                    @include('operations.drivers.show_reviews_table')
+                @else
+                    <H3>{{ trans('lang.no_reviews') }}</H3>
                 @endif
                 <div class="row">
 
