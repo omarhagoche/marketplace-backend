@@ -6,6 +6,7 @@ use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Driver
@@ -160,6 +161,18 @@ class Driver extends Model
     {
         return $this->drivers_types;
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\DriverReview::class, 'driver_id', 'id');
+    }
+
+    public function getAvg()
+    {
+        
+        return $this->reviews->avg('rate');
+    }
+
 
     public function getOrdersBetweenDaysCount(int $days): int
     {
