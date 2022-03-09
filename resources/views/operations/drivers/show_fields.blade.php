@@ -121,10 +121,25 @@
         <p>{!! $driver->updated_at !!}</p>
     </div>
 </div>
+<!-- Note Field -->
 <div class="form-group row col-6">
     {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->note ?? '' !!}</p>
+    </div>
+</div>
+<!-- Review Count Field -->
+<div class="form-group row col-6">
+    {!! Form::label('review', 'Review:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->reviews->count() ?? '' !!}</p>
+    </div>
+</div>
+<!-- Review Starts Field -->
+<div class="form-group row col-6">
+    {!! Form::label('review_avg', 'Review Avg:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->getAvg() !!}</p>
     </div>
 </div>
 
