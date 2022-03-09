@@ -98,11 +98,11 @@
     {!! Form::label('available', 'Available:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         @if ($driver->available)
-        <p>{{ trans('lang.yes') }}</p>
+            <p>{{ trans('lang.yes') }}</p>
         @else
-        <p>{{ trans('lang.no') }}</p>
+            <p>{{ trans('lang.no') }}</p>
         @endif
-        
+
     </div>
 </div>
 
@@ -121,30 +121,30 @@
         <p>{!! $driver->updated_at !!}</p>
     </div>
 </div>
-<div class="form-group row col-12">
+<div class="form-group row col-6">
     {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->note ??  "" !!}</p>
+        <p>{!! $driver->note ?? '' !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-4 control-label text-right']) !!}
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-4">
-        <p>{!! $ordersOfDay  !!}</p>
+        <p>{!! $ordersOfDay !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-4 control-label text-right']) !!}
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-4">
-        <p>{!! $ordersOfWeek  !!}</p>
+        <p>{!! $ordersOfWeek !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfMount', 'Orders Of This Mount:', ['class' => 'col-4 control-label text-right']) !!}
-    <div class="col-3">
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfMonth', 'Orders Of This  Month:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-4">
         <p>{!! $ordersOfMount !!}</p>
     </div>
 </div>
