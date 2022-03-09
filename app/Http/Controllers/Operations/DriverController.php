@@ -146,14 +146,14 @@ class DriverController extends Controller
     public function show($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->findWithoutFail($driver->user_id);
+        if ($driver)
+            $user = $this->userRepository->findWithoutFail($driver->user_id);
 
         if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
-
             return redirect(route('operations.drivers.index'));
         }
-        
+
         $ordersOfDay =  $driver->getOrdersBetweenDaysCount(1);
         $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
         $ordersOfMount = $driver->getOrdersBetweenDaysCount(30);
