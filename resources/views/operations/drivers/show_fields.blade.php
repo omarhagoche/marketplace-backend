@@ -73,7 +73,7 @@
 <div class="form-group row col-6">
     {!! Form::label('type', 'Driver Type:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {{-- <p>{!! $driver->driverType->name !!}</p> --}}
+        <p>{!! $driver->type !!}</p>
     </div>
 </div>
 
@@ -106,13 +106,13 @@
     </div>
 </div>
 
-<!-- Created At Field -->
+{{-- <!-- Created At Field -->
 <div class="form-group row col-6">
     {!! Form::label('created_at', 'Created At:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->created_at !!}</p>
     </div>
-</div>
+</div> --}}
 
 <!-- Updated At Field -->
 <div class="form-group row col-6">
