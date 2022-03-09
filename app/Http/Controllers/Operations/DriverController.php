@@ -15,6 +15,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\OrderRepository;
 use App\Repositories\DriverRepository;
+use App\Repositories\DriverReviewRepository;
 use App\Criteria\Users\DriversCriteria;
 use Illuminate\Support\Facades\Response;
 use App\Http\Requests\CreateDriverRequest;
@@ -44,15 +45,26 @@ class DriverController extends Controller
      * @var OrderRepository
      */
     private $orderRepository;
+    /**
+     * @var DriverReviewRepository
+     */
+    private $reviewRepository;
 
-    public function __construct(DriverRepository $driverRepo, DriverTypeRepository $driverTypeRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo, OrderRepository $orderRepository)
-    {
+    public function __construct(
+        DriverRepository $driverRepo,
+        DriverTypeRepository $driverTypeRepo,
+        CustomFieldRepository $customFieldRepo,
+        UserRepository $userRepo,
+        OrderRepository $orderRepository,
+        DriverReviewRepository $reviewRepository
+    ) {
         parent::__construct();
         $this->driverRepository = $driverRepo;
         $this->driverTypeRepository = $driverTypeRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->userRepository = $userRepo;
         $this->orderRepository = $orderRepository;
+        $this->reviewRepository = $reviewRepository;
     }
 
     /**
@@ -146,9 +158,11 @@ class DriverController extends Controller
     public function show($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        if ($driver)
+        if ($driver) {
             $user = $this->userRepository->findWithoutFail($driver->user_id);
-
+            $reviews = $this->reviewRepository->with('user')->findByField('driver_id', $driver->id);
+            //TODO: paginate Order and Reviews
+        }
         if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
             return redirect(route('operations.drivers.index'));
@@ -157,12 +171,12 @@ class DriverController extends Controller
         $ordersOfDay =  $driver->getOrdersBetweenDaysCount(1);
         $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
         $ordersOfMonth = $driver->getOrdersBetweenDaysCount(30);
-        // TODO: show reviews
 
         $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
         $lastOrder = $orders->first();
         return view('operations.drivers.show')->with('driver', $driver)
             ->with('user', $user)
+            ->with('reviews', $reviews)
             ->with('orders', $orders)
             ->with('lastOrder', $lastOrder)
             ->with('ordersOfDay', $ordersOfDay)
