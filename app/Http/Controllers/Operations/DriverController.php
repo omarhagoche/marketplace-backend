@@ -156,7 +156,8 @@ class DriverController extends Controller
 
         $ordersOfDay =  $driver->getOrdersBetweenDaysCount(1);
         $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
-        $ordersOfMount = $driver->getOrdersBetweenDaysCount(30);
+        $ordersOfMonth = $driver->getOrdersBetweenDaysCount(30);
+        // TODO: show reviews
 
         $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
         $lastOrder = $orders->first();
@@ -166,7 +167,7 @@ class DriverController extends Controller
             ->with('lastOrder', $lastOrder)
             ->with('ordersOfDay', $ordersOfDay)
             ->with('ordersOfWeek', $ordersOfWeek)
-            ->with('ordersOfMount', $ordersOfMount);
+            ->with('ordersOfMonth', $ordersOfMonth);
     }
 
 

@@ -145,6 +145,6 @@
 <div class="form-group row col-6">
     {!! Form::label('ordersOfMonth', 'Orders Of This  Month:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-4">
-        <p>{!! $ordersOfMount !!}</p>
+        <p>{!! $ordersOfMonth !!}</p>
     </div>
 </div>
