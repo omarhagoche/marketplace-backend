@@ -638,6 +638,7 @@ return [
     'gallery_restaurant_id_placeholder' => 'Insert Restaurant',
     'gallery_table' => 'Galleries List',
     'gallery_updated_at' => 'Updated At',
+    'no_orders' => 'No Orders',
     'main_fields' => 'Main Fields',
     'media_create' => 'Upload File',
     'media_default_help' => 'Drop your files on the above area to upload it',
