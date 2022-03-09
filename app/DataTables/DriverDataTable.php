@@ -28,7 +28,7 @@ class DriverDataTable extends DataTable
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
             ->editColumn('id', function ($driver) {
-                return getLinksColumnByRouteName([$driver], "drivers.show", 'id', 'id');
+                return getLinksColumnByRouteName([$driver], "operations.drivers.show", 'id', 'id');
             })
             ->editColumn('updated_at', function ($driver) {
                 return getDateColumn($driver, 'updated_at');
