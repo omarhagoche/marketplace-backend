@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.restaurant_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.restaurant_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.food_restaurant_id')}}<small class="ml-3 mr-3"> {{ $restaurant->name }} |</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -40,24 +40,15 @@
 <!-- /.content-header -->
 <div class="content">
     <div class="clearfix"></div>
-    @include('flash::message')
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card ">
-              {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
-              <fieldset disabled>
-              <div class="row">
-                @include('operations.restaurantProfile.profile')
-              </div>
-              </fieldset>
-              {!! Form::close() !!}
-            </div>
-        </div>
-        <div class="col-md-9">
+    
+        <div class="col-md-12">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header">       
             @include('operations.restaurantProfile.links',compact('id','restaurant'))
           <div class="card-body">
+            <div class="clearfix"></div>
+                @include('flash::message')
+                @include('adminlte-templates::common.errors')
                 @include('operations.restaurantProfile.foods.links')
                 {!! Form::open(['route' => ['operations.restaurant.foods.store',$id]]) !!}
                 <div class="row">
@@ -72,3 +63,17 @@
 @include('layouts.media_modal')
 
 @endsection
+@push('scripts_lib')
+<!-- iCheck -->
+<script src="{{asset('plugins/iCheck/icheck.min.js')}}"></script>
+<!-- select2 -->
+<script src="{{asset('plugins/select2/select2.min.js')}}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
+{{--dropzone--}}
+<script src="{{asset('plugins/dropzone/dropzone.js')}}"></script>
+<script type="text/javascript">
+    Dropzone.autoDiscover = false;
+    var dropzoneFields = [];
+</script>
+@endpush

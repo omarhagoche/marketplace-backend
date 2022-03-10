@@ -72,17 +72,6 @@
         </script>
 @endprepend
 
-<!-- Description Field -->
-    <div class="form-group row ">
-        {!! Form::label('description', trans("lang.extra_description"), ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
-            {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
-             trans("lang.extra_description_placeholder")  ]) !!}
-            <div class="form-text text-muted">{{ trans("lang.extra_description_help") }}</div>
-        </div>
-    </div>
-</div>
-<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
     <!-- Price Field -->
     <div class="form-group row ">
@@ -108,6 +97,18 @@
         <div class="col-9">
             {!! Form::select('extra_group_id', $extraGroup, null, ['class' => 'select2 form-control']) !!}
             <div class="form-text text-muted">{{ trans("lang.extra_extra_group_id_help") }}</div>
+        </div>
+    </div>
+</div>
+<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+
+    <!-- Description Field -->
+    <div class="form-group row ">
+        {!! Form::label('description', trans("lang.extra_description"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
+             trans("lang.extra_description_placeholder")  ]) !!}
+            <div class="form-text text-muted">{{ trans("lang.extra_description_help") }}</div>
         </div>
     </div>
 

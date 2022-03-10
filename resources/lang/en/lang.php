@@ -999,6 +999,7 @@ return [
     'user_updated_at_help' => 'Insert Updated At',
     'user_updated_at_placeholder' => 'Insert Updated At',
     'view_details' => 'View details',
+    'details' => 'Details',
     'yes' => 'Yes',
     'extra' => 'Extra',
     'extra_plural' => 'Extras',

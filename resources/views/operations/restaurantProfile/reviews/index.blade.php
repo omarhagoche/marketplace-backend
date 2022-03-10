@@ -42,18 +42,7 @@
     <div class="clearfix"></div>
     @include('flash::message')
     <div class="row">
-        <div class="col-md-3">
-          <div class="card ">
-            {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
-            <fieldset disabled>
-            <div class="row">
-              @include('operations.restaurantProfile.profile')
-            </div>
-            </fieldset>
-            {!! Form::close() !!}
-          </div>
-        </div>
-        <div class="col-md-9">
+        <div class="col-md-12">
         <div class="card">
           <div class="card-header">
             @include('operations.restaurantProfile.links',compact('id','restaurant'))

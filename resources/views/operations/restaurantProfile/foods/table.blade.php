@@ -3,16 +3,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
 @endpush
-<div style="overflow-x:auto;">
+<div style="overflow-x:auto;" class="scroll-inner">
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr id="search-fields">
-                <th style="width: 68px;"><span>#</span></th>
+                <th><span>#</span></th>
                 <th><span>name</span></th>
-                <th style="width: 84px;"><span>price</span></th>
-                <th style="width: 153.8889px;"><span>discount</span></th>
-                <th style="width: 123.587px;"><span>count</span></th>
-                <th style="width: 107px;"><span hidden>category</span>{!! Form::select('category_id', $category,null, ['id'=>'search_cat','class' => 'select2 form-control']) !!}</th>
+                <th><span>price</span></th>
+                <th><span>discount price</span></th>
+                <th><span>package count</span></th>
+                <th style="width: 136px;"><span hidden>category</span>{!! Form::select('category_id', $category,null, ['id'=>'search_cat','class' => 'select2 form-control']) !!}</th>
                 <th hidden>categoryname</th>
                 <th hidden>available</th>
                 <th hidden>update</th>
@@ -21,8 +21,8 @@
             <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th style="width: 51.889px;">price</th>
-                <th style="width: 153.8889px;">discount price</th>
+                <th>price</th>
+                <th>discount price</th>
                 <th>package count</th>
                 <th>category</th>
                 <th hidden>categoryname</th>
@@ -32,8 +32,8 @@
             </tr>
             
         </thead>
+
         <tbody>
-            
             @foreach ($foods as $food)
             <tr>
                 <td>{{$food->id}}</td>
@@ -78,16 +78,30 @@
                 </td>
             </tr>
             @endforeach
-            <tfoot>
-                
-            </tfoot>
         </tbody>
     </table>
 </div>
 
 @push('css_lib')
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.cssgit ">
+<style>
+    .scroll-inner::-webkit-scrollbar {
+        width: 10px;
+    }
+    .scroll-inner::-webkit-scrollbar:horizontal {
+      height: 10px;
+    }
+    .scroll-inner::-webkit-scrollbar-track {
+      background-color: rgba(204, 204, 204, 0.3);
+    }
+    .scroll-inner::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: rgba(204, 204, 204, 0.5);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
 @endpush
+
 @push('scripts')
 <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
@@ -95,69 +109,81 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // $('#example').DataTable();
-            // Setup - add a text input to each footer cell
-            $('#search-fields th span').each( function () {
-                var title = $(this).text();
-                if(title != "category")
-                $(this).html( '<input style="width: 100%;" class="form-control" type="text" placeholder="'+title+'" />' );
-            
-            } );
-  
-            // DataTable
-            var table = $('#example').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'excel'
-                 ],
-                initComplete: function () {
-                    // Apply the search
-                    this.api().columns().every( function () {
-                        var that = this;
-                        $( $( '#search-fields input')[that[0][0]]).on( 'keyup change clear', function () {
-                            if ( that.search() !== this.value ) {
-                                that.search( this.value ).draw();
-                            }
-                        } );
-                    } );
-                }
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#search-fields th span').each( function () {
+        var title = $(this).text();
+        if(title != "category")
+        $(this).html( '<input style="width: 100%;" class="form-control" type="text" placeholder="'+title+'" />' );
+    
+    } );
+
+    // DataTable
+    var table = $('#example').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            { extend: "excel", className: "btn btn-success add-excel",text:"" }
+        ],
+        initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+                var that = this;
+                $($( '#search-fields input')[that[0][0]]).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that.search( this.value ).draw();
+                    }
+                });
             });
-            $("#search_cat").on("change", function() {
-                $("#example").DataTable()
-                .columns(5)
-                .search($("#search_cat option:selected" ).text())
-                .draw();
-            });
-        } );
-  
-        function editBasicInto(id){
-            console.log($('#category_id'+id).val())
-            $('#button-'+id).html(" <i class='fa fa-spinner fa-spin'></i>");
-            $('#button-'+id).prop('disabled', true);
-            $.ajax({
-                type: "POST",
-                url: "{{route('operations.restaurant.food.update')}}",
-                data: {
-                    "id" : id,
-                    "name" : $('#name'+id).val(),
-                    "price" : $('#price'+id).val(),
-                    "discount_price" : $('#discount_price'+id).val(),
-                    "category_id" : $('#category_id'+id).val(),
-                    "package_items_count" : $('#package_items_count'+id).val(),
-                    "available" : $('#available'+id).val(),
-                    _token: '{{csrf_token()}}'
-                },
-                dataType: "json",
-                success: function (response) {
-                    $('#button-'+id).html(" <i class='fa fa-edit'></i>");
-                    $('#button-'+id).prop('disabled', false);
-                }
-            });
-            $('#button-'+id).html(" <i class='fa fa-edit'></i>");
-            $('#button-'+id).prop('disabled', false);
         }
+    });
+
+    $('.add-excel').append(" <i class='fa fa-file-excel-o'></i>");
+
+    $("#search_cat").on("change", function() {
+        $("#example").DataTable()
+        .columns(5)
+        .search($("#search_cat option:selected" ).text())
+        .draw();
+    });
+});
+  
+    function editBasicInto(id) {
+
+        $('#button-'+id).html(" <i class='fa fa-spinner fa-spin'></i>");
+        $('#button-'+id).prop('disabled', true);
+
+        $.ajax({
+            type: "POST",
+            url: "{{route('operations.restaurant.food.update')}}",
+            data: {
+                "id" : id,
+                "name" : $('#name'+id).val(),
+                "price" : $('#price'+id).val(),
+                "discount_price" : $('#discount_price'+id).val(),
+                "category_id" : $('#category_id'+id).val(),
+                "package_items_count" : $('#package_items_count'+id).val(),
+                "available" : $('#available'+id).val(),
+                _token: '{{csrf_token()}}'
+            },
+            dataType: "json",
+            success: function (response) {
+                $('#button-'+id).html(" <i class='fa fa-edit'></i>");
+                $('#button-'+id).prop('disabled', false);
+                swal("Good job!", "Food Updated Successfully!", "success");
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#button-'+id).html(" <i class='fa fa-edit'></i>");
+                $('#button-'+id).prop('disabled', false);
+                $('#button-'+id).html(" <i class='fa fa-edit'></i>");
+                $('#button-'+id).prop('disabled', false);
+                swal("Error!", textStatus+" | "+errorThrown, "error");
+            }
+        });    
+    }
         
-    </script>
+</script>
 @endpush
+

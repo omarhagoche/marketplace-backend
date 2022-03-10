@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.restaurant_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.restaurant_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.restaurant_plural')}}<small class="ml-3 mr-3"> </small><small>{{trans('lang.restaurant_desc')}}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -55,11 +55,9 @@
         </div>
         <div class="col-md-9">
             <div class="card">
-                
               @include('operations.restaurantProfile.links',compact('id','restaurant'))
-
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row" style="margin-left: 29px;">
                       @include('operations.restaurantProfile.fields')
                     </div>
                     {!! Form::close() !!}
