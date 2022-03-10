@@ -86,15 +86,15 @@ class ExtraDataTable extends DataTable
             //    'title' => trans('lang.food'),
             //
             //],
-            [
-                'data' => 'restaurant.name',
-                'title' => trans('lang.restaurant'),
-                'searchable' => false
+            // [
+            //     'data' => 'restaurant.name',
+            //     'title' => trans('lang.restaurant'),
+            //     'searchable' => false
 
-            ],
+            // ],
             [
                 'data' => 'extra_group.name',
-                'name' => 'extraGroup.name',
+                'name' => 'Extra Group',
                 'title' => trans('lang.extra_group'),
                 
 

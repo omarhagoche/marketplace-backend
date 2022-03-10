@@ -22,7 +22,7 @@
     {!! Form::number('quantity', 1, ['class' => 'form-control', 'id' => 'food_quantity']) !!}
   </div>
   <div class="col col-md-1">
-    <label for="add">.</label>
+    <label for="add"></label>
     <button type="submit" class="form-control btn btn-primary"> Add Food 
       <i class="fa fa-plus"></i>
     </button>
@@ -73,14 +73,14 @@
                       {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
                       <div class="row">
                         <div class="col col-md-12">
-                          <select name="extraId" id="extra" class=" form-control" required style="width: 289px; display: inline;">
+                          <select name="extraId" id="extra" class=" form-control" required style="width: 198px; display: inline;">
                             @foreach ($orderFoods->food->extras as $extra)
                             @if (!$orderFoods->foodOrderExtra->pluck('extra_id')->contains($extra->id))
                               <option value="{{ $extra->id }}">{{ $extra->name}}</option>
                             @endif
                             @endforeach
                           </select>
-                          <button style="background-color: #3c4b71; border-color: #3c4b71;" id="addExtra" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                          <button style="background-color: #3c4b71; border-color: #3c4b71;"  id="addExtra" class="btn btn-primary"><i class="fa fa-plus"></i></button>
                         </div>
                       </div>
                       {!! Form::close() !!}

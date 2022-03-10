@@ -596,5 +596,48 @@ class OrderController extends Controller
         $order = $this->orderRepository->findWithoutFail($order_id);
         return view('operations.orders.orderCoupon.edit')->with(["order" => $order]);
     }
+
+
+    public function removeDeliveryCoupon($id)
+    {
+        $order = $this->orderRepository->findByField('delivery_coupon_id',$id)[0];
+        $this->orderRepository->update([
+            "delivery_coupon_id" => null,
+        ], $order->id);
+        $coupon = $this->couponRepository->findWithoutFail($id);
+
+        if (empty($coupon)) {
+            Flash::error('Coupon not found');
+
+            return view('operations.orders.orderCoupon.edit')->with(["order" => $order]);
+        }
+
+        $this->couponRepository->delete($id);
+
+        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.coupon')]));
+
+        return redirect(route('orders.show-order-coupon',$order->id));
+    }
+
+    public function removeRestaurantCoupon($id)
+    {
+        $order = $this->orderRepository->findByField('restaurant_coupon_id',$id)[0];
+        $this->orderRepository->update([
+            "restaurant_coupon_id" => null,
+        ], $order->id);
+        $coupon = $this->couponRepository->findWithoutFail($id);
+
+        if (empty($coupon)) {
+            Flash::error('Coupon not found');
+
+            return view('operations.orders.orderCoupon.edit')->with(["order" => $order]);
+        }
+
+        $this->couponRepository->delete($id);
+
+        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.coupon')]));
+
+        return redirect(route('orders.show-order-coupon',$order->id));
+    }
     
 }

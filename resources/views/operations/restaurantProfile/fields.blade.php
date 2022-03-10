@@ -2,9 +2,31 @@
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+
+    <div class="form-group row ">
+        {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-6 control-label=']) !!}
+        <div class="col-9">
+            {!! Form::time('open_at', '10:30',  ['class' => 'form-control','placeholder'=>  trans("lang.open_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.open_at_help") }}
+            </div>
+        </div>
+    </div>
+   
+    <!-- Mobile Field -->
+    <div class="form-group row ">
+        {!! Form::label('mobile', trans("lang.restaurant_mobile"), ['class' => 'col-6 control-label']) !!}
+        <div class="col-9">
+            {!! Form::text('mobile', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_mobile_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_mobile_help") }}
+            </div>
+        </div>
+    </div>
+
     <!-- cuisines Field -->
     <div class="form-group row ">
-        {!! Form::label('cuisines[]', trans("lang.restaurant_cuisines"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('cuisines[]', trans("lang.restaurant_cuisines"),['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::select('cuisines[]', $cuisine, $cuisinesSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_cuisines_help") }}</div>
@@ -14,9 +36,9 @@
     
     <!-- 'Private_drivers Field' -->
     <div class="form-group row private-drivers">
-        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label ']) !!}
         <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
+            <label class="col-9 form-check-inline">
                 {!! Form::hidden('private_drivers', 0) !!}
                 {!! Form::checkbox('private_drivers') !!}
             </label>
@@ -26,14 +48,14 @@
 
     <!-- Users Field -->
     <div class="form-group row" id='restaurant-body-drivers'>
-        {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
         </div>
     </div>
     <div class="form-group row ">
-        {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('delivery_price_type', trans("lang.restaurant_delivery_price_type"),['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::select('delivery_price_type', getDeliveryPriceTypes(),$restaurant->delivery_price_type?? null, ['class' => 'form-control']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_price_type_help") }}</div>
@@ -41,7 +63,7 @@
     </div>
     <!-- delivery_fee Field -->
     <div class="form-group row " id="delivery_fee_form_group">
-        {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::number('delivery_fee', null,  ['class' => 'form-control','step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
             <div class="form-text text-muted">
@@ -52,7 +74,7 @@
 
     <!-- delivery_range Field -->
     <div class="form-group row ">
-        {!! Form::label('delivery_range', trans("lang.restaurant_delivery_range"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('delivery_range', trans("lang.restaurant_delivery_range"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::number('delivery_range', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_range_placeholder")]) !!}
             <div class="form-text text-muted">
@@ -63,7 +85,7 @@
 
     <!-- default_tax Field -->
     <div class="form-group row ">
-        {!! Form::label('default_tax', trans("lang.restaurant_default_tax"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('default_tax', trans("lang.restaurant_default_tax"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::number('default_tax', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_default_tax_placeholder")]) !!}
             <div class="form-text text-muted">
@@ -76,7 +98,7 @@
 
     <!-- Description Field -->
     <div class="form-group row ">
-        {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
              trans("lang.restaurant_description_placeholder") ,'rows' => 2, 'cols' => 2]) !!}
@@ -86,10 +108,41 @@
     
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+     <div class="form-group row ">
+        {!! Form::label('close_at', trans("lang.close_at"), ['class' => 'col-6 control-label']) !!}
+        <div class="col-9">
+            {!! Form::time('close_at', '23:30',  ['class' => 'form-control','placeholder'=>  trans("lang.close_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.close_at_help") }}
+            </div>
+        </div>
+    </div>
+
+     <!-- Phone Field -->
+     <div class="form-group row ">
+        {!! Form::label('phone', trans("lang.restaurant_phone"), ['class' => 'col-6 control-label']) !!}
+        <div class="col-9">
+            {!! Form::text('phone', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_phone_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_phone_help") }}
+            </div>
+        </div>
+    </div>
+
+     <!-- commission Field -->
+     <div class="form-group row ">
+        {!! Form::label('admin_commission', trans("lang.restaurant_admin_commission"), ['class' => 'col-6 control-label']) !!}
+        <div class="col-9">
+            {!! Form::text('admin_commission', $restaurant->admin_commission == null ? "10" : $restaurant->admin_commission,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.restaurant_admin_commission_help") }}
+            </div>
+        </div>
+    </div>
 
     <!-- Image Field -->
     <div class="form-group row">
-        {!! Form::label('image', trans("lang.restaurant_image"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('image', trans("lang.restaurant_image"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             <div style="width: 100%" class="dropzone image" id="image" data-field="image">
                 <input type="hidden" name="image">
@@ -192,65 +245,64 @@
 @endprepend
     <!-- Information Field -->
     <div class="form-group row ">
-        {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::textarea('information', null, ['class' => 'form-control','placeholder'=>
              trans("lang.restaurant_information_placeholder")  ]) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
         </div>
     </div>
-  
-    <div class="form-group row ">
-        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-8 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('available_for_delivery', 0) !!}
-                {!! Form::checkbox('available_for_delivery', 1, null) !!}
-            </label>
-        </div>
-    </div>
 
     <div class="form-group row ">
-        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
+            <label class="col-10 form-check-inline">
                 {!! Form::hidden('active', 0) !!}
                 {!! Form::checkbox('active', 1, null) !!}
             </label>
         </div>
+        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-2 control-label ']) !!}
     </div>
-    <div class="form-group row ">
-        <!-- 'Boolean closed Field' -->
-        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-8 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('closed', 0) !!}
-                {!! Form::checkbox('closed', 1, null) !!}
-            </label>
-        </div>
-    </div>
-
-    <div class="form-group row ">
-        <!-- 'Boolean featured Field' -->
-        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-8  control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('featured', 0) !!}
-                {!! Form::checkbox('featured', 1, null) !!}
-            </label>
-        </div>
-    </div>
-
     <div class="form-group row ">
         <!-- 'Boolean is_restaurant Field' -->
-        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
+            <label class="col-8 form-check-inline">
                 {!! Form::hidden('is_restaurant', 0) !!}
                 {!! Form::checkbox('is_restaurant', 1, null) !!}
             </label>
         </div>
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-3 control-label ']) !!}
     </div>
+    <div class="form-group row ">
+        <!-- 'Boolean closed Field' -->
+        <div class="checkbox icheck">
+            <label class="col-9 form-check-inline">
+                {!! Form::hidden('closed', 0) !!}
+                {!! Form::checkbox('closed', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-4 control-label']) !!}
+    </div>
+    <div class="form-group row ">
+        <!-- 'Boolean featured Field' -->
+        <div class="checkbox icheck">
+            <label class="col-9 form-check-inline">
+                {!! Form::hidden('featured', 0) !!}
+                {!! Form::checkbox('featured', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-4 control-label ']) !!}
+    </div>
+      
+    <div class="form-group row ">
+        <div class="checkbox icheck">
+            <label class="col-9 form-check-inline">
+                {!! Form::hidden('available_for_delivery', 0) !!}
+                {!! Form::checkbox('available_for_delivery', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-4 control-label ']) !!}
+    </div>
+</div>
 @if($customFields)
     <div class="clearfix"></div>
     <div class="col-12 custom-field-container">
@@ -258,8 +310,9 @@
         {!! $customFields !!}
     </div>
 @endif
+
 <!-- Submit Field -->
-<div class="form-group col-12 text-right">
+<div class="form-group col-12 ">
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.restaurant')}}</button>
     <a href="{!! route('restaurants.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>

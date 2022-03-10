@@ -15,7 +15,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.extra_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.extra_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.restaurant')}}<small class="ml-3 mr-3"> {{ $restaurant->name }} </small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -35,29 +35,16 @@
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
   <div class="row">
-    <div class="col-md-3">
-      <div class="card ">
-        {!! Form::model($restaurant, ['disabled' => 'disabled']) !!}
-        <fieldset disabled>
-        <div class="row">
-          @include('operations.restaurantProfile.profile')
-        </div>
-        </fieldset>
-        {!! Form::close() !!}
-      </div>
-    </div>
-    <div class="col-md-9">
+    <div class="col-md-12">
       <div class="card">
-        <div class="card-header">
           @include('operations.restaurantProfile.links',compact('id','restaurant'))
+        <div class="card-header">
+          <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+          @include('operations.restaurantProfile.extras.links')
+          </ul>
         </div>
         <div class="card-body">
           {!! Form::model($extra, ['route' => ['operations.extras.update', $extra->id], 'method' => 'patch']) !!}
-          
-          <ul class="nav nav-tabs align-items-end card-header-tabs w-100" style="margin-bottom: 10px;">
-            @include('operations.restaurantProfile.extras.links')
-          </ul>
-          <hr>
           <div class="row">
             @include('operations.restaurantProfile.extras.fields')
           </div>

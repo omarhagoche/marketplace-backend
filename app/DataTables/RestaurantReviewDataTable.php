@@ -133,11 +133,11 @@ class RestaurantReviewDataTable extends DataTable
                 'title' => trans('lang.restaurant_review_user_id'),
 
             ],
-            [
-                'data' => 'restaurant.name',
-                'title' => trans('lang.restaurant_review_restaurant_id'),
+            // [
+            //     'data' => 'restaurant.name',
+            //     'title' => trans('lang.restaurant_review_restaurant_id'),
 
-            ],
+            // ],
             [
                 'data' => 'updated_at',
                 'title' => trans('lang.restaurant_review_updated_at'),

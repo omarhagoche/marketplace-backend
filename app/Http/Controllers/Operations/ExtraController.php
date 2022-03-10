@@ -106,18 +106,19 @@ class ExtraController extends Controller
         
         return view('operations.restaurantProfile.extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
     }
+
+    /**
+     * Show the form for creating a new Extra By Restaurent id.
+     *
+     * @return Response
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     */
     public function createByrestuarant($id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
-
-        $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
-            $html = generateCustomField($customFields);
-        }
         
-        return view('operations.restaurantProfile.extras.create')->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup)->with('id',$id);
+        return view('operations.restaurantProfile.extras.create')->with("restaurant", $restaurant)->with("extraGroup", $extraGroup)->with('id',$id);
     }
 
     /**
@@ -174,26 +175,16 @@ class ExtraController extends Controller
     
     public function editByRestuarant($id,$restaurant_id)
     {
-        $this->extraRepository->pushCriteria(new ExtrasOfUserCriteria(auth()->id()));
         $extra = $this->extraRepository->findWithoutFail($id);
         if (empty($extra)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.extra')]));
             return redirect(route('extras.index'));
         }
-        #$this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
-        #$food = $this->foodRepository->groupedByRestaurants();
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
         
         $restaurant = $this->restaurantRepository->findWithoutFail($restaurant_id);
 
-        $customFieldsValues = $extra->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
-        $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
-
-        return view('operations.restaurantProfile.extras.edit')->with("id", $restaurant->id)->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
+        return view('operations.restaurantProfile.extras.edit')->with("id", $restaurant->id)->with('extra', $extra)->with("restaurant", $restaurant)->with("extraGroup", $extraGroup);
     }
 
     /**
