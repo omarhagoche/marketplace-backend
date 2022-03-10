@@ -1,6 +1,6 @@
 @extends('operations.layouts.settings.default')
 @section('settings_title',trans('lang.user_table'))
-@section('setting_desc',"List")
+@section('setting_desc',"User List")
 @section('settings_content') 
   @include('flash::message')
   <div class="card">
