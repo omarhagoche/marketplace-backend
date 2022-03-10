@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\Repositories\FoodOrderExtraRepository;
 use App\Criteria\Users\DriversOfRestaurantCriteria;
+use App\DataTables\Operations\OrderSearchDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class OrderController extends Controller
@@ -105,9 +106,10 @@ class OrderController extends Controller
      * @param OrderDataTable $orderDataTable
      * @return Response
      */
-    public function index(OrderDataTable $orderDataTable)
+    public function index(OrderSearchDataTable $orderDataTable)
     {
-        return $orderDataTable->render('operations.orders.index');
+        $orderStatuses=$this->orderStatusRepository->all();
+        return $orderDataTable->render('operations.orders.index',compact('orderStatuses'));
     }
 
 
