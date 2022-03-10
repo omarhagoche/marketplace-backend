@@ -109,11 +109,13 @@ class Driver extends Model
     }
 
 
+    FIXME: many queries
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
     }
 
+    FIXME: many queries
     public function getCustomFieldsAttribute()
     {
         $hasCustomField = in_array(static::class, setting('custom_field_models', []));
@@ -129,6 +131,7 @@ class Driver extends Model
     }
 
     /**
+     * FIXME: many queries
      * get driverType attribute
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
      */
