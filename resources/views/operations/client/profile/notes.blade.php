@@ -27,6 +27,7 @@
                             @include('operations.client.profile.include.links')
                         </div>
                         <div class="card-body">
+                            
                             @include('operations.settings.note.table')
 
                             <div class="clearfix"></div>

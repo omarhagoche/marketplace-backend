@@ -119,18 +119,18 @@ class ClientDataTable extends DataTable
         ];
 
         // TODO custom element generator
-        $hasCustomField = in_array(User::class, setting('custom_field_models',[]));
-        if ($hasCustomField) {
-            $customFieldsCollection = CustomField::where('custom_field_model', User::class)->where('in_table', '=', true)->get();
-            foreach ($customFieldsCollection as $key => $field) {
-                array_splice($columns, $field->order - 1, 0, [[
-                    'data' => 'custom_fields.' . $field->name . '.view',
-                    'title' => trans('lang.user_' . $field->name),
-                    'orderable' => false,
-                    'searchable' => false,
-                ]]);
-            }
-        }
+        // $hasCustomField = in_array(User::class, setting('custom_field_models',[]));
+        // if ($hasCustomField) {
+        //     $customFieldsCollection = CustomField::where('custom_field_model', User::class)->where('in_table', '=', true)->get();
+        //     foreach ($customFieldsCollection as $key => $field) {
+        //         array_splice($columns, $field->order - 1, 0, [[
+        //             'data' => 'custom_fields.' . $field->name . '.view',
+        //             'title' => trans('lang.user_' . $field->name),
+        //             'orderable' => false,
+        //             'searchable' => false,
+        //         ]]);
+        //     }
+        // }
         return $columns;
     }
 

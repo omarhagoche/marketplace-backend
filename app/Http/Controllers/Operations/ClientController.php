@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Operations;
 
+use App\Models\Note;
 use App\Models\Order;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Repositories\NoteRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
@@ -46,12 +48,13 @@ class ClientController extends Controller
      */
     private $roleRepository;
     private $uploadRepository;
+    private $noteRepository;
     /**
      * @var CustomFieldRepository
      */
     private $customFieldRepository;
 
-      public function __construct(OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
+      public function __construct(NoteRepository $noteRepo,OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
                                   CustomFieldRepository $customFieldRepo)
       {
           parent::__construct();
@@ -60,6 +63,8 @@ class ClientController extends Controller
           $this->uploadRepository = $uploadRepo;
           $this->customFieldRepository = $customFieldRepo;
           $this->orderRepository = $orderRepo;
+          $this->noteRepository = $noteRepo;
+
 
       }
      /**
@@ -203,6 +208,42 @@ class ClientController extends Controller
         $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
         return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
+    }
+    public function createNote($userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+
+       return view('operations.client.profile.createNote',compact('user'));
+    }
+    public function storeNote(Request $request,$userId)
+    {
+        $this->validate($request, [
+            'text' => 'required',
+        ]);
+        try {
+            $this->noteRepository->create([
+                'from_user_id'=>auth()->user()->id,
+                'to_user_id'=>$userId,
+                'text'=>$request->text
+            ]);
+            Flash::success('Creat note successfully.');
+            return redirect(route('operations.users.profile.notes',$userId));
+        } catch (\Throwable $th) {
+            Flash::success('Creat note error.');
+            return redirect(route('operations.users.profile.notes',$userId));
+        }
+    }
+    public function destroyNote($userId,$noteId)
+    {
+       try {
+            $note = $this->noteRepository->findWithoutFail($noteId);
+            $note->delete();
+            Flash::success('Delete note successfully.');
+            return redirect(route('operations.users.profile.notes',$userId,$noteId));
+       } catch (\Throwable $th) {
+        Flash::success('Creat note error.');
+        return redirect(route('operations.users.profile.notes',$userId,$noteId));
+       }
     }
        /**
      * Display the specified Favorite.
