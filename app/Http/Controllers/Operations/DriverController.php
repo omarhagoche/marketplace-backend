@@ -172,7 +172,7 @@ class DriverController extends Controller
         $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
         $ordersOfMonth = $driver->getOrdersBetweenDaysCount(30);
 
-        $orders = $this->orderRepository->with('user')->with('restaurant')->orderby('created_at', 'desc')->findByField('driver_id', $driver->id);
+        $orders = $this->orderRepository->where('driver_id', $driver->id)->with('user')->with('restaurant')->orderby('created_at', 'desc')->paginate(10);
         $lastOrder = $orders->first();
         return view('operations.drivers.show')->with('driver', $driver)
             ->with('user', $user)
