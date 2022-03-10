@@ -137,7 +137,6 @@ class RestaurantController extends Controller
      */
     public function create()
     {
-
         $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
@@ -150,7 +149,7 @@ class RestaurantController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('operations.restaurants.create')->with('id',$id)->with("customFields", isset($html) ? $html : false)
+        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)
             ->with("deliveryPriceType", $deliveryPriceType)
             ->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
     }

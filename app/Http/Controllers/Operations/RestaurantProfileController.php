@@ -126,12 +126,7 @@ class RestaurantProfileController extends Controller
         $category = $this->categoryRepository->pluck('name', 'id');
         $extra = $this->extraRepository->findByField('restaurant_id', $id)->pluck('name', 'id');
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
-        $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
-            $html = generateCustomField($customFields);
-        }
-        return view('operations.restaurantProfile.foods.create',compact('extra','id','restaurant','category'))->with("customFields", isset($html) ? $html : false);
+        return view('operations.restaurantProfile.foods.create',compact('extra','id','restaurant','category'));
     }
     
     public function restaurantFoodsStore(CreateFoodRequest $request, $id) {
@@ -157,7 +152,6 @@ class RestaurantProfileController extends Controller
     }
 
     public function restaurantFoodsEdit($id, $food_id) {        
-            $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
             $food = $this->foodRepository->findWithoutFail($food_id);
             if (empty($food)) {
                 Flash::error(__('lang.not_found', ['operator' => __('lang.food')]));
@@ -166,15 +160,7 @@ class RestaurantProfileController extends Controller
             $extra = $this->extraRepository->findByField('restaurant_id', $id)->pluck('name', 'id');
             $category = $this->categoryRepository->pluck('name', 'id');
             $restaurant = $this->restaurantRepository->findWithoutFail($id);
-            $customFieldsValues = $food->customFieldsValues()->with('customField')->get();
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
-            $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
-            if ($hasCustomField) {
-                $html = generateCustomField($customFields, $customFieldsValues);
-            }
-            $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
-            return view('operations.restaurantProfile.foods.edit',compact('extra','id','restaurant','category','extraGroup','food'))->with("customFields", isset($html) ? $html : false);
-
+            return view('operations.restaurantProfile.foods.edit',compact('extra','id','restaurant','category','food'));
     }
 
     public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id) { 

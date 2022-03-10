@@ -3,6 +3,16 @@
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
+    <div class="form-group row ">
+        {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-6 control-label=']) !!}
+        <div class="col-9">
+            {!! Form::time('open_at', '10:30',  ['class' => 'form-control','placeholder'=>  trans("lang.open_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.open_at_help") }}
+            </div>
+        </div>
+    </div>
+   
     <!-- Mobile Field -->
     <div class="form-group row ">
         {!! Form::label('mobile', trans("lang.restaurant_mobile"), ['class' => 'col-6 control-label']) !!}
@@ -98,7 +108,16 @@
     
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
-    
+     <div class="form-group row ">
+        {!! Form::label('close_at', trans("lang.close_at"), ['class' => 'col-6 control-label']) !!}
+        <div class="col-9">
+            {!! Form::time('close_at', '23:30',  ['class' => 'form-control','placeholder'=>  trans("lang.close_at")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.close_at_help") }}
+            </div>
+        </div>
+    </div>
+
      <!-- Phone Field -->
      <div class="form-group row ">
         {!! Form::label('phone', trans("lang.restaurant_phone"), ['class' => 'col-6 control-label']) !!}
