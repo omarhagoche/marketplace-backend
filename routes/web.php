@@ -273,7 +273,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
             Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
             Route::get('restaurantProfile/{id}', 'Operations\RestaurantProfileController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
-            Route::resource('restaurantProfile', 'Operations\RestaurantProfileController',['names' => 'operations.restaurant_profile']);
+            Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
             Route::get('restaurants/create', 'Operations\RestaurantController@create')->name('operations.restaurant_profile.create');
             Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsindex')->name('operations.restaurant.foods.index');
