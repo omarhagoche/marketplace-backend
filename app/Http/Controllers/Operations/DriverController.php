@@ -160,7 +160,7 @@ class DriverController extends Controller
         $driver = $this->driverRepository->findWithoutFail($id);
         if ($driver) {
             $user = $this->userRepository->findWithoutFail($driver->user_id);
-            $reviews = $this->reviewRepository->with('user')->findByField('driver_id', $driver->id);
+            $reviews = $this->reviewRepository->with('user')->where('driver_id', $driver->id)->paginate(10);
             //TODO: paginate Order and Reviews
         }
         if (empty($driver) || empty($user)) {
