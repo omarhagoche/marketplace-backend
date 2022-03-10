@@ -4,18 +4,20 @@
 
 @php
     $searchFields = [
-        ["name" => "restaurant","data-column" => 1, "title" => trans('lang.restaurant'),'type'=>'text','value'=>''],
-        ["name" => "client","data-column" => 2, "title" => trans('lang.order_user_id'),'type'=>'text','value'=>''],
-        ["name" => "driver","data-column" => 3, "title" => trans('lang.order_driver_id'),'type'=>'text','value'=>''],
-        ["name" => "order status","data-column" => 4, "title" => trans('lang.order_order_status_id'),'type'=>'select','collection'=>$orderStatuses,'property'=>'status','value'=>''],
-        ["name" => "datefrom ","data-column" => 6, "title" =>"Date of order",'type'=>'date','value'=>date("Y/m/d")],
+        ["name" => "restaurant","data-column" => 1, "title" => trans('lang.restaurant'),'type'=>'text','value'=>request('restaurant')],
+        ["name" => "client","data-column" => 2, "title" => trans('lang.order_user_id'),'type'=>'text','value'=>request('client')],
+        ["name" => "driver","data-column" => 3, "title" => trans('lang.order_driver_id'),'type'=>'text','value'=>request('driver')],
+        ["name" => "order_status","data-column" => 4, "title" => trans('lang.order_order_status_id'),'type'=>'select','collection'=>$orderStatuses,'property'=>'status','value'=>request('order_status')],
+        ["name" => "start_date","data-column" => 6, "title" =>"Start date",'type'=>'date','value'=>""],
+        ["name" => "end_date","data-column" => 6, "title" =>"End date",'type'=>'date','value'=>old('end_date')],
 
     ];
 
 @endphp
 
+{!! Form::open(['route'=>['operations.dashboard.index'], 'method' => 'get']) !!}
 {{-- Start customer search fields --}}
-<form id="myCustomeSearchForm" novalidate>
+{{-- <form id="myCustomeSearchForm" novalidate> --}}
     <div class="form-row">
         @foreach ($searchFields as $f)            
             <div class="col-md-3">
@@ -28,15 +30,16 @@
                         @endforeach
                     </select> 
                 @else           
-                <input type="{{$f['type']}}" value="{{$f['value']}}" class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
+                <input name="{{$f['name']}}" type="{{$f['type']}}" value="{{$f['value']}}" class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
                @endif
             </div>
         @endforeach
-          {{-- <div class="col-auto align-self-end">
+          <div class="col-auto align-self-end">
             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
-        </div> --}}
+        </div>
     </div>
-</form>
+{{-- </form> --}}
+{!! Form::close() !!}
 {{-- End customer search fields --}}
 
 <hr/>
@@ -57,11 +60,11 @@
     //     .draw();
     // }); 
    
-     $(".searchDTFields").change(function(){
-         console.log('value =>',$(this).val(),'column =>',$(this).data('column'));
-        LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
-        .search($(this).val())
-        .draw();
-    });
+    //  $(".searchDTFields").change(function(){
+    //      console.log('value =>',$(this).val(),'column =>',$(this).data('column'));
+    //     LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
+    //     .search($(this).val())
+    //     .draw();
+    // });
 </script>
 @endpush

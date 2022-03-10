@@ -5,6 +5,7 @@ namespace App\DataTables\Operations;
 use App\Models\Order;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
@@ -33,27 +34,31 @@ class OrderSearchDataTable extends DataTable
                 return "#" . $order->id;
             })
             ->editColumn('restaurant.name', function ($order) {
+                // return $order->restaurant->name;
+
                 if (!$order->restaurant) {
                     return '---';
                 }
                 return getLinksColumnByRouteName([$order->restaurant], 'restaurants.edit', 'id', 'name');
             })
             ->editColumn('user.name', function ($order) {
+                // return $order->user.name;
                 if (!$order->user) {
-                    return $order->unregistered_customer->name ?? '----';
+                    return $order->user->name ?? '----';
                 }
                 return getLinksColumnByRouteName([$order->user], "users.edit", 'id', 'name');
             })
-            ->editColumn('driver.name', function ($order) {
+            ->editColumn('driver_name', function ($order) {
+
                 if (!$order->driver) {
                     return '---'; // trans('lang.order_driver_not_assigned');
                 }
                 return getLinksColumnByRouteName([$order->driver], "users.edit", 'id', 'name');
             })
             ->editColumn('created_at', function ($order) {
-                return $order->created_at->format('m/d/Y');
+                // return $order->created_at->format('d/m/Y');
 
-                // return getDateColumn($order, 'created_at');
+                return getDateColumn($order, 'created_at');
             })
 
             ->editColumn('updated_at', function ($order) {
@@ -101,13 +106,13 @@ class OrderSearchDataTable extends DataTable
                 'title' => trans('lang.order_user_id'),
             ],
             [
-                'data' => 'driver.name',
-                'name' => 'driver.name',
+                'data' => 'driver_name',
+                'name' => 'driver_name',
                 'title' => trans('lang.order_driver_id'),
             ],
             [
                 'data' => 'order_status.status',
-                'name' => 'orderStatus.status',
+                'name' => 'order_status.status',
                 'title' => trans('lang.order_order_status_id'),
             ],
             /* [
@@ -178,29 +183,40 @@ class OrderSearchDataTable extends DataTable
      */
     public function query(Order $model)
     {
-        if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("user:id,name", "restaurant:id,name", "driver:id,name")->with("orderStatus")->with('payment');
-        } else if (auth()->user()->hasRole('manager')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
-                ->join("food_orders", "orders.id", "=", "food_orders.order_id")
-                ->join("foods", "foods.id", "=", "food_orders.food_id")
-                ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
-                ->where('user_restaurants.user_id', auth()->id())
-                ->groupBy('orders.id')
-                ->select('orders.*');
-        } else if (auth()->user()->hasRole('client')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
-                ->where('orders.user_id', auth()->id())
-                ->groupBy('orders.id')
-                ->select('orders.*');
-        } else if (auth()->user()->hasRole('driver')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
-                ->where('orders.driver_id', auth()->id())
-                ->groupBy('orders.id')
-                ->select('orders.*');
-        } else {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment');
+        $query=$model->newQuery();
+  
+        if (request()->filled('start_date') && request()->filled('end_date')) {
+            $query->whereBetween('created_at', [request('start_date'), request('end_date')]);
         }
+        if (request()->filled('start_date') && !request()->filled('end_date')) {
+            $query->where('created_at', '>=', request('start_date'));
+        }
+        if (!request()->filled('start_date') && request()->filled('end_date')) {
+            $query->where('created_at', '<=', request('end_date'));
+        }
+        if (request()->filled('restaurant')) {
+            $query->whereHas('restaurant', function($q){
+                $q->where('name', 'like',  '%'.request('restaurant').'%');
+            });  
+        }
+        if (request()->filled('restaurant')) {
+            $query->whereHas('restaurant', function($q){
+                $q->where('name', 'like',  '%'.request('restaurant').'%');
+            });  
+        }
+        // if (request()->filled('restaurant')) {
+        //     $query->restaurant()->where('name', 'like', '%'.request('restaurant').'%');
+           
+        // }
+        // if (!request()->filled('client')) {
+        //     $query->where('created_at', '<=', request('end_date'));
+        // }
+        // if (!request()->filled('driver')) {
+        //     $query->where('created_at', '<=', request('end_date'));
+        // }
+        return $query
+        ->with("user:id,name", "restaurant:id,name", "driver:id,name","orderStatus:id,status","payment:id,status");
+
     }
 
     /**
