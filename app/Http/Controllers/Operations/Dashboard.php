@@ -17,7 +17,7 @@ class Dashboard extends Controller
     }
     public function index(OrderSearchDataTable $orderDataTable)
     {
-        // dd(request(),request()->filled('start_date'),request('start_date'));
+        // dd(request(),request()->filled('order_status'),request('order_status'));
         $orderStatuses=$this->orderStatusRepository->all();
         return $orderDataTable->render('operations.dashboard.order',compact('orderStatuses'));
     }

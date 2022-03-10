@@ -199,14 +199,25 @@ class OrderSearchDataTable extends DataTable
                 $q->where('name', 'like',  '%'.request('restaurant').'%');
             });  
         }
-        if (request()->filled('restaurant')) {
-            $query->whereHas('restaurant', function($q){
-                $q->where('name', 'like',  '%'.request('restaurant').'%');
+        if (request()->filled('client')) {
+            $query->whereHas('user', function($q){
+                $q->where('name', 'like',  '%'.request('client').'%');
             });  
         }
-        // if (request()->filled('restaurant')) {
-        //     $query->restaurant()->where('name', 'like', '%'.request('restaurant').'%');
-           
+        if (request()->filled('driver')) {
+            $query->whereHas('driver', function($q){
+                $q->where('name', 'like',  '%'.request('driver').'%');
+            });  
+        }
+        if (request()->filled('order_status')) {
+            $query->whereHas('orderStatus', function($q){
+                $q->where('id',  request('order_status'));
+
+                // $q->where('status', 'like',  '%'.request('order_status').'%');
+            });  
+        }
+        // if (request()->filled('client')) {
+        //     $query->user()->where('name', 'like', '%'.request('client').'%');     
         // }
         // if (!request()->filled('client')) {
         //     $query->where('created_at', '<=', request('end_date'));

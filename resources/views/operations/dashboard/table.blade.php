@@ -23,10 +23,10 @@
             <div class="col-md-3">
                 <label for="validationCustom{{$f['name']}}">{{ $f['title'] }}</label>
                @if ($f['type']=='select')
-                    <select  class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
-                        <option value="" selected>{{trans('lang.order_order_status_id')}}</option>
+                    <select name="{{$f['name']}}" value="{{$f['value']}}" class="form-control searchDTFields" data-column="{{ $f['data-column'] }}" id="validationCustom{{$f['name']}}">
+                        <option value="" >{{trans('lang.order_order_status_id')}}</option>
                         @foreach ($f['collection'] as $value)
-                            <option value="{{ ($value)->{$f['property']} }}">{{($value)->{$f['property']} }}</option>
+                            <option  value="{{ ($value)->id }}" {{request('order_status')==($value)->id?'selected':'' }}>{{($value)->{$f['property']} }}</option>
                         @endforeach
                     </select> 
                 @else           
