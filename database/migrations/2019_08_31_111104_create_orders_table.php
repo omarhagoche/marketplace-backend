@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: 2019_08_31_111104_create_orders_table.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -32,11 +33,11 @@ class CreateOrdersTable extends Migration
             $table->integer('delivery_address_id')->nullable()->unsigned();
             $table->integer('payment_id')->nullable()->unsigned();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('order_status_id')->references('id')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('driver_id')->references('id')->on('users')->onDelete('set null')->onUpdate('set null');
-            $table->foreign('delivery_address_id')->references('id')->on('delivery_addresses')->onDelete('set null')->onUpdate('set null');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null')->onUpdate('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('order_status_id')->references('id')->on('order_statuses')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('driver_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('delivery_address_id')->references('id')->on('delivery_addresses')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 
