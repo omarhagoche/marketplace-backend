@@ -169,7 +169,7 @@ class Driver extends Model
 
     public function getAvg()
     {
-        
+
         return $this->reviews->avg('rate');
     }
 
@@ -180,5 +180,12 @@ class Driver extends Model
             ->where('order_status_id', 80)
             ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
             ->count();
+    }
+
+    public function totalEarning()
+    {
+        return $this->orders->sum(function ($item) {
+            return $item->getDeliveryFee();
+        });
     }
 }
