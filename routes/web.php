@@ -237,7 +237,8 @@ Route::middleware('auth')->group(function () {
     //// new Dashboard for operations
         Route::prefix('operations')->group(function () {
             // section users
-            Route::view('/', 'operations.index')->name('operations.index');
+            Route::get('/', 'Operations\Dashboard@index')->name('operations.dashboard.index');
+            // Route::view('/', 'operations.dashboard.index')->name('operations.dashboard.index');
             Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
             Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
             Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
@@ -248,7 +249,7 @@ Route::middleware('auth')->group(function () {
             Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
             Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
             Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
-            Route::resource('users', 'Operations\ClientController',['names' => 'operations.users']);
+            Route::resource('clients', 'Operations\ClientController',['names' => 'operations.users']);
 
             //section driver
             Route::get('drivers/map', 'Operations\DriverController@map')->name('operations.drivers.map');

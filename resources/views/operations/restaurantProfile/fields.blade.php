@@ -201,15 +201,17 @@
     </div>
   
     <div class="form-group row ">
-        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('available_for_delivery', 0) !!}
                 {!! Form::checkbox('available_for_delivery', 1, null) !!}
             </label>
         </div>
-        
-        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-3 control-label text-right']) !!}
+    </div>
+
+    <div class="form-group row ">
+        {!! Form::label('active', trans("lang.restaurant_active"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('active', 0) !!}
@@ -219,23 +221,29 @@
     </div>
     <div class="form-group row ">
         <!-- 'Boolean closed Field' -->
-        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-3 control-label']) !!}
+        {!! Form::label('closed', trans("lang.restaurant_closed"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('closed', 0) !!}
                 {!! Form::checkbox('closed', 1, null) !!}
             </label>
         </div>
+    </div>
+
+    <div class="form-group row ">
         <!-- 'Boolean featured Field' -->
-        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-3  control-label text-right']) !!}
+        {!! Form::label('featured', trans("lang.restaurant_featured"),['class' => 'col-8  control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('featured', 0) !!}
                 {!! Form::checkbox('featured', 1, null) !!}
             </label>
         </div>
+    </div>
+
+    <div class="form-group row ">
         <!-- 'Boolean is_restaurant Field' -->
-        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'col-8 control-label text-right']) !!}
         <div class="checkbox icheck">
             <label class="col-9 ml-2 form-check-inline">
                 {!! Form::hidden('is_restaurant', 0) !!}

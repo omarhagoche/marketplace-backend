@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">{{trans('lang.setting')}} <small>{{trans('lang.setting_desc')}}</small></h1>
+                <h1 class="m-0 text-dark">{{trans('lang.users')}} <small>@yield('setting_desc') </small></h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -16,7 +16,8 @@
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
 

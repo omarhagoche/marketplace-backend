@@ -55,7 +55,9 @@ class ClientDataTable extends DataTable
      */
     public function query(User $model)
     {
-        return $model->whereHas('roles', function($q){$q->whereIn('name', ['client']);});
+        return $model->whereHas('roles', function($q){
+            $q->whereIn('name', ['client']);
+        })->with("roles:id,name");
     }
 
     /**
