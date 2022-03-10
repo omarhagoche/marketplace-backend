@@ -1394,4 +1394,5 @@ return [
     'close_at_help' => 'insert close at',
     'map' => 'map',
     'error_user_have_orders'=>'have order',
+    'user_note_help'=>'Enter your note',
 ];

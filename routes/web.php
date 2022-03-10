@@ -244,7 +244,12 @@ Route::middleware('auth')->group(function () {
             Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
             Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
             Route::get('users/profile/{userId}/coupons', 'Operations\ClientController@coupons')->name('operations.users.profile.coupons');
+           //user note
             Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
+            Route::get('users/profile/{userId}/notes/create', 'Operations\ClientController@createNote')->name('operations.users.profile.createNotes');
+            Route::post('users/profile/{userId}/notes/store', 'Operations\ClientController@storeNote')->name('operations.users.profile.storeNote');
+            Route::delete('users/profile/{userId}/notes/{noteId}/destroy', 'Operations\ClientController@destroyNote')->name('operations.users.profile.destroyNote');
+           
             Route::get('users/profile/{userId}/address', 'Operations\ClientController@address')->name('operations.users.profile.address');
             Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
             Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');

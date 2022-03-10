@@ -29,14 +29,19 @@ class NoteDataTable extends DataTable
 
                 return $note->fromUser->name;
             })
-            ->addColumn('order', function ($note) {
-                // return getDateColumn($note->user, 'name');
+            // ->addColumn('order', function ($note) {
+            //     // return getDateColumn($note->user, 'name');
 
-               return $note->order->restaurant?$note->order->restaurant->name:"لا يوجد مطعم";
-            })
+            //    return $note->order->restaurant?$note->order->restaurant->name:"لا يوجد مطعم";
+            // })
             ->addColumn('text', function ($note) {
                 return $note->text;
-            });
+            })
+            // ->addColumn('action', 'operations.settings.note.datatables_actions')
+            ->addColumn('action', function ($note) {
+                return view('operations.settings.note.datatables_actions', ['id'=>$note->id,'user_id'=>$this->userId]);
+            })
+            ;
 
 
         return $dataTable;
@@ -50,7 +55,10 @@ class NoteDataTable extends DataTable
      */
     public function query(Note $model)
     {
-        return $model->newQuery()->where('to_user_id', $this->userId);
+        
+        return $model->newQuery()->where('to_user_id', $this->userId)
+        // ->with('order:id,name')
+        ->with('fromUser:id,name');
     }
 
     /**
@@ -61,8 +69,14 @@ class NoteDataTable extends DataTable
     public function html()
     {
         return $this->builder()
+        ->setTableId('test-table')
         ->columns($this->getColumns())
-        ->minifiedAjax();
+        ->minifiedAjax()
+        ->dom('Bfrtip')
+        ->orderBy(1)
+        ->buttons(
+            Button::make('create')
+        );
         
     }
 
@@ -79,10 +93,10 @@ class NoteDataTable extends DataTable
                 'title' => 'From User ',
 
             ],
-            [
-                'data' => 'order',
-                'title' => "Order from",
-            ],
+            // [
+            //     'data' => 'order',
+            //     'title' => "Order from",
+            // ],
             [
                 'data' => 'text',
                 'title' => "Notes",
@@ -91,6 +105,10 @@ class NoteDataTable extends DataTable
             [
                 'data' => 'updated_at',
                 'title' => trans('lang.favorite_updated_at'),
+            ],
+            [
+                'data' => 'action',
+                'title' => trans('lang.actions'),
             ]
         ];
         return $columns;
