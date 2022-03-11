@@ -98,21 +98,21 @@
         <div class="col-5">
             <div class="card">
                 <div class="card-header no-border">
-                    <h3 class="card-title">Restaurants</h3>
+                    <h3 class="card-title">Orders</h3>
                     <div class="card-tools">
-                        <a href="http://127.0.0.1:8000/restaurants" class="btn btn-tool btn-sm"><i class="fa fa-bars"></i> </a>
+                        <a href="{{ route("operations.orders.index")}}" class="btn btn-tool btn-sm"><i class="fa fa-bars"></i> </a>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped table-valign-middle">
                         <thead>
                         <tr>
-                            <th>order NO</th>
-                            <th>driver</th>
-                            <th>driver</th>
-                            <th>driver</th>
+                            <th>order no</th>
+                            <th>driver id</th>
+                            <th>driver name</th>
+                            <th>driver phone</th>
                             <th>total</th>
-                            <th>Find Driver</th>
+                            <th>find driver</th>
                         </tr>
                         </thead>
                         <tbody id="orders">

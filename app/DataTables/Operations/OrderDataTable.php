@@ -103,6 +103,7 @@ class OrderDataTable extends DataTable
                 'data' => 'driver.name',
                 'name' => 'driver.name',
                 'title' => trans('lang.order_driver_id'),
+                'searchable' => true,
             ],
             [
                 'data' => 'order_status.status',

@@ -271,7 +271,7 @@ class OrderController extends Controller
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
         $this->userRepository->pushCriteria(new AvailableCriteria($order->driver_id));
-        if ($order->restaurant->private_drivers) {
+        if (optional($order->restaurant)->private_drivers) {
             $driver = $this->userRepository->pushCriteria(new DriversOfRestaurantCriteria($order->restaurant_id));
         } else {
             $driver = $this->userRepository->pushCriteria(new DriversCriteria());
@@ -455,7 +455,7 @@ class OrderController extends Controller
         $orderFoods =$this->foodOrderRepository->findByField('order_id',$id);
         $order = $this->orderRepository->findWithoutFail($id);
         $data = [
-            "restaurantFooods" =>  [null => 'select food' , $order->restaurant->foods->pluck('name','id')],
+            "restaurantFooods" =>   isset($order->restaurant) ?  [null => 'select food', $order->restaurant->foods->pluck('name','id') ] : [],
             "orderFoods" =>  $orderFoods,
             "orderId"       =>  $id
         ];

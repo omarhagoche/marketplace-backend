@@ -13,16 +13,7 @@
         </div>
     </div>
    
-    <!-- Mobile Field -->
-    <div class="form-group row ">
-        {!! Form::label('mobile', trans("lang.restaurant_mobile"), ['class' => 'col-6 control-label']) !!}
-        <div class="col-9">
-            {!! Form::text('mobile', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_mobile_placeholder")]) !!}
-            <div class="form-text text-muted">
-                {{ trans("lang.restaurant_mobile_help") }}
-            </div>
-        </div>
-    </div>
+
 
     <!-- cuisines Field -->
     <div class="form-group row ">
@@ -118,16 +109,6 @@
         </div>
     </div>
 
-     <!-- Phone Field -->
-     <div class="form-group row ">
-        {!! Form::label('phone', trans("lang.restaurant_phone"), ['class' => 'col-6 control-label']) !!}
-        <div class="col-9">
-            {!! Form::text('phone', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_phone_placeholder")]) !!}
-            <div class="form-text text-muted">
-                {{ trans("lang.restaurant_phone_help") }}
-            </div>
-        </div>
-    </div>
 
      <!-- commission Field -->
      <div class="form-group row ">

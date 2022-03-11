@@ -35,7 +35,7 @@
     <div class="form-group row ">
         {!! Form::label('costumer_adresses', trans("lang.delivery_address"),['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('delivery_address_id', $userAddresses, $order->deliveryAddress->id,['class' => 'select2 form-control']) !!}
+            {!! Form::select('delivery_address_id', $userAddresses, optional($order->deliveryAddress)->id ,['class' => 'select2 form-control']) !!}
         </div>
     </div>
     <!-- Status Field -->

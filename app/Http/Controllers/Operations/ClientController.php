@@ -209,12 +209,14 @@ class ClientController extends Controller
         return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
     }
+    
     public function createNote($userId)
     {
         $user = $this->userRepository->findWithoutFail($userId);
 
        return view('operations.client.profile.createNote',compact('user'));
     }
+
     public function storeNote(Request $request,$userId)
     {
         $this->validate($request, [
@@ -229,7 +231,7 @@ class ClientController extends Controller
             Flash::success('Creat note successfully.');
             return redirect(route('operations.users.profile.notes',$userId));
         } catch (\Throwable $th) {
-            Flash::success('Creat note error.');
+            Flash::error('Creat note error.'.$th);
             return redirect(route('operations.users.profile.notes',$userId));
         }
     }
@@ -390,13 +392,8 @@ class ClientController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
 
         $input = $request->all();
-        if (!auth()->user()->can('permissions.index')) {
-            unset($input['roles']);
-        } else {
-        $input['roles'] = isset($input['roles']) ? $input['roles'] : [];
-        }
+       
         if (empty($input['password'])) {
-            unset($input['password']);
         } else {
             $input['password'] = Hash::make($input['password']);
         }
@@ -414,9 +411,7 @@ class ClientController extends Controller
                 $mediaItem = $cacheUpload->getMedia('avatar')->first();
                 $mediaItem->copy($user, 'avatar');
             }
-            if (auth()->user()->can('permissions.index')) {
-            $user->syncRoles($input['roles']);
-            }
+          
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $user->customFieldsValues()
                     ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);

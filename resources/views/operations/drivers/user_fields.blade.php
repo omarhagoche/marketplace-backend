@@ -40,19 +40,19 @@
 </div>
 <!--  User Password Field -->
 <div class="form-group row ">
-    {!! Form::label('Password', trans('lang.user_password'), ['class' => 'col-3 control-label text-right']) !!}
+    {!! Form::label('password', trans("lang.user_password"), ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {!! Form::Password('password', null, ['class' => 'form-control', 'placeholder' => trans('lang.user_passwor_placeholder')]) !!}
+        {!! Form::password('password', ['class' => 'form-control','placeholder'=>  trans("lang.user_password_placeholder")]) !!}
         <div class="form-text text-muted">
-            {{ trans('lang.user_password_help') }}
+            {{ trans("lang.user_password_help") }}
         </div>
     </div>
 </div>
 <!--  User Password Field -->
 <div class="form-group row ">
-    {!! Form::label('Password', trans('lang.user_password_confirmation'), ['class' => 'col-3 control-label text-right']) !!}
+    {!! Form::label('password', trans('lang.user_password_confirmation'), ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {!! Form::Password('password_confirmation', null, ['class' => 'form-control', 'placeholder' => trans('lang.user_password_confirmation_placeholder')]) !!}
+        {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => trans('lang.user_password_placeholder')]) !!}
         <div class="form-text text-muted">
             {{ trans('lang.user_password_confirmation_help') }}
         </div>
