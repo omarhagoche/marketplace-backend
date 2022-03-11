@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.driver_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.driver_desc')}}</small></h1>
+        <h1 class="m-0 text-dark">{{trans('lang.drivers_map')}}<small class="ml-3 mr-3"></small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -173,12 +173,12 @@
 
         db.collection('current_orders').get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                if(doc.data().order_status_id != 80 && doc.data().order_status_id != 110 && doc.data().order_status_id != 100 && doc.data().order_status_id != 10 && doc.data().order_status_id != 20 && doc.data().order_status_id != 105 && doc.data().order_status_id != 120 && doc.data().order_status_id != 130 && doc.data().order_status_id != 140 )
+                if(doc.data().order_status_id != 80 && doc.data().order_status_id != 110 && doc.data().order_status_id != 100  && doc.data().order_status_id != 20 && doc.data().order_status_id != 105 && doc.data().order_status_id != 120 && doc.data().order_status_id != 130 && doc.data().order_status_id != 140 )
                 {
                     db.collection('drivers').where("id", "==", doc.data().driver_id).get().then((querySnapshot) => {
                         querySnapshot.forEach((docorder) => {
                             $("#orders").append(`<tr>
-                            <td>${doc.data().id}</td>
+                            <td><a>${doc.data().id}</a></td>
                             <td>${doc.data().driver_id}</td>
                             <td>${docorder.data().name}</td>
                             <td>${docorder.data().phone_number}</td>

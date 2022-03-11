@@ -1403,4 +1403,5 @@ return [
     'map' => 'map',
     'error_user_have_orders'=>'have order',
     'user_note_help'=>'Enter your note',
+    'drivers_map'=>'Drivers Map',
 ];

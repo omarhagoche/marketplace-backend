@@ -468,15 +468,19 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            $extra = $this->extraRepository->findWithoutFail($request->extraId);
+            $request['extras'] = isset($request['extras']) ? $request['extras'] : [];
+            $this->foodOrderRepository->update([
+                "extras" => $request->extras
+            ], $orderFoodId);
+            // $extra = $this->extraRepository->findWithoutFail($request->extraId);
             $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
-            $this->foodOrderExtraRepository->create([
-                "food_order_id" => $orderFoodId,
-                "extra_id" => $request->extraId,
-                "price" => $extra->price,
-            ]);
+            // $this->foodOrderExtraRepository->create([
+            //     "food_order_id" => $orderFoodId,
+            //     "extra_id" => $request->extraId,
+            //     "price" => $extra->price,
+            // ]);
             DB::commit();
-            Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
+            Flash::success(__('lang.updated_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$orderFood->order_id));
         } catch (\Throwable $th) {
             DB::rollback();
