@@ -18,21 +18,9 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
     @foreach ($searchFields as $f)
         <div class="col-md-3">
             <label for="validationCustom{{ $f['name'] }}">{{ $f['title'] }}</label>
-            @if ($f['type'] == 'select')
-                <select name="{{ $f['name'] }}" value="{{ $f['value'] }}" class="form-control searchDTFields"
-                    data-column="{{ $f['data-column'] }}" id="validationCustom{{ $f['name'] }}">
-                    <option value="">{{ trans('lang.order_order_status_id') }}</option>
-                    @foreach ($f['collection'] as $value)
-                        <option value="{{ $value->id }}"
-                            {{ request('order_status') == $value->id ? 'selected' : '' }}>
-                            {{ $value->{$f['property']} }}</option>
-                    @endforeach
-                </select>
-            @else
                 <input name="{{ $f['name'] }}" type="{{ $f['type'] }}" value="{{ $f['value'] }}"
                     class="form-control searchDTFields" data-column="{{ $f['data-column'] }}"
                     id="validationCustom{{ $f['name'] }}">
-            @endif
         </div>
     @endforeach
     <div class="col-auto align-self-end">

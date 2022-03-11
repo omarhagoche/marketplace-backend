@@ -234,6 +234,7 @@ class Restaurant extends Model implements HasMedia
      * Add Media to api results
      * @return bool
      */
+    //FIXME: many queries
     public function getHasMediaAttribute()
     {
         return $this->hasMedia('image') ? true : false;
@@ -243,6 +244,8 @@ class Restaurant extends Model implements HasMedia
      * Add Media to api results
      * @return bool
      */
+
+    //FIXME: many queries
     public function getRateAttribute()
     {
         return $this->restaurantReviews()->select(DB::raw('round(AVG(restaurant_reviews.rate),1) as rate'))->first('rate')->rate;
