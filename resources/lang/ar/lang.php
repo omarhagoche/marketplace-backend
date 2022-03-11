@@ -1215,6 +1215,7 @@ return [
     'app_setting_mobile_popular' => 'Popular restaurants grid',
     'app_setting_mobile_recent_reviews_heading' => 'Recent reviews heading',
     'app_setting_mobile_recent_reviews' => 'Recent reviews list',
+    'Reviews' => 'Reviews',
     'user_active' => 'Active',
     'driver_type' => 'Driver Type',
     'driver_note' => 'Note',

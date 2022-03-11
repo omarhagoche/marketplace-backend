@@ -599,6 +599,7 @@ return [
     'food_restaurant_id_help' => 'Insert Restaurant',
     'food_restaurant_id_placeholder' => 'Insert Restaurant',
     'no_reviews' => 'No Reviews',
+    'Reviews' => 'Reviews',
     'food_review' => 'Food Review',
     'food_review_create' => 'Create Food Review',
     'food_review_desc' => 'Food Reviews Management',
@@ -1401,6 +1402,6 @@ return [
     'open_at_help' => 'insert open at',
     'close_at_help' => 'insert close at',
     'map' => 'map',
-    'error_user_have_orders'=>'have order',
-    'user_note_help'=>'Enter your note',
+    'error_user_have_orders' => 'have order',
+    'user_note_help' => 'Enter your note',
 ];
