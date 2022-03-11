@@ -4,6 +4,7 @@
 
 @php
     $searchFields = [
+        ["name" => "order_id","data-column" => 1, "title" => trans('lang.order_id'),'type'=>'text','value'=>request('order_id')],
         ["name" => "restaurant","data-column" => 1, "title" => trans('lang.restaurant'),'type'=>'text','value'=>request('restaurant')],
         ["name" => "client","data-column" => 2, "title" => trans('lang.order_user_id'),'type'=>'text','value'=>request('client')],
         ["name" => "driver","data-column" => 3, "title" => trans('lang.order_driver_id'),'type'=>'text','value'=>request('driver')],

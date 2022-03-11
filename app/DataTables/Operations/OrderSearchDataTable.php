@@ -199,6 +199,9 @@ class OrderSearchDataTable extends DataTable
                 $q->where('name', 'like',  '%'.request('restaurant').'%');
             });  
         }
+        if (request()->filled('order_id')) {
+            $query->where('id', request('order_id'));
+        }
         if (request()->filled('client')) {
             $query->whereHas('user', function($q){
                 $q->where('name', 'like',  '%'.request('client').'%');
@@ -226,6 +229,7 @@ class OrderSearchDataTable extends DataTable
         //     $query->where('created_at', '<=', request('end_date'));
         // }
         return $query
+        ->orderByDesc('id')
         ->with("user:id,name", "restaurant:id,name", "driver:id,name","orderStatus:id,status","payment:id,status");
 
     }

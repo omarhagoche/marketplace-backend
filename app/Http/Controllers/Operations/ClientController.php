@@ -427,7 +427,7 @@ class ClientController extends Controller
         }
 
 
-        Flash::success($user->name.'updated successfully.');
+        Flash::success($user->name.' updated successfully.');
         return redirect(route('operations.users.index'));
 
         // return redirect()->back();

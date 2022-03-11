@@ -112,7 +112,7 @@
 @can('operations.users.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('operations.users*') ? 'active' : '' }}" href="{!! route('operations.users.index') !!}">@if($icons)
-                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.users')}}</p></a>
+                <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.client')}}</p></a>
     </li>
 @endcan
 @can('orders.index')
