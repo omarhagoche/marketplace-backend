@@ -36,8 +36,18 @@
   <div class="clearfix"></div>
   <div class="card">
     <div class="card-header">
-      @include('operations.restaurantProfile.links',compact('id','restaurant'))
-
+      <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
+        @can('restaurants.index')
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.index') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+        </li>
+        @endcan
+        @can('operations.restaurant.create')
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('operations.restaurants.create') ? 'active' : '' }}" href="{!! route('operations.restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+        </li>
+        @endcan
+      </ul>
     </div>
     <div class="card-body">
       {!! Form::open(['route' => 'restaurants.store']) !!}

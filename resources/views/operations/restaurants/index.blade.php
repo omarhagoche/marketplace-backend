@@ -30,9 +30,9 @@
         <li class="nav-item">
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
         </li>
-        @can('restaurants.create')
+        @can('operations.restaurants.create')
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+          <a class="nav-link" href="{!! route('operations.restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
         </li>
         @endcan
         @include('operations.layouts.right_toolbar', compact('dataTable'))

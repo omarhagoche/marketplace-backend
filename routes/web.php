@@ -237,7 +237,7 @@ Route::middleware('auth')->group(function () {
     //// new Dashboard for operations
         Route::prefix('operations')->group(function () {
             // section users
-            Route::get('/', 'Operations\Dashboard@index')->name('operations.dashboard.index');
+            Route::get('/', 'Operations\DriverController@map')->name('operations.dashboard.index');
             // Route::view('/', 'operations.dashboard.index')->name('operations.dashboard.index');
             Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
             Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
@@ -282,7 +282,7 @@ Route::middleware('auth')->group(function () {
             Route::get('restaurantProfile/{id}', 'Operations\RestaurantProfileController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
             Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
-            Route::get('restaurants/create', 'Operations\RestaurantController@create')->name('operations.restaurant_profile.create');
+            Route::resource('restaurants', 'Operations\RestaurantController',['names' => 'operations.restaurants']);
             Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsindex')->name('operations.restaurant.foods.index');
             Route::get('restaurantFoods/create/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsCreate')->name('operations.restaurant.foods.create');
             Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsStore')->name('operations.restaurant.foods.store');

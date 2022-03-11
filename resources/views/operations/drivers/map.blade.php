@@ -21,16 +21,6 @@
 <!-- /.content-header -->
 <div class="content">
   <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-        <li class="nav-item">
-          <a class="nav-link" href="{!! route('operations.drivers.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.driver_table')}}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{!! route('operations.drivers.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.driver_create')}}</a>
-        </li>
-      </ul>
-    </div>
     <div class="card-body">
       <div class="row">
         
@@ -95,7 +85,7 @@
         <div class="col-2 mb-4">
             {!! Form::submit("Search", ["id" => "search-btn", "class" => "btn btn-primary"]) !!}
         </div>
-        <div class="col-5">
+        <div class="col-6">
             <div class="card">
                 <div class="card-header no-border">
                     <h3 class="card-title">Orders</h3>
@@ -122,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-6">
             <div id="map" style="width: 100%; height: 500px;"></div>
         </div>
         
@@ -138,19 +128,11 @@
   </div>
 </div>
 
-
-
-<!--Firestore Libraries-->
-{{-- <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script> --}}
- 
-{{-- @include('vendor.notifications.init_firebase') --}}
-
 @section('extra-js')
 
 <script src="https://maps.google.com/maps/api/js?key={{ setting('google_maps_key',"AIzaSyAT07iMlfZ9bJt1gmGj9KhJDLFY8srI6dA") }}" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script type="text/javascript">
     function searchDriverById(driverId){
@@ -192,7 +174,7 @@
         });
         $("#search-btn").click(function () { 
             if($("#search-type").val() == "" || $("#search-input").val() == ""){
-                alert("fields cannot be empty")
+                swal("Error!", "fields can't be empty", "error");
             }
             db.collection('drivers').where($("#search-type").val(), "==", $("#search-input").val()).get().then((querySnapshot) => {
                 db_driver = [];
@@ -206,8 +188,7 @@
                 map.setZoom(20);
                 }
             }).catch(e => {
-                console.log(e);
-                alert(e.message);
+                swal("Error!", "not exist", "error");
             });        
         });
     });

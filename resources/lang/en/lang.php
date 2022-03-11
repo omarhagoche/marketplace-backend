@@ -1403,5 +1403,8 @@ return [
     'map' => 'map',
     'error_user_have_orders'=>'have order',
     'user_note_help'=>'Enter your note',
-    'drivers_map'=>'Drivers Map',
+    'restaurant_commission_placeholder'=>'Insert Restaurant Commission',
+    'restaurant_commission'=>'Restaurant Commission',
+    'restaurant_commission_help' => 'Commission (Ex 30 for 30% of earning)',
+
 ];

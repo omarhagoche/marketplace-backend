@@ -149,7 +149,7 @@ class RestaurantController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)
+        return view('operations.restaurants.create')->with("customFields", isset($html) ? $html : false)
             ->with("deliveryPriceType", $deliveryPriceType)
             ->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
     }

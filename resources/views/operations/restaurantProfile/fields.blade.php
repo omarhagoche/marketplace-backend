@@ -112,11 +112,11 @@
 
      <!-- commission Field -->
      <div class="form-group row ">
-        {!! Form::label('admin_commission', trans("lang.restaurant_admin_commission"), ['class' => 'col-6 control-label']) !!}
+        {!! Form::label('admin_commission', trans("lang.restaurant_commission"), ['class' => 'col-6 control-label']) !!}
         <div class="col-9">
-            {!! Form::text('admin_commission', $restaurant->admin_commission == null ? "10" : $restaurant->admin_commission,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
+            {!! Form::text('admin_commission', $restaurant->admin_commission == null ? "10" : $restaurant->admin_commission,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_commission_placeholder")]) !!}
             <div class="form-text text-muted">
-                {{ trans("lang.restaurant_admin_commission_help") }}
+                {{ trans("lang.restaurant_commission_help") }}
             </div>
         </div>
     </div>

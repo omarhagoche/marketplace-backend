@@ -34,11 +34,11 @@
                     <a class="nav-link {{ Request::is('restaurants*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-cutlery"></i>@endif<p>{{trans('lang.restaurant_plural')}}</p></a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link {{ Request::is('RestaurantDistancePrices*') ? 'active' : '' }}"
                        href="{!! route('restaurantDistancePrices.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-money"></i>@endif<p>{{trans('lang.restaurant_distance_price_plural')}}</p></a>
-                </li>
+                </li> --}}
             @endcan
             {{-- @can('galleries.index')
                 <li class="nav-item">
@@ -46,12 +46,12 @@
                             <i class="nav-icon fa fa-image"></i>@endif<p>{{trans('lang.gallery_plural')}}</p></a>
                 </li>
             @endcan --}}
-            @can('operations.restaurant_review')
+            {{-- @can('operations.restaurant_review')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('restaurantReviews*') ? 'active' : '' }}" href="{!! route('restaurantReviews.index') !!}">@if($icons)
                             <i class="nav-icon fa fa-comments"></i>@endif<p>{{trans('lang.restaurant_review_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
         </ul>
     </li>
 @endcan

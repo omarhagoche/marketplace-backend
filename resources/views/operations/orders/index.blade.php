@@ -30,11 +30,11 @@
         <li class="nav-item">
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
         </li>
-        @can('orders.create')
+        {{-- @can('orders.create')
         <li class="nav-item">
           <a class="nav-link" href="{!! route('operations.orders.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.order_create')}}</a>
         </li>
-        @endcan
+        @endcan --}}
         @include('operations.layouts.right_toolbar', compact('dataTable'))
       </ul>
     </div>
