@@ -472,13 +472,7 @@ class OrderController extends Controller
             $this->foodOrderRepository->update([
                 "extras" => $request->extras
             ], $orderFoodId);
-            // $extra = $this->extraRepository->findWithoutFail($request->extraId);
             $orderFood = $this->foodOrderRepository->findWithoutFail($orderFoodId);
-            // $this->foodOrderExtraRepository->create([
-            //     "food_order_id" => $orderFoodId,
-            //     "extra_id" => $request->extraId,
-            //     "price" => $extra->price,
-            // ]);
             DB::commit();
             Flash::success(__('lang.updated_successfully', ['operator' => __('lang.order')]));
             return redirect(route('orders.edit-order-foods',$orderFood->order_id));
@@ -545,6 +539,7 @@ class OrderController extends Controller
             $coupon = $this->couponRepository->create($request->all());
             $this->orderRepository->update([
                 "restaurant_coupon_id" => $coupon->id,
+                "restaurant_coupon_value" => $request->discount,
             ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
@@ -577,6 +572,7 @@ class OrderController extends Controller
             $coupon = $this->couponRepository->create($request->all());
             $this->orderRepository->update([
                 "delivery_coupon_id" => $coupon->id,
+                "delivery_coupon_value" => $request->discount,
             ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));

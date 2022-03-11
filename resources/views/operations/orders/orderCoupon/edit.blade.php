@@ -39,7 +39,7 @@
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
         @can('orders.index')
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('orders.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
+          <a class="nav-link" href="{!! route('operations.orders.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.order_table')}}</a>
         </li>
         @endcan
         {{-- @can('orders.create')

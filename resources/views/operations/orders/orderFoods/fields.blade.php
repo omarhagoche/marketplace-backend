@@ -61,36 +61,15 @@
                     </div>
                   </td>
                   <td>
-                      {{-- @foreach ($orderFoods->extras as $extra)
-                      {!! Form::open(['route' => ['orders.remove-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
-                        <input type="hidden" name="food_order_id" value="{{$extra->pivot->food_order_id}}">
-                        <input type="hidden" name="extra_id" value="{{$extra->pivot->extra_id}}">
-                        <button type="submit"  class="btn btn-outline-dark mb-2">
-                            {{$extra->name}} <a><i class="fa fa-trash text-danger"></i></a>
-                        </button>
-                      {!! Form::close() !!}
-                      @endforeach --}}
                       {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
-                      <div class="form-group row m-1">
-                        <div class="col-8">
-                            {!! Form::select('extras[]', $orderFoods->food->extras->pluck('name','id'), $orderFoods->extras, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
-                          </div>
-                          <button style="background-color: #3c4b71; border-color: #3c4b71;"  id="addExtra" class="btn btn-primary"><i class="fa fa-edit"></i></button>
-                      </div>
-                      {!! Form::close() !!}
-                      {{-- <div class="row">
-                        <div class="col col-md-12">
-                          <select name="extraId" id="extra" class=" form-control" required style="width: 198px; display: inline;">
-                            @foreach ($orderFoods->food->extras as $extra)
-                            @if (!$orderFoods->foodOrderExtra->pluck('extra_id')->contains($extra->id))
-                              <option value="{{ $extra->id }}">{{ $extra->name}}</option>
-                            @endif
-                            @endforeach
-                          </select>
+                        <div class="form-group row m-1">
+                          <div class="col-8">
+                              {!! Form::select('extras[]', $orderFoods->food->extras->pluck('name','id'), $orderFoods->extras, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+                            </div>
+                            <button style="background-color: #3c4b71; border-color: #3c4b71;"  id="addExtra" class="btn btn-primary"><i class="fa fa-edit"></i></button>
                         </div>
-                      </div> --}}
-
-                    </td>
+                      {!! Form::close() !!}
+                  </td>
                   <td>
                     {!! Form::open(['route' => ['foodOrders.destroy', $orderFoods->id], 'method' => 'delete']) !!}
                       {!! Form::button('<i class="fa fa-trash" style="font-size: 33px;"></i>', [

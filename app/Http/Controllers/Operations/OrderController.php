@@ -605,6 +605,7 @@ class OrderController extends Controller
         $order = $this->orderRepository->findByField('delivery_coupon_id',$id)[0];
         $this->orderRepository->update([
             "delivery_coupon_id" => null,
+            "delivery_coupon_value" => null,
         ], $order->id);
         $coupon = $this->couponRepository->findWithoutFail($id);
 
@@ -626,6 +627,7 @@ class OrderController extends Controller
         $order = $this->orderRepository->findByField('restaurant_coupon_id',$id)[0];
         $this->orderRepository->update([
             "restaurant_coupon_id" => null,
+            "restaurant_coupon_value" => null,
         ], $order->id);
         $coupon = $this->couponRepository->findWithoutFail($id);
 
