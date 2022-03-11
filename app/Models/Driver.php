@@ -6,6 +6,7 @@ use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Driver
@@ -108,11 +109,13 @@ class Driver extends Model
     }
 
 
+    // FIXME: many queries
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
     }
 
+    // FIXME: many queries
     public function getCustomFieldsAttribute()
     {
         $hasCustomField = in_array(static::class, setting('custom_field_models', []));
@@ -128,6 +131,7 @@ class Driver extends Model
     }
 
     /**
+     * FIXME: many queries
      * get driverType attribute
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
      */
@@ -161,11 +165,30 @@ class Driver extends Model
         return $this->drivers_types;
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\DriverReview::class, 'driver_id', 'id');
+    }
+
+    public function getAvg()
+    {
+
+        return $this->reviews->avg('rate');
+    }
+
+
     public function getOrdersBetweenDaysCount(int $days): int
     {
         return $this->orders()
             ->where('order_status_id', 80)
             ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
             ->count();
+    }
+
+    public function totalEarning()
+    {
+        return $this->orders->sum(function ($item) {
+            return $item->getDeliveryFee();
+        });
     }
 }
