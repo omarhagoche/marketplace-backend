@@ -8,7 +8,7 @@ use App\Http\Requests;
 use App\Models\Driver;
 use App\Models\DriverType;
 use Illuminate\Http\Request;
-use App\DataTables\DriverDataTable;
+use App\DataTables\Operations\DriverSearchDataTable;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Repositories\UserRepository;
@@ -70,10 +70,10 @@ class DriverController extends Controller
     /**
      * Display a listing of the Driver.
      *
-     * @param DriverDataTable $driverDataTable
+     * @param DriverSearchDataTable $driverDataTable
      * @return Response
      */
-    public function index(DriverDataTable $driverDataTable)
+    public function index(DriverSearchDataTable $driverDataTable)
     {
         return $driverDataTable->render('operations.drivers.index');
     }
