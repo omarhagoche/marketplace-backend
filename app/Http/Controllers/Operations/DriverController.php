@@ -160,8 +160,7 @@ class DriverController extends Controller
         $driver = $this->driverRepository->findWithoutFail($id);
         if ($driver) {
             $user = $this->userRepository->findWithoutFail($driver->user_id);
-            $reviews = $this->reviewRepository->with('user')->where('driver_id', $driver->id)->paginate(10);
-            //TODO: paginate Order and Reviews
+            $reviews = $this->reviewRepository->with('user')->where('driver_id', $driver->id)->paginate(5);
         }
         if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
@@ -172,7 +171,7 @@ class DriverController extends Controller
         $ordersOfWeek = $driver->getOrdersBetweenDaysCount(7);
         $ordersOfMonth = $driver->getOrdersBetweenDaysCount(30);
 
-        $orders = $this->orderRepository->where('driver_id', $driver->id)->with('user')->with('restaurant')->orderby('created_at', 'desc')->paginate(10);
+        $orders = $this->orderRepository->where('driver_id', $driver->id)->with('user')->with('restaurant')->orderby('created_at', 'desc')->paginate(5);
         $lastOrder = $orders->first();
         return view('operations.drivers.show')->with('driver', $driver)
             ->with('user', $user)
@@ -195,7 +194,8 @@ class DriverController extends Controller
     public function edit($id)
     {
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->findWithoutFail($driver->user_id);
+        if ($driver)
+            $user = $this->userRepository->findWithoutFail($driver->user_id);
         if (empty($driver)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.driver')]));
 
@@ -223,23 +223,23 @@ class DriverController extends Controller
      */
     public function update($id, UpdateDriverRequest $request)
     {
-
-
         $driver = $this->driverRepository->findWithoutFail($id);
-        $user = $this->userRepository->findWithoutFail($driver->user_id);
+        if ($driver) {
+            $user = $this->userRepository->findWithoutFail($driver->user_id);
+        }
 
         if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
             return redirect(route('drivers.index'));
         }
+
         $input = $request->all();
 
-        if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
-            $request->validated(['password' => 'confirmed']);
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            unset($input['password']);
-            unset($input['password_confirmation']);
+        if ($request->password) {
+            if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
+                $request->validated(['password' => 'confirmed']);
+                $input['password'] = Hash::make($input['password']);
+            }
         }
 
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
@@ -327,14 +327,12 @@ class DriverController extends Controller
     {
         $driver = $this->driverRepository->findWithoutFail($id);
 
-        if (empty($driver)) {
-            Flash::error('Driver not found');
+        if (empty($driver) || $driver->orders->count() > 0) {
+            Flash::error('Driver not found or driver have orders' );
 
             return redirect(route('operations.drivers.index'));
         }
-
-        $this->driverRepository->delete($id);
-
+        $driver->delete();
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.driver')]));
 
         return redirect(route('operations.drivers.index'));
