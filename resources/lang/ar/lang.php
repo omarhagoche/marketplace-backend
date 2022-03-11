@@ -1292,6 +1292,7 @@ return [
     'settlement_manager_fee_help' => 'Insert Fee',
     'settlement_manager_fee_placeholder' => 'Insert Fee',
     'no_reviews' => 'No Reviews',
+    'reviews' => 'Reviews',
     'driver_review' => 'Driver Review',
     'driver_review_plural' => 'Driver Reviews',
     'driver_review_desc' => 'Driver Reviews Management',
