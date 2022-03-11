@@ -283,6 +283,9 @@ Route::middleware('auth')->group(function () {
             Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
             Route::resource('restaurants', 'Operations\RestaurantController',['names' => 'operations.restaurants']);
+
+            Route::resource('restaurantReviews', 'Operations\RestaurantReviewController',['names' => 'operations.restaurantReviews']);
+
             Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsindex')->name('operations.restaurant.foods.index');
             Route::get('restaurantFoods/create/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsCreate')->name('operations.restaurant.foods.create');
             Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsStore')->name('operations.restaurant.foods.store');

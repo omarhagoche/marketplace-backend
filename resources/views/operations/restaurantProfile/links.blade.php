@@ -1,8 +1,8 @@
 <div class="card-header">
     <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-      @can('restaurants.index')
+      @can('operations.restaurants.index')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.index') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.restaurants.index') ? 'active' : '' }}" href="{!! route('operations.restaurants.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
       </li>
       @endcan
       @can('operations.restaurant.create')

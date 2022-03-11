@@ -64,12 +64,11 @@ class RestaurantReviewDataTable extends DataTable
         ->editColumn('updated_at', function ($restaurant_review) {
             return getDateColumn($restaurant_review, 'updated_at');
         })
-        ->rawColumns(array_merge($columns, ['action']));
-        if(FacadesRoute::currentRouteName() != "operations.restaurant_review"){
-            $dataTable = $dataTable->addColumn('action', function ($restaurant_review) {
-                return view('restaurant_reviews.datatables_actions', ['id' => $restaurant_review->id, 'myReviews' => $this->myReviews])->render();
-            });
-        }
+        ->rawColumns(array_merge($columns, ['action']))
+        ->addColumn('action', function ($restaurant_review) {
+            return view('restaurant_reviews.datatables_actions', ['id' => $restaurant_review->id, 'myReviews' => $this->myReviews])->render();
+        });
+        
         return $dataTable;
     }
 
@@ -139,8 +138,8 @@ class RestaurantReviewDataTable extends DataTable
 
             // ],
             [
-                'data' => 'updated_at',
-                'title' => trans('lang.restaurant_review_updated_at'),
+                'data' => 'created_at',
+                'title' => trans('lang.created_at'),
                 'searchable' => false,
             ]
         ];

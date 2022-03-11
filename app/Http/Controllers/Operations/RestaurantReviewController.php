@@ -207,7 +207,7 @@ class RestaurantReviewController extends Controller
     {
         $this->restaurantReviewRepository->pushCriteria(new RestaurantReviewsOfUserCriteria(auth()->id()));
         $restaurantReview = $this->restaurantReviewRepository->findWithoutFail($id);
-
+        $restaurantId = $restaurantReview->restaurant_id;
         if (empty($restaurantReview)) {
             Flash::error('Restaurant Review not found');
 
@@ -218,7 +218,7 @@ class RestaurantReviewController extends Controller
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.restaurant_review')]));
 
-        return redirect(route('operations.restaurantReviews.index'));
+        return redirect(route('operations.restaurant_review',$restaurantId));
     }
 
     /**

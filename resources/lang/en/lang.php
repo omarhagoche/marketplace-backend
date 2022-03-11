@@ -1406,5 +1406,6 @@ return [
     'restaurant_commission_placeholder'=>'Insert Restaurant Commission',
     'restaurant_commission'=>'Restaurant Commission',
     'restaurant_commission_help' => 'Commission (Ex 30 for 30% of earning)',
+    'created_at' => 'Created At',
 
 ];

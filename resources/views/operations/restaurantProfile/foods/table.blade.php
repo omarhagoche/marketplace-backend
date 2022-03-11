@@ -125,7 +125,7 @@ $(document).ready(function() {
     var table = $('#example').DataTable({
         dom: 'Bfrtip',
         buttons: [
-            { extend: "excel", className: "btn btn-success add-excel",text:"" }
+            { extend: "excel", className: "btn btn-success add-excel",text:"Export " }
         ],
         initComplete: function () {
             // Apply the search

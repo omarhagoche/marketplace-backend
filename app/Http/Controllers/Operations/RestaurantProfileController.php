@@ -20,6 +20,7 @@ use App\Http\Requests\UpdateFoodRequest;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ExtraGroupRepository;
 use App\Repositories\ExtraRepository;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 
 class RestaurantProfileController extends Controller
@@ -63,8 +64,12 @@ class RestaurantProfileController extends Controller
      * @var ExtraRepository
     */
     private $extraRepository;
+    /**
+     * @var FoodOrderRepository
+    */
+    private $foodOrderRepository;
 
-    public function __construct(ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    public function __construct(FoodOrderRepository $foodOrderRepository, ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -77,6 +82,7 @@ class RestaurantProfileController extends Controller
         $this->categoryRepository = $categoryRepository;
         $this->extraGroupRepository = $extraGroupRepository;
         $this->extraRepository = $extraRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
     }
 
     public function restaurantFoodsindex($id) {
@@ -197,23 +203,24 @@ class RestaurantProfileController extends Controller
     }
     
     public function restaurantFoodsDelete($id,$restaurantId) {   
-        if (!env('APP_DEMO', false)) {
-            $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
-            $food = $this->foodRepository->findWithoutFail($id);
-            
-            if (empty($food)) {
-                Flash::error('Food not found');
 
-                return redirect(route('operations.restaurant.foods.index',$restaurantId));
-            }
-            
-            $this->foodRepository->delete($id);
-            
-            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.food')]));
-            
-        } else {
-            Flash::warning('This is only demo app you can\'t change this section ');
+        $food = $this->foodRepository->findWithoutFail($id);
+        $order = $this->foodOrderRepository->findByField('food_id',$id);
+        if(!empty($order)) {
+            Flash::error('Food Related To Order');
+
+            return redirect(route('operations.restaurant.foods.index',$restaurantId));
         }
+        if (empty($food)) {
+            Flash::error('Food not found');
+
+            return redirect(route('operations.restaurant.foods.index',$restaurantId));
+        }
+        
+        $this->foodRepository->delete($id);
+        
+        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.food')]));
+            
         return redirect(route('operations.restaurant.foods.index',$restaurantId));
     }
 

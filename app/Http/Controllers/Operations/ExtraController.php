@@ -274,7 +274,11 @@ class ExtraController extends Controller
     {
         $this->extraRepository->pushCriteria(new extrasOfUserCriteria(auth()->id()));
         $extra = $this->extraRepository->findWithoutFail($id);
+        if(!empty($extra->foods)) {
+            Flash::error('Extra Related To Food');
 
+            return redirect(route('operations.restaurant.extra.index',$extra->restaurant_id));
+        }
         if (empty($extra)) {
             Flash::error('Extra not found');
 
