@@ -203,10 +203,10 @@ class ClientController extends Controller
      *
      * @return Response
      */
-    public function notes(NoteDataTable $noteDataTable,$userId)
+    public function notes(NoteDataTable $noteDataTable,$id)
     {
-        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
-        return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
+        $this->getData($id,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $noteDataTable->with('id', $id)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
     }
     public function createNote($userId)

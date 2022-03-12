@@ -1013,6 +1013,8 @@ return [
     'extra_edit' => 'Edit Extra',
     'extra_table' => 'Extras List',
     'extra_create' => 'Create Extra',
+    'note_table' => 'Note List',
+
     'extra_name' => 'Name',
     'extra_name_help' => 'Insert Name',
     'extra_name_placeholder' => 'Insert Name',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Note extends Model
 {
     public $table = 'notes';
-    public $fillable = ['text','to_user_id','from_user_id','order_id'];
+    public $fillable = ['text','to_user_id','from_user_id','order_id','restaurant_id'];
 
     /**
      * Validation rules
@@ -35,6 +35,13 @@ class Note extends Model
     public function toUser()
     {
         return $this->belongsTo(\App\Models\User::class, 'to_user_id', 'id');
+    }
+          /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function toRestaurant()
+    {
+        return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
   /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

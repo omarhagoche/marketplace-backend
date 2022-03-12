@@ -5,14 +5,17 @@ namespace App\DataTables\Operations;
 use App\Models\Note;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
-use Barryvdh\DomPDF\Facade as PDF;
 
 class NoteDataTable extends DataTable
 {
+    private $datatables_actions_path;
+
     /**
      * Build DataTable class.
      *
@@ -29,17 +32,14 @@ class NoteDataTable extends DataTable
 
                 return $note->fromUser->name;
             })
-            // ->addColumn('order', function ($note) {
-            //     // return getDateColumn($note->user, 'name');
-
-            //    return $note->order->restaurant?$note->order->restaurant->name:"لا يوجد مطعم";
-            // })
+            ->addColumn('created_at', function ($note) {
+                return $note->created_at->diffForHumans();
+            })
             ->addColumn('text', function ($note) {
                 return $note->text;
             })
-            // ->addColumn('action', 'operations.settings.note.datatables_actions')
             ->addColumn('action', function ($note) {
-                return view('operations.settings.note.datatables_actions', ['id'=>$note->id,'user_id'=>$this->userId]);
+                return view('operations.settings.note.datatables_actions', ['id'=>$note->id,'user_id'=>$this->id,'datatables_actions_path'=>$this->datatables_actions_path]);
             })
             ;
 
@@ -55,10 +55,7 @@ class NoteDataTable extends DataTable
      */
     public function query(Note $model)
     {
-        
-        return $model->newQuery()->where('to_user_id', $this->userId)
-        // ->with('order:id,name')
-        ->with('fromUser:id,name');
+        return $this->getQuery($model,$this->id);
     }
 
     /**
@@ -103,7 +100,7 @@ class NoteDataTable extends DataTable
                 'searchable' => false,
             ],
             [
-                'data' => 'updated_at',
+                'data' => 'created_at',
                 'title' => trans('lang.favorite_updated_at'),
             ],
             [
@@ -132,5 +129,20 @@ class NoteDataTable extends DataTable
         $data = $this->getDataForPrint();
         $pdf = PDF::loadView($this->printPreview, compact('data'));
         return $pdf->download($this->filename() . '.pdf');
+    }
+    public function getQuery($model,$id)
+    { 
+        switch (Route::currentRouteName()) {
+            case "operations.users.profile.notes":
+                $this->datatables_actions_path='operations.users.profile.destroyNote';
+                return $model->newQuery()->where('to_user_id', $id)
+                        ->with('fromUser:id,name');
+            break;
+            case "operations.restaurant_profile.note.index":
+                $this->datatables_actions_path='operations.restaurant_profile.note.destroy';
+                return $model->newQuery()->where('restaurant_id', $id)
+                        ->with('fromUser:id,name');
+                break;
+        }
     }
 }

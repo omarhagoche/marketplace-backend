@@ -45,9 +45,13 @@
         <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            @include('operations.restaurantProfile.links',compact('id','restaurant'))
+            @include('operations.restaurantProfile.links',compact('restaurant'))
           <div class="card-body">
-            @include('operations.restaurantProfile.notes.table')
+            {!! Form::open( ['route' => ['operations.restaurant_profile.note.store', $restaurant->id]]) !!}
+            @include('operations.restaurantProfile.notes.fields')
+
+            {!! Form::close() !!}
+
             <div class="clearfix"></div>
           </div>
         </div>
