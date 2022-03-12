@@ -5,7 +5,7 @@
         <a class="nav-link {{ request()->routeIs('operations.restaurants.index') ? 'active' : '' }}" href="{!! route('operations.restaurants.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
       </li>
       @endcan
-      @can('operations.restaurant.create')
+      @can('operations.restaurants.create')
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('operations.restaurants.create') ? 'active' : '' }}" href="{!! route('operations.restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
         </li>
