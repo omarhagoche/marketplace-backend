@@ -305,7 +305,7 @@ class RestaurantController extends Controller
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.restaurant')]));
 
-        return redirect(route('operations.restaurant_profile.edit', $id));
+        return redirect(route('operations.restaurant_profile_edit', $id));
     }
 
     /**
