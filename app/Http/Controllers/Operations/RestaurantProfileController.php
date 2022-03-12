@@ -177,12 +177,15 @@ class RestaurantProfileController extends Controller
     public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id) { 
         $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
         $food = $this->foodRepository->findWithoutFail($food_id);
-
+        
         if (empty($food)) {
             Flash::error('Food not found');
             return redirect(route('foods.index'));
         }
         $input = $request->all();
+        if(!isset($request->extras)) {
+            $input["extras"] = [];
+        }
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
         try {
             DB::beginTransaction();  
