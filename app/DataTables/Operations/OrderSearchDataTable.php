@@ -48,7 +48,7 @@ class OrderSearchDataTable extends DataTable
                 }
                 return getLinksColumnByRouteName([$order->user], "users.edit", 'id', 'name');
             })
-            ->editColumn('driver_name', function ($order) {
+            ->editColumn('driver.name', function ($order) {
 
                 if (!$order->driver) {
                     return '---'; // trans('lang.order_driver_not_assigned');
@@ -106,8 +106,8 @@ class OrderSearchDataTable extends DataTable
                 'title' => trans('lang.order_user_id'),
             ],
             [
-                'data' => 'driver_name',
-                'name' => 'driver_name',
+                'data' => 'driver.name',
+                'name' => 'driver.name',
                 'title' => trans('lang.order_driver_id'),
             ],
             [
