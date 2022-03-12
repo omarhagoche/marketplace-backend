@@ -52,7 +52,7 @@ class ClientDataTable extends DataTable
     {
         return $model->whereHas('roles', function($q){
             $q->whereIn('name', ['client']);
-        });
+        })->orderByDesc('id');
     }
 
     /**
@@ -70,7 +70,8 @@ class ClientDataTable extends DataTable
                 config('datatables-buttons.parameters'), [
                     'language' => json_decode(
                         file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                    ),true)
+                    ),true ),
+                    // 'order' => [[1, 'desc']],
                 ]
             ));
     }

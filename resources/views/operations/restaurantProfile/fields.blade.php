@@ -30,19 +30,24 @@
         {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-4 control-label ']) !!}
         <div class="checkbox icheck">
             <label class="col-9 form-check-inline">
-                {!! Form::hidden('private_drivers', 0) !!}
+                {!! Form::hidden('private_drivers',1) !!}
                 {!! Form::checkbox('private_drivers') !!}
             </label>
         </div>
     </div>
-
-
     <!-- Users Field -->
     <div class="form-group row" id='restaurant-body-drivers'>
         {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-6 control-label ']) !!}
         <div class="col-9">
             {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
+        </div>
+    </div>
+    <div class="form-group row ">
+        {!! Form::label('users[]', trans("lang.restaurant_users"),['class' => 'col-6 control-label ']) !!}
+        <div class="col-9">
+            {!! Form::select('users[]', $users, $usersSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+            <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_price_type_help") }}</div>
         </div>
     </div>
     <div class="form-group row ">

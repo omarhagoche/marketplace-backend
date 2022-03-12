@@ -147,7 +147,13 @@ class Driver extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     **/
+    public function restaurants()
+    {
+        return $this->belongsToMany(\App\Models\Restaurant::class, 'driver_restaurants','user_id');
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
