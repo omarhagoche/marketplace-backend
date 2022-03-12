@@ -421,14 +421,25 @@ class RestaurantController extends Controller
                     $user = User::updateOrCreate(['id' => $userId], $input);
                     $user->syncRoles($input['roles']);
                     // $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
-                    $input['roles'][0]=='driver'?
-                    $restaurant->drivers()->attach($user->id):'';
+                    if($input['roles'][0]=='driver'){
+                       if( $restaurant->drivers()->where('user_id', $user->id)->exists()){
+                        $restaurant->drivers()->sync($user->id);
+                       }else {
+                        $restaurant->drivers()->attach($user->id);
+                       }
+                    }
+                    if($input['roles'][0]=='manager'){
+                        if( $restaurant->users()->where('user_id', $user->id)->exists()){
+                         $restaurant->users()->sync($user->id);
+                        }else {
+                            $restaurant->users()->attach($user->id);
+                        }
+                     }
                     if (isset($input['avatar']) && $input['avatar']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['avatar']);
                         $mediaItem = $cacheUpload->getMedia('avatar')->first();
                         $mediaItem->copy($user, 'avatar');
                     }
-                    if ($userId==null&&$input['roles'][0]=='manager')$user->restaurants()->attach($id);
                     // event(new UserRoleChangedEvent($user));
                 } catch (ValidatorException $e) {
                     Flash::error($e->getMessage());
