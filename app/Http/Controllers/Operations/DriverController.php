@@ -234,14 +234,16 @@ class DriverController extends Controller
         }
 
         $input = $request->all();
-
-        if ($request->password) {
+        if ($request->password != null) {
             if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
                 $request->validated(['password' => 'confirmed']);
                 $input['password'] = Hash::make($input['password']);
             }
+        } else {
+            unset($input['password']);
+            unset($input['password_confirmation']);
         }
-
+        
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->update($input, $id);
