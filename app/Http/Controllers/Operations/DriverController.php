@@ -199,7 +199,7 @@ class DriverController extends Controller
         if (empty($driver)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.driver')]));
 
-            return redirect(route('drivers.index'));
+            return redirect(route('operations.drivers.index'));
         }
 
         $customFieldsValues = $driver->customFieldsValues()->with('customField')->get();
@@ -230,7 +230,7 @@ class DriverController extends Controller
 
         if (empty($driver) || empty($user)) {
             Flash::error('Driver not found');
-            return redirect(route('drivers.index'));
+            return redirect(route('operations.drivers.index'));
         }
 
         $input = $request->all();
@@ -259,7 +259,7 @@ class DriverController extends Controller
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.driver')]));
 
-        return redirect(route('drivers.index'));
+        return redirect(route('operations.drivers.index'));
     }
 
 
