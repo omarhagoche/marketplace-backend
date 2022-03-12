@@ -88,7 +88,7 @@ class DriverSearchDataTable extends DataTable
 
             ],
             [
-                'data' => 'type',
+                'data' => 'driverType.name',
                 'title' => trans('lang.driver_type'),
 
             ],
@@ -142,9 +142,10 @@ class DriverSearchDataTable extends DataTable
                 $q->where('name', 'like',  '%' . request('name') . '%');
             });
         }
-
         if (request()->filled('type')) {
-            $query->where('type', 'like',  '%' . request('type') . '%');
+            $query->whereHas('driverType', function ($q) {
+                $q->where('name', 'like',  '%' . request('type') . '%');
+            });
         }
         if (request()->filled('id')) {
             $query->where('id', 'like',  '%' . request('id') . '%');

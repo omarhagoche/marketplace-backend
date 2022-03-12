@@ -193,6 +193,7 @@ class DriverController extends Controller
      */
     public function edit($id)
     {
+
         $driver = $this->driverRepository->findWithoutFail($id);
         if ($driver)
             $user = $this->userRepository->findWithoutFail($driver->user_id);
@@ -234,6 +235,7 @@ class DriverController extends Controller
         }
 
         $input = $request->all();
+
         if ($request->password != null) {
             if ($input['password'] && ($input['password'] == $input['password_confirmation'])) {
                 $request->validated(['password' => 'confirmed']);
@@ -243,7 +245,7 @@ class DriverController extends Controller
             unset($input['password']);
             unset($input['password_confirmation']);
         }
-        
+
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->driverRepository->model());
         try {
             $driver = $this->driverRepository->update($input, $id);
@@ -330,7 +332,7 @@ class DriverController extends Controller
         $driver = $this->driverRepository->findWithoutFail($id);
 
         if (empty($driver) || $driver->orders->count() > 0) {
-            Flash::error('Driver not found or driver have orders' );
+            Flash::error('Driver not found or driver have orders');
 
             return redirect(route('operations.drivers.index'));
         }
