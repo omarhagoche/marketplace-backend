@@ -38,23 +38,13 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
 <p class="text-center">{{ trans('lang.restaurant_no_data_message') }}</p>
 {{-- إذا لم تظهر أي معلومات في الجدول ، يرجى ملء جميع الحقول ثم حذفها أو استخدام متصفح آخر --}}
 @push('scripts_lib')
-<<<<<<< HEAD
-    @include('layouts.datatables_js')
-    {!! $dataTable->scripts() !!}
-    {{-- <script>
-=======
     @include('operations.layouts.datatables_js')
     {!! $dataTable->scripts() !!}
     <script>
->>>>>>> add_note_to_restaurants
         $(".searchDTFields").keyup(function() {
             LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
                 .search($(this).val())
                 .draw();
         });
-<<<<<<< HEAD
-    </script> --}}
-=======
     </script>
->>>>>>> add_note_to_restaurants
 @endpush
