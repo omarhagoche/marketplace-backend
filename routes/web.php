@@ -275,6 +275,11 @@ Route::middleware('auth')->group(function () {
             //Restaurant
             Route::get('restaurantProfile/{id}', 'Operations\RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
             Route::get('restaurantProfile/{id}/users', 'Operations\RestaurantController@users')->name('operations.restaurant_profile.users');
+            Route::get('restaurantProfile/{id}/note', 'Operations\RestaurantController@notes')->name('operations.restaurant_profile.note.index');
+            Route::get('restaurantProfile/{id}/note/create', 'Operations\RestaurantController@createNote')->name('operations.restaurant_profile.note.create');
+            Route::post('restaurantProfile/{id}/note/store', 'Operations\RestaurantController@storeNote')->name('operations.restaurant_profile.note.store');
+            Route::delete('restaurantProfile/{id}/note/{noteId}/destroy', 'Operations\RestaurantController@destroyNote')->name('operations.restaurant_profile.note.destroy');
+
             Route::get('restaurantProfile/{id}/users/create/{userId?}', 'Operations\RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
             Route::post('restaurantProfile/{id}/users/store/{userId?}', 'Operations\RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
             Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');

@@ -203,20 +203,18 @@ class ClientController extends Controller
      *
      * @return Response
      */
-    public function notes(NoteDataTable $noteDataTable,$userId)
+    public function notes(NoteDataTable $noteDataTable,$id)
     {
-        $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
-        return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
+        $this->getData($id,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
+        return $noteDataTable->with('id', $id)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
     }
-    
     public function createNote($userId)
     {
         $user = $this->userRepository->findWithoutFail($userId);
 
        return view('operations.client.profile.createNote',compact('user'));
     }
-
     public function storeNote(Request $request,$userId)
     {
         $this->validate($request, [
@@ -231,7 +229,7 @@ class ClientController extends Controller
             Flash::success('Creat note successfully.');
             return redirect(route('operations.users.profile.notes',$userId));
         } catch (\Throwable $th) {
-            Flash::error('Creat note error.'.$th);
+            Flash::success('Creat note error.');
             return redirect(route('operations.users.profile.notes',$userId));
         }
     }
@@ -247,6 +245,44 @@ class ClientController extends Controller
         return redirect(route('operations.users.profile.notes',$userId,$noteId));
        }
     }
+    
+    // public function createNote($userId)
+    // {
+    //     $user = $this->userRepository->findWithoutFail($userId);
+
+    //    return view('operations.client.profile.createNote',compact('user'));
+    // }
+
+    // public function storeNote(Request $request,$userId)
+    // {
+    //     $this->validate($request, [
+    //         'text' => 'required',
+    //     ]);
+    //     try {
+    //         $this->noteRepository->create([
+    //             'from_user_id'=>auth()->user()->id,
+    //             'to_user_id'=>$userId,
+    //             'text'=>$request->text
+    //         ]);
+    //         Flash::success('Creat note successfully.');
+    //         return redirect(route('operations.users.profile.notes',$userId));
+    //     } catch (\Throwable $th) {
+    //         Flash::error('Creat note error.'.$th);
+    //         return redirect(route('operations.users.profile.notes',$userId));
+    //     }
+    // }
+    // public function destroyNote($userId,$noteId)
+    // {
+    //    try {
+    //         $note = $this->noteRepository->findWithoutFail($noteId);
+    //         $note->delete();
+    //         Flash::success('Delete note successfully.');
+    //         return redirect(route('operations.users.profile.notes',$userId,$noteId));
+    //    } catch (\Throwable $th) {
+    //     Flash::success('Creat note error.');
+    //     return redirect(route('operations.users.profile.notes',$userId,$noteId));
+    //    }
+    // }
        /**
      * Display the specified Favorite.
      *
@@ -422,7 +458,7 @@ class ClientController extends Controller
         }
 
 
-        Flash::success($user->name.' updated successfully.');
+        Flash::success($user->name.'updated successfully.');
         return redirect(route('operations.users.index'));
 
         // return redirect()->back();

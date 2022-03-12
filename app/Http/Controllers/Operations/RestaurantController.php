@@ -10,9 +10,12 @@
 
 namespace App\Http\Controllers\Operations;
 
-use App\Criteria\Foods\FoodsOfUserCriteria;
 use Flash;
+use App\Models\Food;
 use App\Models\User;
+use App\Models\Extra;
+use App\Models\ExtraFood;
+use App\Models\ExtraGroup;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 use App\DataTables\UserDataTable;
@@ -20,9 +23,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Repositories\FoodRepository;
+use App\Repositories\NoteRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\ExtraRepository;
 use Illuminate\Support\Facades\Route;
 use App\Criteria\Users\AdminsCriteria;
 use App\Events\RestaurantChangedEvent;
@@ -31,9 +37,15 @@ use App\Criteria\Users\ClientsCriteria;
 use App\Criteria\Users\DriversCriteria;
 use App\Repositories\CuisineRepository;
 use App\Criteria\Users\ManagersCriteria;
+use App\Http\Requests\CreateFoodRequest;
+use App\Http\Requests\UpdateFoodRequest;
+use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\Response;
+use App\Repositories\ExtraGroupRepository;
 use App\Repositories\RestaurantRepository;
+use App\Criteria\Foods\FoodsOfUserCriteria;
 use App\Repositories\CustomFieldRepository;
+use App\DataTables\Operations\NoteDataTable;
 use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Criteria\Users\ManagersClientsCriteria;
@@ -41,16 +53,6 @@ use App\DataTables\RequestedRestaurantDataTable;
 use App\DataTables\Operations\RestaurantSearchDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
-use App\Http\Requests\CreateFoodRequest;
-use App\Http\Requests\UpdateFoodRequest;
-use App\Models\Extra;
-use App\Models\ExtraFood;
-use App\Models\ExtraGroup;
-use App\Models\Food;
-use App\Repositories\CategoryRepository;
-use App\Repositories\ExtraGroupRepository;
-use App\Repositories\ExtraRepository;
-use App\Repositories\FoodRepository;
 
 class RestaurantController extends Controller
 {
@@ -93,8 +95,10 @@ class RestaurantController extends Controller
      * @var ExtraRepository
      */
     private $extraRepository;
+    private $noteRepository;
 
-    public function __construct(ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository, RoleRepository $roleRepository, RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+
+    public function __construct(NoteRepository $noteRepo,ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -107,6 +111,8 @@ class RestaurantController extends Controller
         $this->categoryRepository = $categoryRepository;
         $this->extraGroupRepository = $extraGroupRepository;
         $this->extraRepository = $extraRepository;
+        $this->noteRepository = $noteRepo;
+
     }
 
     /**
@@ -486,4 +492,62 @@ class RestaurantController extends Controller
             return redirect(route('operations.restaurant_profile.users', $id));
         }
     }
+    public function notes(NoteDataTable $noteDataTable,$id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        if (empty($restaurant)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
+            return redirect(route('restaurants.index'));
+        }
+        $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+        return $noteDataTable
+        ->with(['id'=>$id, 'restaurant'=> $restaurant,"customFields"=> isset($html) ? $html : false])
+        ->render('operations.restaurantProfile.notes.index',compact('id','restaurant','customFields'));
+
+    }
+    public function createNote($id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
+       return view('operations.restaurantProfile.notes.create',compact('restaurant'));
+    }
+    public function storeNote(Request $request,$id)
+    {
+        $this->validate($request, [
+            'text' => 'required',
+        ]);
+        try {
+            $this->noteRepository->create([
+                'from_user_id'=>auth()->user()->id,
+                'restaurant_id'=>$id,
+                'text'=>$request->text
+            ]);
+            Flash::success('Creat note successfully.');
+            return redirect(route('operations.restaurant_profile.note.index',$id));
+        } catch (\Throwable $th) {
+            Flash::error('Creat note error');
+            return redirect(route('operations.restaurant_profile.note.create',$id));
+        }
+    }
+    public function destroyNote($restaurantId,$noteId)
+    {
+       try {
+            $note = $this->noteRepository->findWithoutFail($noteId);
+            $note->delete();
+            Flash::success('Delete note successfully.');
+            return redirect(route('operations.restaurant_profile.note.index',$restaurantId));
+       } catch (\Throwable $th) {
+            Flash::error('Delete note error.');
+            return redirect(route('operations.restaurant_profile.note.index',$restaurantId));
+    }
+    }
+
+
+
+    
 }

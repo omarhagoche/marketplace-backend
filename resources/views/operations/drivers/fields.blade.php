@@ -29,6 +29,8 @@
     </div>
 
 
+
+
     {{-- <!-- 'Driver Type Field' -->
     <div class="form-group row ">
         {!! Form::label('type', trans('lang.driver_type'), ['class' => 'col-3 control-label text-right']) !!}

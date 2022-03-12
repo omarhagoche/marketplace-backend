@@ -599,7 +599,6 @@ return [
     'food_restaurant_id_help' => 'Insert Restaurant',
     'food_restaurant_id_placeholder' => 'Insert Restaurant',
     'no_reviews' => 'No Reviews',
-    'reviews' => 'Reviews',
     'food_review' => 'Food Review',
     'food_review_create' => 'Create Food Review',
     'food_review_desc' => 'Food Reviews Management',
@@ -1016,6 +1015,8 @@ return [
     'extra_edit' => 'Edit Extra',
     'extra_table' => 'Extras List',
     'extra_create' => 'Create Extra',
+    'note_table' => 'Note List',
+
     'extra_name' => 'Name',
     'extra_name_help' => 'Insert Name',
     'extra_name_placeholder' => 'Insert Name',
