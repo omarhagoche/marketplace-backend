@@ -48,7 +48,7 @@
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::open(['route' => 'orders.store']) !!}
+      {!! Form::open(['route' => 'operations.orders.store']) !!}
       <div class="row">
         @include('operations.orders.fields')
       </div>

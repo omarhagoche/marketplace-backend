@@ -217,7 +217,7 @@ class OrderController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
 
-        return redirect(route('orders.index'));
+        return redirect(route('operations.orders.index'));
     }
 
     /**
@@ -237,7 +237,7 @@ class OrderController extends Controller
         if (empty($order)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
 
-            return redirect(route('orders.index'));
+            return redirect(route('operations.orders.index'));
         }
         $subtotal = 0;
         $taxAmount = 0;
@@ -265,7 +265,7 @@ class OrderController extends Controller
         if (empty($order)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
 
-            return redirect(route('orders.index'));
+            return redirect(route('operations.orders.index'));
         }
 
 
@@ -303,24 +303,25 @@ class OrderController extends Controller
      * @return Response
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
-    public function update($id, UpdateOrderRequest $request)
+    public function update(UpdateOrderRequest $request,$id)
     {
-        
         $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
         $oldOrder = $this->orderRepository->findWithoutFail($id);
         if (empty($oldOrder)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
-            return redirect(route('orders.index'));
+            return redirect(route('operations.orders.index'));
         }
         $oldStatus = $oldOrder->payment->status;
-        
+
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         try {
-
             $order = $this->orderRepository->update($input, $id);
+                          dd();
+
             if (setting('enable_notifications', false)) {
                 if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
+                   
                     // we send notifications for only users who are clients , not unregisterd customer
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
@@ -338,18 +339,19 @@ class OrderController extends Controller
             ], $order['payment_id']);
 
             event(new OrderChangedEvent($oldStatus, $order));
-
+            
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $order->customFieldsValues()
                     ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
             }
+           
+
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.order')]));
-
-        return redirect(route('orders.index'));
+        return redirect(route('operations.orders.index'));
     }
 
     /**
@@ -369,7 +371,7 @@ class OrderController extends Controller
             if (empty($order)) {
                 Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
 
-                return redirect(route('orders.index'));
+                return redirect(route('operations.orders.index'));
             }
 
             $this->orderRepository->delete($id);
@@ -380,7 +382,7 @@ class OrderController extends Controller
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
-        return redirect(route('orders.index'));
+        return redirect(route('operations.orders.index'));
     }
 
     /**
@@ -480,7 +482,7 @@ class OrderController extends Controller
             ]);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.order')]));
-            return redirect(route('orders.edit-order-foods',$orderFood->order_id));
+            return redirect(route('operations.orders.edit-order-foods',$orderFood->order_id));
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
@@ -499,7 +501,7 @@ class OrderController extends Controller
             ], $foodOrder->id);
             DB::commit();
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
-            return redirect(route('orders.edit-order-foods',$foodOrder->order_id));
+            return redirect(route('operations.orders.edit-order-foods',$foodOrder->order_id));
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
@@ -538,7 +540,7 @@ class OrderController extends Controller
                 $total      = $data["total"];
                 if($total < $request->discount) {
                     Flash::error('discount is bigger than order total');
-                    return redirect(route('orders.show-order-coupon',$order_id));
+                    return redirect(route('operations.orders.show-order-coupon',$order_id));
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
@@ -547,7 +549,7 @@ class OrderController extends Controller
             ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
-            return redirect(route('orders.show-order-coupon',$order_id));
+            return redirect(route('operations.orders.show-order-coupon',$order_id));
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
@@ -570,7 +572,7 @@ class OrderController extends Controller
                 $total      = $data["total"];
                 if($total < $request->discount) {
                     Flash::error('discount is bigger than order total');
-                    return redirect(route('orders.show-order-coupon',$order_id));
+                    return redirect(route('operations.orders.show-order-coupon',$order_id));
                 }
             }
             $coupon = $this->couponRepository->create($request->all());
@@ -579,7 +581,7 @@ class OrderController extends Controller
             ], $order->id);
             DB::commit();
             Flash::success(__('lang.saved_successfully', ['operator' => __('lang.coupon')]));
-            return redirect(route('orders.show-order-coupon',$order_id));
+            return redirect(route('operations.orders.show-order-coupon',$order_id));
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
@@ -619,7 +621,7 @@ class OrderController extends Controller
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.coupon')]));
 
-        return redirect(route('orders.show-order-coupon',$order->id));
+        return redirect(route('operations.orders.show-order-coupon',$order->id));
     }
 
     public function removeRestaurantCoupon($id)
@@ -641,7 +643,7 @@ class OrderController extends Controller
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.coupon')]));
 
-        return redirect(route('orders.show-order-coupon',$order->id));
+        return redirect(route('operations.orders.show-order-coupon',$order->id));
     }
     
 }

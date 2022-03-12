@@ -59,7 +59,7 @@
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::model($order, ['route' => ['orders.update', $order->id], 'method' => 'patch']) !!}
+      {!! Form::model($order, ['route' => ['operations.orders.update', $order->id], 'method' => 'patch']) !!}
       <div class="row">
         @include('operations.orders.fields')
       </div>
