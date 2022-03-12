@@ -317,8 +317,6 @@ class OrderController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         try {
             $order = $this->orderRepository->update($input, $id);
-                          dd();
-
             if (setting('enable_notifications', false)) {
                 if ($order->user_id && isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
                    
