@@ -296,9 +296,6 @@ Route::middleware('auth')->group(function () {
             Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsStore')->name('operations.restaurant.foods.store');
             Route::get('restaurantFoods/edit/{restaurant_id}/{food_id}', 'Operations\RestaurantProfileController@restaurantFoodsEdit')->name('operations.restaurant.foods.edit');
             Route::put('restaurantFoods/update/{restaurant_id}/{food_id}', 'Operations\RestaurantProfileController@restaurantFoodsUpdate')->name('operations.restaurant.foods.update');
-            Route::post('restaurantFoods/extra/store', 'Operations\RestaurantProfileController@restaurantFoodsExtraStore')->name('operations.restaurant.foods.extra.store');
-            Route::put('restaurantFoods/extra/update/{extraFoodId}', 'Operations\RestaurantProfileController@restaurantFoodsExtraUpdate')->name('operations.restaurant.foods.extra.update');
-            Route::delete('restaurantFoods/extra/delete/{extraFoodId}', 'Operations\RestaurantProfileController@restaurantFoodsExtraDelete')->name('operations.restaurant.foods.extra.delete');
             Route::delete('restaurantFoods/delete/{food_id}/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsDelete')->name('operations.restaurant.foods.delete');
             
             Route::post('restaurantFoods/update', 'Operations\RestaurantProfileController@restaurantFoodUpdate')->name('operations.restaurant.food.update');

@@ -161,7 +161,7 @@ class RestaurantController extends Controller
                         'password'=>Hash::make($request['email'])
                         ]);
 
-                        $defaultRoles = $this->roleRepository->findByField('name', 'admin');
+                        $defaultRoles = $this->roleRepository->findByField('name', 'manager');
                         $defaultRoles = $defaultRoles->pluck('name')->toArray();
                         $user->assignRole($defaultRoles);
                         $user->restaurants()->attach($restaurant->id);

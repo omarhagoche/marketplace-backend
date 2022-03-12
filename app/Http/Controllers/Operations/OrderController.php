@@ -108,7 +108,7 @@ class OrderController extends Controller
      */
     public function index(OrderSearchDataTable $orderDataTable)
     {
-        $orderStatuses=$this->orderStatusRepository->all();
+        $orderStatuses= $this->orderStatusRepository->all();
         return $orderDataTable->render('operations.orders.index',compact('orderStatuses'));
     }
 
@@ -351,6 +351,7 @@ class OrderController extends Controller
         }
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.order')]));
+
         return redirect(route('operations.orders.index'));
     }
 
