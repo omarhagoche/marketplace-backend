@@ -213,10 +213,10 @@ class RestaurantProfileController extends Controller
     public function restaurantFoodsDelete($id,$restaurantId) {   
 
         $food = $this->foodRepository->findWithoutFail($id);
-        $order = $this->foodOrderRepository->findByField('food_id',$id);
-        if(!empty($order)) {
+        $order = $this->foodOrderRepository->findByField('food_id',$id)->count();
+        if($order != 0) {
             Flash::error('Food Related To Order');
-
+            
             return redirect(route('operations.restaurant.foods.index',$restaurantId));
         }
         if (empty($food)) {
