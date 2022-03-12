@@ -61,6 +61,17 @@
         </div>
     </div>
 
+    <!-- Address Field -->
+    <div class="form-group row ">
+        {!! Form::label('email', trans("lang.email"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::text('email', null,  ['class' => 'form-control','placeholder'=>  trans("lang.email_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.email_help") }}
+            </div>
+        </div>
+    </div>
+
   <!-- Address Field -->
     <div class="form-group row ">
         {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-3 control-label text-right']) !!}
