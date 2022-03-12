@@ -35,6 +35,11 @@
         <a class="nav-link {{ request()->routeIs('operations.restaurant.extra.*') ? 'active' : '' }}" href="{!! route('operations.restaurant.extra.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.extra_table')}}</a>
       </li> 
       @endcan
+      @can('operations.restaurant.note.index')
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('operations.restaurant.note.*') ? 'active' : '' }}" href="{!! route('operations.restaurant.extra.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.extra_table')}}</a>
+      </li> 
+      @endcan
       
     </ul>
 </div>

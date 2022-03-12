@@ -199,7 +199,7 @@ class UserDataTable extends DataTable
                
                 return $model->newQuery()->whereHas('restaurants', function ($query) use ($id){
                     return $query->where('restaurant_id', $id);
-                })->with('roles');
+                });
                 break;
         }
     }

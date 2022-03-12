@@ -16,9 +16,9 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                @include('operations.client.profile.include.about_client')
+                {{-- @include('operations.client.profile.include.about_client') --}}
                 <!-- /.col -->
-                <div class="col-md-9">
+                <div class="col-md-12">
                     @include('flash::message')
                     @include('adminlte-templates::common.errors')
                     <div class="clearfix"></div>
@@ -27,6 +27,7 @@
                             @include('operations.client.profile.include.links')
                         </div>
                         <div class="card-body">
+                            
                             @include('operations.settings.note.table')
 
                             <div class="clearfix"></div>

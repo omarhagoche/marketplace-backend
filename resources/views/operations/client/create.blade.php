@@ -9,8 +9,7 @@
 {{--dropzone--}}
 <link rel="stylesheet" href="{{asset('plugins/dropzone/bootstrap.min.css')}}">
 @endpush
-@section('settings_title',trans('lang.user_table'))
-@section('setting_desc',"Edit")
+@section('settings_title','create')
 
 @section('settings_content')
   @include('flash::message')
@@ -23,15 +22,12 @@
           <a class="nav-link" href="{!! route('operations.users.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.user_table')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('operations.users.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.user_create')}}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.user_edit')}}</a>
+          <a class="nav-link active" href="{!! route('operations.users.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.user_create')}}</a>
         </li>
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::model($user, ['route' => ['operations.users.update', $user->id], 'method' => 'patch']) !!}
+      {!! Form::open( ['route' => ['operations.users.store']]) !!}
       <div class="row">
         @include('operations.settings.client.fields')
       </div>

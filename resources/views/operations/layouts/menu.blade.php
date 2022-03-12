@@ -1,6 +1,6 @@
 @can('dashboard')
     <li class="nav-item">
-        <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{!! url('dashboard') !!}">@if($icons)
+        <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{!! route('operations.dashboard.index') !!}">@if($icons)
                 <i class="nav-icon fa fa-dashboard"></i>@endif
             <p>{{trans('lang.dashboard')}}</p></a>
     </li>

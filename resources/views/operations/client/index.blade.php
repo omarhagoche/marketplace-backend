@@ -1,6 +1,7 @@
 @extends('operations.layouts.settings.default')
 @section('settings_title',trans('lang.user_table'))
-@section('settings_content')
+@section('setting_desc',"User List")
+@section('settings_content') 
   @include('flash::message')
   <div class="card">
     <div class="card-header">
@@ -9,7 +10,7 @@
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.user_table')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="{!! route('users.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.user_create')}}</a>
+          <a class="nav-link " href="{!! route('operations.users.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.user_create')}}</a>
         </li>
         @include('operations.layouts.right_toolbar', compact('dataTable'))
       </ul>
@@ -19,7 +20,7 @@
       <div class="clearfix"></div>
     </div>
   </div>
-</div>
+{{-- </div> --}}
 @endsection
 
 @push('scripts_lib')

@@ -18,6 +18,10 @@ body {
     border-radius: 100px;
 }
 
+.main-header {
+  z-index: 99999;
+}
+
 @media (min-width: 992px) {
     .content-wrapper,
     .main-footer,

@@ -17,6 +17,7 @@
         <div class="container-fluid">
             <div class="row">
                 {{-- @include('operations.client.profile.include.about_client') --}}
+                @include('operations.restaurantProfile.links',compact('id','restaurant'))
                 <!-- /.col -->
                 <div class="col-md-12">
                     @include('flash::message')
@@ -27,9 +28,9 @@
                             @include('operations.client.profile.include.links')
                         </div>
                         <div class="card-body">
-                            @include('favorites.table')
+                            
+                            @include('operations.settings.note.table')
 
-                            {{-- @include('orders.table') --}}
                             <div class="clearfix"></div>
                           </div>
                     </div>

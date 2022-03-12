@@ -130,7 +130,7 @@
         dropzoneFields['avatar'] = dz_user_avatar;
     </script>
 @endprepend
-    @can('permissions.index')
+    {{-- @can('permissions.index')
 <!-- Roles Field -->
     <div class="form-group row ">
         {!! Form::label('roles[]', trans("lang.user_role_id"),['class' => 'col-3 control-label text-right']) !!}
@@ -139,7 +139,7 @@
             <div class="form-text text-muted">{{ trans("lang.user_role_id_help") }}</div>
         </div>
     </div>
-    @endcan
+    @endcan --}}
 
     
     @isset($user->latitude)

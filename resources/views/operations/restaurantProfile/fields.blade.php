@@ -36,7 +36,7 @@
     
     <!-- 'Private_drivers Field' -->
     <div class="form-group row private-drivers">
-        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-3 control-label ']) !!}
+        {!! Form::label('private_drivers', trans("lang.private_drivers"),['class' => 'col-4 control-label ']) !!}
         <div class="checkbox icheck">
             <label class="col-9 form-check-inline">
                 {!! Form::hidden('private_drivers', 0) !!}

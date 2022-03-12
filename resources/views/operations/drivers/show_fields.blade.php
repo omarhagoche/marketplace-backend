@@ -73,7 +73,7 @@
 <div class="form-group row col-6">
     {!! Form::label('type', 'Driver Type:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {{-- <p>{!! $driver->driverType->name !!}</p> --}}
+        <p>{!! $driver->type !!}</p>
     </div>
 </div>
 
@@ -89,7 +89,7 @@
 <div class="form-group row col-6">
     {!! Form::label('earning', 'Earning:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->earning !!}</p>
+        <p>{!! $driver->totalEarning() !!}</p>
     </div>
 </div>
 
@@ -98,21 +98,21 @@
     {!! Form::label('available', 'Available:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         @if ($driver->available)
-        <p>{{ trans('lang.yes') }}</p>
+            <p>{{ trans('lang.yes') }}</p>
         @else
-        <p>{{ trans('lang.no') }}</p>
+            <p>{{ trans('lang.no') }}</p>
         @endif
-        
+
     </div>
 </div>
 
-<!-- Created At Field -->
+{{-- <!-- Created At Field -->
 <div class="form-group row col-6">
     {!! Form::label('created_at', 'Created At:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
         <p>{!! $driver->created_at !!}</p>
     </div>
-</div>
+</div> --}}
 
 <!-- Updated At Field -->
 <div class="form-group row col-6">
@@ -121,30 +121,45 @@
         <p>{!! $driver->updated_at !!}</p>
     </div>
 </div>
-<div class="form-group row col-12">
+<!-- Note Field -->
+<div class="form-group row col-6">
     {!! Form::label('note', 'Note:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        <p>{!! $driver->note ??  "" !!}</p>
+        <p>{!! $driver->note ?? '' !!}</p>
+    </div>
+</div>
+<!-- Review Count Field -->
+<div class="form-group row col-6">
+    {!! Form::label('review', 'Review:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->reviews->count() ?? '' !!}</p>
+    </div>
+</div>
+<!-- Review Starts Field -->
+<div class="form-group row col-6">
+    {!! Form::label('review_avg', 'Review Avg:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+        <p>{!! $driver->getAvg() !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-4 control-label text-right']) !!}
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfDay', 'Orders of this Day:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-4">
-        <p>{!! $ordersOfDay  !!}</p>
+        <p>{!! $ordersOfDay !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-4 control-label text-right']) !!}
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfWeek', 'Orders Of This Week:', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-4">
-        <p>{!! $ordersOfWeek  !!}</p>
+        <p>{!! $ordersOfWeek !!}</p>
     </div>
 </div>
 
-<div class="form-group row col-4">
-    {!! Form::label('ordersOfMount', 'Orders Of This Mount:', ['class' => 'col-4 control-label text-right']) !!}
-    <div class="col-3">
-        <p>{!! $ordersOfMount !!}</p>
+<div class="form-group row col-6">
+    {!! Form::label('ordersOfMonth', 'Orders Of This  Month:', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-4">
+        <p>{!! $ordersOfMonth !!}</p>
     </div>
 </div>

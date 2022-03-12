@@ -275,20 +275,20 @@ class Order extends Model
     }
     public function coupons()
     {
-        
-        $this->deliveryCoupon()->exists() ? $data[]=$this->setDataForCoupon('delivery','deliveryCoupon'):'';
-     
-        $this->restaurantCoupon()->exists() ? $data[]=$this->setDataForCoupon('restaurant','restaurantCoupon'):'';
-        return isset($data)?$data:null;
+
+        $this->deliveryCoupon()->exists() ? $data[] = $this->setDataForCoupon('delivery', 'deliveryCoupon') : '';
+
+        $this->restaurantCoupon()->exists() ? $data[] = $this->setDataForCoupon('restaurant', 'restaurantCoupon') : '';
+        return isset($data) ? $data : null;
     }
-    public function setDataForCoupon($for,$relations)
+    public function setDataForCoupon($for, $relations)
     {
-        $value=$for.'_coupon_value';
+        $value = $for . '_coupon_value';
         return [
-            'code'=>$this->$relations->code,
-            'value'=>$this->$value,
-            'date'=>$this->created_at->calendar() ,
-            'for'=>$for
+            'code' => $this->$relations->code,
+            'value' => $this->$value,
+            'date' => $this->created_at->calendar(),
+            'for' => $for
         ];
     }
     /**
@@ -327,9 +327,10 @@ class Order extends Model
         return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
     }
 
-    public function calculateOrderTotal() {
-        $subtotal=0;
-        $taxAmount=0;
+    public function calculateOrderTotal()
+    {
+        $subtotal = 0;
+        $taxAmount = 0;
         foreach ($this->foodOrders as $foodOrder) {
             foreach ($foodOrder->extras as $extra) {
                 $foodOrder->price += $extra->price;
@@ -340,6 +341,11 @@ class Order extends Model
         $total = $subtotal + $this['delivery_fee'];
         $taxAmount = $total * $this['tax'] / 100;
         $total += $taxAmount - $this->delivery_coupon_value - $this->restaurant_coupon_value;
-        return ["total" => round($total,2), "taxAmount" =>$taxAmount , "order" => $this, "subtotal" => $subtotal];
+        return ["total" => round($total, 2), "taxAmount" => $taxAmount, "order" => $this, "subtotal" => $subtotal];
+    }
+
+    public function getDeliveryFee()
+    {
+        return $this->delivery_fee;
     }
 }

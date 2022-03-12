@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Operations;
 
+use App\Models\Note;
 use App\Models\Order;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Repositories\NoteRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
@@ -46,12 +48,13 @@ class ClientController extends Controller
      */
     private $roleRepository;
     private $uploadRepository;
+    private $noteRepository;
     /**
      * @var CustomFieldRepository
      */
     private $customFieldRepository;
 
-      public function __construct(OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
+      public function __construct(NoteRepository $noteRepo,OrderRepository $orderRepo,UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
                                   CustomFieldRepository $customFieldRepo)
       {
           parent::__construct();
@@ -60,6 +63,8 @@ class ClientController extends Controller
           $this->uploadRepository = $uploadRepo;
           $this->customFieldRepository = $customFieldRepo;
           $this->orderRepository = $orderRepo;
+          $this->noteRepository = $noteRepo;
+
 
       }
      /**
@@ -71,6 +76,62 @@ class ClientController extends Controller
     public function index(ClientDataTable $userDataTable)
     {
         return $userDataTable->render('operations.client.index');
+    }
+    public function create()
+    {
+
+        $rolesSelected = [];
+        $hasCustomField = in_array($this->userRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+            $html = generateCustomField($customFields);
+        }
+
+        return view('operations.client.create')
+            // ->with("role", $role)
+            ->with("customFields", isset($html) ? $html : false)
+            ->with("rolesSelected", $rolesSelected);
+    }
+     /**
+     * Store a newly created User in storage.
+     *
+     * @param CreateUserRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateUserRequest $request)
+    {
+        if (env('APP_DEMO', false)) {
+            Flash::warning('This is only demo app you can\'t change this section ');
+            return redirect(route('users.index'));
+        }
+
+        $input = $request->all();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+
+        $input['roles'] =  ['client'];
+        $input['password'] = Hash::make($input['password']);
+        $input['api_token'] = str_random(124);
+        $input['activated_at'] = now();
+
+        try {
+            $user = $this->userRepository->create($input);
+            $user->syncRoles($input['roles']);
+            $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+
+            if (isset($input['avatar']) && $input['avatar']) {
+                $cacheUpload = $this->uploadRepository->getByUuid($input['avatar']);
+                $mediaItem = $cacheUpload->getMedia('avatar')->first();
+                $mediaItem->copy($user, 'avatar');
+            }
+            event(new UserRoleChangedEvent($user));
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
+
+        Flash::success('saved successfully.');
+
+        return redirect(route('operations.users.index'));
     }
       /**
      * Display the specified Order.
@@ -147,6 +208,42 @@ class ClientController extends Controller
         $this->getData($userId,$user,$role,$rolesSelected,$customFieldsValues,$customFields,$html);
         return $noteDataTable->with('userId', $userId)->render('operations.client.profile.notes', compact('html','customFields','customFieldsValues','user','role','rolesSelected'));
 
+    }
+    public function createNote($userId)
+    {
+        $user = $this->userRepository->findWithoutFail($userId);
+
+       return view('operations.client.profile.createNote',compact('user'));
+    }
+    public function storeNote(Request $request,$userId)
+    {
+        $this->validate($request, [
+            'text' => 'required',
+        ]);
+        try {
+            $this->noteRepository->create([
+                'from_user_id'=>auth()->user()->id,
+                'to_user_id'=>$userId,
+                'text'=>$request->text
+            ]);
+            Flash::success('Creat note successfully.');
+            return redirect(route('operations.users.profile.notes',$userId));
+        } catch (\Throwable $th) {
+            Flash::success('Creat note error.');
+            return redirect(route('operations.users.profile.notes',$userId));
+        }
+    }
+    public function destroyNote($userId,$noteId)
+    {
+       try {
+            $note = $this->noteRepository->findWithoutFail($noteId);
+            $note->delete();
+            Flash::success('Delete note successfully.');
+            return redirect(route('operations.users.profile.notes',$userId,$noteId));
+       } catch (\Throwable $th) {
+        Flash::success('Creat note error.');
+        return redirect(route('operations.users.profile.notes',$userId,$noteId));
+       }
     }
        /**
      * Display the specified Favorite.
@@ -230,7 +327,6 @@ class ClientController extends Controller
         $user = $this->userRepository->findWithoutFail($id);
         unset($user->password);
         $html = false;
-        $role = $this->roleRepository->pluck('name', 'name');
         $rolesSelected = $user->getRoleNames()->toArray();
         $customFieldsValues = $user->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
@@ -259,7 +355,8 @@ class ClientController extends Controller
 
 
         return view('operations.client.edit')
-            ->with('user', $user)->with("role", $role)
+            ->with('user', $user)
+            // ->with("role", $role)
             ->with("rolesSelected", $rolesSelected)
             ->with("customFields", $html);
     }
@@ -276,11 +373,11 @@ class ClientController extends Controller
     {
         if (env('APP_DEMO', false)) {
             Flash::warning('This is only demo app you can\'t change this section ');
-            return redirect(route('users.profile'));
+            return redirect()->back();
         }
         if (!auth()->user()->hasRole('admin') && $id != auth()->id()) {
             Flash::error('Permission denied');
-            return redirect(route('users.profile'));
+            return redirect()->back();
         }
 
         $user = $this->userRepository->findWithoutFail($id);
@@ -330,9 +427,10 @@ class ClientController extends Controller
         }
 
 
-        Flash::success('User updated successfully.');
+        Flash::success($user->name.'updated successfully.');
+        return redirect(route('operations.users.index'));
 
-        return redirect()->back();
+        // return redirect()->back();
 
     }
 
@@ -354,8 +452,11 @@ class ClientController extends Controller
 
         if (empty($user)) {
             Flash::error('User not found');
-
-            return redirect(route('users.index'));
+            return redirect(route('operations.users.index'));
+        }
+        if ($user->orders()->exists()) {
+            Flash::error($user->name.trans('lang.error_user_have_orders'));
+            return redirect(route('operations.users.index'));
         }
 
         $this->userRepository->delete($id);

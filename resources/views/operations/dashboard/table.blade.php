@@ -15,7 +15,7 @@
 
 @endphp
 
-{!! Form::open(['route'=>['operations.orders.index'], 'method' => 'get']) !!}
+{!! Form::open(['route'=>['operations.dashboard.index'], 'method' => 'get']) !!}
 {{-- Start customer search fields --}}
 {{-- <form id="myCustomeSearchForm" novalidate> --}}
     <div class="form-row">
