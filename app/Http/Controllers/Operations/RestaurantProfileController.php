@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Operations;
 
-use App\Criteria\Foods\FoodsOfUserCriteria;
-use App\Criteria\Users\DriversCriteria;
 use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Repositories\FoodRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\ExtraRepository;
 use App\Repositories\UploadRepository;
+use App\Criteria\Users\DriversCriteria;
 use App\Repositories\CuisineRepository;
-use App\Repositories\RestaurantRepository;
-use App\Repositories\CustomFieldRepository;
-use Prettus\Validator\Exceptions\ValidatorException;
+use App\Criteria\Users\ManagersCriteria;
 use App\Http\Requests\CreateFoodRequest;
 use App\Http\Requests\UpdateFoodRequest;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ExtraGroupRepository;
-use App\Repositories\ExtraRepository;
-use App\Repositories\FoodRepository;
+use App\Repositories\RestaurantRepository;
+use App\Criteria\Foods\FoodsOfUserCriteria;
+use App\Repositories\CustomFieldRepository;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 class RestaurantProfileController extends Controller
 {
@@ -94,7 +95,7 @@ class RestaurantProfileController extends Controller
      * @return \Illuminate\Http\Response
      */ 
     public function editProfileRestaurant($id)
-    {
+    { 
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
@@ -102,6 +103,8 @@ class RestaurantProfileController extends Controller
         }
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $driversSelected = $restaurant->drivers()->pluck('users.id')->toArray();
+        $users = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+        $usersSelected = $restaurant->users()->pluck('users.id')->toArray();
 
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
         $cuisinesSelected = $restaurant->cuisines()->pluck('cuisines.id')->toArray();
@@ -113,8 +116,10 @@ class RestaurantProfileController extends Controller
         }
         return view('operations.restaurantProfile.edit')
         ->with('driversSelected', $driversSelected)
+        ->with('usersSelected', $usersSelected)
         ->with('id', $id)
         ->with('drivers', $drivers)
+        ->with('users', $users)
         ->with('restaurant', $restaurant)
         ->with("customFields", isset($html) ? $html : false)
         ->with('cuisine', $cuisine)

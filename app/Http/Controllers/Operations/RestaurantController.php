@@ -244,8 +244,16 @@ class RestaurantController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-
-        return view('operations.restaurants.edit')->with('id',$id)->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('operations.restaurants.edit')
+        ->with('id',$id)
+        ->with('restaurant', $restaurant)
+        ->with("customFields", isset($html) ? $html : false)
+        ->with("user", $user)
+        ->with("drivers", $drivers)
+        ->with("usersSelected", $usersSelected)
+        ->with("driversSelected", $driversSelected)
+        ->with('cuisine', $cuisine)
+        ->with('cuisinesSelected', $cuisinesSelected);
     }
 
     /**
@@ -267,11 +275,13 @@ class RestaurantController extends Controller
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
-        return $input;
+        array_push($input['users'], ...$input['drivers']);//thhis line for push drivers ids with users 
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
 
             $restaurant = $this->restaurantRepository->update($input, $id);
+            $input['drivers']?$restaurant->drivers()->sync($input['drivers']):'';//Assigning drivers to the restaurant
+            $input['users']?$restaurant->users()->sync($input['users']):'';//Assigning users to the restaurant
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
@@ -363,7 +373,7 @@ class RestaurantController extends Controller
         if ($userId!=null)$user=User::find($userId);
         else $user=null;
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
-        $role = $this->roleRepository->where('name','!=','admin')->pluck('name', 'name');
+        $role = $this->roleRepository->where('name','!=','admin')->where('name','!=','client')->pluck('name', 'name');
         $rolesSelected =isset($userId)?$user->getRoleNames()->toArray():[];
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
@@ -402,8 +412,9 @@ class RestaurantController extends Controller
                 // $date=;
                 $input = $request->all();
                 // $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-        
-                $input['roles'] = isset($input['roles']) ? $input['roles'] : ['client'];
+                $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
+                $input['roles'] = $input['roles'];
                 $input['password'] = Hash::make($input['password']);
                 // $input['api_token'] = str_random(124);
                 $input['activated_at'] = now();
@@ -412,13 +423,14 @@ class RestaurantController extends Controller
                     $user = User::updateOrCreate(['id'=>$userId],$input);
                     $user->syncRoles($input['roles']);
                     // $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
-        
+                    $input['roles'][0]=='driver'?
+                    $restaurant->drivers()->attach($user->id):'';
                     if (isset($input['avatar']) && $input['avatar']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['avatar']);
                         $mediaItem = $cacheUpload->getMedia('avatar')->first();
                         $mediaItem->copy($user, 'avatar');
                     }
-                    if ($userId==null)$user->restaurants()->attach($id);
+                    if ($userId==null&&$input['roles'][0]=='manager')$user->restaurants()->attach($id);
                     // event(new UserRoleChangedEvent($user));
                 } catch (ValidatorException $e) {
                     Flash::error($e->getMessage());

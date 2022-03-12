@@ -137,7 +137,7 @@
         <div class="col-9">
             {{-- {!! Form::select('roles[]', $role, $user->roles->pluck('name')->toArray(), ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!} --}}
 
-            {!! Form::select('roles[]', $role, $rolesSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+            {!! Form::select('roles[]', $role, $rolesSelected, ['class' => 'select2 form-control' ]) !!}
             <div class="form-text text-muted">{{ trans("lang.user_role_id_help") }}</div>
         </div>
     </div>
