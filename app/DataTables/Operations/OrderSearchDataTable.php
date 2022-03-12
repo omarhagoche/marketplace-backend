@@ -30,7 +30,7 @@ class OrderSearchDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         return datatables()->eloquent($query)
-            ->editColumn('id', function ($order) {
+            ->editColumn('orders.id', function ($order) {
                 return "#" . $order->id;
             })
             ->editColumn('restaurant.name', function ($order) {
@@ -92,7 +92,7 @@ class OrderSearchDataTable extends DataTable
         $columns = [
             [
                 "name" => 'orders.id',
-                'data' => 'id',
+                'data' => 'orders.id',
                 'title' => trans('lang.order_id'),
             ],
             [
