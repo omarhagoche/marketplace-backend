@@ -128,20 +128,6 @@ class DriverController extends Controller
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
-        $input = $request->all();
-        $user = User::create([
-            'name' => $input['name'],
-            'phone_number' => $input['phone_number'],
-            'password' => Hash::make($input['password']),
-            'email' => $input['email'],
-            'active' => $input['active'],
-        ]);
-        Driver::create([
-            'user_id' => $user->id,
-            'driver_type_id' => $input['driver_type_id'],
-            'available' => $input['available'],
-            'delivery_fee' => $input['delivery_fee'],
-        ]);
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.driver')]));
 
