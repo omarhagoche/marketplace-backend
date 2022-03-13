@@ -312,4 +312,5 @@ Route::middleware('auth')->group(function () {
             Route::get('extrasedit/{id}/{restaurant_id}', 'Operations\ExtraController@editByRestuarant')->name('operations.restaurant.extra.edit');
     });
 
+    Route::get('driverWorkTimes/statistics', 'DriverWorkTimeController@statistics')->name('driverWorkTimes.statistics');
 });

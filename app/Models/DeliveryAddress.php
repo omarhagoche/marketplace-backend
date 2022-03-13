@@ -4,7 +4,8 @@ namespace App\Models;
 
 use App\Models\Order;
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 /**
  * Class DeliveryAddress
@@ -21,9 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class DeliveryAddress extends Model
 {
+    use SoftDeletes;
 
     public $table = 'delivery_addresses';
-    
+
 
 
     public $fillable = [

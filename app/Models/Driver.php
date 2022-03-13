@@ -141,6 +141,7 @@ class Driver extends Model
     }
 
     /**
+     * user is driver 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function user()
@@ -166,6 +167,14 @@ class Driver extends Model
     {
         return $this->orders()->orderby('created_at', 'desc')->first();
     }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function driverWorkTime()
+    {
+        return $this->hasMany(\App\Models\DriverWorkTime::class, 'user_id', 'user_id');
+    }
+
     public function types()
     {
         return $this->drivers_types;

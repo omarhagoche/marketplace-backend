@@ -101,6 +101,14 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/orders/canceled/short.log'),
         ],
+        'openAndCloseRestaurant' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/restaurants/open_close.log'),
+        ],
+        'openAndCloseRestaurantErrors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/restaurants/errors/open_close.log'),
+        ],
 
         'canceledOrdersDetails' => [
             'driver' => 'daily',
@@ -121,6 +129,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/requests/laravel.log'),
         ],
+
     ],
 
 ];
