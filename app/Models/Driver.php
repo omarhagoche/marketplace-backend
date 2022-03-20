@@ -104,6 +104,14 @@ class Driver extends Model
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
     }
 
+
+     /**If earning is less than 0 return 0
+       Otherwise return the value     **/
+       public function getEarningAttribute($value)
+       {
+           return $value > 0? $value : 0;
+       }
+
     public function getCustomFieldsAttribute()
     {
         $hasCustomField = in_array(static::class, setting('custom_field_models', []));
