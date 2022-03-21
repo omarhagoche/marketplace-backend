@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Restaurant
@@ -298,7 +299,7 @@ class Restaurant extends Model implements HasMedia
      */
     public function days(): BelongsToMany
     {
-        return $this->belongsToMany(Day::class, 'day_restaurants', 'restaurant_id', 'day_id');
+        return $this->belongsToMany(Day::class, 'day_restaurants', 'restaurant_id', 'day_id')->withPivot('open_at','close_at');
     }
     /**
      * Get Types of delivery prices 
