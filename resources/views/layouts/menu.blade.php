@@ -479,3 +479,9 @@
     </li>
 @endcan
 
+@can('days.index')
+<li class="nav-item">
+  <a class="nav-link {{ Request::is('days*') ? 'active' : '' }}" href="{!! route('days.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.day_plural')}}</p></a>
+</li>
+@endcan
+

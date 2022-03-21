@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -1220,4 +1220,10 @@ return [
     'settlement_driver_available_fee' => 'Fee',
     'settlement_driver_available_fee_help' => 'Insert Fee',
     'settlement_driver_available_fee_placeholder' => 'Insert Fee',
+    'day' => 'Day',
+    'day_plural' => 'Days',
+    'day_desc' => 'Days Management',
+    'day_edit' => 'Edit Day',
+    'day_table' => 'Days List',
+    'day_create' => 'Create Day',
 ];

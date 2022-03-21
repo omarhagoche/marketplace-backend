@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -747,7 +747,7 @@ return [
     'or' => 'Or',
     'order' => 'Order',
     'order_client' => 'Client',
-    'client'=>'Client',
+    'client' => 'Client',
     'order_client_phone' => 'Phone Number',
     'order_driver_not_assigned' => 'Not assigned',
     'order_create' => 'Create Order',
@@ -764,7 +764,7 @@ return [
     'order_hint' => 'Hint',
     'order_hint_help' => 'Insert Hint',
     'order_hint_placeholder' => 'Insert Hint',
-    'order_id' => 'Order ID',
+    'order_id' => 'Order id',
     'order_not_paid' => 'Not Paid',
     'order_order_status_id' => 'Order Status',
     'order_order_status_id_help' => 'Insert Order Status',
@@ -980,7 +980,6 @@ return [
     'user_phone_number_help' => 'Insert phone number',
     'user_phone_number_placeholder' => 'Insert phone number',
     'user_id' => 'Id',
-    'order_id'=>'Order id',
     'user_id_help' => 'Insert',
     'user_id_placeholder' => 'Insert',
     'user_login_as_user' => 'Login as this user',
@@ -1016,7 +1015,6 @@ return [
     'extra_table' => 'Extras List',
     'extra_create' => 'Create Extra',
     'note_table' => 'Note List',
-
     'extra_name' => 'Name',
     'extra_name_help' => 'Insert Name',
     'extra_name_placeholder' => 'Insert Name',
@@ -1405,11 +1403,16 @@ return [
     'open_at_help' => 'insert open at',
     'close_at_help' => 'insert close at',
     'map' => 'map',
-    'error_user_have_orders'=>'have order',
-    'user_note_help'=>'Enter your note',
-    'restaurant_commission_placeholder'=>'Insert Restaurant Commission',
-    'restaurant_commission'=>'Restaurant Commission',
+    'error_user_have_orders' => 'have order',
+    'user_note_help' => 'Enter your note',
+    'restaurant_commission_placeholder' => 'Insert Restaurant Commission',
+    'restaurant_commission' => 'Restaurant Commission',
     'restaurant_commission_help' => 'Commission (Ex 30 for 30% of earning)',
     'created_at' => 'Created At',
-
+    'day' => 'Day',
+    'day_plural' => 'Days',
+    'day_desc' => 'Days Management',
+    'day_edit' => 'Edit Day',
+    'day_table' => 'Days List',
+    'day_create' => 'Create Day',
 ];
