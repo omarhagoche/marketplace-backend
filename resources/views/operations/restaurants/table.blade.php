@@ -18,9 +18,9 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
     @foreach ($searchFields as $f)
         <div class="col-md-3">
             <label for="validationCustom{{ $f['name'] }}">{{ $f['title'] }}</label>
-                <input name="{{ $f['name'] }}" type="{{ $f['type'] }}" value="{{ $f['value'] }}"
-                    class="form-control searchDTFields" data-column="{{ $f['data-column'] }}"
-                    id="validationCustom{{ $f['name'] }}">
+            <input name="{{ $f['name'] }}" type="{{ $f['type'] }}" value="{{ $f['value'] }}"
+                class="form-control searchDTFields" data-column="{{ $f['data-column'] }}"
+                id="validationCustom{{ $f['name'] }}">
         </div>
     @endforeach
     <div class="col-auto align-self-end">
@@ -40,11 +40,11 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
 @push('scripts_lib')
     @include('operations.layouts.datatables_js')
     {!! $dataTable->scripts() !!}
-    <script>
+    {{-- <script>
         $(".searchDTFields").keyup(function() {
             LaravelDataTables["dataTableBuilder"].columns($(this).data('column'))
                 .search($(this).val())
                 .draw();
         });
-    </script>
+    </script> --}}
 @endpush
