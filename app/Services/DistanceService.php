@@ -21,7 +21,7 @@ class DistanceService
     /**
      * Get distance and duration between two locations (points)
      */
-    public function getDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude)
+    public function getDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude, $skip_exceptions = True)
     {
         $from_latitude = number_format((float)$from_latitude, 5, '.', '');
         $from_longitude = number_format((float)$from_longitude, 5, '.', '');
@@ -45,7 +45,19 @@ class DistanceService
             return $distance->getDistance();
         }
 
-        return $this->setNewDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude)->getDistance();
+        try {
+            return $this->setNewDistance($from_latitude, $from_longitude, $to_latitude, $to_longitude)->getDistance();
+        } catch (Exception $e) {
+            if (!$skip_exceptions) {
+                throw $e;
+            }
+            return Distance::make([
+                'distance_text' => "Nan",
+                'distance_value' => 1000000, // 1000KM
+                'duration_text' => "Nan",
+                'duration_value' => 604800, // 1 week
+            ])->getDistance();
+        }
     }
 
     /**

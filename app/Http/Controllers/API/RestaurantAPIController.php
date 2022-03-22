@@ -11,21 +11,22 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Criteria\Restaurants\ActiveCriteria;
-use App\Criteria\Restaurants\RestaurantsOfCuisinesCriteria;
-use App\Criteria\Restaurants\NearCriteria;
-use App\Criteria\Restaurants\PopularCriteria;
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\Restaurant;
-use App\Http\Controllers\API\Restaurant\Resources\Restaurant as RestaurantResource;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\RestaurantRepository;
-use App\Repositories\UploadRepository;
 use Illuminate\Http\Request;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use App\Http\Controllers\Controller;
+use App\Repositories\UploadRepository;
+use App\Criteria\Restaurants\NearCriteria;
+use App\Repositories\RestaurantRepository;
+use App\Repositories\CustomFieldRepository;
+use App\Criteria\Restaurants\ActiveCriteria;
+use App\Criteria\Restaurants\PopularCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
-use Prettus\Repository\Exceptions\RepositoryException;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Prettus\Repository\Exceptions\RepositoryException;
+use App\Criteria\Restaurants\RestaurantsOfCuisinesCriteria;
+use App\Http\Controllers\API\Restaurant\Resources\Restaurant as RestaurantResource;
 
 /**
  * Class RestaurantController
@@ -74,32 +75,18 @@ class RestaurantAPIController extends Controller
                 $this->restaurantRepository->pushCriteria(new NearCriteria($request));
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
-            $restaurants = $this->restaurantRepository
-            
-            ->where(function ($query){
-                $query
-                ->where('open_at','<',date("H:i"))
-                ->where('close_at','>',date("H:i"))
-                ->orWhere(function ($query){
-                    $query
-                    ->where('open_at','<',date("H:i"))
-                    ->where('close_at','<',date("H:i"))
-                    ->where('open_at','>','close_at');
-                })
-                ;
-            })->get();
-            // $restaurants = $this->restaurantRepository->all();
+            $restaurants = $this->restaurantRepository->all();
 
+            return RestaurantResource::collection($restaurants)
+                ->filter(function ($r) {
+                    return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
+                })->sortBy(function ($r) {
+                    return $r->getDistance()['distance']['distance']['value'] ?? null;
+                })
+                ->values();
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
-        return RestaurantResource::collection($restaurants)
-        ->filter(function ($r) {
-            return $r->getDistance()['distance']['distance']['value'] <= (float)setting('range_restaurants_for_customers') * 1000; // range km , so I change it to meters
-        })->sortBy(function ($r) {
-            return $r->getDistance()['distance']['distance']['value'] ?? null;
-        })
-        ->values();
     }
 
     /**

@@ -51,7 +51,7 @@ class RegisterRestaurantController extends Controller
 
             // foods data
             'foods.*.name' => 'required|min:3|max:32',
-            'foods.*.price' => 'required|integer',
+            'foods.*.price' => 'required|numeric',
             'foods.*.category_id' => 'required|int|exists:categories,id',
 
             // restuarant data

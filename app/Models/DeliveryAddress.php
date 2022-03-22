@@ -21,9 +21,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class DeliveryAddress extends Model
 {
+    use SoftDeletes;
 
     public $table = 'delivery_addresses';
-    
+
 
 
     public $fillable = [

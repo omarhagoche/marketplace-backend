@@ -1,4 +1,4 @@
-@if($customFields)
+s@if($customFields)
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
@@ -105,7 +105,6 @@
             </div>
         </div>
     </div>
-
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
@@ -177,7 +176,6 @@
             const el = document.getElementById('delivery_price_type');
             const elementToHide = document.getElementById('delivery_fee_form_group');
             const elementToRemoveName = document.getElementById('delivery_fee');
-
             function hideAndRemoveName(value) {
                 if (value == 'fixed') {
                         elementToHide.style.display = ""
@@ -188,7 +186,6 @@
                 }
             }
             hideAndRemoveName(el.value);
-
             el.onchange = function (event) {
                 hideAndRemoveName(el.value)
             }
@@ -199,7 +196,6 @@
             const prviateDriversElement = $('.private-drivers input');
             const deliverBoysElement = document.getElementById('drivers[]');
             const deliverBoysGroupElement = document.getElementById('restaurant-body-drivers');
-
             function checkPrivateDriversStatus(value) {
                 if (value) {
                         deliverBoysGroupElement.style.display = "";
@@ -209,7 +205,6 @@
                         deliverBoysElement.removeAttribute('name');
                 }
             } 
-
             $(prviateDriversElement).on('ifChanged', function(event){
                 $(this).iCheck('update'); // apply input changes, which were done outside the plugin
                 checkPrivateDriversStatus(event.target.checked);
@@ -217,7 +212,21 @@
             $(prviateDriversElement).trigger('ifChanged')
         </script>
         {{-- End events of private drivers --}}
-@endprepend
+    @endprepend
+
+</div>
+{{-- <div class="col-12 pb-4">
+    <!-- 'Boolean is_restaurant Field' -->
+    <div class="form-group row mr-3">
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('is_restaurant', 0) !!}
+                {!! Form::checkbox('is_restaurant', 1, null) !!}
+            </label>
+        </div>
+        {!! Form::label('is_restaurant', trans("lang.restaurant_is_restaurant"),['class' => 'control-label text-right']) !!}
+       
+    </div>
 
 </div>
 
@@ -267,7 +276,6 @@ google.maps.event.addListener(marker, 'dragend', function(a) {
     document.getElementById('latitude').value = a.latLng.lat().toFixed(7);
     document.getElementById('longitude').value = a.latLng.lng().toFixed(7);
 });
-
 $(document).ready(function () {
     $("#latitude").keyup(function () { 
         var latlng = new google.maps.LatLng($('#latitude').val(), $('#longitude').val());
