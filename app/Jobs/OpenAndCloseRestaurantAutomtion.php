@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -94,17 +95,19 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      */
     protected function getRestaurants($open)
     {
-        $column = 'close_at';
+        $column = 'day_restaurants.close_at';
         if ($open) {
-            $column = 'open_at';
+            $column = 'day_restaurants.open_at';
         }
-
-        // we use DB:table instead of Restaurant to skip load appends data like : media and custom_fields 
+        $dayName=Carbon::now()->englishDayOfWeek;
         return DB::table('restaurants')
-            ->select('id', 'name', 'open_at', 'close_at')
-            ->where('closed', $open)
-            ->whereBetween($column, [$this->from_time, $this->to_time])
-            ->get();
+                ->select('restaurants.id','restaurants.name','day_restaurants.open_at','day_restaurants.close_at')
+                ->join('day_restaurants', 'restaurants.id', '=', 'day_restaurants.restaurant_id')
+                ->join('days', 'days.id', '=', 'day_restaurants.day_id')
+                ->where('days.name','like', "%$dayName%")
+                ->where('restaurants.closed',$open)
+                ->whereBetween($column, [$this->from_time, $this->to_time])
+                ->get();
     }
 
     /**
@@ -122,8 +125,11 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
 
         // we use DB:table instead of Restaurant to skip load appends data like : media and custom_fields 
         return DB::table('restaurants')
-            ->where('closed', $open)
-            ->whereBetween($column, [$this->from_time, $this->to_time])
-            ->update(['closed' => !$open]);
+                ->join('day_restaurants', 'restaurants.id', '=', 'day_restaurants.restaurant_id')
+                ->join('days', 'days.id', '=', 'day_restaurants.day_id')
+                ->where('days.name','like', "%$dayName%")
+                ->where('restaurants.closed',$open)
+                ->whereBetween($column, [$this->from_time, $this->to_time])
+                ->update(['closed' => !$open]);
     }
 }

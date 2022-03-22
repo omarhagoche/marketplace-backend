@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 /**
  * File name: web.php
  * Last modified: 2020.06.11 at 15:08:31
@@ -222,7 +224,6 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
-<<<<<<< HEAD
     
     Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
     Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
@@ -313,9 +314,6 @@ Route::middleware('auth')->group(function () {
             Route::get('extrasedit/{id}/{restaurant_id}', 'Operations\ExtraController@editByRestuarant')->name('operations.restaurant.extra.edit');
     });
 
-=======
-    Route::get('driverWorkTimes/statistics', 'DriverWorkTimeController@statistics')->name('driverWorkTimes.statistics');
->>>>>>> bdb89b6cb52dbc0e62136e10020ab49aaa7d6cb3
 });
 
 
