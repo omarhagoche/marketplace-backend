@@ -10,6 +10,7 @@
 namespace App\Http\Controllers;
 
 use Flash;
+use App\Models\Day;
 use App\Models\User;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
@@ -144,9 +145,13 @@ class RestaurantController extends Controller
 
                 try {
                     $restaurant = $this->restaurantRepository->create($input);
+                    //this code for jobs
+                    // $dayName=Carbon::now()->englishDayOfWeek;
+                    // $data= \DB::select("SELECT `open_at`,`close_at` FROM `day_restaurants` INNER JOIN days ON `day_restaurants`.`day_id`=`days`.`id` WHERE `days`.`name` LIKE '%$dayName%' and `day_restaurants`.`restaurant_id`=6; ");
+                    
                     DB::transaction(function () use ($request,$restaurant,$customFields,$input) {
-
-                    $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+                        $DayIds=Day::pluck('id');
+                        $restaurant->days()->attach($DayIds);                    $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
                     if (isset($input['image']) && $input['image']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                         $mediaItem = $cacheUpload->getMedia('image')->first();
