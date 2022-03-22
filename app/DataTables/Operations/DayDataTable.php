@@ -1,12 +1,14 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Operations;
 
 use App\Models\Day;
+use App\Models\Restaurant;
 use App\Models\CustomField;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Services\DataTable;
 
 class DayDataTable extends DataTable
 {
@@ -26,11 +28,13 @@ class DayDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            
-            
-            
-            
-            ->addColumn('action', 'days.datatables_actions')
+            // ->editColumn('open_at', function ($day) {
+            //     // return $day->pivot->open_at;
+            //     return getDateColumn($day, 'pivot_open_at');
+            // })
+            ->addColumn('action', function ($day) {
+                    return view('operations.restaurantProfile.days.datatables_actions',['id'=>$day->day_id,'restaurant_id'=>$this->id]);
+                })
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;
@@ -44,7 +48,8 @@ class DayDataTable extends DataTable
      */
     public function query(Day $model)
     {
-        return $model->newQuery();
+        
+        return Restaurant::find($this->id)->days();
     }
 
     /**
@@ -75,21 +80,37 @@ class DayDataTable extends DataTable
     protected function getColumns()
     {
         $columns = [
-            
-            ];
+            // [
+            //     'data' => 'day.id',
+            //     'title' => '#',
 
-        $hasCustomField = in_array(Day::class, setting('custom_field_models',[]));
-        if ($hasCustomField) {
-            $customFieldsCollection = CustomField::where('custom_field_model', Day::class)->where('in_table', '=', true)->get();
-            foreach ($customFieldsCollection as $key => $field) {
-                array_splice($columns, $field->order - 1, 0, [[
-                    'data' => 'custom_fields.' . $field->name . '.view',
-                    'title' => trans('lang.day_' . $field->name),
-                    'orderable' => false,
-                    'searchable' => false,
-                ]]);
-            }
-        }
+            // ],
+            [
+                'data' => 'name',
+                'title' => 'Day',
+
+            ],
+            // [
+            //     'data' => 'order',
+            //     'title' => "Order from",
+            // ],
+            [
+                'data' => 'open_at',
+                'title' => "Open",
+            ],
+            [
+                'data' => 'close_at',
+                'title' => "close",
+            ],
+            // [
+            //     'data' => 'created_at',
+            //     'title' => trans('lang.favorite_updated_at'),
+            // ],
+            // [
+            //     'data' => 'action',
+            //     'title' => trans('lang.actions'),
+            // ]
+        ];
         return $columns;
     }
 

@@ -1,4 +1,4 @@
-s@if($customFields)
+@if($customFields)
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
@@ -61,7 +61,7 @@ s@if($customFields)
         </div>
     </div>
 
-  <!-- Address Field -->
+  <!-- OPEN AND CLOSE Field -->
     <div class="form-group row ">
         {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">

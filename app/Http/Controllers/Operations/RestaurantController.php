@@ -11,6 +11,7 @@
 namespace App\Http\Controllers\Operations;
 
 use Flash;
+use App\Models\Day;
 use App\Models\Food;
 use App\Models\User;
 use App\Models\Extra;
@@ -44,15 +45,16 @@ use Illuminate\Support\Facades\Response;
 use App\Repositories\ExtraGroupRepository;
 use App\Repositories\RestaurantRepository;
 use App\Criteria\Foods\FoodsOfUserCriteria;
+use App\DataTables\Operations\DayDataTable;
 use App\Repositories\CustomFieldRepository;
 use App\DataTables\Operations\NoteDataTable;
 use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Criteria\Users\ManagersClientsCriteria;
 use App\DataTables\RequestedRestaurantDataTable;
-use App\DataTables\Operations\RestaurantSearchDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use App\DataTables\Operations\RestaurantSearchDataTable;
 
 class RestaurantController extends Controller
 {
@@ -177,6 +179,10 @@ class RestaurantController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->create($input);
+            // get day ids
+            $DayIds=Day::pluck('id');
+            // insert for each restaurant all days 
+            $restaurant->days()->attach($DayIds);  
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
@@ -544,9 +550,51 @@ class RestaurantController extends Controller
        } catch (\Throwable $th) {
             Flash::error('Delete note error.');
             return redirect(route('operations.restaurant_profile.note.index',$restaurantId));
-    }
+        }
     }
 
+    public function days(DayDataTable $daysDataTable,$id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        if (empty($restaurant)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
+            return redirect(route('restaurants.index'));
+        }
+        return $daysDataTable
+        ->with(['id'=>$id,'restaurant'=> $restaurant])
+        ->render('operations.restaurantProfile.days.index',compact('id','restaurant'));
+
+    }
+    public function daysEdit($restaurantId,$dayId)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+        $day=$restaurant->days()->where('day_id',$dayId)->first();
+       return view('operations.restaurantProfile.days.edit',compact('restaurant','day'));
+    }
+    public function daysUpdate(Request $request,$restaurantId,$dayId)
+    {
+        $this->validate($request, [
+            'close_at' => 'required',
+            'open_at' => 'required',
+        ]);
+      
+        try {
+            DB::beginTransaction();
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                $restaurant->days()->updateExistingPivot([$dayId],[
+                    'open_at'=>$request->open_at,
+                    'close_at'=>$request->close_at,
+                ],false);
+                Flash::success('Update day Time successfully.');
+            DB::commit();
+
+            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Flash::error('Creat note error');
+            return redirect(route('operations.restaurant_profile.note.create',$id));
+        }
+    }
 
 
     

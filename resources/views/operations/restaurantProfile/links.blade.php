@@ -40,6 +40,11 @@
         <a class="nav-link {{ request()->routeIs('operations.restaurant.note.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.note.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.note_table')}}</a>
       </li> 
       @endcan
+      @can('operations.restaurant_profile.days.index')
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('operations.restaurant.days.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.days.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.day_plural')}}</a>
+      </li> 
+      @endcan
       
     </ul>
 </div>

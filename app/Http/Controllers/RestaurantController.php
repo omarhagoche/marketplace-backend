@@ -147,10 +147,7 @@ class RestaurantController extends Controller
                 try {
                     $restaurant = $this->restaurantRepository->create($input);
                     DB::transaction(function () use ($request,$restaurant,$customFields,$input) {
-                        // get day ids
-                        $DayIds=Day::pluck('id');
-                        // insert for each restaurant all days 
-                        $restaurant->days()->attach($DayIds);                    $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+                  $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
                     if (isset($input['image']) && $input['image']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                         $mediaItem = $cacheUpload->getMedia('image')->first();
