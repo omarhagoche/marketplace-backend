@@ -5,6 +5,7 @@ namespace App\DataTables\Operations;
 use App\Models\Day;
 use App\Models\Restaurant;
 use App\Models\CustomField;
+use Yajra\DataTables\Html\Button;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
@@ -60,16 +61,15 @@ class DayDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-            ->columns($this->getColumns())
-            ->minifiedAjax()
-            ->addAction(['width' => '80px', 'printable' => false ,'responsivePriority'=>'100'])
-            ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
-                    'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                        ),true)
-                ]
-            ));
+        ->setTableId('test-table')
+        ->columns($this->getColumns())
+        ->addAction(['width' => '80px', 'create' => true ,'responsivePriority'=>'100'])
+        ->minifiedAjax()
+        ->dom('Bfrtip')
+        ->orderBy(1)
+        ->buttons(
+            Button::make('create')
+        );    
     }
 
     /**

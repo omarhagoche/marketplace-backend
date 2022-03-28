@@ -21,6 +21,7 @@ use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 use App\DataTables\UserDataTable;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\DayRepository;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
@@ -98,9 +99,10 @@ class RestaurantController extends Controller
      */
     private $extraRepository;
     private $noteRepository;
+    private $dayRepository;
 
 
-    public function __construct(NoteRepository $noteRepo,ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    public function __construct(DayRepository $dayRepo,NoteRepository $noteRepo,ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -114,6 +116,8 @@ class RestaurantController extends Controller
         $this->extraGroupRepository = $extraGroupRepository;
         $this->extraRepository = $extraRepository;
         $this->noteRepository = $noteRepo;
+        $this->dayRepository = $dayRepo;
+
 
     }
 
@@ -592,7 +596,55 @@ class RestaurantController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             Flash::error('Creat note error');
-            return redirect(route('operations.restaurant_profile.note.create',$id));
+            return redirect(route('operations.restaurant_profile.note.create',['id'=>$restaurantId]));
+        }
+    }
+    public function daysCreate($restaurantId)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+        $days=$this->dayRepository->pluck('name','id');
+       return view('operations.restaurantProfile.days.create',compact('restaurant','days'));
+    }
+    public function daysStore(Request $request,$restaurantId)
+    {
+        $this->validate($request, [
+            'day_id' => 'required',
+            'close_at' => 'required',
+            'open_at' => 'required',
+        ]);
+      
+        try {
+            DB::beginTransaction();
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                $restaurant->days()->attach($request->day_id,[
+                    'open_at'=>$request->open_at,
+                    'close_at'=>$request->close_at,
+                ],false);
+                Flash::success('Create day Time successfully.');
+            DB::commit();
+
+            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Flash::error('Create note error');
+            return redirect(route('operations.restaurant_profile.note.create',['id'=>$restaurantId]));
+        }
+    }
+    public function daysDestroy($restaurantId,$dayId)
+    {   
+        try {
+            DB::beginTransaction();
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                $restaurant->days()
+                ->detach($dayId);
+                Flash::success('Delete day Time successfully.');
+            DB::commit();
+
+            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Flash::error('Delete day Time error'.$th);
+            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
         }
     }
 

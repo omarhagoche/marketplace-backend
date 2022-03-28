@@ -1,4 +1,14 @@
-
+  <!-- Days Field -->
+  @if (isset($days))
+  <div class="form-group  col-6 row ">
+    {!! Form::label('day_id', trans("lang.days"),['class' => 'col-3 control-label ']) !!}
+    <div class="col-9">
+      {!! Form::select('day_id', $days, null, ['class' => 'select form-control']) !!}
+      <div class="form-text text-muted">{{ trans("lang.day_help") }}</div>
+    </div>
+  </div> 
+  @endif
+ 
   <!-- OPEN AND CLOSE Field -->
   <div class="form-group  col-6 row ">
     {!! Form::label('open_at', trans("lang.open_at"), ['class' => 'col-3 control-label ']) !!}
