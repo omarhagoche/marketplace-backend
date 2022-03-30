@@ -106,7 +106,8 @@ class OrderController extends Controller
      */
     public function index(OrderDataTable $orderDataTable)
     {
-        return $orderDataTable->render('operations.orders.index');
+        $orderStatuses = $this->orderStatusRepository->all();
+        return $orderDataTable->render('operations.orders.index', compact('orderStatuses'));
     }
 
 
