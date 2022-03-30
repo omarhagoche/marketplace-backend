@@ -39,13 +39,23 @@ use Spatie\MediaLibrary\Models\Media;
  * @property string unit
  * @property integer restaurant_id
  * @property integer category_id
+ * @property enum type
+ * @property timestamp time_taken
+
  */
 class Food extends Model implements HasMedia
 {
     use HasMediaTrait {
         getFirstMediaUrl as protected getFirstMediaUrlTrait;
     }
-
+    /**
+    * @var array
+    */
+    protected $phoneTypes = [
+        'Cellular',
+        'Home',
+        'Work'
+    ];
     /**
      * Validation rules
      *
@@ -72,7 +82,9 @@ class Food extends Model implements HasMedia
         'deliverable',
         'available',
         'restaurant_id',
-        'category_id'
+        'category_id',
+        'type',
+        'time_taken'
     ];
     /**
      * The attributes that should be casted to native types.
