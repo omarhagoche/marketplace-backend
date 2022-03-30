@@ -38,13 +38,12 @@ use App\Events\UpdatedOrderEvent;
  * @property string hint
  * @property string reason
  * @property boolean for_restaurants
+ * @property timestamp delivery_datetime
  */
 class Order extends Model
 {
 
     public $table = 'orders';
-
-
 
     public $fillable = [
         'user_id',
@@ -65,6 +64,7 @@ class Order extends Model
         'processing_time',
         'active',
         'driver_id',
+        'delivery_datetime',
     ];
 
     /**
@@ -92,6 +92,7 @@ class Order extends Model
         'processing_time' => 'double',
         'active' => 'boolean',
         'driver_id' => 'integer',
+        'delivery_datetime' => 'datetime',
     ];
 
     /**
@@ -106,6 +107,7 @@ class Order extends Model
         'delivery_coupon_id' => 'exists:coupons,id',
         'restaurant_coupon_id' => 'exists:coupons,id',
         'driver_id' => 'nullable|exists:users,id',
+        'delivery_datetime' => 'nullable|date|after_or_equal:now',
     ];
 
     /**
@@ -127,6 +129,7 @@ class Order extends Model
     protected $dispatchesEvents = [
         'updated' => UpdatedOrderEvent::class,
     ];
+
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
@@ -176,6 +179,7 @@ class Order extends Model
     {
         return $this->user ? $this->user->name : '';
     }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -209,6 +213,7 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
+
     /**
      * return name of restaurant
      * @return string
@@ -281,6 +286,7 @@ class Order extends Model
         $this->restaurantCoupon()->exists() ? $data[] = $this->setDataForCoupon('restaurant', 'restaurantCoupon') : '';
         return isset($data) ? $data : null;
     }
+
     public function setDataForCoupon($for, $relations)
     {
         $value = $for . '_coupon_value';
@@ -291,6 +297,7 @@ class Order extends Model
             'for' => $for
         ];
     }
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
