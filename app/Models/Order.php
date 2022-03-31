@@ -38,7 +38,7 @@ use App\Events\UpdatedOrderEvent;
  * @property string hint
  * @property string reason
  * @property boolean for_restaurants
- * @property timestamp delivery_datetime
+ * @property datetime delivery_datetime
  */
 class Order extends Model
 {
@@ -149,6 +149,10 @@ class Order extends Model
         return convertToAssoc($array, 'name');
     }
 
+    public function getDeliveryDatetimeAttribute()
+    {
+        return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime']->format('Y-m-d H:i:s') : 'Immediate delivery';
+    }
 
     /**
      * 

@@ -751,6 +751,7 @@ return [
     'order_client_phone' => 'Phone Number',
     'order_driver_not_assigned' => 'Not assigned',
     'order_create' => 'Create Order',
+    'delivery_datetime' => 'Delivery Datetime',
     'order_date' => 'Date of order',
     'order_delivery_date' => 'Order date',
     'order_delivery_fee' => 'Delivery Fee',
