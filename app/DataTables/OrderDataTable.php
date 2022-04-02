@@ -59,9 +59,6 @@ class OrderDataTable extends DataTable
             ->editColumn('date_of_order', function ($order) {
                 return $order->created_at;
             })
-            ->editColumn('date_of_order', function ($order) {
-                return $order->created_at;
-            })
             ->editColumn('created_at', function ($order) {
                 return getDateColumn($order, 'created_at');
             })

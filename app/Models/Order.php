@@ -151,7 +151,7 @@ class Order extends Model
 
     public function getDeliveryDatetimeAttribute()
     {
-        return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime']->format('Y-m-d H:i:s') : 'Immediate delivery';
+        return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime'] : 'Immediate delivery';
     }
 
     /**
