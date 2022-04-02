@@ -201,11 +201,11 @@
             </li>
             @endcan
 
-            @can('driverWorkTimes.statistics')
+            {{-- @can('driverWorkTimes.statistics')
                 <li class="nav-item">
                 <a class="nav-link {{ Request::is('driverWorkTimes*') ? 'active' : '' }}" href="{!! route('driverWorkTimes.statistics') !!}">@if($icons)<i class="nav-icon fa fa-clock-o"></i>@endif<p>{{trans('lang.driver_work_time_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
 
             @can('driverReviews.index')
                 <li class="nav-item">
