@@ -689,6 +689,8 @@ return [
     'order_delivery_fee' => 'Delivery Fee',
     'order_delivery_fee_help' => 'Edit the delivery fee (Ex 5 for 5$ per order)',
     'order_delivery_fee_placeholder' => 'Edit the delivery fee amount',
+    'delivery_datetime_help' => 'Delivery Datetime',
+    'delivery_datetime_placeholder' => 'Delivery Datetime',
     'order_desc' => 'Orders Management',
     'order_driver_id' => 'Delivery Boy',
     'order_driver_id_help' => 'Select Delivery Boy',
