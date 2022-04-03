@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 return [
     'actions' => 'Actions',
@@ -766,8 +766,8 @@ return [
     'order_status_updated_at' => 'Updated At',
     'order_subtotal' => 'Subtotal',
     'order_table' => 'Orders List',
-    "delivery_coupon_value" => "Delivery Coupon",
-    "restaraunt_coupon_value" => "Restaurant Coupon",
+    'delivery_coupon_value' => 'Delivery Coupon',
+    'restaraunt_coupon_value' => 'Restaurant Coupon',
     'order_tax' => 'Tax',
     'order_tax_help' => 'Insert Tax',
     'order_tax_placeholder' => 'Insert Tax',
@@ -1359,4 +1359,10 @@ return [
     'settlement_manager_available_fee_placeholder' => 'Insert Fee',
     'open_at' => 'Open at',
     'close_at' => 'Close at',
+    'day' => 'Day',
+    'day_plural' => 'Days',
+    'day_desc' => 'Days Management',
+    'day_edit' => 'Edit Day',
+    'day_table' => 'Days List',
+    'day_create' => 'Create Day',
 ];

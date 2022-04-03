@@ -40,6 +40,12 @@ class UpdateDriverStatusListener
         $old_driver_id = $this->order->wasChanged('driver_id') ?  $this->order->getOriginal('driver_id') : false;
 
         if ($this->order->wasChanged('order_status_id')) {
+
+            if ($this->order->isStatusWasWaittingDriver()) {
+                // if order status was waitting driver and changed , then remove order from firestore to do not show it to drivers anymore
+                app('firebase.firestore')->getFirestore()->collection('orders')->document($this->order->id)->delete();
+            }
+
             if ($this->order->isStatusDone() || $this->order->isStatusCanceled()) {
                 // when order is doen or canceled , that means driver will be set free 
                 // so if driver changed , new driver his status will be default free and we do not need to update his status 

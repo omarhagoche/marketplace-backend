@@ -1,5 +1,10 @@
 <?php
 
+use Carbon\Carbon;
+use App\Models\Day;
+use App\Models\Restaurant;
+use Illuminate\Support\Facades\DB;
+
 /**
  * File name: web.php
  * Last modified: 2020.06.11 at 15:08:31
@@ -17,7 +22,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 
 Route::get('test/whatsapp/{phone?}/{msg?}', function ($phone, $msg) {
     $respone = [
@@ -280,6 +284,15 @@ Route::middleware('auth')->group(function () {
             Route::get('restaurantProfile/{id}/note/create', 'Operations\RestaurantController@createNote')->name('operations.restaurant_profile.note.create');
             Route::post('restaurantProfile/{id}/note/store', 'Operations\RestaurantController@storeNote')->name('operations.restaurant_profile.note.store');
             Route::delete('restaurantProfile/{id}/note/{noteId}/destroy', 'Operations\RestaurantController@destroyNote')->name('operations.restaurant_profile.note.destroy');
+
+            //days time
+            Route::get('restaurantProfile/{id}/days', 'Operations\RestaurantController@days')->name('operations.restaurant_profile.days.index');
+            Route::get('restaurantProfile/{id}/days/{dayId}/edit', 'Operations\RestaurantController@daysEdit')->name('operations.restaurant_profile.days.edit');
+            Route::get('restaurantProfile/{id}/days/create', 'Operations\RestaurantController@daysCreate')->name('operations.restaurant_profile.days.create');
+            Route::post('restaurantProfile/{id}/days/store', 'Operations\RestaurantController@daysStore')->name('operations.restaurant_profile.days.store');
+            Route::post('restaurantProfile/{id}/days/{dayId}/edit', 'Operations\RestaurantController@daysUpdate')->name('operations.restaurant_profile.days.update');
+            Route::delete('restaurantProfile/{id}/days/{dayId}/delete', 'Operations\RestaurantController@daysDestroy')->name('operations.restaurant_profile.days.destroy');
+
             Route::get('restaurantProfile/{id}/users/create/{userId?}', 'Operations\RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
             Route::post('restaurantProfile/{id}/users/store/{userId?}', 'Operations\RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
             Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
@@ -313,3 +326,6 @@ Route::middleware('auth')->group(function () {
     });
 
 });
+
+
+Route::resource('days', 'DayController');

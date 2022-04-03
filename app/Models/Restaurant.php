@@ -11,6 +11,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Day;
 use Eloquent as Model;
 use App\Traits\SkipAppends;
 use Spatie\Image\Manipulations;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Restaurant
@@ -290,7 +292,15 @@ class Restaurant extends Model implements HasMedia
     {
         return $this->belongsToMany(\App\Models\User::class, 'driver_restaurants');
     }
-
+    /**
+     * The days that belong to the Restaurant
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function days(): BelongsToMany
+    {
+        return $this->belongsToMany(Day::class, 'day_restaurants', 'restaurant_id', 'day_id')->withPivot('open_at','close_at');
+    }
     /**
      * Get Types of delivery prices 
      * @return array

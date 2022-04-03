@@ -68,6 +68,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CouponPermission::class);
         $this->call(SlidesSeeder::class);
+
+        $this->call(DayTableSeeder::class);
+
     }
 
 }

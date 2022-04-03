@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantController.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -10,6 +11,7 @@
 namespace App\Http\Controllers;
 
 use Flash;
+use App\Models\Day;
 use App\Models\User;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
@@ -145,8 +147,7 @@ class RestaurantController extends Controller
                 try {
                     $restaurant = $this->restaurantRepository->create($input);
                     DB::transaction(function () use ($request,$restaurant,$customFields,$input) {
-
-                    $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+                  $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
                     if (isset($input['image']) && $input['image']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                         $mediaItem = $cacheUpload->getMedia('image')->first();
@@ -217,10 +218,10 @@ class RestaurantController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
-        if($restaurant['active'] == 0){
+        if ($restaurant['active'] == 0) {
             $user = $this->userRepository->getByCriteria(new ManagersClientsCriteria())->pluck('name', 'id');
         } else {
-        $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+            $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         }
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');

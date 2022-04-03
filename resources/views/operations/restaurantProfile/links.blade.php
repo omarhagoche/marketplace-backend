@@ -45,6 +45,11 @@
         <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.order.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.order.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.order_table')}}</a>
       </li> 
       @endcan
+      @can('operations.restaurant_profile.days.index')
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('operations.restaurant.days.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.days.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.day_plural')}}</a>
+      </li> 
+      @endcan
       
     </ul>
 </div>
