@@ -56,6 +56,9 @@ class OrderDataTable extends DataTable
                 }
                 return getLinksColumnByRouteName([$order->driver], "users.edit", 'id', 'name');
             })
+            ->editColumn('date_of_order', function ($order) {
+                return $order->created_at;
+            })
             ->editColumn('created_at', function ($order) {
                 return getDateColumn($order, 'created_at');
             })
@@ -143,9 +146,23 @@ class OrderDataTable extends DataTable
 
             ],*/
             [
+                'name' => 'orders.delivery_datetime',
+                'data' => 'delivery_datetime',
+                'title' => trans('lang.delivery_datetime'),
+                'searchable' => false,
+                'orderable' => true,
+            ],
+            [
+                'name' => 'orders.date_of_order',
+                'data' => 'date_of_order',
+                'title' => trans('lang.order_date'),
+                'searchable' => false,
+                'orderable' => true,
+            ],
+            [
                 'name' => 'orders.created_at',
                 'data' => 'created_at',
-                'title' => trans('lang.order_date'),
+                'title' => trans('lang.created_at'),
                 'searchable' => false,
                 'orderable' => true,
             ],

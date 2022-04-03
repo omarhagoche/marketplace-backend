@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\FoodOrderExtra;
 use App\Models\DeliveryAddress;
 use App\Events\OrderChangedEvent;
-use App\DataTables\OrderDataTable;
+use App\DataTables\Operations\OrderDataTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;

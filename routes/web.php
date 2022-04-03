@@ -123,7 +123,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('orderStatuses', 'OrderStatusController')->except([
         'create', 'store', 'destroy'
-    ]);;
+    ]);
 
     Route::post('foods/remove-media', 'FoodController@removeMedia');
     Route::resource('foods', 'FoodController')->except([
@@ -148,7 +148,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('payments', 'PaymentController')->except([
         'create', 'store', 'edit', 'destroy'
-    ]);;
+    ]);
 
     Route::resource('faqs', 'FaqController')->except([
         'show'
@@ -171,7 +171,7 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',
-    ]);;
+    ]);
 
     Route::resource('carts', 'CartController')->except([
         'show', 'store', 'create'
