@@ -101,11 +101,9 @@ class OrderFoodBookingDataTable extends DataTable
                 'orderable' => true,
             ],
             [
-                'name' => 'delivery_datetime ',
+                'name' => 'orders.delivery_datetime',
                 'data' => 'delivery_datetime ',
                 'title' => trans('lang.delivery_datetime'),
-                'searchable' => false,
-                'orderable' => true,
             ],
 
         ];
@@ -121,7 +119,9 @@ class OrderFoodBookingDataTable extends DataTable
      */
     public function query(Order $model)
     {
-        return $model->newQuery()->where('order_status_id',141)->with("user")->with('restaurant')->with("orderStatus")->with('payment')
+        return $model->newQuery()
+        ->where('delivery_datetime','!=',null)
+        ->with("user")->with('restaurant')->with("orderStatus")->with('payment')
             ->where('orders.restaurant_id', $this->id)
             ;
        
