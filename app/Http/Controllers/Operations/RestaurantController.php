@@ -56,6 +56,7 @@ use App\Criteria\Users\ManagersClientsCriteria;
 use App\DataTables\RequestedRestaurantDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use App\DataTables\Operations\OrderFoodBookingDataTable;
 use App\DataTables\Operations\RestaurantSearchDataTable;
 
 class RestaurantController extends Controller

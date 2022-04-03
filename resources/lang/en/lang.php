@@ -1412,16 +1412,12 @@ return [
     'restaurant_commission' => 'Restaurant Commission',
     'restaurant_commission_help' => 'Commission (Ex 30 for 30% of earning)',
     'created_at' => 'Created At',
-<<<<<<< HEAD
     'processing_time'=>'Processing time',
-    'delivery_datetime'=>'Delivery date'
-
-=======
+    'delivery_datetime'=>'Delivery date',
     'day' => 'Day',
     'day_plural' => 'Days',
     'day_desc' => 'Days Management',
     'day_edit' => 'Edit Day',
     'day_table' => 'Days List',
     'day_create' => 'Create Day',
->>>>>>> operationsCpanel
 ];
