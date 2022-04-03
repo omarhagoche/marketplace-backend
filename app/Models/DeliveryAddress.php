@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Order;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class DeliveryAddress
