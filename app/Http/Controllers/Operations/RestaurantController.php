@@ -46,13 +46,15 @@ use App\Repositories\RestaurantRepository;
 use App\Criteria\Foods\FoodsOfUserCriteria;
 use App\Repositories\CustomFieldRepository;
 use App\DataTables\Operations\NoteDataTable;
+use App\DataTables\Operations\OrderDataTable;
 use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Criteria\Users\ManagersClientsCriteria;
 use App\DataTables\RequestedRestaurantDataTable;
-use App\DataTables\Operations\RestaurantSearchDataTable;
 use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use App\DataTables\Operations\OrderFoodBookingDataTable;
+use App\DataTables\Operations\RestaurantSearchDataTable;
 
 class RestaurantController extends Controller
 {
@@ -491,6 +493,25 @@ class RestaurantController extends Controller
             Flash::error('Have error on User delete form restaurant');
             return redirect(route('operations.restaurant_profile.users', $id));
         }
+    }
+    public function orders(OrderFoodBookingDataTable $orderDataTable,$id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        if (empty($restaurant)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
+            return redirect(route('restaurants.index'));
+        }
+        $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        if ($hasCustomField) {
+            $html = generateCustomField($customFields, $customFieldsValues);
+        }
+
+        return $orderDataTable
+        ->with(['id'=>$id, 'restaurant'=> $restaurant,"customFields"=> isset($html) ? $html : false])
+        ->render('operations.restaurantProfile.orders.index',compact('id','restaurant','customFields'));
+
     }
     public function notes(NoteDataTable $noteDataTable,$id)
     {

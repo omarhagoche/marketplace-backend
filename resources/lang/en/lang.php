@@ -1411,5 +1411,7 @@ return [
     'restaurant_commission'=>'Restaurant Commission',
     'restaurant_commission_help' => 'Commission (Ex 30 for 30% of earning)',
     'created_at' => 'Created At',
+    'processing_time'=>'Processing time',
+    'delivery_datetime'=>'Delivery date'
 
 ];
