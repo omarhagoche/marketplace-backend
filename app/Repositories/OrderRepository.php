@@ -29,7 +29,9 @@ class OrderRepository extends BaseRepository
         'active',
         'driver_id',
         'for_restaurants',
-    ];
+        'processing_time',
+        'delivery_datetime',
+    ]; 
 
     /**
      * Configure the Model
