@@ -105,7 +105,9 @@ class Food extends Model implements HasMedia
         'deliverable' => 'boolean',
         'available' => 'boolean',
         'restaurant_id' => 'integer',
-        'category_id' => 'integer'
+        'category_id' => 'integer',
+        'type'=>'enum',
+        'time_taken'=>'timestamp',
     ];
     /**
      * New Attributes
