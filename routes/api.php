@@ -86,6 +86,7 @@ Route::resource('slides', 'API\SlideAPIController')->except([
 ]);
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {
             Route::post('orders/delivery/{id}', 'API\OrderAPIController@delivery');
