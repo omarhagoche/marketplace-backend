@@ -173,6 +173,8 @@ class RestaurantAPIController extends Controller
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
+                // delete old images
+                $restaurant->getMedia('image')->each->delete();
                 $mediaItem->copy($restaurant, 'image');
             }
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
