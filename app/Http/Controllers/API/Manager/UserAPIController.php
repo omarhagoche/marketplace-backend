@@ -126,6 +126,8 @@ class UserAPIController extends Controller
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
+						            $user->api_token =  str_random(60);
+
             $user->save();
             $verfication->delete();
 
@@ -148,8 +150,18 @@ class UserAPIController extends Controller
         return $this->sendResponse($user->name, 'User logout successfully');
     }
 
-    function user(Request $request)
+   function user(Request $request)
     {
+        if(auth()->guard('apiToken')->check())
+        {
+            $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
+
+            if (!$user) {
+                return $this->sendError('User not found', 401);
+            }
+
+            return $this->sendResponse($user, 'User retrieved successfully');
+        }
         return $this->sendResponse(auth()->user(), 'User retrieved successfully');
     }
 
