@@ -232,7 +232,7 @@ class FoodAPIController extends Controller
             'extras' => "nullable|array",
             'restaurant_id' => 'nullable|in_array:' . implode(',', $this->getRestaurantIds()),
             'type'=>'nullable|string',
-            'time_taken'=>'nullable|date_format:Y-m-d H:i:s',
+            'time_taken'=>'nullable|string',
         ];
 
 
