@@ -18,11 +18,14 @@
 |
 */
 
+$auth = "apiToken";
+
 if (request()->segment(2) == 'v2') { // if request for starts with V2 , set "api:JWT guard" as default guard
     auth()->shouldUse('apiJwt');
+	$auth = "apiJwt";
 }
 
-$apiRoutes = function() {
+$apiRoutes = function()use($auth) {
 
 
 Route::prefix('driver')->group(function () {
@@ -87,7 +90,7 @@ Route::resource('slides', 'API\SlideAPIController')->except([
     'show'
 ]);
 
-Route::middleware('auth')->group(function () {
+Route::middleware("auth:$auth")->group(function () {
     Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {

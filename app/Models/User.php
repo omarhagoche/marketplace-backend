@@ -290,7 +290,7 @@ class User extends Authenticatable implements HasMedia, JWTSubject
             return $this->bearer_token;
         }
         $old_guard = auth()->getDefaultDriver();
-        auth()->shouldUse('api');
+        auth()->shouldUse('apiJwt');
         $this->bearer_token = auth()->tokenById($this->id);
         auth()->shouldUse($old_guard);
         return $this->bearer_token;
