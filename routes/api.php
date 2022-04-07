@@ -18,10 +18,12 @@
 |
 */
 
-
-if (request()->segment(1) == 'api') { // if request for starts with api , set "api guard" as default guard
-    auth()->shouldUse('api');
+if (request()->segment(2) == 'v2') { // if request for starts with V2 , set "api:JWT guard" as default guard
+    auth()->shouldUse('apiJwt');
 }
+
+$apiRoutes = function() {
+
 
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
@@ -85,7 +87,7 @@ Route::resource('slides', 'API\SlideAPIController')->except([
     'show'
 ]);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {
@@ -162,3 +164,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/note', 'API\NoteController@store');
 
 });
+
+};
+
+Route::group(['prefix' => 'v2'],$apiRoutes);
+Route::group([],$apiRoutes);
