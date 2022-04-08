@@ -84,7 +84,7 @@ class Food extends Model implements HasMedia
         'restaurant_id',
         'category_id',
         'type',
-        'time_taken'
+        'time_taken',
     ];
     /**
      * The attributes that should be casted to native types.
@@ -107,7 +107,7 @@ class Food extends Model implements HasMedia
         'restaurant_id' => 'integer',
         'category_id' => 'integer',
         'type'=>'enum',
-        'time_taken'=>'timestamp',
+        'time_taken'=>'string',
     ];
     /**
      * New Attributes
@@ -117,9 +117,18 @@ class Food extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media',
-        'restaurant'
+        'restaurant',
     ];
 
+    public function getTimeDayAttribute()
+    {
+        return (strtok($this->time_taken, ':')/24);
+    }
+    public function getTimeHourAttribute()
+    {
+        return substr($this->time_taken, strrpos($this->time_taken, ':' )+1);
+        return strrchr($this->time_taken,':');
+    }
     /**
      * @param Media|null $media
      * @throws \Spatie\Image\Exceptions\InvalidManipulation

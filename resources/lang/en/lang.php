@@ -1420,4 +1420,10 @@ return [
     'day_edit' => 'Edit Day',
     'day_table' => 'Days List',
     'day_create' => 'Create Day',
+    'food_type_help'=>'select type of food',
+    'food_type'=>'Type',
+    'food_time_taken_help'=>' insert time for food ',
+    'food_time_taken'=>'Time taken',
+    'food_time_taken_hour_help'=>'insert hour time',
+    'food_time_taken_day_help'=>'insert days',
 ];

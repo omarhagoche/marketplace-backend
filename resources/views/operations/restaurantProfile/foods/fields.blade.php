@@ -93,7 +93,27 @@
             </div>
         </div>
     </div>
-
+{{-- {{dd($food->time_hour,$food->time_day)}} --}}
+    <!-- Food Type Field -->
+    <div class="form-group row ">
+        {!! Form::label('type', trans("lang.food_time_taken"),['class' => 'col-3 control-label ']) !!}
+        <div class="col-4">
+            {{ Form::number('time_day',null, ['min'=>0,'max'=>40 ,'class' => 'form-control']) }} 
+            <div class="form-text text-muted">{{ trans("lang.food_time_taken_day_help") }}</div>
+        </div>
+        <div class="col-4">
+            {{ Form::number('time_hour',null, ['min'=>0,'max'=>24 ,'class' => 'form-control']) }} 
+            <div class="form-text text-muted">{{ trans("lang.food_time_taken_hour_help") }}</div>
+        </div>
+    </div>
+     <!-- Food Type Field -->
+     <div class="form-group row ">
+        {!! Form::label('type', trans("lang.food_type"),['class' => 'col-3 control-label ']) !!}
+        <div class="col-9">
+            {!! Form::select('type',['fast'=>'fast','booking'=>'booking'],null, ['class' => 'select2 form-control']) !!}
+            <div class="form-text text-muted">{{ trans("lang.food_type_help") }}</div>
+        </div>
+    </div>      
     <!-- Category Id Field -->
     <div class="form-group row ">
         {!! Form::label('category_id', trans("lang.food_category_id"),['class' => 'col-3 control-label ']) !!}

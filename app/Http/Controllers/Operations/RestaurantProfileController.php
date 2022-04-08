@@ -162,7 +162,8 @@ class RestaurantProfileController extends Controller
         return redirect(route('operations.restaurant.foods.create',$id));
     }
 
-    public function restaurantFoodsEdit($id, $food_id) {        
+    public function restaurantFoodsEdit($id, $food_id)
+    {        
             $food = $this->foodRepository->findWithoutFail($food_id);
             if (empty($food)) {
                 Flash::error(__('lang.not_found', ['operator' => __('lang.food')]));
@@ -174,7 +175,11 @@ class RestaurantProfileController extends Controller
             return view('operations.restaurantProfile.foods.edit',compact('extra','id','restaurant','category','food'));
     }
 
-    public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id) { 
+    public function restaurantFoodsUpdate(UpdateFoodRequest $request, $id,$food_id)
+     { 
+        $request['time_taken']=($request['time_day'] * 24).":".$request['time_hour'];
+        //  dd($request->all());
+
         $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
         $food = $this->foodRepository->findWithoutFail($food_id);
         

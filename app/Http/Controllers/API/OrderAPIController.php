@@ -237,6 +237,7 @@ class OrderAPIController extends Controller
      */
     private function cashPayment(Request $request)
     {
+        dd('fwegwe');
         $input = $request->all();
         $amount = 0;
         try {
