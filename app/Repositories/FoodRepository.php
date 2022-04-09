@@ -41,7 +41,7 @@ class FoodRepository extends BaseRepository implements CacheableInterface
     ];
 
     /**
-     * Configure the Model
+     * Configure the Model 
      **/
     public function model()
     {
