@@ -51,10 +51,10 @@
           <a class="nav-link active" href="{!! url()->current() !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.order_edit')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('operations.orders.edit-order-foods',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.order_edit_foods')}}</a>
+          <a class="nav-link" href="{!! route('operations.orders.edit-order-foods',$order->id) !!}"><i class="fa fa-shopping-basket mr-2"></i>{{trans('lang.order_edit_foods')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('operations.orders.show-order-coupon',$order->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.coupon_plural')}}</a>
+          <a class="nav-link" href="{!! route('operations.orders.show-order-coupon',$order->id) !!}"><i class="fa fa-file mr-2"></i>{{trans('lang.coupon_plural')}}</a>
         </li>
       </ul>
     </div>

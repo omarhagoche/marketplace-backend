@@ -132,23 +132,23 @@
     </div>
                <!-- 'Boolean (Featured | available | deliverable) Fields' -->
      <div class="form-group row ">
-        {!! Form::label('featured', trans("lang.food_featured"),['style' => 'max-width: 13%;','class' => 'col-2 control-label ']) !!}
+        {!! Form::label('featured', trans("lang.food_featured"),['class' => 'col-8 mt-2 control-label ']) !!}
         <div class="checkbox icheck">
-            <label class="col-10  form-check-inline">
+            <label class="col-9  form-check-inline">
                 {!! Form::hidden('featured', 0) !!}
                 {!! Form::checkbox('featured', 1, null) !!}
             </label>
         </div>
 
-        {!! Form::label('available', trans("lang.food_available"),['style' => 'max-width: 18%;','class' => 'col-3 control-label ']) !!}
+        {!! Form::label('available', trans("lang.food_available"),['class' => 'col-8 mt-2 control-label ']) !!}
         <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
+            <label class="col-9  form-check-inline">
                 {!! Form::hidden('available', 0) !!}
                 {!! Form::checkbox('available', 1, null) !!}
             </label>
         </div>
 
-        {!! Form::label('deliverable', trans("lang.food_deliverable"),['style'=>'max-width: 21.333333%;','class' => 'col-3 control-label']) !!}
+        {!! Form::label('deliverable', trans("lang.food_deliverable"),['class' => 'col-8 mt-2 control-label']) !!}
         <div class="checkbox icheck">
             <label class="col-9 form-check-inline">
                 {!! Form::hidden('deliverable', 0) !!}

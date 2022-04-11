@@ -3,7 +3,7 @@
         <img src="{{ $restaurant->media->first()?$restaurant->media->first()->getUrl():''}}" style="width: 100px;" alt="Avatar" class="avatar">
     </div>
     <!-- Name Field -->
-    <div class="form-group row ">
+    <div class="form-group row mt-4 ">
         {!! Form::label('name', trans("lang.restaurant_name"), ['class' => 'col-5 control-label']) !!}
         <div class="col-7">
             {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_name_placeholder")]) !!}
