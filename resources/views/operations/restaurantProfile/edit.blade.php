@@ -45,7 +45,7 @@
   @include('adminlte-templates::common.errors')
   <div class="clearfix"></div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4 col-12">
             <div class="card ">
               {!! Form::model($restaurant, ['route' => ['operations.restaurant_profile.update', $restaurant->id], 'method' => 'patch']) !!}
               <div class="row">
@@ -53,7 +53,7 @@
               </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8 col-12">
             <div class="card">
               @include('operations.restaurantProfile.links',compact('id','restaurant'))
                 <div class="card-body">

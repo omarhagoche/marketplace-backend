@@ -53,13 +53,14 @@ Route::get('payments/paypal', 'PayPalController@index')->name('paypal.index');
 
 Route::get('firebase/sw-js', 'AppSettingController@initFirebase');
 
+Route::post('uploads/store', 'UploadController@store')->name('medias.create');
+
 
 Route::get('storage/app/public/{id}/{conversion}/{filename?}', 'UploadController@storage');
 Route::middleware('auth')->group(function () {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
-    Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::get('users/profile', 'UserController@profile')->name('users.profile');
     Route::post('users/remove-media', 'UserController@removeMedia');
     Route::resource('users', 'UserController');
@@ -322,7 +323,13 @@ Route::middleware('auth')->group(function () {
             Route::get('extrasindex/{restaurant_id}', 'Operations\ExtraController@indexByRestaurant')->name('operations.restaurant.extra.index');
             Route::get('extrascreate/{restaurant_id}', 'Operations\ExtraController@createByrestuarant')->name('operations.restaurant.extra.create');
             Route::get('extrasedit/{id}/{restaurant_id}', 'Operations\ExtraController@editByRestuarant')->name('operations.restaurant.extra.edit');
-    });
+            
+            /*Merchant types*/
+            Route::resource('merchant_categories', 'Operations\MerchantCategoryController',['as' => 'operations']);
+            Route::resource('supermarkets', 'Operations\SupermarketController',['as' => 'operations']);
+
+            
+        });
 
 });
 

@@ -10,23 +10,22 @@
 <link rel="stylesheet" href="{{asset('plugins/dropzone/bootstrap.min.css')}}">
 @endpush
 @section('content')
-<!-- Content Header (Page header) -->
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{trans('lang.restaurant_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.restaurant_desc')}}</small></h1>
-      </div><!-- /.col -->
-      <div class="col-sm-6">
+      <div class="col-sm-7">
+        <h1 class="m-0 text-dark">{{trans('lang.supermarket_plural')}}<small class="ml-3 mr-3">|</small><small>{{trans('lang.supermarket_managment')}}</small></h1>
+      </div>
+      <div class="col-sm-5">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{url('operations/')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
-          <li class="breadcrumb-item"><a href="{!! route('operations.restaurant_profile.index') !!}">{{trans('lang.restaurant_plural')}}</a>
+          <li class="breadcrumb-item"><a href="{!! route('operations.supermarkets.index') !!}">{{trans('lang.supermarket_plural')}}</a>
           </li>
-          <li class="breadcrumb-item active">{{trans('lang.restaurant_create')}}</li>
+          <li class="breadcrumb-item active">{{trans('lang.supermarket_table')}}</li>
         </ol>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+      </div>
+    </div>
+  </div>
 </div>
 <!-- /.content-header -->
 <div class="content">
@@ -37,22 +36,22 @@
   <div class="card">
     <div class="card-header">
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-        @can('restaurants.index')
+        @can('operations.supermarkets.index')
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.index') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+          <a class="nav-link {{ request()->routeIs('operations.supermarkets.index') ? 'active' : '' }}" href="{!! route('operations.supermarkets.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.supermarket_table')}}</a>
         </li>
         @endcan
-        @can('operations.restaurants.create')
+        @can('operations.supermarkets.create')
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('operations.restaurants.create') ? 'active' : '' }}" href="{!! route('operations.restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+          <a class="nav-link {{ request()->routeIs('operations.supermarkets.create') ? 'active' : '' }}" href="{!! route('operations.supermarkets.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.supermarket_create')}}</a>
         </li>
         @endcan
       </ul>
     </div>
     <div class="card-body">
-      {!! Form::open(['route' => 'operations.restaurants.store']) !!}
+      {!! Form::open(['route' => 'operations.supermarkets.store']) !!}
       <div class="row">
-        @include('operations.restaurants.fields')
+        @include('operations.supermarkets.form_fields.create_fields')
       </div>
       {!! Form::close() !!}
       <div class="clearfix"></div>

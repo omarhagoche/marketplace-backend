@@ -129,6 +129,7 @@ class RestaurantDataTable extends DataTable
         $columns = [
             [
                 'data' => 'image',
+                'width'=>'10',
                 'title' => trans('lang.restaurant_image'),
                 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,
             ],

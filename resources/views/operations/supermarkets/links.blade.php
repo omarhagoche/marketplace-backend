@@ -1,21 +1,21 @@
 <div class="card-header">
     <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
-      @can('operations.restaurants.index')
+      @can('operations.supermarkets.index')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.restaurants.index') ? 'active' : '' }}" href="{!! route('operations.restaurants.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.restaurant_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.supermarkets.index') ? 'active' : '' }}" href="{!! route('operations.supermarkets.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.supermarket_table')}}</a>
       </li>
       @endcan
-      @can('operations.restaurants.create')
+      @can('operations.supermarkets.create')
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('operations.restaurants.create') ? 'active' : '' }}" href="{!! route('operations.restaurants.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.restaurant_create')}}</a>
+          <a class="nav-link {{ request()->routeIs('operations.supermarkets.create') ? 'active' : '' }}" href="{!! route('operations.supermarkets.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.supermarket_create')}}</a>
         </li>
       @endcan
-      @can('operations.restaurant_profile_edit')
+      @can('operations.supermarkets.edit')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile_edit') ? 'active' : '' }}" href="{!!  route('operations.restaurant_profile_edit',$restaurant->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.restaurant_edit')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.supermarkets.edit') ? 'active' : '' }}" href="{!!  route('operations.supermarkets.edit',$supermarket->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.supermarket_edit')}}</a>
       </li>
       @endcan
-      @can('operations.restaurant_profile.users')
+      {{-- @can('operations.restaurant_profile.users')
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.users') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.users',$restaurant->id) !!}"><i class="fa fa-users mr-2"></i>{{trans('lang.user')}}</a>
       </li>
@@ -44,7 +44,7 @@
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('operations.restaurant.days.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.days.index',$restaurant->id) !!}"><i class="fa fa-calendar mr-2"></i>{{trans('lang.day_plural')}}</a>
       </li> 
-      @endcan
+      @endcan --}}
       
     </ul>
 </div>

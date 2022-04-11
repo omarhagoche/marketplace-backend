@@ -129,7 +129,7 @@
             initColVis($(this),column);
         });
 
-        $("#" + tableId + "_filter").html("<div class=\"input-group input-group-sm\">\n" +
+        $("#" + tableId + "_filter").html("<div @if(1) style='display:none' @endif class=\"input-group input-group-sm\">\n" +
             "  <input type=\"text\" value=\"" + dtable.state().search.search + "\" class=\"form-control\" placeholder=\"{{trans('lang.search')}}\" aria-label=\"{{trans('lang.search')}}\">\n" +
             "  <div class=\"input-group-append\">\n" +
             "    <span class=\"input-group-text\"><i class=\"fa fa-search\"></i></span>\n" +

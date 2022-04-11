@@ -1,7 +1,7 @@
   <!-- Days Field -->
   @if (isset($days))
   <div class="form-group  col-6 row ">
-    {!! Form::label('day_id', trans("lang.days"),['class' => 'col-3 control-label ']) !!}
+    {!! Form::label('day_id', trans("lang.day"),['class' => 'col-3 control-label ']) !!}
     <div class="col-9">
       {!! Form::select('day_id', $days, null, ['class' => 'select form-control']) !!}
       <div class="form-text text-muted">{{ trans("lang.day_help") }}</div>

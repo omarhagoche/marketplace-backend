@@ -67,7 +67,8 @@ class RestaurantSearchDataTable extends DataTable
      */
     public function query(Restaurant $model)
     {
-        $query = $model->newQuery();
+        $query = $model->where('merchant_type', 'RESTAURANT')->newQuery();
+
 
         // if (request()->filled('start_date') && request()->filled('end_date')) {
         //     $query->whereBetween('created_at', [request('start_date'), request('end_date')]);

@@ -1,9 +1,10 @@
 @if($customFields)
     <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
-<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+<div class="col-md-5 col-12">
     @if (isset($isCreate))
        <!-- Name Field -->
+
     <div class="form-group row ">
         {!! Form::label('email', trans("lang.email"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
@@ -118,7 +119,7 @@
     </div>
 
 </div>
-<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+<div class="col-md-7 col-12">
 
     <!-- Image Field -->
     <div class="form-group row">
