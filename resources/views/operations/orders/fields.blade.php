@@ -10,6 +10,7 @@
         <div class="col-8">
             {{ $order->user->name}}
         </div>
+    </div>
     @endif
 
     <!-- Driver Id Field -->
@@ -77,9 +78,9 @@
 
     <!-- Processing time Field -->
     <div class="form-group row ">
-        {!! Form::label('processing_time', trans('lang.order_processing_time'), ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
-            {!! Form::number('processing_time', null, ['class' => 'form-control', 'min' => 0, 'placeholder' => trans('lang.order_processing_time_placeholder')]) !!}
+        {!! Form::label('processing_time', trans("lang.order_processing_time"), ['class' => 'col-4 control-label ']) !!}
+        <div class="col-8">
+            {!! Form::number('processing_time', null,  ['class' => 'form-control', 'min' => 0, 'placeholder'=>  trans("lang.order_processing_time_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.order_processing_time_help') }}
             </div>
@@ -89,8 +90,8 @@
 
     <!-- delivery_fee Field -->
     <div class="form-group row ">
-        {!! Form::label('delivery_fee', trans('lang.order_delivery_fee'), ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
+        {!! Form::label('delivery_fee', trans('lang.order_delivery_fee'), ['class' => 'col-4 control-label']) !!}
+        <div class="col-8">
             {!! Form::number('delivery_fee', null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('lang.order_delivery_fee_placeholder')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.order_delivery_fee_help') }}
@@ -100,8 +101,8 @@
 
     <!-- delivery_datetime Field -->
     <div class="form-group row ">
-        {!! Form::label('delivery_datetime', trans('lang.delivery_datetime'), ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
+        {!! Form::label('delivery_datetime', trans('lang.delivery_datetime'), ['class' => 'col-4 control-label']) !!}
+        <div class="col-8">
             {!! Form::date('delivery_datetime', null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('lang.delivery_datetime_placeholder')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.delivery_datetime_help') }}
@@ -110,8 +111,8 @@
     </div>
     <!-- Hint Field -->
     <div class="form-group row ">
-        {!! Form::label('hint', trans("lang.order_hint"), ['class' => 'col-4 control-label ']) !!}
-        <div class="col-8">
+        {!! Form::label('hint', trans("lang.order_hint"), ['class' => 'col-2 control-label ']) !!}
+        <div class="col-10">
             {!! Form::textarea('hint', null, ['class' => 'form-control','placeholder'=>
              trans("lang.order_hint_placeholder")  ]) !!}
             <div class="form-text text-muted">{{ trans("lang.order_hint_help") }}</div>

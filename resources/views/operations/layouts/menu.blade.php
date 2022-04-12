@@ -1,4 +1,4 @@
-@can('dashboard')
+@can('operations.dashboard.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{!! route('operations.dashboard.index') !!}">
             @if ($icons)
@@ -33,6 +33,8 @@
     </a>
 </li> --}}
 
+@can('operations.supermarkets.index')
+
 <li class="nav-item {{ request()->routeIs('supermarket*') ||request()->routeIs('operations.supermarket*') ? 'menu-open': '' }}">
 
     <a class="nav-link {{ Request::is('supermarkets*') ? 'active' : '' }}" href="{!! route('operations.supermarkets.index') !!}">
@@ -44,6 +46,7 @@
             {{ trans('lang.supermarket_plural') }}</p>
     </a>
 </li>
+@endcan
 @can('operations.restaurant_profile.index')
     <li
         class="nav-item {{ request()->routeIs('restaurant*') ||request()->routeIs('operations.restaurant*') ||Request::is('requestedRestaurants*') ||Request::is('galleries*') ||Request::is('restaurantReviews*')? 'menu-open': '' }}">
@@ -82,7 +85,7 @@
         </a>
         <ul class="nav nav-treeview">
 
-            @can('orders.index')
+            @can('operations.orders.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('orders*') ? 'active' : '' }}" href="{!! route('operations.orders.index') !!}">
                         @if ($icons)
@@ -110,7 +113,7 @@
     </li>
 @endcan
 
-@can('drivers.index')
+@can('operations.drivers.index')
     <li class="nav-item has-treeview {{ Request::is('driver*') ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ Request::is('driver*') ? 'active' : '' }}">
             @if ($icons)
@@ -119,7 +122,7 @@
             <p>{{ trans('lang.driver_plural') }} <i class="right fa fa-angle-left"></i></p>
         </a>
         <ul class="nav nav-treeview">
-            @can('drivers.index')
+            @can('operations.drivers.index')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('operations.drivers.index') !!}">
                         @if ($icons)
@@ -131,7 +134,7 @@
                 </li>
             @endcan
 
-            @can('drivers.map')
+            @can('operations.drivers.map')
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('operations.drivers.map') !!}">
                         @if ($icons)
