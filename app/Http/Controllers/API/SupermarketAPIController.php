@@ -56,7 +56,7 @@ class SupermarketAPIController extends Controller
             $this->restaurantRepository->pushCriteria(new RequestCriteria($request));
             $this->restaurantRepository->pushCriteria(new LimitOffsetCriteria($request));
             $this->restaurantRepository->pushCriteria(new SupermarketCriteria($request));
-            $this->restaurantRepository->pushCriteria(new RestaurantsOfCuisinesCriteria($request));
+            // $this->restaurantRepository->pushCriteria(new RestaurantsOfCuisinesCriteria($request));
             if ($request->has('popular')) {
                 $this->restaurantRepository->pushCriteria(new PopularCriteria($request));
             } else {
