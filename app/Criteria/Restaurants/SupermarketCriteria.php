@@ -23,6 +23,6 @@ class SupermarketCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return $model->while('restaurants.merchant_type', MerchantType::SUPERMARKET);
+        return $model->where('merchant_type', MerchantType::SUPERMARKET);
     }
 }
