@@ -10,6 +10,7 @@
 
 namespace App\Models;
 
+use App\Enums\MerchantType;
 use Carbon\Carbon;
 use App\Models\Day;
 use Eloquent as Model;
@@ -170,7 +171,16 @@ class Restaurant extends Model implements HasMedia
         'flexible' => 'flexible',
     ];
 
-
+    /**
+     * Scope a query to only include supermarkets.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSupermarket($query)
+    {
+        return $this->where('merchant_type', MerchantType::SUPERMARKET);
+    }
 
     /**
      * Allowed attributes to skip appends attributes 
