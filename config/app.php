@@ -160,7 +160,7 @@ return [
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         //        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
-
+        Benwilkins\FCM\FcmNotificationServiceProvider::class,
         /*
          * Application Service Providers...
          */
