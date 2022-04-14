@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class DayRepository
  * @package App\Repositories
- * @version March 21, 2022, 10:42 am EET
+ * @version April 14, 2022, 4:31 pm EET
  *
  * @method Day findWithoutFail($id, $columns = ['*'])
  * @method Day find($id, $columns = ['*'])
@@ -20,7 +20,7 @@ class DayRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        
+        'name'
     ];
 
     /**

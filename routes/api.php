@@ -125,6 +125,16 @@ Route::middleware("auth:$auth")->group(function () {
             Route::resource('faqs', 'API\FaqAPIController');
             Route::get('statistics', 'API\Manager\StatisticAPIController@index');
             Route::apiResource('foods', 'API\Manager\FoodAPIController')->except(['destroy']);
+            Route::get('days', 'API\DayAPIController@index');
+            
+                            /* THIS ROUTE FOR ADD DAY TO RESTAURANT  */
+            Route::get('profile/{id}/days', 'API\Manager\RestaurantAPIController@days');
+            Route::post('profile/{id}/days/store', 'API\Manager\RestaurantAPIController@daysStore');
+            Route::post('profile/{id}/days/{dayId}/update', 'API\Manager\RestaurantAPIController@daysUpdate');
+            Route::delete('profile/{id}/days/{dayId}/delete', 'API\Manager\RestaurantAPIController@daysDestroy');
+
+            
+
         });
     });
     Route::post('users/change_password/{id?}', 'API\UserAPIController@updatePassword');
@@ -173,3 +183,4 @@ Route::middleware("auth:$auth")->group(function () {
 
 Route::group(['prefix' => 'v2'],$apiRoutes);
 Route::group([],$apiRoutes);
+
