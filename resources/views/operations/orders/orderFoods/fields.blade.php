@@ -8,26 +8,26 @@
   {!! Form::open(['route' => ['foodOrders.store'], 'method' => 'post']) !!}
   <div class="row">
     <div class="col col-md-2">
-      <label for="restaurant_foood"> foods</label>
+      <label for="restaurant_foood"> Food</label>
       {!! Form::hidden('order_id', $orderId, ['id' => 'food_old_price']) !!}
     {!! Form::select('food_id', $restaurantFooods, null, ['class' => 'select2 form-control', 'id' => 'restaurant_foood']) !!}
   </div>
   <div class="col col-md-2">
-    <label for="food_price">price</label>
+    <label for="food_price">Price</label>
     <div id="waiting_price"></div>
     {!! Form::text('price', null, ['class' => 'form-control','id' => 'food_price', 'readonly' => 'readonly']) !!}
   </div>
   <div class="col col-md-2">
-    <label for="food_quantity">quantity</label>
+    <label for="food_quantity">Quantity</label>
     {!! Form::number('quantity', 1, ['class' => 'form-control', 'id' => 'food_quantity']) !!}
   </div>
-  <div class="col col-md-1">
+  <div class="col col-md-2 mt-2">
     <label for="add"></label>
     <button type="submit" class="form-control btn btn-primary"> Add Food 
       <i class="fa fa-plus"></i>
     </button>
   </div>
-</div>
+</div> 
 {!! Form::close() !!}
 <hr>
 <div class="row">
@@ -35,7 +35,7 @@
         <table class="table">
             <thead>
               <tr>
-                <th scope="col" style="width: 486px;">name</th>
+                <th scope="col">name</th>
                 <th scope="col">price</th>
                 <th scope="col">quantity</th>
                 <th scope="col">extras</th>
@@ -45,11 +45,11 @@
             <tbody>
                 @foreach ($orderFoods as $orderFoods)
                 <tr>
-                  <th scope="row">{{ $orderFoods->food->name}}</th>
-                  <td style="width: 178px">
-                    {!! Form::text('orderFoods_price', $orderFoods->price, ['class' => 'form-control', 'style' => 'width: 114px','disabled' => 'disabled','id'=> 'order_foor_price_'.$orderFoods->id]) !!}
+                  <th style="width: 20%" scope="row">{{ $orderFoods->food->name}}</th>
+                  <td style="width: 20%">
+                    {!! Form::text('orderFoods_price', $orderFoods->price, ['class' => 'form-control','disabled' => 'disabled','id'=> 'order_foor_price_'.$orderFoods->id]) !!}
                   </td>
-                  <td style="width: 270px">
+                  <td  >
                     <div class="row">
                       <div class="col col-md-12 m-1">
                         <input type="number" class="form-control" min="1" oninput="validity.valid||(value='');"  id="quantity_new_{{$orderFoods->id}}" value="{{$orderFoods->quantity}}" onkeyup="changeQuantity({{$orderFoods->quantity}},{{$orderFoods->price}},{{$orderFoods->id}})" style="width: 114px; display: inline;">
@@ -60,7 +60,7 @@
                       
                     </div>
                   </td>
-                  <td>
+                  <td style="width: 25%">
                       {!! Form::open(['route' => ['orders.add-extra', $orderFoods->id], 'method' => 'HEAD']) !!}
                         <div class="form-group row m-1">
                           <div class="col-8">

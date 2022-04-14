@@ -178,6 +178,12 @@ class RestaurantController extends Controller
      */
     public function store(CreateRestaurantRequest $request)
     {
+        $this->validate($request, [
+            'name' => 'required|min:3|max:32',
+            'email' => 'required|email|unique:users',
+            'phone' => 'required|string|max:20|unique:users,phone_number',
+
+        ]);
         $input = $request->all();
         $input['delivery_range'] = $request->delivery_range ?? 10;
         if (auth()->user()->hasRole(['manager', 'client'])) {
@@ -196,14 +202,27 @@ class RestaurantController extends Controller
                 $mediaItem = $cacheUpload->getMedia('image')->first();
                 $mediaItem->copy($restaurant, 'image');
             }
+            $user=User::Create([
+                'email'=>$request['email'],
+                'name'=>$request['name'],
+                'phone_number'=>$request['phone'],
+                'active'=>true,
+                'password'=>Hash::make($request['email'])
+                ]);
+
+                $defaultRoles = $this->roleRepository->findByField('name', 'manager');
+                $defaultRoles = $defaultRoles->pluck('name')->toArray();
+                $user->assignRole($defaultRoles);
+                $user->restaurants()->attach($restaurant->id);
             event(new RestaurantChangedEvent($restaurant, $restaurant));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
+            return redirect()->back()->withInput();
         }
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.restaurant')]));
 
-        return redirect(route('operations.restaurant_profile.index', $restaurant->id));
+        return redirect(route('operations.restaurant_profile_edit', $restaurant->id));
     }
 
     /**

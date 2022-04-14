@@ -1,12 +1,15 @@
 @charset "UTF-8";
+
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
+
+
 /* FONT PATH
  * -------------------------- */
-@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,900");
 
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,900");
 @font-face {
     font-family: 'FontAwesome';
     src: url("../fonts/fontawesome-webfont.eot?v=4.7.0");
@@ -24,7 +27,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+
 /* makes the font 33% larger relative to the icon container */
+
 .fa-lg {
     font-size: 1.3333333333em;
     line-height: 0.75em;
@@ -58,7 +63,7 @@
     list-style-type: none;
 }
 
-.fa-ul > li {
+.fa-ul>li {
     position: relative;
 }
 
@@ -96,7 +101,9 @@
     margin-left: .3em;
 }
 
+
 /* Deprecated as of 4.4.0 */
+
 .pull-right {
     float: right;
 }
@@ -193,7 +200,8 @@
     vertical-align: middle;
 }
 
-.fa-stack-1x, .fa-stack-2x {
+.fa-stack-1x,
+.fa-stack-2x {
     position: absolute;
     left: 0;
     width: 100%;
@@ -212,8 +220,10 @@
     color: #fff;
 }
 
+
 /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
    readers do not read off random characters that represent icons */
+
 .fa-glass:before {
     content: "";
 }
@@ -684,7 +694,7 @@
     content: "";
 }
 
-.fa-shopping-cart:before {
+.fa-c:before {
     content: "";
 }
 
@@ -3036,7 +3046,8 @@
     border: 0;
 }
 
-.sr-only-focusable:active, .sr-only-focusable:focus {
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
     position: static;
     width: auto;
     height: auto;
@@ -3045,14 +3056,19 @@
     clip: auto;
 }
 
-sub, sup {
+sub,
+sup {
     font-size: 75%;
     line-height: 0;
     position: relative;
     vertical-align: baseline;
 }
 
-button, input, optgroup, select, textarea {
+button,
+input,
+optgroup,
+select,
+textarea {
     color: inherit;
     font: inherit;
     margin: 0;
@@ -3488,27 +3504,21 @@ th {
     html {
         font-size: 12px;
     }
-
     h1 {
         font-size: calc(27.85438995234061px + 18.56959 * ((100vw - 600px) / 540));
     }
-
     h2 {
         font-size: calc(23.53700340860508px + 15.69134 * ((100vw - 600px) / 540));
     }
-
     h3 {
         font-size: calc(19.888804974891777px + 13.2592 * ((100vw - 600px) / 540));
     }
-
     h4 {
         font-size: calc(16.806071548796314px + 11.20405 * ((100vw - 600px) / 540));
     }
-
     h5 {
         font-size: calc(14.201156945318074px + 9.46744 * ((100vw - 600px) / 540));
     }
-
     h6 {
         font-size: calc(12px + 8 * ((100vw - 600px) / 540));
     }
@@ -3768,84 +3778,69 @@ var {
         line-height: 1.130880986943067em;
         margin-bottom: .188480164490511em;
     }
-
     h2 {
         font-size: 39.228339014341806px;
         margin-top: 1.115265165420465em;
         line-height: 1.338318198504558em;
         margin-bottom: .240111086421698em;
     }
-
     h3 {
         font-size: 33.14800829148629px;
         margin-top: 1.319837970815179em;
         line-height: 1.583805564978215em;
         margin-bottom: .287857499569283em;
     }
-
     h4 {
         font-size: 28.01011924799386px;
         margin-top: 1.561935513828041em;
         line-height: 1.87432261659365em;
         margin-bottom: .345845057728222em;
     }
-
     h5 {
         font-size: 23.668594908863454px;
         margin-top: 1.84844094752817em;
         line-height: 2.218129137033805em;
         margin-bottom: .369688189505634em;
     }
-
     h6 {
         font-size: 20px;
         margin-top: 2.1875em;
         line-height: 2.625em;
         margin-bottom: .473958333333333em;
     }
-
     fieldset {
         margin-bottom: 2.078125em;
     }
-
     input[type=email] {
         font-size: 20px;
         margin-bottom: .5140625em;
     }
-
     input[type=password] {
         font-size: 20px;
         margin-bottom: .5140625em;
     }
-
     input[type=text] {
         font-size: 20px;
         margin-bottom: .5140625em;
     }
-
     textarea {
         font-size: 20px;
         margin-bottom: .5140625em;
     }
-
     button {
         font-size: 20px;
         margin-bottom: 1.3125em;
     }
-
     input[type=submit] {
         font-size: 20px;
         margin-bottom: 1.3125em;
     }
-
     table {
         margin-bottom: 2.05625em;
     }
-
     th {
         padding: .4375em .875em;
     }
-
     td {
         padding: .4375em .875em;
     }
@@ -4197,7 +4192,7 @@ input[type=text] {
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.textarea ~ .button {
+.textarea~.button {
     margin-bottom: 35px;
 }
 
@@ -4274,7 +4269,7 @@ input[type='number'] {
     display: none;
 }
 
-.tabs .tab-input:checked + .tab-label {
+.tabs .tab-input:checked+.tab-label {
     background-color: #fff;
     color: #333;
 }
@@ -4301,7 +4296,7 @@ input[type='number'] {
     display: none;
 }
 
-.tabs .tab > *:last-child {
+.tabs .tab>*:last-child {
     margin-bottom: 0;
 }
 
@@ -4328,7 +4323,7 @@ input[type='number'] {
     display: none;
 }
 
-.block input[type='radio'] + label {
+.block input[type='radio']+label {
     background: #008080;
     color: #fff;
     padding-top: 5px;
@@ -4336,24 +4331,24 @@ input[type='number'] {
     transition: all 0.1s ease-in-out;
 }
 
-.block input[type='radio'] + label:hover {
+.block input[type='radio']+label:hover {
     background: #144242;
     color: #fff;
     padding-top: 5px;
 }
 
-.block input[type='radio']:checked + label {
+.block input[type='radio']:checked+label {
     background-color: #a9a9a9;
 }
 
-.block input[type='radio']:checked ~ .info {
+.block input[type='radio']:checked~.info {
     height: 200px;
     overflow-y: auto;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
 
-.block input[type='radio'] ~ .info > div {
+.block input[type='radio']~.info>div {
     padding-top: 15px;
 }
 
@@ -4483,15 +4478,15 @@ svg:not(:root) {
 }
 
 .step__item.active .step__icon,
-.step__item.active ~ .step__divider,
-.step__item.active ~ .step__item .step__icon {
+.step__item.active~.step__divider,
+.step__item.active~.step__item .step__icon {
     background-color: #34a0db;
     -webkit-transition: all 0.1s ease-in-out;
     transition: all 0.1s ease-in-out;
 }
 
 .step__item.active .step__icon:hover,
-.step__item.active ~ .step__item .step__icon:hover {
+.step__item.active~.step__item .step__icon:hover {
     background-color: #3d657b;
 }
 
@@ -4534,23 +4529,23 @@ svg:not(:root) {
     width: 1%;
 }
 
-#tab1:checked ~ .tabs-wrap #tab1content {
+#tab1:checked~.tabs-wrap #tab1content {
     display: block;
 }
 
-#tab2:checked ~ .tabs-wrap #tab2content {
+#tab2:checked~.tabs-wrap #tab2content {
     display: block;
 }
 
-#tab3:checked ~ .tabs-wrap #tab3content {
+#tab3:checked~.tabs-wrap #tab3content {
     display: block;
 }
 
-#tab4:checked ~ .tabs-wrap #tab4content {
+#tab4:checked~.tabs-wrap #tab4content {
     display: block;
 }
 
-#tab5:checked ~ .tabs-wrap #tab5content {
+#tab5:checked~.tabs-wrap #tab5content {
     display: block;
 }
 
@@ -4568,5 +4563,6 @@ svg:not(:root) {
 #tab3content .block:last-child {
     border-radius: 0 0 3px 3px;
 }
+
 
 /*# sourceMappingURL=style.css.map */

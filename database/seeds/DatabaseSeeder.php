@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OrderStatusesTableSeeder::class);
         $this->call(CurrenciesTableSeeder::class);
         $this->call(ExtraGroupsTableSeeder::class);
-
         $this->call(FoodsTableSeeder::class);
         $this->call(GalleriesTableSeeder::class);
         $this->call(FoodReviewsTableSeeder::class);
@@ -70,6 +69,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SlidesSeeder::class);
 
         $this->call(DayTableSeeder::class);
+        $this->call(MerchantTypeSeeder::class);
+
 
     }
 

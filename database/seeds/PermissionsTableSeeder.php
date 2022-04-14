@@ -37,6 +37,8 @@ class PermissionsTableSeeder extends Seeder
         $routeCollection = Route::getRoutes();
         try{
             $role = Role::findByName('admin');
+            $operations_role = Role::findByName('operations');
+
             if (!$role) {
                 $role = Role::create(['name' => 'admin']);
             }
@@ -58,6 +60,9 @@ class PermissionsTableSeeder extends Seeder
                         $permission = Permission::create(['name' => $route->getName()]);
                         $role->givePermissionTo($permission);
                     }
+                }
+                if(!$operations_role->hasPermissionTo($route->getName()) && strpos($route->getName(), 'operations')){
+                    $operations_role->givePermissionTo($permission);
                 }
             }
         }

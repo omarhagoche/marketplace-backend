@@ -37,6 +37,8 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         'delivery_range',
         'available_for_delivery',
         'closed',
+        'active',
+        'featured',
         'admin_commission',
         'featured',
         'is_restaurant',

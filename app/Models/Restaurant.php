@@ -85,7 +85,8 @@ class Restaurant extends Model implements HasMedia
         'featured',
         'is_restaurant',
         'close_at',
-        'open_at'
+        'open_at',
+        'merchant_type'
     ];
 
     /**
@@ -141,7 +142,6 @@ class Restaurant extends Model implements HasMedia
         'name' => 'required',
         'close_at' => 'required',
         'open_at' => 'required',
-
         'phone' => 'required',
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
@@ -260,6 +260,7 @@ class Restaurant extends Model implements HasMedia
     {
         return $this->hasMany(\App\Models\Food::class, 'restaurant_id');
     }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

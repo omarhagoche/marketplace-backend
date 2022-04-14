@@ -6,24 +6,24 @@
 <div style="overflow-x:auto;" class="scroll-inner">
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead>
-            <tr id="search-fields">
-                <th><span>#</span></th>
-                <th><span>name</span></th>
-                <th><span>price</span></th>
+            {{-- <tr id="search-fields">
+                <th colspan="1"><span>#</span></th>
+                <th colspan="2"><span>name</span></th>
+                <th colspan="2"><span>price</span></th>
                 <th><span>discount price</span></th>
                 <th><span>package count</span></th>
-                <th style="width: 136px;"><span hidden>category</span>{!! Form::select('category_id', $category,null, ['id'=>'search_cat','class' => 'select2 form-control']) !!}</th>
+                <th style="width: 136px;"><span hidden>category</span>{!! Form::select('category_id', $category,null, ['id'=>'search_cat','class' => 'select2 form-control']) !!}</th> 
                 <th hidden>categoryname</th>
                 <th hidden>available</th>
                 <th hidden>update</th>
-                <th hidden>actions</th>
-            </tr>
+                <th hidden>actions</th> 
+            </tr> --}}
             <tr>
                 <th>#</th>
                 <th>Name</th>
                 <th>price</th>
                 <th>discount price</th>
-                <th>package count</th>
+                {{-- <th>package count</th> --}}
                 <th>category</th>
                 <th hidden>categoryname</th>
                 <th>available</th>
@@ -49,10 +49,10 @@
                     <div style="visibility: hidden; font-size: 2px;">{{$food->discount_price}}</div>
                     <input type="text" value="{{$food->discount_price}}" id="discount_price{{$food->id}}" class="form-control">
                 </td>
-                <td>
+                {{-- <td>
                     <div style="visibility: hidden; font-size: 2px;">{{$food->package_items_count}}</div>
                     <input type="text" value="{{$food->package_items_count}}"id="package_items_count{{$food->id}}" class="form-control">
-                </td>
+                </td> --}}
                 <td hidden>
                     <div>{{$food->category->name}}</div>
                 </td>

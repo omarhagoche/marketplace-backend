@@ -67,14 +67,14 @@ class ExtraDataTable extends DataTable
     {
         $columns = [
             [
-                'data' => 'name',
-                'title' => trans('lang.extra_name'),
-
-            ],
-            [
                 'data' => 'image',
                 'title' => trans('lang.extra_image'),
                 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,
+            ],
+            [
+                'data' => 'name',
+                'title' => trans('lang.extra_name'),
+
             ],
             [
                 'data' => 'price',

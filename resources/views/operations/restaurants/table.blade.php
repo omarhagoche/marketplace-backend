@@ -7,7 +7,7 @@
 $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.restaurant'), 'type' => 'text', 'value' => request('name')],
  ['name' => 'address', 'data-column' => 2, 'title' => trans('lang.restaurant_address'), 'type' => 'text', 'value' => request('address')],
  ['name' => 'phone', 'data-column' => 3, 'title' => trans('lang.restaurant_phone'), 'type' => 'text', 'value' => request('phone')],
- ['name' => 'moblie', 'data-column' => 4, 'title' => trans('lang.restaurant_mobile'), 'type' => 'text', 'value' => request('moblie')]];
+ ['name' => 'mobile', 'data-column' => 4, 'title' => trans('lang.restaurant_mobile'), 'type' => 'text', 'value' => request('mobile')]];
 @endphp
 
 {!! Form::open(['route' => ['operations.restaurant_profile.index'],'method' => 'get']) !!}
@@ -23,7 +23,7 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
                 id="validationCustom{{ $f['name'] }}">
         </div>
     @endforeach
-    <div class="col-auto align-self-end">
+    <div class="col-auto align-self-end mt-1">
         <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
     </div>
 </div>
@@ -34,8 +34,8 @@ $searchFields = [['name' => 'name', 'data-column' => 1, 'title' => trans('lang.r
 <hr />
 
 {!! $dataTable->table(['width' => '100%']) !!}
-<h5 class="text-center">{{ trans('lang.restaurant_no_data_message_notes') }}</h5>
-<p class="text-center">{{ trans('lang.restaurant_no_data_message') }}</p>
+{{-- <h5 class="text-center">{{ trans('lang.restaurant_no_data_message_notes') }}</h5>
+<p class="text-center">{{ trans('lang.restaurant_no_data_message') }}</p> --}}
 {{-- إذا لم تظهر أي معلومات في الجدول ، يرجى ملء جميع الحقول ثم حذفها أو استخدام متصفح آخر --}}
 @push('scripts_lib')
     @include('operations.layouts.datatables_js')

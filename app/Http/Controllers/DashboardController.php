@@ -41,9 +41,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('operations')) {
-            return redirect('/operations');
-        }
         $ordersCount = $this->orderRepository->count();
         $membersCount = $this->userRepository->count();
         $restaurantsCount = $this->restaurantRepository->count();
