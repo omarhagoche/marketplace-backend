@@ -6,7 +6,7 @@
     <div class="form-group row ">
         {!! Form::label('open_at', trans('lang.open_at'), ['class' => 'col-12 control-label=']) !!}
         <div class="col-9">
-            {!! Form::time('open_at', '10:30', ['class' => 'form-control', 'placeholder' => trans('lang.open_at')]) !!}
+            {!! Form::time('open_at', null, ['class' => 'form-control', 'placeholder' => trans('lang.open_at')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.open_at_help') }}
             </div>
@@ -84,7 +84,7 @@
     <div class="form-group row ">
         {!! Form::label('close_at', trans('lang.close_at'), ['class' => 'col-12 control-label']) !!}
         <div class="col-9">
-            {!! Form::time('close_at', '23:30', ['class' => 'form-control', 'placeholder' => trans('lang.close_at')]) !!}
+            {!! Form::time('close_at',null, ['class' => 'form-control', 'placeholder' => trans('lang.close_at')]) !!}
             <div class="form-text text-muted">
                 {{ trans('lang.close_at_help') }}
             </div>
