@@ -314,7 +314,6 @@ class RestaurantController extends Controller
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
-        dd($input);
         array_push($input['users'], ...$input['drivers']);//thhis line for push drivers ids with users 
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
