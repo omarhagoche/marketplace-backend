@@ -35,11 +35,13 @@ class FoodRepository extends BaseRepository implements CacheableInterface
         'unit',
         'featured',
         'restaurant_id',
-        'category_id'
+        'category_id',
+        'type',
+        'time_taken'
     ];
 
     /**
-     * Configure the Model
+     * Configure the Model 
      **/
     public function model()
     {
@@ -53,6 +55,14 @@ class FoodRepository extends BaseRepository implements CacheableInterface
     {
         return Food::join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
             ->where('user_restaurants.user_id', auth()->id())->get();
+    }
+
+    /**
+     * get restaurant foods By id
+     **/
+    public function restaurantFoods($id)
+    {
+        return Food::where('restaurant_id', $id)->get();
     }
 
     public function groupedByRestaurants()

@@ -10,33 +10,34 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Criteria\Orders\OrdersOfStatusesCriteria;
-use App\Criteria\Orders\OrdersOfUserCriteria;
-use App\Criteria\Users\AdminsCriteria;
-use App\Events\OrderChangedEvent;
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Notifications\AssignedOrder;
-use App\Notifications\NewOrder;
-use App\Notifications\StatusChangedOrder;
-use App\Repositories\CartRepository;
-use App\Repositories\FoodOrderRepository;
-use App\Repositories\NotificationRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\PaymentRepository;
-use App\Repositories\UserRepository;
 use Flash;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
-use Prettus\Repository\Criteria\RequestCriteria;
-use Prettus\Repository\Exceptions\RepositoryException;
-use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
+use App\Models\Order;
+use Illuminate\Http\Request;
+use App\Notifications\NewOrder;
 use App\Events\CreatedOrderEvent;
-use App\Notifications\OrderNeedsToAccept;
-use App\Services\AddOrderToFirebaseService;
+use App\Events\OrderChangedEvent;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Notifications\AssignedOrder;
+use App\Repositories\CartRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\OrderRepository;
+use App\Criteria\Users\AdminsCriteria;
+use App\Repositories\PaymentRepository;
+use App\Notifications\OrderNeedsToAccept;
+use App\Notifications\StatusChangedOrder;
+use App\Repositories\FoodOrderRepository;
+use App\Services\AddOrderToFirebaseService;
+use App\Repositories\NotificationRepository;
+use Illuminate\Support\Facades\Notification;
+use App\Criteria\Orders\OrderBookingCriteria;
+use App\Criteria\Orders\OrdersOfUserCriteria;
+use Prettus\Repository\Criteria\RequestCriteria;
+use App\Criteria\Orders\OrdersOfStatusesCriteria;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use Prettus\Validator\Exceptions\ValidatorException;
+use Prettus\Repository\Exceptions\RepositoryException;
 
 /**
  * Class OrderController
@@ -96,6 +97,26 @@ class OrderAPIController extends Controller
         $orders = $this->orderRepository->all();
 
         return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
+    }
+    /**
+     * Display a listing of the Order booking .
+     * GET|HEAD /orders/booking
+     *
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function booking()
+    {
+        // return auth()->user()->restaurants->first->id;
+        try {
+            $this->orderRepository->pushCriteria(new OrderBookingCriteria(auth()->id()));
+
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        $orders = $this->orderRepository->all();
+
+        return $this->sendResponse($orders->toArray(), 'Orders booking successfully');
     }
 
     /**
@@ -241,7 +262,20 @@ class OrderAPIController extends Controller
         $amount = 0;
         try {
             DB::beginTransaction();
-            $order = $this->orderRepository->create($request->only('user_id', 'order_status_id', 'tax', 'delivery_coupon_value', 'delivery_coupon_id', 'restaurant_coupon_value', 'restaurant_coupon_id', 'delivery_address_id', 'delivery_fee', 'restaurant_delivery_fee', 'hint'));
+            $order = $this->orderRepository->create($request->only(
+                'user_id',
+                'order_status_id',
+                'tax',
+                'delivery_coupon_value',
+                'delivery_coupon_id',
+                'restaurant_coupon_value',
+                'restaurant_coupon_id',
+                'delivery_address_id',
+                'delivery_fee',
+                'restaurant_delivery_fee',
+                'hint',
+                'delivery_datetime'
+            ));
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];

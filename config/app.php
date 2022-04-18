@@ -160,7 +160,7 @@ return [
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         //        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
-
+        Benwilkins\FCM\FcmNotificationServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -171,7 +171,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\DistanceServiceProvider::class,
         App\Providers\FirebaseServiceProvider::class,
-
 
     ],
 
@@ -228,7 +227,6 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'HTMLFieldGenerator' => InfyOm\Generator\Utils\HTMLFieldGenerator::class,
         //        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
-
     ],
 
 ];

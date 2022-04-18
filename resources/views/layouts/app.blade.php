@@ -178,6 +178,12 @@
 
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js')}}"></script>
     <script src="{{asset('https://www.gstatic.com/firebasejs/7.2.0/firebase-firestore.js')}}"></script>
+    <script>
+        /*{{-- Set default token for user to call apis without problems --}}*/
+        $.ajaxSetup({
+            headers: { "Authorization": "Bearer {{ auth()->user()->token() }}" }
+        });
+    </script>
 
     <script type="text/javascript">@include('vendor.notifications.init_firebase')</script>
 

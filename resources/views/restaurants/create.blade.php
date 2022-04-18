@@ -50,6 +50,8 @@
     <div class="card-body">
       {!! Form::open(['route' => 'restaurants.store']) !!}
       <div class="row">
+        <!-- Phone Field -->
+ 
         @include('restaurants.fields',['isCreate'=>true])
       </div>
       {!! Form::close() !!}

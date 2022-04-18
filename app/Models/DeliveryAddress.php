@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Order;
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 /**
  * Class DeliveryAddress
@@ -97,5 +98,14 @@ class DeliveryAddress extends Model
     public function user()
     {
         return $this->morphTo();
+    }
+    /**
+     * Get all of the orders for the DeliveryAddress
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'delivery_address_id');
     }
 }

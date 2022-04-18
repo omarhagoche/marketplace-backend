@@ -35,9 +35,8 @@ function formatedSize($bytes, $precision = 1)
 function getMediaColumn($mediaModel, $mediaCollectionName = '', $extraClass = '', $mediaThumbnail = 'icon')
 {
     $extraClass = $extraClass == '' ? ' rounded ' : $extraClass;
-
     if ($mediaModel->hasMedia($mediaCollectionName)) {
-        return "<img class='" . $extraClass . "' style='width:50px' src='" . $mediaModel->getFirstMediaUrl($mediaCollectionName, $mediaThumbnail) . "' alt='" . $mediaModel->getFirstMedia($mediaCollectionName)->name . "'>";
+        return "<img class='" . $extraClass . "' style='width:50px' src='" . $mediaModel->getFirstMediaUrl($mediaCollectionName, $mediaThumbnail) . "'>";
     } else {
         return "<img class='" . $extraClass . "' style='width:50px' src='" . asset('images/image_default.png') . "' alt='image_default'>";
     }

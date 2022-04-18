@@ -21,6 +21,7 @@ use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class RestaurantReviewController extends Controller
@@ -234,5 +235,17 @@ class RestaurantReviewController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
+    }
+
+    /**
+     * Display a listing of the RestaurantReview.
+     *
+     * @param RestaurantReviewDataTable $restaurantReviewDataTable
+     * @return Response
+     */
+    public function indexByRestaurant(RestaurantReviewDataTable $restaurantReviewDataTable, $id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        return $restaurantReviewDataTable->with(["id" => $id])->render('operations.restaurantProfile.reviews.index',["restaurant"=> $restaurant]);
     }
 }

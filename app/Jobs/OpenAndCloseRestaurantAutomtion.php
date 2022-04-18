@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -59,11 +60,11 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
                 $count_affected_open = 0;
                 $count_affected_close = 0;
 
-                if ($restaurants_will_open->count()) {
-                    $count_affected_open = $this->updateRestaurantsStatus(true);
+                if (count($restaurants_will_open)) {
+                    $count_affected_open = $this->updateRestaurantsStatus(true,$restaurants_will_open);
                 }
-                if ($restaurants_will_close->count()) {
-                    $count_affected_close =  $this->updateRestaurantsStatus(false);
+                if (count($restaurants_will_close)) {
+                    $count_affected_close =  $this->updateRestaurantsStatus(false,$restaurants_will_close);
                 }
 
                 // log info about operation to use it when tacking something
@@ -94,17 +95,30 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      */
     protected function getRestaurants($open)
     {
+        $columnForDay = 'day_restaurants.close_at';
         $column = 'close_at';
+
         if ($open) {
+            $columnForDay = 'day_restaurants.open_at';
             $column = 'open_at';
         }
-
-        // we use DB:table instead of Restaurant to skip load appends data like : media and custom_fields 
-        return DB::table('restaurants')
-            ->select('id', 'name', 'open_at', 'close_at')
-            ->where('closed', $open)
-            ->whereBetween($column, [$this->from_time, $this->to_time])
-            ->get();
+        $dayName=Carbon::now()->englishDayOfWeek;
+        $idsRestaurantsFromDay=DB::table('restaurants')
+                    ->join('day_restaurants', 'restaurants.id', '=', 'day_restaurants.restaurant_id')
+                    ->join('days', 'days.id', '=', 'day_restaurants.day_id')
+                    ->where('days.name','like', "%$dayName%")
+                    ->where('restaurants.closed',$open)
+                    ->whereBetween($columnForDay, [$this->from_time, $this->to_time])
+                    ->groupBy('restaurant_id')->pluck('restaurant_id')->toArray();
+        $idsRestaurants= DB::table('restaurants')
+                ->whereNotIn('restaurants.id', $idsRestaurantsFromDay)
+                ->select('restaurants.id')
+                ->where('restaurants.closed',$open)
+                ->whereBetween($column, [$this->from_time, $this->to_time])
+                ->groupBy('id')->pluck('id')->toArray();
+    
+        $ids=array_merge($idsRestaurants,$idsRestaurantsFromDay);
+        return $ids;
     }
 
     /**
@@ -113,7 +127,7 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
      * 
      * @return int number of rows
      */
-    protected function updateRestaurantsStatus($open)
+    protected function updateRestaurantsStatus($open,$ids=[])
     {
         $column = 'close_at';
         if ($open) {
@@ -122,8 +136,8 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
 
         // we use DB:table instead of Restaurant to skip load appends data like : media and custom_fields 
         return DB::table('restaurants')
-            ->where('closed', $open)
-            ->whereBetween($column, [$this->from_time, $this->to_time])
-            ->update(['closed' => !$open]);
+                ->whereIn('id',$ids)
+                ->where('restaurants.closed',$open)
+                ->update(['closed' => !$open]);
     }
 }

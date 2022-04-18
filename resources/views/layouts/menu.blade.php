@@ -5,7 +5,10 @@
             <p>{{trans('lang.dashboard')}}</p></a>
     </li>
 @endcan
-
+<li class="nav-item">
+    <a class="nav-link {{ Request::is('operations*') ? 'active' : '' }}" href="{!! route('operations.dashboard.index') !!}">@if($icons)
+            <i class="nav-icon fa fa-heart"></i>@endif<p>{{trans('lang.operations')}}</p></a>
+</li>
 @can('favorites.index')
     <li class="nav-item">
         <a class="nav-link {{ Request::is('favorites*') ? 'active' : '' }}" href="{!! route('favorites.index') !!}">@if($icons)
@@ -198,11 +201,11 @@
             </li>
             @endcan
 
-            @can('driverWorkTimes.statistics')
+            {{-- @can('driverWorkTimes.statistics')
                 <li class="nav-item">
                 <a class="nav-link {{ Request::is('driverWorkTimes*') ? 'active' : '' }}" href="{!! route('driverWorkTimes.statistics') !!}">@if($icons)<i class="nav-icon fa fa-clock-o"></i>@endif<p>{{trans('lang.driver_work_time_plural')}}</p></a>
                 </li>
-            @endcan
+            @endcan --}}
 
             @can('driverReviews.index')
                 <li class="nav-item">
@@ -480,5 +483,11 @@
 
         </ul>
     </li>
+@endcan
+
+@can('days.index')
+<li class="nav-item">
+  <a class="nav-link {{ Request::is('days*') ? 'active' : '' }}" href="{!! route('days.index') !!}">@if($icons)<i class="nav-icon fa fa-file"></i>@endif<p>{{trans('lang.day_plural')}}</p></a>
+</li>
 @endcan
 

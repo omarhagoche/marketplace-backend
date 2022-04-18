@@ -5,6 +5,8 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Events\CreatedDriverEvent;
 use App\Events\UpdatedDriverEvent;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Driver
@@ -35,7 +37,8 @@ class Driver extends Model
         'total_orders',
         'earning',
         'available',
-        'working_on_order'
+        'working_on_order',
+        'note',
     ];
 
     /**
@@ -47,6 +50,7 @@ class Driver extends Model
         'user_id' => 'integer',
         'driver_type_id' => 'integer',
         'delivery_fee' => 'double',
+        'note' => 'string',
         'type' => 'string',
         'total_orders' => 'integer',
         'earning' => 'double',
@@ -61,7 +65,8 @@ class Driver extends Model
      */
     public static $rules = [
         'delivery_fee' => 'required',
-        'type' => 'required|in:bicycle,motorcycle,car',
+        'note' => '',
+        // 'type' => 'required|in:bicycle,motorcycle,car',
         'driver_type_id' => 'required|integer|exists:driver_types,id',
         //'user_id' => 'required|exists:users,id'
     ];
@@ -98,12 +103,19 @@ class Driver extends Model
     ];
 
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 
+
+    // FIXME: many queries
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
     }
 
+    // FIXME: many queries
     public function getCustomFieldsAttribute()
     {
         $hasCustomField = in_array(static::class, setting('custom_field_models', []));
@@ -119,6 +131,7 @@ class Driver extends Model
     }
 
     /**
+     * FIXME: many queries
      * get driverType attribute
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
      */
@@ -135,7 +148,13 @@ class Driver extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     **/
+    public function restaurants()
+    {
+        return $this->belongsToMany(\App\Models\Restaurant::class, 'driver_restaurants','user_id');
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -144,16 +163,39 @@ class Driver extends Model
         return $this->belongsTo(\App\Models\DriverType::class, 'driver_type_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function driverWorkTime()
+    public function lastOrder()
     {
-        return $this->hasMany(\App\Models\DriverWorkTime::class, 'user_id', 'user_id');
+        return $this->orders()->orderby('created_at', 'desc')->first();
     }
-
     public function types()
     {
         return $this->drivers_types;
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\DriverReview::class, 'driver_id', 'id');
+    }
+
+    public function getAvg()
+    {
+
+        return $this->reviews->avg('rate');
+    }
+
+
+    public function getOrdersBetweenDaysCount(int $days): int
+    {
+        return $this->orders()
+            ->where('order_status_id', 80)
+            ->whereBetween('updated_at', [Carbon::now()->subDays($days), now()])
+            ->count();
+    }
+
+    public function totalEarning()
+    {
+        return $this->orders->sum(function ($item) {
+            return $item->getDeliveryFee();
+        });
     }
 }

@@ -1,5 +1,10 @@
 <?php
 
+use Carbon\Carbon;
+use App\Models\Day;
+use App\Models\Restaurant;
+use Illuminate\Support\Facades\DB;
+
 /**
  * File name: web.php
  * Last modified: 2020.06.11 at 15:08:31
@@ -17,7 +22,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 
 Route::get('test/whatsapp/{phone?}/{msg?}', function ($phone, $msg) {
     $respone = [
@@ -49,13 +53,14 @@ Route::get('payments/paypal', 'PayPalController@index')->name('paypal.index');
 
 Route::get('firebase/sw-js', 'AppSettingController@initFirebase');
 
+Route::post('uploads/store', 'UploadController@store')->name('medias.create');
+
 
 Route::get('storage/app/public/{id}/{conversion}/{filename?}', 'UploadController@storage');
 Route::middleware('auth')->group(function () {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
-    Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::get('users/profile', 'UserController@profile')->name('users.profile');
     Route::post('users/remove-media', 'UserController@removeMedia');
     Route::resource('users', 'UserController');
@@ -122,8 +127,8 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::resource('orderStatuses', 'OrderStatusController')->except([
-        'create', 'store', 'destroy'
-    ]);;
+        'destroy'
+    ]);
 
     Route::post('foods/remove-media', 'FoodController@removeMedia');
     Route::resource('foods', 'FoodController')->except([
@@ -144,12 +149,11 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::post('extras/remove-media', 'ExtraController@removeMedia');
-    Route::resource('extras', 'ExtraController');
+   
 
     Route::resource('payments', 'PaymentController')->except([
         'create', 'store', 'edit', 'destroy'
-    ]);;
+    ]);
 
     Route::resource('faqs', 'FaqController')->except([
         'show'
@@ -165,13 +169,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('orders/waitting-drivers', 'OrderController@ordersWaittingForDrivers')->name('orders.waitting_drivers');
     Route::get('orders/set-driver/{order_id}/{driver_id}', 'OrderController@setDriverForOrder');
+    
     Route::get('orders/statistics', 'OrderController@statistics')->name('orders.statistics');
 
     Route::resource('orders', 'OrderController');
-
+    
     Route::resource('notifications', 'NotificationController')->except([
         'create', 'store', 'update', 'edit',
-    ]);;
+    ]);
 
     Route::resource('carts', 'CartController')->except([
         'show', 'store', 'create'
@@ -180,11 +185,9 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::resource('drivers', 'DriverController')->except([
-        'show'
-    ]);
-
     Route::get('drivers/map', 'DriverController@map')->name('drivers.map');
+    Route::resource('drivers', 'DriverController');
+
     Route::get('drivers/update-data-in-firestore', 'DriverController@updateDataInFirestore')->name('drivers.update_data_in_firestore');
 
     Route::resource('driverTypes', 'DriverTypeController');
@@ -207,11 +210,7 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::post('extras/remove-media', 'ExtraController@removeMedia');
-
-    Route::resource('extras', 'ExtraController')->except([
-        'show'
-    ]);
+    
     Route::resource('coupons', 'CouponController'); //->except(['show']);
     Route::post('slides/remove-media', 'SlideController@removeMedia');
     Route::resource('slides', 'SlideController')->except([
@@ -228,5 +227,112 @@ Route::middleware('auth')->group(function () {
     Route::get('settlementManagers/available/{driver_id}', 'SettlementManagerController@showAvailable')->name('settlementManagers.showAvailable');
     Route::resource('settlementManagers', 'SettlementManagerController');
     Route::get('settlementManagers/print/{id}', 'SettlementManagerController@print');
-    Route::get('driverWorkTimes/statistics', 'DriverWorkTimeController@statistics')->name('driverWorkTimes.statistics');
+    
+    Route::get('orders/edit/foods/{order_id}', 'OrderController@editOrderFoods')->name('orders.edit-order-foods');
+    Route::get('orders/show/coupon/{order_id}', 'OrderController@showCouponOrderFoods')->name('orders.show-order-coupon');
+    Route::post('orders/store/coupon/restaurant/{order_id}', 'OrderController@storeRestaurantCouponOrderFoods')->name('orders.store-order-restaurant-coupon');
+    Route::post('orders/store/coupon/delivery/{order_id}', 'OrderController@storeDeliveryCouponOrderFoods')->name('orders.store-order-delivery-coupon');
+    Route::resource('foodOrders', 'FoodOrderController');
+    Route::get('foods/show/{id}', 'FoodController@showFood')->name('foods.get-one');
+    
+    Route::post('orders/edit/foods/extra/{orderFoods}', 'OrderController@addExtraInOrderFood')->name('orders.add-extra');
+    Route::post('orders/remove/extra', 'OrderController@removeExtraInOrderFood')->name('orders.remove-extra');
+    Route::post('orders/edit/foods/update', 'OrderController@updateOrderFoods')->name('orders.food-update-quantity');
+    
+    //// new Dashboard for operations
+        Route::prefix('operations')->group(function () {
+            // section users
+            Route::get('/', 'Operations\DriverController@map')->name('operations.dashboard.index');
+            // Route::view('/', 'operations.dashboard.index')->name('operations.dashboard.index');
+            Route::get('users/profile/{userId}/info', 'Operations\ClientController@profile')->name('operations.users.profile.info');
+            Route::get('users/profile/{userId}/statistics', 'Operations\ClientController@statistics')->name('operations.users.profile.statistics');
+            Route::get('users/profile/{userId}/favorites', 'Operations\ClientController@favorites')->name('operations.users.profile.favorites');
+            Route::get('users/profile/{userId}/orders', 'Operations\ClientController@orders')->name('operations.users.profile.orders');
+            Route::get('users/profile/{userId}/coupons', 'Operations\ClientController@coupons')->name('operations.users.profile.coupons');
+           //user note
+            Route::get('users/profile/{userId}/notes', 'Operations\ClientController@notes')->name('operations.users.profile.notes');
+            Route::get('users/profile/{userId}/notes/create', 'Operations\ClientController@createNote')->name('operations.users.profile.createNotes');
+            Route::post('users/profile/{userId}/notes/store', 'Operations\ClientController@storeNote')->name('operations.users.profile.storeNote');
+            Route::delete('users/profile/{userId}/notes/{noteId}/destroy', 'Operations\ClientController@destroyNote')->name('operations.users.profile.destroyNote');
+           
+            Route::get('users/profile/{userId}/address', 'Operations\ClientController@address')->name('operations.users.profile.address');
+            Route::get('users/profile/{userId}/address/{addressId}/default', 'Operations\ClientController@setAddressDefault')->name('operations.users.profile.address.setDefault');
+            Route::delete('users/profile/{userId}/address/{addressId}/delete', 'Operations\ClientController@deleteAddress')->name('operations.users.profile.address.delete');
+            Route::get('users/profile/{userId}/orders/{orderId}', 'Operations\ClientController@viewOrders')->name('operations.users.profile.orders.view');
+            Route::resource('clients', 'Operations\ClientController',['names' => 'operations.users']);
+
+            //section driver
+            Route::get('drivers/map', 'Operations\DriverController@map')->name('operations.drivers.map');
+            Route::resource('drivers', 'Operations\DriverController',['names' => 'operations.drivers']);
+
+            // section order
+            Route::get('orders/show/coupon/{order_id}', 'Operations\OrderController@showCouponOrderFoods')->name('operations.orders.show-order-coupon');
+
+            Route::get('orders/edit/foods/{order_id}', 'Operations\OrderController@editOrderFoods')->name('operations.orders.edit-order-foods');
+            Route::get('orders/waitting-drivers', 'Operations\OrderController@ordersWaittingForDrivers')->name('operations.orders.waitting_drivers');
+            Route::get('orders/set-driver/{order_id}/{driver_id}', 'Operations\OrderController@setDriverForOrder');
+            Route::get('orders/statistics', 'Operations\OrderController@statistics')->name('operations.orders.statistics');
+            Route::resource('orders', 'Operations\OrderController',['names' => 'operations.orders']);
+
+            Route::delete('order/remove/delivery/coupon/{id}', 'Operations\OrderController@removeDeliveryCoupon')->name('operations.order.remove.delivery.coupon');
+            Route::delete('order/remove/restaurant/coupon/{id}', 'Operations\OrderController@removeRestaurantCoupon')->name('operations.order.remove.restaurant.coupon');
+        
+            //Restaurant
+            Route::get('restaurantProfile/{id}', 'Operations\RestaurantController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+            Route::get('restaurantProfile/{id}/users', 'Operations\RestaurantController@users')->name('operations.restaurant_profile.users');
+            Route::get('restaurantProfile/{id}/orders', 'Operations\RestaurantController@orders')->name('operations.restaurant_profile.order.index');
+            Route::get('restaurantProfile/{id}/note', 'Operations\RestaurantController@notes')->name('operations.restaurant_profile.note.index');
+            Route::get('restaurantProfile/{id}/note/create', 'Operations\RestaurantController@createNote')->name('operations.restaurant_profile.note.create');
+            Route::post('restaurantProfile/{id}/note/store', 'Operations\RestaurantController@storeNote')->name('operations.restaurant_profile.note.store');
+            Route::delete('restaurantProfile/{id}/note/{noteId}/destroy', 'Operations\RestaurantController@destroyNote')->name('operations.restaurant_profile.note.destroy');
+
+            //days time
+            Route::get('restaurantProfile/{id}/days', 'Operations\RestaurantController@days')->name('operations.restaurant_profile.days.index');
+            Route::get('restaurantProfile/{id}/days/{dayId}/edit', 'Operations\RestaurantController@daysEdit')->name('operations.restaurant_profile.days.edit');
+            Route::get('restaurantProfile/{id}/days/create', 'Operations\RestaurantController@daysCreate')->name('operations.restaurant_profile.days.create');
+            Route::post('restaurantProfile/{id}/days/store', 'Operations\RestaurantController@daysStore')->name('operations.restaurant_profile.days.store');
+            Route::post('restaurantProfile/{id}/days/{dayId}/edit', 'Operations\RestaurantController@daysUpdate')->name('operations.restaurant_profile.days.update');
+            Route::delete('restaurantProfile/{id}/days/{dayId}/delete', 'Operations\RestaurantController@daysDestroy')->name('operations.restaurant_profile.days.destroy');
+
+            Route::get('restaurantProfile/{id}/users/create/{userId?}', 'Operations\RestaurantController@usersCreate')->name('operations.restaurant_profile.users.create');
+            Route::post('restaurantProfile/{id}/users/store/{userId?}', 'Operations\RestaurantController@usersStore')->name('operations.restaurant_profile.users.store');
+            Route::delete('restaurantProfile/{id}/users/{userId}/destroy', 'Operations\RestaurantController@usersDestroy')->name('operations.restaurant_profile.users.destroy');
+            Route::get('restaurantProfile/review/{id}', 'Operations\RestaurantReviewController@indexByRestaurant')->name('operations.restaurant_review');
+            Route::get('restaurantProfile/{id}', 'Operations\RestaurantProfileController@editProfileRestaurant')->name('operations.restaurant_profile_edit');
+            Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
+            
+            Route::resource('restaurants', 'Operations\RestaurantController',['names' => 'operations.restaurants']);
+
+            Route::resource('restaurantReviews', 'Operations\RestaurantReviewController',['names' => 'operations.restaurantReviews']);
+
+            Route::get('restaurantFoodsindex/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsindex')->name('operations.restaurant.foods.index');
+            Route::get('restaurantFoods/create/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsCreate')->name('operations.restaurant.foods.create');
+            Route::post('restaurantFoods/store/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsStore')->name('operations.restaurant.foods.store');
+            Route::get('restaurantFoods/edit/{restaurant_id}/{food_id}', 'Operations\RestaurantProfileController@restaurantFoodsEdit')->name('operations.restaurant.foods.edit');
+            Route::put('restaurantFoods/update/{restaurant_id}/{food_id}', 'Operations\RestaurantProfileController@restaurantFoodsUpdate')->name('operations.restaurant.foods.update');
+            Route::delete('restaurantFoods/delete/{food_id}/{restaurant_id}', 'Operations\RestaurantProfileController@restaurantFoodsDelete')->name('operations.restaurant.foods.delete');
+            
+            Route::post('restaurantFoods/update', 'Operations\RestaurantProfileController@restaurantFoodUpdate')->name('operations.restaurant.food.update');
+
+            Route::post('extras/remove-media', 'Operations\ExtraController@removeMedia');
+
+            Route::resource('extras', 'Operations\ExtraController')->except([
+                'show'
+            ]);
+            Route::post('extras/remove-media', 'Operations\ExtraController@removeMedia');
+            Route::resource('extras', 'Operations\ExtraController',['names' => 'operations.extras']);
+            Route::get('extrasindex/{restaurant_id}', 'Operations\ExtraController@indexByRestaurant')->name('operations.restaurant.extra.index');
+            Route::get('extrascreate/{restaurant_id}', 'Operations\ExtraController@createByrestuarant')->name('operations.restaurant.extra.create');
+            Route::get('extrasedit/{id}/{restaurant_id}', 'Operations\ExtraController@editByRestuarant')->name('operations.restaurant.extra.edit');
+            
+            /*Merchant types*/
+            Route::resource('merchant_categories', 'Operations\MerchantCategoryController',['as' => 'operations']);
+            Route::resource('supermarkets', 'Operations\SupermarketController',['as' => 'operations']);
+
+            
+        });
+
 });
+
+
+Route::resource('days', 'DayController');

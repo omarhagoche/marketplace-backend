@@ -50,7 +50,9 @@ class ExtraDataTable extends DataTable
             ->editColumn('updated_at', function ($extra) {
                 return getDateColumn($extra, 'updated_at');
             })
-            ->addColumn('action', 'extras.datatables_actions')
+            ->addColumn('action', function ($extra) {
+                return view('operations.restaurantProfile.extras.datatables_actions',["id"=>$this->id,"extra" => $extra]);
+            })
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;
@@ -65,14 +67,14 @@ class ExtraDataTable extends DataTable
     {
         $columns = [
             [
-                'data' => 'name',
-                'title' => trans('lang.extra_name'),
-
-            ],
-            [
                 'data' => 'image',
                 'title' => trans('lang.extra_image'),
                 'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,
+            ],
+            [
+                'data' => 'name',
+                'title' => trans('lang.extra_name'),
+
             ],
             [
                 'data' => 'price',
@@ -84,15 +86,17 @@ class ExtraDataTable extends DataTable
             //    'title' => trans('lang.food'),
             //
             //],
-            [
-                'data' => 'restaurant.name',
-                'title' => trans('lang.restaurant'),
+            // [
+            //     'data' => 'restaurant.name',
+            //     'title' => trans('lang.restaurant'),
+            //     'searchable' => false
 
-            ],
+            // ],
             [
                 'data' => 'extra_group.name',
-                'name' => 'extraGroup.name',
+                'name' => 'Extra Group',
                 'title' => trans('lang.extra_group'),
+                
 
             ],
             [
@@ -104,7 +108,7 @@ class ExtraDataTable extends DataTable
 
         $hasCustomField = in_array(Extra::class, setting('custom_field_models', []));
         if ($hasCustomField) {
-            $customFieldsCollection = CustomField::where('custom_field_model', Extra::class)->where('in_table', '=', true)->get();
+            $customFieldsCollection = CustomField::where('custom_field_model', Extra::class)->where('in_table', '=', true)->where('restaurant_id',$this->id)->get();
             foreach ($customFieldsCollection as $key => $field) {
                 array_splice($columns, $field->order - 1, 0, [[
                     'data' => 'custom_fields.' . $field->name . '.view',
@@ -126,16 +130,17 @@ class ExtraDataTable extends DataTable
     public function query(Extra $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("restaurant")->with("extraGroup");
+            return $model->newQuery()->with("restaurant")->with("extraGroup")->where('restaurant_id',$this->id);
         } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()->with("restaurant")->with("extraGroup")
                 ->join("restaurants", "extras.restaurant_id", "=", "restaurants.id")
                 ->join("user_restaurants", "foods.restaurant_id", "=", "user_restaurants.restaurant_id")
                 ->where('user_restaurants.user_id', auth()->id())
+                ->where('restaurant_id',$this->id)
                 ->groupBy("extras.id")
                 ->select('extras.*');
         } else {
-            return $model->newQuery()->with("restaurant")->with("extraGroup");
+            return $model->newQuery()->with("restaurant")->with("extraGroup")->where('restaurant_id',$this->id);
         }
     }
 
@@ -158,7 +163,25 @@ class ExtraDataTable extends DataTable
                             base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
                         ),
                         true
-                    )
+                    ),
+                    'initComplete' => 'function () {
+                        var columns = this.api().init().columns;
+                        this.api().columns().every(function (index) {
+                          var column = this;
+                          var input = document.createElement("input");
+                          input.setAttribute("style","width:150px;")
+                          input.classList.add("form-control")
+                          input.placeholder = columns[index]["name"]
+                          console.log(columns[index]["name"])
+                          if(columns[index].searchable){
+                          $(input).
+                            appendTo($(column.footer()).empty()).
+                            on(\'change\', function () {
+                              column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                        });
+                      }'
                 ]
             ));
     }

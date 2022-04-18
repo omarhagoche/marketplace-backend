@@ -9,19 +9,20 @@
 namespace App\Http\Controllers\API\Manager;
 
 
-use App\Criteria\Restaurants\NearCriteria;
-use App\Criteria\Restaurants\RestaurantsOfManagerCriteria;
-use App\Http\Controllers\Controller;
-use App\Models\Restaurant;
-use App\Repositories\CustomFieldRepository;
-use App\Repositories\RestaurantRepository;
-use App\Repositories\UploadRepository;
 use Flash;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Repositories\UploadRepository;
+use App\Criteria\Restaurants\NearCriteria;
+use App\Repositories\RestaurantRepository;
+use App\Repositories\CustomFieldRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use Prettus\Repository\Exceptions\RepositoryException;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Prettus\Repository\Exceptions\RepositoryException;
+use App\Criteria\Restaurants\RestaurantsOfManagerCriteria;
 
 /**
  * Class RestaurantController
@@ -199,5 +200,93 @@ class RestaurantAPIController extends Controller
         $restaurant = $this->restaurantRepository->delete($id);
 
         return $this->sendResponse($restaurant,__('lang.deleted_successfully', ['operator' => __('lang.restaurant')]));
+    }
+
+                            /* THIS ROUTE FOR ADD DAY TO RESTAURANT  */
+
+    public function days($id)
+    {
+        $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        if (empty($restaurant)) {
+            return $this->sendError('Restaurants Not found !!');
+
+        }
+        return $this->sendResponse($restaurant->days->toArray(), 'Restaurants retrieved successfully');
+
+    }
+    public function daysStore(Request $request,$restaurantId)
+    {
+        $this->validate($request, [
+            'day_id' => 'required',
+            'close_at' => 'required',
+            'open_at' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                if (empty($restaurant)) {
+                    return $this->sendError('Restaurants Not found !!');
+        
+                }
+                $restaurant->days()->detach($request->day_id); 
+                $restaurant->days()->attach($request->day_id,[
+                    'open_at'=>$request->open_at,
+                    'close_at'=>$request->close_at,
+                ]); 
+
+            DB::commit();
+
+            return $this->sendResponse($restaurant->days->toArray(), 'Day save on restaurants successfully');
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $this->sendError($th->getMessage());
+
+        }
+    }
+
+    public function daysUpdate(Request $request,$restaurantId,$dayId)
+    {
+        $this->validate($request, [
+            'close_at' => 'required',
+            'open_at' => 'required',
+        ]);
+      
+        try {
+            DB::beginTransaction();
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                $restaurant->days()->updateExistingPivot([$dayId],[
+                    'open_at'=>$request->open_at,
+                    'close_at'=>$request->close_at,
+                ],false);
+
+            DB::commit();
+            return $this->sendResponse($restaurant->days->toArray(), 'Day update on restaurants successfully');
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $this->sendError($th->getMessage());
+
+        }
+    }
+
+
+    public function daysDestroy($restaurantId,$dayId)
+    {   
+        try {
+            DB::beginTransaction();
+                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+                $restaurant->days()
+                ->detach($dayId);
+            DB::commit();
+            return $this->sendResponse($restaurant->days->toArray(), 'Day delete from restaurants successfully');
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $this->sendError($th->getMessage());
+
+        }
     }
 }

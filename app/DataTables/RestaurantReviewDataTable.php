@@ -15,6 +15,8 @@ use App\Models\CustomField;
 use App\Models\RestaurantReview;
 use App\Repositories\RestaurantReviewRepository;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route as FacadesRoute;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 
@@ -59,13 +61,14 @@ class RestaurantReviewDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            ->editColumn('updated_at', function ($restaurant_review) {
-                return getDateColumn($restaurant_review, 'updated_at');
-            })->addColumn('action', function ($restaurant_review) {
-                return view('restaurant_reviews.datatables_actions', ['id' => $restaurant_review->id, 'myReviews' => $this->myReviews])->render();
-            })
-            ->rawColumns(array_merge($columns, ['action']));
-
+        ->editColumn('updated_at', function ($restaurant_review) {
+            return getDateColumn($restaurant_review, 'updated_at');
+        })
+        ->rawColumns(array_merge($columns, ['action']))
+        ->addColumn('action', function ($restaurant_review) {
+            return view('restaurant_reviews.datatables_actions', ['id' => $restaurant_review->id, 'myReviews' => $this->myReviews])->render();
+        });
+        
         return $dataTable;
     }
 
@@ -79,6 +82,9 @@ class RestaurantReviewDataTable extends DataTable
     public function query(RestaurantReview $model)
     {
         $this->restaurantReviewRepo->pushCriteria(new OrderRestaurantReviewsOfUserCriteria(auth()->id()));
+        if(FacadesRoute::currentRouteName() == "operations.restaurant_review"){
+            return $this->restaurantReviewRepo->where("restaurant_id",$this->id)->with("user")->with("restaurant")->newQuery();
+        }
         return $this->restaurantReviewRepo->with("user")->with("restaurant")->newQuery();
 
     }
@@ -126,14 +132,14 @@ class RestaurantReviewDataTable extends DataTable
                 'title' => trans('lang.restaurant_review_user_id'),
 
             ],
-            [
-                'data' => 'restaurant.name',
-                'title' => trans('lang.restaurant_review_restaurant_id'),
+            // [
+            //     'data' => 'restaurant.name',
+            //     'title' => trans('lang.restaurant_review_restaurant_id'),
 
-            ],
+            // ],
             [
-                'data' => 'updated_at',
-                'title' => trans('lang.restaurant_review_updated_at'),
+                'data' => 'created_at',
+                'title' => trans('lang.created_at'),
                 'searchable' => false,
             ]
         ];

@@ -17,6 +17,17 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+$auth = "apiToken";
+
+if (request()->segment(2) == 'v2') { // if request for starts with V2 , set "api:JWT guard" as default guard
+    auth()->shouldUse('apiJwt');
+	$auth = "apiJwt";
+}
+
+$apiRoutes = function()use($auth) {
+
+
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
@@ -79,7 +90,8 @@ Route::resource('slides', 'API\SlideAPIController')->except([
     'show'
 ]);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware("auth:$auth")->group(function () {
+    Route::post('uploads/store', 'UploadController@store')->name('medias.create');
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {
             Route::post('orders/delivery/{id}', 'API\OrderAPIController@delivery');
@@ -99,6 +111,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::group(['middleware' => ['role:manager']], function () {
         Route::prefix('manager')->group(function () {
+            Route::get('orders/booking', 'API\OrderAPIController@booking');
             Route::get('profile', 'API\Manager\UserAPIController@profile');
             Route::get('users/get', 'API\Manager\UserAPIController@getUsers');
             Route::post('users/add', 'API\Manager\UserAPIController@addUser');
@@ -112,6 +125,16 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('faqs', 'API\FaqAPIController');
             Route::get('statistics', 'API\Manager\StatisticAPIController@index');
             Route::apiResource('foods', 'API\Manager\FoodAPIController')->except(['destroy']);
+            Route::get('days', 'API\DayAPIController@index');
+            
+                            /* THIS ROUTE FOR ADD DAY TO RESTAURANT  */
+            Route::get('profile/{id}/days', 'API\Manager\RestaurantAPIController@days');
+            Route::post('profile/{id}/days/store', 'API\Manager\RestaurantAPIController@daysStore');
+            Route::post('profile/{id}/days/{dayId}/update', 'API\Manager\RestaurantAPIController@daysUpdate');
+            Route::delete('profile/{id}/days/{dayId}/delete', 'API\Manager\RestaurantAPIController@daysDestroy');
+
+            
+
         });
     });
     Route::post('users/change_password/{id?}', 'API\UserAPIController@updatePassword');
@@ -151,4 +174,13 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::post('logout', 'API\UserAPIController@logout');
+// this api for save note for user 
+    Route::post('user/note', 'API\NoteController@store');
+
 });
+
+};
+
+Route::group(['prefix' => 'v2'],$apiRoutes);
+Route::group([],$apiRoutes);
+

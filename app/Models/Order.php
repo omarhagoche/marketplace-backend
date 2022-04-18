@@ -38,13 +38,12 @@ use App\Events\UpdatedOrderEvent;
  * @property string hint
  * @property string reason
  * @property boolean for_restaurants
+ * @property datetime delivery_datetime
  */
 class Order extends Model
 {
 
     public $table = 'orders';
-
-
 
     public $fillable = [
         'user_id',
@@ -65,6 +64,7 @@ class Order extends Model
         'processing_time',
         'active',
         'driver_id',
+        'delivery_datetime',
     ];
 
     /**
@@ -92,6 +92,7 @@ class Order extends Model
         'processing_time' => 'double',
         'active' => 'boolean',
         'driver_id' => 'integer',
+        'delivery_datetime' => 'datetime',
     ];
 
     /**
@@ -106,6 +107,7 @@ class Order extends Model
         'delivery_coupon_id' => 'exists:coupons,id',
         'restaurant_coupon_id' => 'exists:coupons,id',
         'driver_id' => 'nullable|exists:users,id',
+        'delivery_datetime' => 'nullable|date|after_or_equal:now',
     ];
 
     /**
@@ -127,6 +129,7 @@ class Order extends Model
     protected $dispatchesEvents = [
         'updated' => UpdatedOrderEvent::class,
     ];
+
     public function customFieldsValues()
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
@@ -146,6 +149,10 @@ class Order extends Model
         return convertToAssoc($array, 'name');
     }
 
+    public function getDeliveryDatetimeAttribute()
+    {
+        return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime'] : 'Immediate delivery';
+    }
 
     /**
      * 
@@ -170,6 +177,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+    }
+
+    public function userName()
+    {
+        return $this->user ? $this->user->name : '';
     }
 
     /**
@@ -206,6 +218,14 @@ class Order extends Model
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
 
+    /**
+     * return name of restaurant
+     * @return string
+     **/
+    public function restaurantName()
+    {
+        return $this->restaurant ? $this->restaurant->name : "";
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -262,7 +282,26 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Coupon::class, 'restaurant_coupon_id', 'id');
     }
+    public function coupons()
+    {
 
+        $this->deliveryCoupon()->exists() ? $data[] = $this->setDataForCoupon('delivery', 'deliveryCoupon') : '';
+
+        $this->restaurantCoupon()->exists() ? $data[] = $this->setDataForCoupon('restaurant', 'restaurantCoupon') : '';
+        return isset($data) ? $data : null;
+    }
+
+    public function setDataForCoupon($for, $relations)
+    {
+        $value = $for . '_coupon_value';
+        return [
+            'code' => $this->$relations->code,
+            'value' => $this->$value,
+            'date' => $this->created_at->calendar(),
+            'for' => $for
+        ];
+    }
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -306,5 +345,27 @@ class Order extends Model
         };
 
         return $this->getOriginal('order_status_id') >= 100; // 100+ : canceled
+    }
+
+    public function calculateOrderTotal()
+    {
+        $subtotal = 0;
+        $taxAmount = 0;
+        foreach ($this->foodOrders as $foodOrder) {
+            foreach ($foodOrder->extras as $extra) {
+                $foodOrder->price += $extra->price;
+            }
+            $subtotal += $foodOrder->price * $foodOrder->quantity;
+        }
+
+        $total = $subtotal + $this['delivery_fee'];
+        $taxAmount = $total * $this['tax'] / 100;
+        $total += $taxAmount - $this->delivery_coupon_value - $this->restaurant_coupon_value;
+        return ["total" => round($total, 2), "taxAmount" => $taxAmount, "order" => $this, "subtotal" => $subtotal];
+    }
+
+    public function getDeliveryFee()
+    {
+        return $this->delivery_fee;
     }
 }

@@ -55,11 +55,17 @@ class UserAPIController extends Controller
                     $q->where("name", "driver");
                 })->first();
                 if ($u) {
-                    return $this->sendResponse($u, 'User retrieved successfully');
+                    return $this->sendResponse(
+                        [
+                            'token' => auth()->tokenById($u->id),
+                            'user' => $u,
+                        ],
+                        'User retrieved successfully'
+                    );
                 }
             }
 
-            if (auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
+            if ($token = auth()->attempt(['phone_number' => $request->input('phone_number'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
                 if (!$user->activated_at) {
@@ -75,7 +81,11 @@ class UserAPIController extends Controller
                     $user->setDeviceToken();
                 }
                 $user->load('driver');
-                return $this->sendResponse($user, 'User retrieved successfully');
+
+                return $this->sendResponse([
+                    'token' => $token,
+                    'user' => $user,
+                ], 'User retrieved successfully');
             }
             return $this->sendError(trans('auth.failed'), 422);
         } catch (\Exception $e) {
@@ -101,7 +111,8 @@ class UserAPIController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
+						            $user->api_token =  str_random(60);
+
             $user->save();
 
             if ($request->has('device_token')) {
@@ -121,27 +132,23 @@ class UserAPIController extends Controller
 
     function logout(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
-        if (!$user) {
-            return $this->sendError('User not found', 401);
-        }
-        try {
-            auth()->logout();
-        } catch (\Exception $e) {
-            $this->sendError($e->getMessage(), 401);
-        }
-        return $this->sendResponse($user['name'], 'User logout successfully');
+        $user = auth()->user();
+        return $this->sendResponse($user->name, 'User logout successfully');
     }
 
-    function user(Request $request)
+   function user(Request $request)
     {
-        $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
+        if(auth()->guard('apiToken')->check())
+        {
+            $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
 
-        if (!$user) {
-            return $this->sendError('User not found', 401);
+            if (!$user) {
+                return $this->sendError('User not found', 401);
+            }
+
+            return $this->sendResponse($user, 'User retrieved successfully');
         }
-
-        return $this->sendResponse($user, 'User retrieved successfully');
+        return $this->sendResponse(auth()->user(), 'User retrieved successfully');
     }
 
     function settings(Request $request)

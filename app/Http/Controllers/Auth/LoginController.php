@@ -97,6 +97,14 @@ class LoginController extends Controller
         return redirect(route('users.profile'));
     }
 
+    protected function authenticated(Request $request, $user)
+    {
+        // dd(auth()->user()->hasRole('operations'));
+        if (auth()->user()->hasRole('operations')) {
+            return redirect('/operations');
+        } 
+    }
+
     /**
      * Log the user out of the application.
      * We override logout method to remove device_token of logged user , to skip send notifications to user after he logged out  

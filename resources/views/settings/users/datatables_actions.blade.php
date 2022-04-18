@@ -13,7 +13,6 @@
     'onclick' => "swal({title: ".trans('lang.error').", confirmButtonText: ".trans('lang.ok').",
                             text: data.message,type: 'error', confirmButtonClass: 'btn-danger'});"
     ]) !!}
-
     <div class="dropdown">
         <a class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-cog"></i> </a>
