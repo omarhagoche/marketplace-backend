@@ -326,7 +326,13 @@ Route::middleware('auth')->group(function () {
             
             /*Merchant types*/
             Route::resource('merchant_categories', 'Operations\MerchantCategoryController',['as' => 'operations']);
+
+            /**Supermarket and supermarket products routes */
+            Route::get('supermarkets/associate-products', 'Operations\SupermarketController@associateProductsForm')->name('operations.supermarkets.products.associate');
             Route::resource('supermarkets', 'Operations\SupermarketController',['as' => 'operations']);
+            Route::get('supermarkets/{id}/products', 'Operations\SupermarketController@productIndex')->name('operations.supermarkets.products.index');
+            Route::get('supermarkets/{id}/products/create', 'Operations\SupermarketController@productCreate')->name('operations.supermarkets.products.create');
+            Route::post('supermarkets/{id}/products', 'Operations\SupermarketController@productStore')->name('operations.supermarkets.products.store');
 
             
         });
