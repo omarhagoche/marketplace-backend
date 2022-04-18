@@ -244,7 +244,7 @@
         <div class="checkbox icheck">
             <label class="col-9 form-check-inline">
                 {!! Form::hidden('closed', 0) !!}
-                {!! Form::checkbox('closed', 1, null) !!}
+                {!! Form::checkbox('closed', 1, (isset($restaurant) ? $restaurant->closed : null)) !!}
             </label>
         </div>
         {!! Form::label('closed', trans('lang.restaurant_closed'), ['class' => 'col-8 control-label']) !!}
