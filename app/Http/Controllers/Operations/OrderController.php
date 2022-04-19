@@ -276,6 +276,8 @@ class OrderController extends Controller
         } else {
             $driver = $this->userRepository->pushCriteria(new DriversCriteria());
         }
+
+        
         $driver = $driver->select('users.name', 'users.id')->pluck('name', 'id');
         // we add empty value to top of drivers collection to show it user when driver not set (instead of show first item as selected driver but real value is null)
         $driver->prepend(null, "");
@@ -290,7 +292,8 @@ class OrderController extends Controller
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        $userAddresses = DeliveryAddress::where('user_id',$order->user->id)->pluck('address','id');
+        $user_id=$order->user?$order->user->id : $order->unregistered_customer_id;
+        $userAddresses = DeliveryAddress::where('user_id',$user_id)->pluck('address','id');
         return view('operations.orders.edit')->with('userAddresses', $userAddresses)->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
     }
 
@@ -312,7 +315,6 @@ class OrderController extends Controller
             return redirect(route('operations.orders.index'));
         }
         $oldStatus = $oldOrder->payment->status;
-
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         try {

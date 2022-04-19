@@ -3,30 +3,15 @@
 namespace App\Http\Controllers\Operations;
 
 use Flash;
-use App\Models\Day;
-use App\Models\Food;
-use App\Models\{User,Restaurant};
-use App\Models\Extra;
-use App\Models\ExtraFood;
-use App\Models\ExtraGroup;
-use App\Rules\PhoneNumber;
-use Illuminate\Http\Request;
-use App\DataTables\UserDataTable;
-use Illuminate\Support\Facades\DB;
-use App\Repositories\DayRepository;
+use App\Models\{Day, Food, User, Restaurant};
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
-use App\Criteria\Users\DriversCriteria;
-use App\Repositories\CuisineRepository;
-use App\Criteria\Users\ManagersCriteria;
-use App\Http\Requests\{CreateRestaurantRequest,UpdateRestaurantRequest};
+use App\Criteria\Users\{DriversCriteria, ManagersCriteria};
+use App\Criteria\Foods\DistinctSupermarketProductsCriteria;
+use App\Http\Requests\{CreateRestaurantRequest, UpdateRestaurantRequest};
 use App\Events\RestaurantChangedEvent;
-use App\Repositories\{FoodRepository,NoteRepository,RoleRepository, UserRepository,ExtraRepository};
-use App\Repositories\{UploadRepository,CategoryRepository,ExtraGroupRepository, RestaurantRepository,CustomFieldRepository};
-use App\DataTables\Operations\DayDataTable;
-use App\Criteria\Users\ManagersClientsCriteria;
+use App\Repositories\{DayRepository, FoodRepository, NoteRepository, RoleRepository, UserRepository, ExtraRepository};
+use App\Repositories\{UploadRepository, CategoryRepository, ExtraGroupRepository, RestaurantRepository, CustomFieldRepository};
 use App\DataTables\Operations\SupermarketDataTable;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
 
@@ -49,10 +34,6 @@ class SupermarketController extends Controller
      * @var UserRepository
      */
     private $userRepository;
-    /**
-     * @var CuisineRepository
-     */
-    private $cuisineRepository;
 
     /**
      * @var FoodRepository
@@ -64,19 +45,9 @@ class SupermarketController extends Controller
      */
     private $categoryRepository;
 
-    /**
-     * @var ExtraGroupRepository
-     */
-    private $extraGroupRepository;
-    /**
-     * @var ExtraRepository
-     */
-    private $extraRepository;
-    private $noteRepository;
-    private $dayRepository;
 
 
-    public function __construct(DayRepository $dayRepo, NoteRepository $noteRepo, ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository, RoleRepository $roleRepository, RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    public function __construct(DayRepository $dayRepo, NoteRepository $noteRepo, ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository, RoleRepository $roleRepository, RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -84,7 +55,6 @@ class SupermarketController extends Controller
         $this->customFieldRepository = $customFieldRepo;
         $this->uploadRepository = $uploadRepo;
         $this->userRepository = $userRepo;
-        $this->cuisineRepository = $cuisineRepository;
         $this->foodRepository = $foodRepository;
         $this->categoryRepository = $categoryRepository;
         $this->extraGroupRepository = $extraGroupRepository;
@@ -201,7 +171,7 @@ class SupermarketController extends Controller
     }
 
     public function edit($id)
-    { 
+    {
         $supermarket = $this->restaurantRepository->find($id);
 
         if (empty($supermarket)) {
@@ -220,13 +190,13 @@ class SupermarketController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
         return view('operations.supermarkets.edit')
-        ->with('driversSelected', $driversSelected)
-        ->with('usersSelected', $usersSelected)
-        ->with('id', $id)
-        ->with('drivers', $drivers)
-        ->with('users', $users)
-        ->with('supermarket', $supermarket)
-        ->with("customFields", isset($html) ? $html : false);
+            ->with('driversSelected', $driversSelected)
+            ->with('usersSelected', $usersSelected)
+            ->with('id', $id)
+            ->with('drivers', $drivers)
+            ->with('users', $users)
+            ->with('supermarket', $supermarket)
+            ->with("customFields", isset($html) ? $html : false);
     }
     /**
      * Update the specified resource in storage.
@@ -235,9 +205,8 @@ class SupermarketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRestaurantRequest $request,$id)
+    public function update(UpdateRestaurantRequest $request, $id)
     {
-        // dd($request->all());
         $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $oldSupermarket = $this->restaurantRepository->findWithoutFail($id);
         if (empty($oldSupermarket)) {
@@ -245,12 +214,12 @@ class SupermarketController extends Controller
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
-        array_push($input['users'], ...$input['drivers']);//thhis line for push drivers ids with users 
+        array_push($input['users'], ...$input['drivers']); //this line for push drivers ids with users 
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
 
             $supermarket = $this->restaurantRepository->update($input, $id);
-            $input['users']?$supermarket->users()->sync($input['users']):'';//Assigning users to the restaurant
+            $input['users'] ? $supermarket->users()->sync($input['users']) : ''; //Assigning users to the restaurant
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
@@ -278,5 +247,54 @@ class SupermarketController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {}
+    {
+    }
+
+    /* Get associate products form */
+    public function associateProductsForm()
+    {
+        $products = $this->foodRepository->pushCriteria(new DistinctSupermarketProductsCriteria())->all();
+        $supermaket = $this->restaurantRepository->all();
+    }
+
+    /* associate products to the supermarket */
+    public function associateProducts()
+    {
+    }
+
+    public function productIndex($id)
+    {
+        $supermarket = $this->restaurantRepository->supermarketWithProducts($id);
+        $categories = $this->categoryRepository->pluck('name', 'id');
+        return view('operations.supermarkets.products.index', compact('id', 'supermarket', 'categories'));
+    }
+
+    public function productCreate($id)
+    {
+        $category = $this->categoryRepository->pluck('name', 'id');
+        $supermarket = $this->restaurantRepository->findWithoutFail($id);
+        return view('operations.supermarkets.products.create', compact('id', 'supermarket', 'category'));
+    }
+
+    public function productStore($id)
+    {
+        try {
+            DB::beginTransaction();
+            $productData = request()->all();
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
+            $product = $this->foodRepository->create($productData);
+            $product->customFieldsValues()->createMany(getCustomFieldsValues($customFields, request()));
+            if (isset($productData['image']) && $productData['image']) {
+                $cacheUpload = $this->uploadRepository->getByUuid($productData['image']);
+                $mediaItem = $cacheUpload->getMedia('image')->first();
+                $mediaItem->copy($product, 'image');
+            }
+            DB::commit();
+        } catch (ValidatorException $e) {
+            DB::rollback();
+            Flash::error($e->getMessage());
+        }
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.product')]));
+        return redirect(route('operations.supermarket.products.create', $id));
+    }
 }

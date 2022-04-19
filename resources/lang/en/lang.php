@@ -1485,7 +1485,11 @@ return [
     'available_for_delivery' => 'Available for delivery',
     'restaurant_featured' => 'Featured restaurant',
     'restaurant_closed' => 'Closed restaurant',
-    
-
-
+    'product'=>'Product',
+    'product_table'=>'Product List',
+    'product_create'=>'Product Create',
+    'expiry_date'=>'Expiry Date',
+    'barcode'=>'Barcode',
+    'supermarket_products'=>'Supermarket Products',
+    'product_edit'=>'Product edit'
 ];
