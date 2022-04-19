@@ -149,10 +149,10 @@ class Order extends Model
         return convertToAssoc($array, 'name');
     }
 
-    public function getDeliveryDatetimeAttribute()
-    {
-        return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime'] : 'Immediate delivery';
-    }
+    // public function getDeliveryDatetimeAttribute()
+    // {
+    //     return $this->attributes['delivery_datetime'] ? $this->attributes['delivery_datetime'] : 'Immediate delivery';
+    // }
 
     /**
      * 
