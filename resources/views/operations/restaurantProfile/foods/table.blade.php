@@ -20,15 +20,15 @@
             </tr> --}}
             <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>price</th>
-                <th>discount price</th>
+                <th  width="20%">Name</th>
+                <th>Price</th>
+                <th>Discount price</th>
                 {{-- <th>package count</th> --}}
-                <th>category</th>
+                <th width="20%">category</th>
                 <th hidden>categoryname</th>
-                <th>available</th>
-                <th>update</th>
-                <th>actions</th>
+                <th>Available</th>
+                <th>Update</th>
+                <th>Actions</th>
             </tr>
             
         </thead>
@@ -39,7 +39,7 @@
                 <td>{{$food->id}}</td>
                 <td>
                     <div style="visibility: hidden; font-size: 2px;">{{$food->name}}</div>
-                    <input style="min-width:193px;" type="text" value="{{$food->name}}" id="name{{$food->id}}" class="form-control">
+                    <input type="text" value="{{$food->name}}" id="name{{$food->id}}" class="form-control">
                 </td>
                 <td>
                     <div style="visibility: hidden; font-size: 2px;">{{$food->price}}</div>

@@ -320,4 +320,13 @@ class Food extends Model implements HasMedia
     {
         return $this->hasMany(\App\Models\ExtraFood::class, 'food_id')->orderBy('id','desc');
     }
+
+
+    /**
+     * To store extra information for products that are not found in the food table
+     */
+    public function productInfo()
+    {
+        return $this->hasOne(\App\Models\ProductInfo::class);
+    }
 }
