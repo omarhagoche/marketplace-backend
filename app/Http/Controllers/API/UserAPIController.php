@@ -151,8 +151,8 @@ class UserAPIController extends Controller
     function registerDriver(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required|string|min:64|max:256',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:25600',
+            'token' => 'string|min:64|max:256',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:25600',
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|max:32',
