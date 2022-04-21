@@ -1,5 +1,5 @@
 
-<input type="hidden" name="restaurant_id" value="{{$restaurant->id}}">
+{{-- <input type="hidden" name="restaurant_id" value="{{$restaurant->id}}"> --}}
 
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
     <!-- Name Field -->
@@ -93,43 +93,16 @@
             </div>
         </div>
     </div>
-{{-- {{dd($food->time_hour,$food->time_day)}} --}}
-    <!-- Food Type Field -->
-    <div class="form-group row ">
-        {!! Form::label('type', trans("lang.food_time_taken"),['class' => 'col-3 control-label ']) !!}
-        <div class="col-4">
-            {{ Form::number('time_day',null, ['min'=>0,'max'=>40 ,'class' => 'form-control']) }} 
-            <div class="form-text text-muted">{{ trans("lang.food_time_taken_day_help") }}</div>
-        </div>
-        <div class="col-4">
-            {{ Form::number('time_hour',null, ['min'=>0,'max'=>24 ,'class' => 'form-control']) }} 
-            <div class="form-text text-muted">{{ trans("lang.food_time_taken_hour_help") }}</div>
-        </div>
-    </div>
-     <!-- Food Type Field -->
-     <div class="form-group row ">
-        {!! Form::label('type', trans("lang.food_type"),['class' => 'col-3 control-label ']) !!}
-        <div class="col-9">
-            {!! Form::select('type',['fast'=>'fast','booking'=>'booking'],null, ['class' => 'select2 form-control']) !!}
-            <div class="form-text text-muted">{{ trans("lang.food_type_help") }}</div>
-        </div>
-    </div>      
+
     <!-- Category Id Field -->
     <div class="form-group row ">
-        {!! Form::label('category_id', trans("lang.food_category_id"),['class' => 'col-3 control-label ']) !!}
-        <div class="col-9">
+        {!! Form::label('category_id', trans("lang.food_category_id"),['class' => 'col-12 col-md-3 control-label ']) !!}
+        <div class="col--md-9 col-12">
             {!! Form::select('category_id', $category, null, ['class' => 'select2 form-control']) !!}
             <div class="form-text text-muted">{{ trans("lang.food_category_id_help") }}</div>
         </div>
     </div>
     
-    <div class="form-group row ">
-        {!! Form::label('extras[]', trans("lang.extra"),['class' => 'col-3 control-label ']) !!}
-        <div class="col-9">
-            {!! Form::select('extras[]', $extra, null, ['class' => 'select2 form-control', 'multiple'=>'multiple']) !!}
-            <div class="form-text text-muted">{{ trans("lang.food_category_id_help") }}</div>
-        </div>
-    </div>
                <!-- 'Boolean (Featured | available | deliverable) Fields' -->
      <div class="form-group row ">
         {!! Form::label('featured', trans("lang.food_featured"),['class' => 'col-8 mt-2 control-label ']) !!}
@@ -161,8 +134,8 @@
            
             <!-- Description Field -->
     <div class="form-group row ">
-        {!! Form::label('description', trans("lang.food_description"), ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
+        {!! Form::label('description', trans("lang.food_description"), ['class' => 'col-12 col-md-3 control-label text-right']) !!}
+        <div class="col-md-9 col-md-9">
             {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
              trans("lang.food_description_placeholder")  ]) !!}
             <div class="form-text text-muted">{{ trans("lang.food_description_help") }}</div>
@@ -181,9 +154,11 @@
 
 
 </div>
-<div style="flex: 100%;padding: 0 4px;" class="column">
+</div>
+<div class="row">
+    <div class="col-12">
     <div class="card collapsed-card">
-        <div class="card-header">
+        <div class="card-header" >
             <h3 class="card-title">{{trans('lang.details')}}</h3>
     
             <div class="card-tools">
@@ -191,19 +166,31 @@
                 </button>
             </div>
         </div>
-        <div class="card-body p-0 mt-4 px-3">
+        <div class="card-body p-0 mt-4">
+
+            <div class="form-group row mx-3">
+                {!! Form::label('expiry_date', trans("lang.expiry_date"), ['class' => 'col-12 col-md-2 control-label ']) !!}
+                <div class="col-12 col-md-4">
+                    {!! Form::date('expiry_date', null,  ['class' => 'form-control','placeholder'=>  trans("lang.expiry_date_placeholder")]) !!}
+                </div>
+                {!! Form::label('barcode', trans("lang.barcode"), ['class' => 'col-12 col-md-2 control-label ']) !!}
+                <div class="col-12 col-md-4">
+                    {!! Form::text('barcode', null,  ['class' => 'form-control','placeholder'=>  trans("lang.barcode_placeholder")]) !!}
+                </div>
+            </div>
+
              <!-- unit Field -->
-             <div class="form-group row ">
-                {!! Form::label('unit', trans("lang.food_unit"), ['class' => 'col-6 col-md-2 control-label' ]) !!}
-                <div class="col-6 col-md-4">
+             <div class="form-group row mx-3 ">
+                {!! Form::label('unit', trans("lang.food_unit"), ['class' => 'col-12 col-md-2 control-label' ]) !!}
+                <div class="col-md-4 col-12">
                     {!! Form::text('unit', null,  ['class' => 'form-control','placeholder'=>  trans("lang.food_unit_placeholder")]) !!}
                     <div class="form-text text-muted">
                         {{ trans("lang.food_unit_help") }}
                     </div>
                 </div>
                 <!-- Weight Field -->
-                    {!! Form::label('weight', trans("lang.food_weight"), ['style' => 'max-width: 100%;','class' => 'col-6 col-md-1 control-label']) !!}
-                    <div class="col-6 col-md-5">
+                    {!! Form::label('weight', trans("lang.food_weight"), ['class' => 'col-12 col-md-2 control-label ']) !!}
+                    <div class="col-md-4 col-12">
                         {!! Form::number('weight', null,  ['class' => 'form-control','placeholder'=>  trans("lang.food_weight_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
                         <div class="form-text text-muted">
                             {{ trans("lang.food_weight_help") }}
@@ -213,8 +200,8 @@
         
             <!-- package_items_count Field -->
             <div class="form-group row ">
-                {!! Form::label('package_items_count', trans("lang.food_package_items_count"), ['class' => 'col-6 col-md-2 control-label ']) !!}
-                <div class="col-6 col-md-4" >
+                {!! Form::label('package_items_count', trans("lang.food_package_items_count"), ['class' => 'col-3 control-label']) !!}
+                <div class="col-8" style="max-width: 61%;">
                     {!! Form::number('package_items_count', null,  ['class' => 'form-control','placeholder'=>  trans("lang.food_package_items_count_placeholder"),'step'=>"any", 'min'=>"0"]) !!}
                     <div class="form-text text-muted">
                         {{ trans("lang.food_package_items_count_help") }}
@@ -223,6 +210,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Submit Field -->

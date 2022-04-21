@@ -33,7 +33,7 @@
     </a>
 </li> --}}
 
-@can('operations.supermarkets.index')
+{{-- @can('operations.supermarkets.index')
 
 <li class="nav-item {{ request()->routeIs('supermarket*') ||request()->routeIs('operations.supermarket*') ? 'menu-open': '' }}">
 
@@ -46,7 +46,7 @@
             {{ trans('lang.supermarket_plural') }}</p>
     </a>
 </li>
-@endcan
+@endcan --}}
 @can('operations.restaurant_profile.index')
     <li
         class="nav-item {{ request()->routeIs('restaurant*') ||request()->routeIs('operations.restaurant*') ||Request::is('requestedRestaurants*') ||Request::is('galleries*') ||Request::is('restaurantReviews*')? 'menu-open': '' }}">

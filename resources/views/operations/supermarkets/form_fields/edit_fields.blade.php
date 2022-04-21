@@ -6,63 +6,63 @@
         </div>
         <!-- Name Field -->
         <div class="form-group row mt-4 ">
-            {!! Form::label('name', trans('lang.restaurant_name'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('name', trans('lang.name'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('lang.restaurant_name_placeholder')]) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('lang.name_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_name_help') }}
+                    {{ trans('lang.name_help') }}
                 </div>
             </div>
         </div>
         <!-- Phone Field -->
         <div class="form-group row ">
-            {!! Form::label('phone', trans('lang.restaurant_phone'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('phone', trans('lang.phone'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('phone', null, ['class' => 'form-control', 'placeholder' => trans('lang.restaurant_phone_placeholder')]) !!}
+                {!! Form::text('phone', null, ['class' => 'form-control', 'placeholder' => trans('lang.phone_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_phone_help') }}
+                    {{ trans('lang.phone_help') }}
                 </div>
             </div>
         </div>
         <!-- Mobile Field -->
         <div class="form-group row ">
-            {!! Form::label('mobile', trans('lang.restaurant_mobile'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('mobile', trans('lang.mobile'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('mobile', null, ['class' => 'form-control', 'placeholder' => trans('lang.restaurant_mobile_placeholder')]) !!}
+                {!! Form::text('mobile', null, ['class' => 'form-control', 'placeholder' => trans('lang.mobile_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_mobile_help') }}
+                    {{ trans('lang.mobile_help') }}
                 </div>
             </div>
         </div>
         <!-- Address Field -->
         <div class="form-group row ">
-            {!! Form::label('address', trans('lang.restaurant_address'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('address', trans('lang.address'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('address', null, ['class' => 'form-control', 'placeholder' => trans('lang.restaurant_address_placeholder')]) !!}
+                {!! Form::text('address', null, ['class' => 'form-control', 'placeholder' => trans('lang.address_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_address_help') }}
+                    {{ trans('lang.address_help') }}
                 </div>
             </div>
         </div>
 
         <!-- Latitude Field -->
         <div class="form-group row ">
-            {!! Form::label('latitude', trans('lang.restaurant_latitude'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('latitude', trans('lang.latitude'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('latitude', null, ['class' => 'form-control', 'placeholder' => trans('lang.restaurant_latitude_placeholder')]) !!}
+                {!! Form::text('latitude', null, ['class' => 'form-control', 'placeholder' => trans('lang.latitude_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_latitude_help') }}
+                    {{ trans('lang.latitude_help') }}
                 </div>
             </div>
         </div>
 
         <!-- Longitude Field -->
         <div class="form-group row ">
-            {!! Form::label('longitude', trans('lang.restaurant_longitude'), ['class' => 'col-5 control-label']) !!}
+            {!! Form::label('longitude', trans('lang.longitude'), ['class' => 'col-5 control-label']) !!}
             <div class="col-7">
-                {!! Form::text('longitude', null, ['id' => 'longitude', 'class' => 'form-control', 'placeholder' => trans('lang.restaurant_longitude_placeholder')]) !!}
+                {!! Form::text('longitude', null, ['id' => 'longitude', 'class' => 'form-control', 'placeholder' => trans('lang.longitude_placeholder')]) !!}
                 <div class="form-text text-muted">
-                    {{ trans('lang.restaurant_longitude_help') }}
+                    {{ trans('lang.longitude_help') }}
                 </div>
             </div>
         </div>

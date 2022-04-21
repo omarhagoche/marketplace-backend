@@ -52,10 +52,18 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         return Restaurant::class;
     }
 
+   
     /**
+     * Get supermarket and its products and product infos
+     */
+    public function supermarketWithProducts($id){
+
+        return Restaurant::whereId($id)->with('foods.productInfo')->first();
+    }
+
+     /**
      * get my restaurants
      */
-
     public function myRestaurants()
     {
         return Restaurant::join("user_restaurants", "restaurant_id", "=", "restaurants.id")

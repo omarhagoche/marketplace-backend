@@ -82,4 +82,9 @@ class ProductInfo extends Model
 
     
     
+    public function food()
+    {
+        return $this->belongsTo(\App\Models\Food::class);
+    }
+    
 }

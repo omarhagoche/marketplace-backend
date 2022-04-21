@@ -37,13 +37,12 @@
       @endcan
       @can('operations.restaurant_profile.note.index')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.note.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.note.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.note_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.note.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.note.index',$restaurant->id) !!}"><i class="fa fa-sticky-note mr-2"></i>{{trans('lang.note_table')}}</a>
       </li> 
       @endcan
       @can('operations.restaurant_profile.order.index')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.order.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.order.index',$restaurant->id) !!}"><i class="fa fa-eye mr-2"></i>{{trans('lang.order_table')}}</a>
-        <a class="nav-link {{ request()->routeIs('operations.restaurant.note.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.note.index',$restaurant->id) !!}"><i class="fa fa-sticky-note-o mr-2"></i>{{trans('lang.note_table')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.order.*') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.order.index',$restaurant->id) !!}"><i class="fa fa-dollar mr-2"></i>{{trans('lang.order_table')}}</a>
       </li> 
       @endcan
       @can('operations.restaurant_profile.days.index')

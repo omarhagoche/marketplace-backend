@@ -102,7 +102,7 @@ class UserAPIController extends Controller
         $verfication = VerficationCode::updateOrCreate(
             ['phone' => $request->phone_number, 'user_id' => null],
             [
-                'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
+                'code' => sprintf("%06d", mt_rand(1, 999999)),
                 'created_at' => now(),
             ]
         );
@@ -151,8 +151,8 @@ class UserAPIController extends Controller
     function registerDriver(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required|string|min:64|max:256',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:25600',
+            'token' => 'string|min:64|max:256',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:25600',
             'name' => 'required|min:3|max:32',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|max:32',
@@ -166,6 +166,7 @@ class UserAPIController extends Controller
             $user->name = $request->input('name');
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
+            $user->active = 0;
             $user->password = Hash::make($request->input('password'));
 			            $user->api_token =  str_random(60);
             $user->save();
