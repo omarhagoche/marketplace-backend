@@ -343,7 +343,7 @@ class OrderAPIController extends Controller
             $users_for_notifications = $this->userRepository->all();
 
             if ($order->user_id) {
-                $users_for_notifications->merge($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications());
+                $users_for_notifications= $users_for_notifications->merge($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications());
             }
             Notification::send($users_for_notifications, new NewOrder($order));
 

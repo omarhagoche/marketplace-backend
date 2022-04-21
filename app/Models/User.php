@@ -278,6 +278,21 @@ class User extends Authenticatable implements HasMedia, JWTSubject
             ['token' => $token, 'user_id' => $this->id]
         );
     }
+    /**
+     * Set device token for user 
+     * check if token exists and linked to another user , update it to be linked to current user 
+     
+     * @param $token 
+     * @return DeviceToken instance
+     */
+    public function deleteDeviceToken($token = null)
+    {
+        if (!$token) {
+            $token =  request()->input('device_token');
+        }
+        // auth()->user()->deviceTokens()->where('token', $token)
+        auth()->user()->deviceTokens()->where('token', $token)->delete()??"";
+    }
 
     /** 
      * Get token of user
