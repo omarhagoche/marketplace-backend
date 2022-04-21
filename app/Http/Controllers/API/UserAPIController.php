@@ -102,7 +102,7 @@ class UserAPIController extends Controller
         $verfication = VerficationCode::updateOrCreate(
             ['phone' => $request->phone_number, 'user_id' => null],
             [
-                'code' => 111111, //sprintf("%06d", mt_rand(1, 999999)),
+                'code' => sprintf("%06d", mt_rand(1, 999999)),
                 'created_at' => now(),
             ]
         );
