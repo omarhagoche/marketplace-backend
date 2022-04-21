@@ -166,6 +166,7 @@ class UserAPIController extends Controller
             $user->name = $request->input('name');
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
+            $user->active = 0;
             $user->password = Hash::make($request->input('password'));
 			            $user->api_token =  str_random(60);
             $user->save();
