@@ -9,13 +9,13 @@
 
 namespace App\Http\Controllers\API;
 
-use DB;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Rules\PhoneNumber;
 use App\Models\DeviceToken;
 use Illuminate\Http\Request;
 use App\Models\VerficationCode;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -240,14 +240,14 @@ class UserAPIController extends Controller
     function logout(Request $request)
     {
         try {
-            $user = auth()->user();
-            if ($request->has('device_token')) {
-                $user->setDeviceToken();
-            }
-            // logout user
-            //auth()->logout();
-            return $this->sendResponse($user->name, 'User logout successfully');
+            DB::beginTransaction();
+                $user = auth()->user();
+                $user->deleteDeviceToken($request->device_token);
+                auth()->logout();
+                return $this->sendResponse($user->name, 'User logout successfully');
+            DB::commit();            
         } catch (\Exception $e) {
+            DB::rollback();
             $this->sendError($e->getMessage(), 401);
         }
     }

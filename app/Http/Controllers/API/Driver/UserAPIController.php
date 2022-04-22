@@ -9,18 +9,19 @@
 
 namespace App\Http\Controllers\API\Driver;
 
+use App\Models\User;
+use App\Rules\PhoneNumber;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Repositories\CustomFieldRepository;
 use App\Repositories\RoleRepository;
-use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\UploadRepository;
 use Illuminate\Support\Facades\Password;
+use App\Repositories\CustomFieldRepository;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Rules\PhoneNumber;
 
 class UserAPIController extends Controller
 {
@@ -132,8 +133,17 @@ class UserAPIController extends Controller
 
     function logout(Request $request)
     {
-        $user = auth()->user();
-        return $this->sendResponse($user->name, 'User logout successfully');
+        try {
+            DB::beginTransaction();
+                $user = auth()->user();
+                $user->deleteDeviceToken($request->device_token);
+                auth()->logout();
+                return $this->sendResponse($user->name, 'User logout successfully');
+            DB::commit();            
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->sendError($e->getMessage(), 401);
+        }
     }
 
    function user(Request $request)

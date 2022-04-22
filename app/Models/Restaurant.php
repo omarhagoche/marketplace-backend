@@ -332,6 +332,6 @@ class Restaurant extends Model implements HasMedia
         if (!$this->relationLoaded('users')) {
             $this->load('users');
         }
-        return $this->users->where('pivot.enable_notifications', 1);
+        return $this->users;
     }
 }

@@ -146,8 +146,17 @@ class UserAPIController extends Controller
 
     function logout(Request $request)
     {
-        $user = auth()->user();
-        return $this->sendResponse($user->name, 'User logout successfully');
+        try {
+            DB::beginTransaction();
+                $user = auth()->user();
+                $user->deleteDeviceToken($request->device_token);
+                auth()->logout();
+                return $this->sendResponse($user->name, 'User logout successfully');
+            DB::commit();            
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->sendError($e->getMessage(), 401);
+        }
     }
 
    function user(Request $request)
