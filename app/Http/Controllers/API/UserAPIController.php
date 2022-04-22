@@ -110,7 +110,7 @@ class UserAPIController extends Controller
         if (send_sms($verfication->phone, "رمز التحقق - $verfication->code")) {
             return $this->sendResponse(true, 'Vervication code sent successfully');
         }
-        return $this->sendError('Vervication code did not send successfully', 400);
+        return $this->sendError('Verication code did not send successfully', 400);
     }
 
 
@@ -164,11 +164,11 @@ class UserAPIController extends Controller
         DB::transaction(function () use ($request, $user) {
             $verfication = VerficationCode::where('token', $request->token)->firstOrFail();
             $user->name = $request->input('name');
-            $user->phone_number =    $verfication->phone;
+            $user->phone_number = $verfication->phone;
             $user->email = $request->input('email');
             $user->active = 0;
             $user->password = Hash::make($request->input('password'));
-			            $user->api_token =  str_random(60);
+            $user->api_token =  str_random(60);
             $user->save();
             $verfication->delete();
 
@@ -185,9 +185,11 @@ class UserAPIController extends Controller
             $user->load('driver');
 
             //upload image 
-            $image = upload_image($request->image, $user->id, 'avatar');
-            $mediaItem = $image->getMedia('avatar')->first();
-            $mediaItem->copy($user, 'avatar');
+            if ($request->has('image')) {
+                $image = upload_image($request->image, $user->id, 'avatar');
+                $mediaItem = $image->getMedia('avatar')->first();
+                $mediaItem->copy($user, 'avatar');
+            }
         });
 
         return $this->sendResponse($user, 'User retrieved successfully');
@@ -218,7 +220,7 @@ class UserAPIController extends Controller
         $user->phone_number = $request->input('phone_number'); // $verfication->phone;
         $user->email = $request->email ?? "$request->phone_number." . time();
         $user->password = Hash::make($request->input('password'));
-		            $user->api_token =  str_random(60);
+        $user->api_token =  str_random(60);
 
         $user->save();
         //$verfication->delete();
@@ -250,10 +252,9 @@ class UserAPIController extends Controller
         }
     }
 
-   function user(Request $request)
+    function user(Request $request)
     {
-        if(auth()->guard('apiToken')->check())
-        {
+        if (auth()->guard('apiToken')->check()) {
             $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
 
             if (!$user) {
