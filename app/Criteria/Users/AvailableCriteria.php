@@ -47,7 +47,7 @@ class AvailableCriteria implements CriteriaInterface
             ->where(function ($q) {
                 $q->where('available', true)->where('working_on_order', false);
                 if ($this->driver_id) {
-                    $q->orWhere('user_id', $this->driver_id);
+                    $q->orWhere('drivers.user_id', $this->driver_id);
                 }
                 return $q;
             });
