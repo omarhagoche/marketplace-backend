@@ -93,10 +93,17 @@ class UserAPIController extends Controller
                 }
                 $user->load('restaurants');
 
-                return $this->sendResponse([
-                    'token' => $token,
-                    'user' => $user,
-                ], 'User retrieved successfully');
+                if ($request->is('api/v2/*')) {
+                    return $this->sendResponse([
+                        'token' => $token,
+                        'user' => $user,
+                    ], 'User retrieved successfully');
+                } else {
+                    return $this->sendResponse([
+                        'token' => $token,
+                        $user,
+                    ], 'User retrieved successfully');
+                }
             }
             return $this->sendError(trans('auth.failed'), 422);
         } catch (\Exception $e) {
@@ -126,7 +133,7 @@ class UserAPIController extends Controller
             $user->phone_number =    $verfication->phone;
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
-						            $user->api_token =  str_random(60);
+            $user->api_token =  str_random(60);
 
             $user->save();
             $verfication->delete();
@@ -148,21 +155,20 @@ class UserAPIController extends Controller
     {
         try {
             DB::beginTransaction();
-                $user = auth()->user();
-                $user->deleteDeviceToken($request->device_token);
-                auth()->logout();
-                return $this->sendResponse($user->name, 'User logout successfully');
-            DB::commit();            
+            $user = auth()->user();
+            $user->deleteDeviceToken($request->device_token);
+            auth()->logout();
+            return $this->sendResponse($user->name, 'User logout successfully');
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             $this->sendError($e->getMessage(), 401);
         }
     }
 
-   function user(Request $request)
+    function user(Request $request)
     {
-        if(auth()->guard('apiToken')->check())
-        {
+        if (auth()->guard('apiToken')->check()) {
             $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
 
             if (!$user) {

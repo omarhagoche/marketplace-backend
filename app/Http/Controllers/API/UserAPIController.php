@@ -77,10 +77,17 @@ class UserAPIController extends Controller
             if ($request->has('device_token')) {
                 $user->setDeviceToken();
             }
-            return $this->sendResponse([
-                'token' => $token,
-                'user' => $user,
-            ], 'User retrieved successfully');
+
+
+            if ($request->is('api/v2/*')) {
+                return $this->sendResponse([
+                    'token' => $token,
+                    'user' => $user,
+                ], 'User retrieved successfully');
+            } else {
+                return $this->sendResponse($user, 'User retrieved successfully');
+            }
+
         }
         return $this->sendError(trans('auth.failed'), 422);
     }
