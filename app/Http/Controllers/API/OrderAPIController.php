@@ -18,6 +18,7 @@ use App\Notifications\NewOrder;
 use App\Events\CreatedOrderEvent;
 use App\Events\OrderChangedEvent;
 use Illuminate\Support\Facades\DB;
+use Log;
 use App\Http\Controllers\Controller;
 use App\Notifications\AssignedOrder;
 use App\Repositories\CartRepository;
@@ -345,6 +346,8 @@ class OrderAPIController extends Controller
             if ($order->user_id) {
                 $users_for_notifications= $users_for_notifications->merge($order->foodOrders[0]->food->restaurant->getUsersWhoEnabledNotifications());
             }
+            Log::channel('notifications')->info("Start users_for_notifications => #".$users_for_notifications->pluck('id','name') );
+
             Notification::send($users_for_notifications, new NewOrder($order));
 
             // start update number of use for coupons

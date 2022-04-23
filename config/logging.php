@@ -129,7 +129,10 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/requests/laravel.log'),
         ],
-
+        'notifications' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/notifications/create_order.log'),
+        ],
     ],
 
 ];
