@@ -120,9 +120,9 @@ class AddOrderToFirebaseService
         $this->order->driver_id = null;
         $this->order->save();
 
-        $users = User::select('id', 'device_token')->whereNotNull('device_token')
-            ->whereIn('id', $drivers_ids)
-            ->get();
+        $users = User::whereIn('id', $drivers_ids)->where(['deviceTokens' => function ($query) {
+            $query->where('token','!=', null);
+        }])->get();
 
         Notification::send($users, new AvailableOrder($this->order));
     }
