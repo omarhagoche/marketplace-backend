@@ -158,8 +158,9 @@ class UserAPIController extends Controller
             $user = auth()->user();
             $user->deleteDeviceToken($request->device_token);
             auth()->logout();
-            return $this->sendResponse($user->name, 'User logout successfully');
             DB::commit();
+            return $this->sendResponse($user->name, 'User logout successfully');
+
         } catch (\Exception $e) {
             DB::rollback();
             $this->sendError($e->getMessage(), 401);
