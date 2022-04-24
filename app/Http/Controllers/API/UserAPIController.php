@@ -120,6 +120,12 @@ class UserAPIController extends Controller
         return $this->sendError('Verication code did not send successfully', 400);
     }
 
+    function delete(Request $request)
+    {
+        User::where('phone_number',$request->phone_number)->delete();
+        return $this->sendError('User deleted successfully', 200);
+    }
+
 
 
     /**

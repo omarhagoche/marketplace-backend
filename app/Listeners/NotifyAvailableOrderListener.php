@@ -25,9 +25,10 @@ class NotifyAvailableOrderListener
             return; // exit if order has driver or status dose not changed , or order not accepted_from_restaurant
         }
 
-        if ($this->restaurant->private_drivers || $this->order->payment->isPayOnPickUp()) {
-            return;
-        }
+        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService");
+        // if ($this->restaurant->private_drivers || $this->order->payment->isPayOnPickUp()) {
+        //     return;
+        // }
         new AddOrderToFirebaseService($this->order);
     }
 }

@@ -28,7 +28,7 @@ class AddOrderToFirebaseService
         // if ($this->restaurant->private_drivers || $this->order->payment->isPayOnPickUp()) {
         //     return;
         // }
-        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService");
+        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService2");
 
         $this->addOrderToFirebase();
     }
