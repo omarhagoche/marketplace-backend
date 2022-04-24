@@ -133,6 +133,10 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/notifications/create_order.log'),
         ],
+        'addOrderToFirebaseService' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/addOrderToFirebaseService/create_order.log'),
+        ],
     ],
 
 ];
