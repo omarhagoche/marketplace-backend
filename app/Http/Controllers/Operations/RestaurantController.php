@@ -58,6 +58,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
 use App\DataTables\Operations\OrderFoodBookingDataTable;
 use App\DataTables\Operations\RestaurantSearchDataTable;
+use App\Models\Order;
 
 class RestaurantController extends Controller
 {
@@ -104,7 +105,7 @@ class RestaurantController extends Controller
     private $dayRepository;
 
 
-    public function __construct(DayRepository $dayRepo,NoteRepository $noteRepo,ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository,FoodRepository $foodRepository,RoleRepository $roleRepository,RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    public function __construct(DayRepository $dayRepo, NoteRepository $noteRepo, ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository, RoleRepository $roleRepository, RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->roleRepository = $roleRepository;
@@ -119,8 +120,6 @@ class RestaurantController extends Controller
         $this->extraRepository = $extraRepository;
         $this->noteRepository = $noteRepo;
         $this->dayRepository = $dayRepo;
-
-
     }
 
     /**
@@ -193,27 +192,27 @@ class RestaurantController extends Controller
         try {
             $restaurant = $this->restaurantRepository->create($input);
             // get day ids
-            $DayIds=Day::pluck('id');
+            $DayIds = Day::pluck('id');
             // insert for each restaurant all days 
-            $restaurant->days()->attach($DayIds);  
+            $restaurant->days()->attach($DayIds);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
                 $mediaItem->copy($restaurant, 'image');
             }
-            $user=User::Create([
-                'email'=>$request['email'],
-                'name'=>$request['name'],
-                'phone_number'=>$request['phone'],
-                'active'=>true,
-                'password'=>Hash::make($request['email'])
-                ]);
+            $user = User::Create([
+                'email' => $request['email'],
+                'name' => $request['name'],
+                'phone_number' => $request['phone'],
+                'active' => true,
+                'password' => Hash::make($request['email'])
+            ]);
 
-                $defaultRoles = $this->roleRepository->findByField('name', 'manager');
-                $defaultRoles = $defaultRoles->pluck('name')->toArray();
-                $user->assignRole($defaultRoles);
-                $user->restaurants()->attach($restaurant->id);
+            $defaultRoles = $this->roleRepository->findByField('name', 'manager');
+            $defaultRoles = $defaultRoles->pluck('name')->toArray();
+            $user->assignRole($defaultRoles);
+            $user->restaurants()->attach($restaurant->id);
             event(new RestaurantChangedEvent($restaurant, $restaurant));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
@@ -284,15 +283,15 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
         return view('operations.restaurants.edit')
-        ->with('id',$id)
-        ->with('restaurant', $restaurant)
-        ->with("customFields", isset($html) ? $html : false)
-        ->with("user", $user)
-        ->with("drivers", $drivers)
-        ->with("usersSelected", $usersSelected)
-        ->with("driversSelected", $driversSelected)
-        ->with('cuisine', $cuisine)
-        ->with('cuisinesSelected', $cuisinesSelected);
+            ->with('id', $id)
+            ->with('restaurant', $restaurant)
+            ->with("customFields", isset($html) ? $html : false)
+            ->with("user", $user)
+            ->with("drivers", $drivers)
+            ->with("usersSelected", $usersSelected)
+            ->with("driversSelected", $driversSelected)
+            ->with('cuisine', $cuisine)
+            ->with('cuisinesSelected', $cuisinesSelected);
     }
 
     /**
@@ -314,13 +313,13 @@ class RestaurantController extends Controller
             return redirect(route('restaurants.index'));
         }
         $input = $request->all();
-        array_push($input['users'], ...$input['drivers']);//thhis line for push drivers ids with users 
+        array_push($input['users'], ...$input['drivers']); //thhis line for push drivers ids with users 
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
 
             $restaurant = $this->restaurantRepository->update($input, $id);
-            $input['drivers']?$restaurant->drivers()->sync($input['drivers']):'';//Assigning drivers to the restaurant
-            $input['users']?$restaurant->users()->sync($input['users']):'';//Assigning users to the restaurant
+            $input['drivers'] ? $restaurant->drivers()->sync($input['drivers']) : ''; //Assigning drivers to the restaurant
+            $input['users'] ? $restaurant->users()->sync($input['users']) : ''; //Assigning users to the restaurant
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
@@ -404,14 +403,15 @@ class RestaurantController extends Controller
             ->with(['id' => $id, 'restaurant' => $restaurant, "customFields" => isset($html) ? $html : false])
             ->render('operations.restaurantProfile.users.index', compact('id', 'restaurant', 'customFields'));
     }
+
     public function usersCreate($id, $userId = null)
     {
         // dd($id,$userId);
         if ($userId != null) $user = User::find($userId);
         else $user = null;
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
-        $role = $this->roleRepository->where('name','!=','admin')->where('name','!=','client')->pluck('name', 'name');
-        $rolesSelected =isset($userId)?$user->getRoleNames()->toArray():[];
+        $role = $this->roleRepository->where('name', '!=', 'admin')->where('name', '!=', 'client')->pluck('name', 'name');
+        $rolesSelected = isset($userId) ? $user->getRoleNames()->toArray() : [];
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
@@ -427,6 +427,7 @@ class RestaurantController extends Controller
         return view('operations.restaurantProfile.users.create', compact('id', 'userId', 'user', 'role', 'rolesSelected', 'restaurant', 'customFields'))
             ->with("customFields", isset($html) ? $html : false);
     }
+
     public function usersStore(Request $request, $id, $userId = null)
     {
         // dd($request->all());
@@ -459,20 +460,20 @@ class RestaurantController extends Controller
                     $user = User::updateOrCreate(['id' => $userId], $input);
                     $user->syncRoles($input['roles']);
                     // $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
-                    if($input['roles'][0]=='driver'){
-                       if( $restaurant->drivers()->where('user_id', $user->id)->exists()){
-                        $restaurant->drivers()->sync($user->id);
-                       }else {
-                        $restaurant->drivers()->attach($user->id);
-                       }
+                    if ($input['roles'][0] == 'driver') {
+                        if ($restaurant->drivers()->where('user_id', $user->id)->exists()) {
+                            $restaurant->drivers()->sync($user->id);
+                        } else {
+                            $restaurant->drivers()->attach($user->id);
+                        }
                     }
-                    if($input['roles'][0]=='manager'){
-                        if( $restaurant->users()->where('user_id', $user->id)->exists()){
-                         $restaurant->users()->sync($user->id);
-                        }else {
+                    if ($input['roles'][0] == 'manager') {
+                        if ($restaurant->users()->where('user_id', $user->id)->exists()) {
+                            $restaurant->users()->sync($user->id);
+                        } else {
                             $restaurant->users()->attach($user->id);
                         }
-                     }
+                    }
                     if (isset($input['avatar']) && $input['avatar']) {
                         $cacheUpload = $this->uploadRepository->getByUuid($input['avatar']);
                         $mediaItem = $cacheUpload->getMedia('avatar')->first();
@@ -489,8 +490,8 @@ class RestaurantController extends Controller
                 // $user->assignRole($defaultRoles);
                 // $user->restaurants()->attach($id);
 
-
             });
+
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.users')]));
         } catch (\Throwable $th) {
             dd($request->all(), $th);
@@ -499,6 +500,7 @@ class RestaurantController extends Controller
         }
         return redirect(route('operations.restaurant_profile.users', $id));
     }
+
     public function usersDestroy($id, $userId)
     {
         if (env('APP_DEMO', false)) {
@@ -524,81 +526,97 @@ class RestaurantController extends Controller
             return redirect(route('operations.restaurant_profile.users', $id));
         }
     }
-    public function orders(OrderFoodBookingDataTable $orderDataTable,$id)
+
+    public function orders(OrderFoodBookingDataTable $orderDataTable, $id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
+
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
         return $orderDataTable
-        ->with(['id'=>$id, 'restaurant'=> $restaurant,"customFields"=> isset($html) ? $html : false])
-        ->render('operations.restaurantProfile.orders.index',compact('id','restaurant','customFields'));
-
+            ->with([
+                'id' => $id,
+                'restaurant' => $restaurant,
+                "customFields" => isset($html) ? $html : false
+            ])
+            ->render('operations.restaurantProfile.orders.index', compact('id', 'restaurant', 'customFields'));
     }
-    public function notes(NoteDataTable $noteDataTable,$id)
+
+    public function notes(NoteDataTable $noteDataTable, $id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
+
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        return $noteDataTable
-        ->with(['id'=>$id, 'restaurant'=> $restaurant,"customFields"=> isset($html) ? $html : false])
-        ->render('operations.restaurantProfile.notes.index',compact('id','restaurant','customFields'));
 
+        return $noteDataTable->with([
+            'id' => $id,
+            'restaurant' => $restaurant,
+            "customFields" => isset($html) ? $html : false
+        ])->render('operations.restaurantProfile.notes.index', compact('id', 'restaurant', 'customFields'));
     }
+
     public function createNote($id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
 
-       return view('operations.restaurantProfile.notes.create',compact('restaurant'));
+        return view('operations.restaurantProfile.notes.create', compact('restaurant'));
     }
-    public function storeNote(Request $request,$id)
+
+    public function storeNote(Request $request, $id)
     {
         $this->validate($request, [
             'text' => 'required',
         ]);
         try {
             $this->noteRepository->create([
-                'from_user_id'=>auth()->user()->id,
-                'restaurant_id'=>$id,
-                'text'=>$request->text
+                'from_user_id' => auth()->user()->id,
+                'restaurant_id' => $id,
+                'text' => $request->text
             ]);
             Flash::success('Creat note successfully.');
-            return redirect(route('operations.restaurant_profile.note.index',$id));
+            return redirect(route('operations.restaurant_profile.note.index', $id));
         } catch (\Throwable $th) {
             Flash::error('Creat note error');
-            return redirect(route('operations.restaurant_profile.note.create',$id));
-        }
-    }
-    public function destroyNote($restaurantId,$noteId)
-    {
-       try {
-            $note = $this->noteRepository->findWithoutFail($noteId);
-            $note->delete();
-            Flash::success('Delete note successfully.');
-            return redirect(route('operations.restaurant_profile.note.index',$restaurantId));
-       } catch (\Throwable $th) {
-            Flash::error('Delete note error.');
-            return redirect(route('operations.restaurant_profile.note.index',$restaurantId));
+            return redirect(route('operations.restaurant_profile.note.create', $id));
         }
     }
 
-    public function days(DayDataTable $daysDataTable,$id)
+    public function destroyNote($restaurantId, $noteId)
+    {
+        try {
+            $note = $this->noteRepository->findWithoutFail($noteId);
+            $note->delete();
+            Flash::success('Delete note successfully.');
+            return redirect(route('operations.restaurant_profile.note.index', $restaurantId));
+        } catch (\Throwable $th) {
+            Flash::error('Delete note error.');
+            return redirect(route('operations.restaurant_profile.note.index', $restaurantId));
+        }
+    }
+
+    public function days(DayDataTable $daysDataTable, $id)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
         if (empty($restaurant)) {
@@ -606,89 +624,89 @@ class RestaurantController extends Controller
             return redirect(route('restaurants.index'));
         }
         return $daysDataTable
-        ->with(['id'=>$id,'restaurant'=> $restaurant])
-        ->render('operations.restaurantProfile.days.index',compact('id','restaurant'));
-
+            ->with(['id' => $id, 'restaurant' => $restaurant])
+            ->render('operations.restaurantProfile.days.index', compact('id', 'restaurant'));
     }
-    public function daysEdit($restaurantId,$dayId)
+
+    public function daysEdit($restaurantId, $dayId)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
-        $day=$restaurant->days()->where('day_id',$dayId)->first();
-       return view('operations.restaurantProfile.days.edit',compact('restaurant','day'));
+        $day = $restaurant->days()->where('day_id', $dayId)->first();
+        return view('operations.restaurantProfile.days.edit', compact('restaurant', 'day'));
     }
-    public function daysUpdate(Request $request,$restaurantId,$dayId)
+
+    public function daysUpdate(Request $request, $restaurantId, $dayId)
     {
         $this->validate($request, [
             'close_at' => 'required',
             'open_at' => 'required',
         ]);
-      
+
         try {
             DB::beginTransaction();
-                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
-                $restaurant->days()->updateExistingPivot([$dayId],[
-                    'open_at'=>$request->open_at,
-                    'close_at'=>$request->close_at,
-                ],false);
-                Flash::success('Update day Time successfully.');
+            $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+            $restaurant->days()->updateExistingPivot([$dayId], [
+                'open_at' => $request->open_at,
+                'close_at' => $request->close_at,
+            ], false);
+            Flash::success('Update day Time successfully.');
             DB::commit();
 
-            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+            return redirect(route('operations.restaurant_profile.days.index', ['id' => $restaurantId]));
         } catch (\Throwable $th) {
             DB::rollback();
             Flash::error('Creat note error');
-            return redirect(route('operations.restaurant_profile.note.create',['id'=>$restaurantId]));
+            return redirect(route('operations.restaurant_profile.note.create', ['id' => $restaurantId]));
         }
     }
+
     public function daysCreate($restaurantId)
     {
         $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
-        $days=$this->dayRepository->pluck('name','id');
-       return view('operations.restaurantProfile.days.create',compact('restaurant','days'));
+        $days = $this->dayRepository->pluck('name', 'id');
+        return view('operations.restaurantProfile.days.create', compact('restaurant', 'days'));
     }
-    public function daysStore(Request $request,$restaurantId)
+
+    public function daysStore(Request $request, $restaurantId)
     {
         $this->validate($request, [
             'day_id' => 'required',
             'close_at' => 'required',
             'open_at' => 'required',
         ]);
-      
+
         try {
             DB::beginTransaction();
-                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
-                $restaurant->days()->attach($request->day_id,[
-                    'open_at'=>$request->open_at,
-                    'close_at'=>$request->close_at,
-                ],false);
-                Flash::success('Create day Time successfully.');
+            $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+            $restaurant->days()->attach($request->day_id, [
+                'open_at' => $request->open_at,
+                'close_at' => $request->close_at,
+            ], false);
+            Flash::success('Create day Time successfully.');
             DB::commit();
 
-            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+            return redirect(route('operations.restaurant_profile.days.index', ['id' => $restaurantId]));
         } catch (\Throwable $th) {
             DB::rollback();
             Flash::error('Create note error');
-            return redirect(route('operations.restaurant_profile.note.create',['id'=>$restaurantId]));
+            return redirect(route('operations.restaurant_profile.note.create', ['id' => $restaurantId]));
         }
     }
-    public function daysDestroy($restaurantId,$dayId)
-    {   
+    public function daysDestroy($restaurantId, $dayId)
+    {
         try {
             DB::beginTransaction();
-                $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
-                $restaurant->days()
+            $restaurant = $this->restaurantRepository->findWithoutFail($restaurantId);
+            $restaurant->days()
                 ->detach($dayId);
-                Flash::success('Delete day Time successfully.');
+            Flash::success('Delete day Time successfully.');
             DB::commit();
 
-            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+            return redirect(route('operations.restaurant_profile.days.index', ['id' => $restaurantId]));
         } catch (\Throwable $th) {
             DB::rollback();
-            Flash::error('Delete day Time error'.$th);
-            return redirect(route('operations.restaurant_profile.days.index',['id'=>$restaurantId]));
+            Flash::error('Delete day Time error' . $th);
+            return redirect(route('operations.restaurant_profile.days.index', ['id' => $restaurantId]));
         }
     }
-
-
-    
 }
