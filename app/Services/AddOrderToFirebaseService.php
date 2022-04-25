@@ -118,6 +118,8 @@ class AddOrderToFirebaseService
                 'drivers' => $drivers_ids
             ]);
 
+        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService5");
+
         $this->order->order_status_id = 10; // waiting for drivers
         $this->order->driver_id = null;
         $this->order->save();
