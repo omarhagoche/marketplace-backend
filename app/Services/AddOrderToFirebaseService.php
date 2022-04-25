@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\DriverType;
 use App\Models\Order;
 use App\Models\User;
+use Log;
 
 class AddOrderToFirebaseService
 {

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Services\AddOrderToFirebaseService;
-
+use Log;
 
 class NotifyAvailableOrderListener
 {
