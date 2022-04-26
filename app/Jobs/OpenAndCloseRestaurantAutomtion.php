@@ -71,9 +71,9 @@ class OpenAndCloseRestaurantAutomtion implements ShouldQueue
                 Log::channel('openAndCloseRestaurant')->info([
                     'from_time' => $this->from_time,
                     'to_time' => $this->to_time,
-                    'count_opened_restaurants' => $restaurants_will_open->count(),
+                    'count_opened_restaurants' => count($restaurants_will_open),
                     'count_affected_open' => $count_affected_open,
-                    'count_closed_restaurants' => $restaurants_will_close->count(),
+                    'count_closed_restaurants' => count($restaurants_will_close),
                     'count_affected_close' => $count_affected_close,
                     'opened_restaurants' => $restaurants_will_open->toArray(),
                     'closed_restaurants' => $restaurants_will_close->toArray(),
