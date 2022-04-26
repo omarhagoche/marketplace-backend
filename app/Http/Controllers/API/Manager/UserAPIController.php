@@ -156,8 +156,15 @@ class UserAPIController extends Controller
         try {
             DB::beginTransaction();
             $user = auth()->user();
-            $user->deleteDeviceToken($request->device_token);
-            auth()->logout();
+            if(auth()->getDefaultDriver() == "apiJwt")
+            {
+                $user->deleteDeviceToken($request->device_token);
+                auth()->logout();
+            }else{
+                if ($request->has('device_token')) {
+                    $user->setDeviceToken();
+                }
+            }
             DB::commit();
             return $this->sendResponse($user->name, 'User logout successfully');
 
