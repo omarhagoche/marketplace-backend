@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\DriverType;
 use App\Models\Order;
 use App\Models\User;
+use Log;
 
 class AddOrderToFirebaseService
 {
@@ -28,7 +29,7 @@ class AddOrderToFirebaseService
         // if ($this->restaurant->private_drivers || $this->order->payment->isPayOnPickUp()) {
         //     return;
         // }
-        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService");
+        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService2");
 
         $this->addOrderToFirebase();
     }
@@ -116,6 +117,8 @@ class AddOrderToFirebaseService
                 'created_at' => $this->order->created_at->timestamp,
                 'drivers' => $drivers_ids
             ]);
+
+        Log::channel('addOrderToFirebaseService')->info("Now on  __construct =>  => AddOrderToFirebaseService5");
 
         $this->order->order_status_id = 10; // waiting for drivers
         $this->order->driver_id = null;

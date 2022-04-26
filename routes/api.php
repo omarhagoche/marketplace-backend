@@ -27,11 +27,11 @@ if (request()->segment(2) == 'v2') { // if request for starts with V2 , set "api
 
 $apiRoutes = function()use($auth) {
 
-
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::get('register', 'API\UserAPIController@sendRegisterCodePhone');
     Route::post('confirm_register', 'API\UserAPIController@confirmRegisterCodePhone');
+    Route::post('delete', 'API\UserAPIController@delete');
     Route::post('register', 'API\UserAPIController@registerDriver');
     Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('reset_password', 'API\UserAPIController@sendResetCodePhone');
