@@ -74,6 +74,7 @@ Route::get('distance', 'API\DistanceAPIController@getDistanceBetweenTwoPoints');
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
 Route::resource('restaurants', 'API\RestaurantAPIController');
+Route::apiResource('supermarkets', 'API\SupermarketAPIController')->only('index');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
 Route::get('foods/categories', 'API\FoodAPIController@categories');
