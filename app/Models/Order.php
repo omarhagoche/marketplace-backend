@@ -107,7 +107,7 @@ class Order extends Model
         'delivery_coupon_id' => 'exists:coupons,id',
         'restaurant_coupon_id' => 'exists:coupons,id',
         'driver_id' => 'nullable|exists:users,id',
-        'delivery_datetime' => 'nullable|date|after_or_equal:now',
+        'delivery_datetime' => 'nullable',
     ];
 
     /**

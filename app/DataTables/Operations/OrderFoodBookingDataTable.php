@@ -120,11 +120,8 @@ class OrderFoodBookingDataTable extends DataTable
     public function query(Order $model)
     {
         return $model->newQuery()
-        ->where('delivery_datetime','!=',null)
-        ->with("user")->with('restaurant')->with("orderStatus")->with('payment')
-            ->where('orders.restaurant_id', $this->id)
-            ;
-       
+            ->with(["user", 'restaurant', "orderStatus", 'payment'])
+            ->where('orders.restaurant_id', $this->id);
     }
 
     /**

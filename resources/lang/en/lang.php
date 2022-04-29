@@ -983,7 +983,7 @@ return [
     'user_email_placeholder' => 'Insert Email',
     'user_phone_number' => 'Phone ',
     'user_phone_number_help' => 'Insert phone number',
-    'user_phone_number_placeholder' => 'Insert phone number',
+    'user_phone_number_placeholder' => '9x-xxx-xxxx',
     'user_id' => 'Id',
     'user_id_help' => 'Insert',
     'user_id_placeholder' => 'Insert',
