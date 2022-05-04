@@ -13,7 +13,7 @@
 1- Clone repository
 
 ```code
- https://github.com/alifaraun/sabek.git
+ https://github.com/SabekLY/sabek.git
 
 ```
 
