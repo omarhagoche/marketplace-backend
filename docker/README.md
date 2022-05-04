@@ -1,5 +1,6 @@
 
 
+
 ## List of commands to get the system up and running:
 
 i. Build the image:
@@ -22,10 +23,17 @@ v. Artisan:
     docker-compose exec sabek-app php artisan key:generate
     docker-compose exec sabek-app php artisan serve
 
+## System Access
+
 You can access the system via the specified port in docker-compose.yml (defaulted at 2222):
 
     http://localhost:2222/
-If you need it to be `http://localhost/` change the port to 80.
+If you need it to be `http://localhost/` change `2222` port to `80`
+
+Login information for admin user:
+
+     username : admin@demo.com
+     password : 123456
 
 ## Extra commands:
 
