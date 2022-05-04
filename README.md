@@ -9,7 +9,7 @@
 
 - infyom generator (https://infyom.com/open-source/laravelgenerator/docs/8.0/introduction).
 
-# Docker Deployment
+# 1. Docker Deployment
 
 ## List of commands to get the system up and running:
 
@@ -68,7 +68,7 @@ For any commands inside the database container:
     docker-compose exec sabek-db #command#
     docker-compose exec sabek-app /bin/bash/
 
-# Non-Docker:
+# 2. Standard Deployment:
 
 1- Clone repository
 
