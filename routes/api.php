@@ -156,6 +156,8 @@ Route::middleware("auth:$auth")->group(function () {
     Route::resource('notifications', 'API\NotificationAPIController');
 
     Route::get('carts/count', 'API\CartAPIController@count')->name('carts.count');
+
+
     Route::resource('carts', 'API\CartAPIController');
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
@@ -185,3 +187,8 @@ Route::middleware("auth:$auth")->group(function () {
 Route::group(['prefix' => 'v2'],$apiRoutes);
 Route::group([],$apiRoutes);
 
+Route::post('carts/deleteItemInCart', 'API\CartAPIController@deleteItemInCart');
+
+Route::get('/docs', function () {
+    return view('swagger.index');
+});
