@@ -138,6 +138,7 @@ Route::middleware("auth:$auth")->group(function () {
 
         });
     });
+    Route::get('users', 'API\UserAPIController@index');
     Route::post('users/change_password/{id?}', 'API\UserAPIController@updatePassword');
     Route::post('users/{id}', 'API\UserAPIController@update');
 
@@ -186,10 +187,8 @@ Route::middleware("auth:$auth")->group(function () {
 
 Route::group(['prefix' => 'v2'],$apiRoutes);
 Route::group([],$apiRoutes);
-Route::post('carts/getDeletedCartItems', 'API\CartAPIController@getDeletedCartItems');
 
 Route::post('carts/deleteItemInCart', 'API\CartAPIController@deleteItemInCart');
-
 
 Route::get('/docs', function () {
     return view('swagger.index');

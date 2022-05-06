@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Repositories\UploadRepository;
 use Illuminate\Support\Facades\Password;
 use App\Repositories\CustomFieldRepository;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 
@@ -353,6 +356,20 @@ class UserAPIController extends Controller
         }
 
         return $this->sendResponse($settings, 'Settings retrieved successfully');
+    }
+
+    public function index(Request $request)
+    {
+        try {
+            $this->userRepository->pushCriteria(new RequestCriteria($request));
+            $this->userRepository->pushCriteria(new LimitOffsetCriteria($request));
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        
+        $users = $this->userRepository->all();
+
+        return $this->sendResponse($users->toArray(), 'Users retrieved successfully');
     }
 
     /**
