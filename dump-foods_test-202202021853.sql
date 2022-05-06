@@ -1799,3 +1799,53 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2022-02-02 18:53:47
+
+
+
+--
+-- Table structure for table `deleted_order_items`
+--
+
+CREATE TABLE `deleted_order_items` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `price` double(8,2) NOT NULL DEFAULT '0.00',
+  `quantity` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `food_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for table `deleted_order_items`
+--
+ALTER TABLE `deleted_order_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `deleted_order_items_user_id_foreign` (`user_id`),
+  ADD KEY `deleted_order_items_food_id_foreign` (`food_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `deleted_order_items`
+--
+ALTER TABLE `deleted_order_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `deleted_order_items`
+--
+ALTER TABLE `deleted_order_items`
+  ADD CONSTRAINT `deleted_order_items_food_id_foreign` FOREIGN KEY (`food_id`) REFERENCES `foods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `deleted_order_items_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

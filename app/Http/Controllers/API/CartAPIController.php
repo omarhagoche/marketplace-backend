@@ -6,7 +6,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\CreateCartRequest;
 use App\Http\Requests\CreateFavoriteRequest;
 use App\Models\Cart;
+use App\Models\DeletedOrderItem;
 use App\Repositories\CartRepository;
+use App\Repositories\DeletedOrderItemRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
@@ -28,8 +30,12 @@ class CartAPIController extends Controller
     /** @var  CartRepository */
     private $cartRepository;
 
-    public function __construct(CartRepository $cartRepo)
+    /** @var DeletedOrderItemRepository */
+    private $deletedOrderItemRepository;
+
+    public function __construct(CartRepository $cartRepo, DeletedOrderItemRepository $deletedOrderItemRepo)
     {
+        $this->deletedOrderItemRepository = $deletedOrderItemRepo;
         $this->cartRepository = $cartRepo;
     }
 
@@ -167,4 +173,19 @@ class CartAPIController extends Controller
 
     }
 
+    public function deleteItemInCart(Request $request){
+
+        $input = $request->all();
+
+        $cart = $this->deletedOrderItemRepository->create($input);
+
+        return $this->sendResponse($cart, __('lang.deleted_successfully',['operator' => __('lang.cart')]));
+    }
+
+    public function getDeletedCartItems(){
+
+        $items = $this->deletedOrderItemRepository->all();
+
+        return response()->json($items);
+    }
 }

@@ -186,8 +186,10 @@ Route::middleware("auth:$auth")->group(function () {
 
 Route::group(['prefix' => 'v2'],$apiRoutes);
 Route::group([],$apiRoutes);
+Route::post('carts/getDeletedCartItems', 'API\CartAPIController@getDeletedCartItems');
 
 Route::post('carts/deleteItemInCart', 'API\CartAPIController@deleteItemInCart');
+
 
 Route::get('/docs', function () {
     return view('swagger.index');

@@ -2,13 +2,64 @@ swagger: '2.0'
 info:
   description: Sabek APis
   version: 1.0.0
-  title: Sabel Frontend API's
+  title: Sabek Frontend API's
 basePath: /api/
 tags:
   - name: Category
     description: Manage Category
 
 paths:
+  /carts/deleteItemInCart:
+    post:
+      tags:
+        - Delete cart item
+      summary: Delete item
+      description: 'Delete cart food'
+      operationId: 'deleteCartItem'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: delete cart item
+          description: The cart item to delete.
+          schema:
+              type: object
+              required:
+                - user_id
+                - food_id
+                - order_id
+              properties:
+                user_id:
+                  type: integer
+                food_id:
+                  type: integer
+                quantity:
+                  type: integer  
+                price:
+                  type: integer
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad request              
+  /carts/getDeletedCartItems:            
+    post:
+      tags:
+        - Delete cart item
+      summary: Get deleted items
+      description: 'Get deleted cart items'
+      operationId: getDeletedCartItems
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad request  
   /categories:
     get:
       tags:
@@ -46,14 +97,8 @@ paths:
         '400':
           description: Bad request
       security:
-        - api_key: [] 
-
-  tags:
-    - name: Supermarkets
-      description: Manage Supermarkets
-
-  paths:
-    /supermarkets:
+        - api_key: []
+  /supermarkets:
       get:
         tags:
           - Supermarket
@@ -69,31 +114,11 @@ paths:
             description: successful operation
           '400':
             description: Bad request
-      post:
-        tags:
-          - Supermaker
-        summary: Create Supermarket
-        description: 'Create Supermarket with this API'
-        operationId: createSupermarket
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - in: query
-            name: name
-            type: string
-            required: true  
-        responses:
-          '200':
-            description: successful operation
-          '400':
-            description: Bad request
         security:
           - api_key: []     
 
 securityDefinitions:
-  api_key:
+  api_token:
     type: apiKey
-    name: Authorization
+    name: apiToken
     in: header
