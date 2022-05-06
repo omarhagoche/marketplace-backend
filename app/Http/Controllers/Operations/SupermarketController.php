@@ -14,7 +14,7 @@ use App\Repositories\{DayRepository, FoodRepository, NoteRepository, RoleReposit
 use App\Repositories\{UploadRepository, CategoryRepository, ExtraGroupRepository, RestaurantRepository, CustomFieldRepository};
 use App\DataTables\Operations\SupermarketDataTable;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
-
+use Illuminate\Support\Facades\DB;
 
 class SupermarketController extends Controller
 {
@@ -276,11 +276,14 @@ class SupermarketController extends Controller
         return view('operations.supermarkets.products.create', compact('id', 'supermarket', 'category'));
     }
 
-    public function productStore($id)
+    public function productStore(int $id)
     {
+        $supermarket = $this->restaurantRepository->findWithoutFail($id);
+        
         try {
             DB::beginTransaction();
             $productData = request()->all();
+            $productData['restaurant_id'] = $supermarket->id;
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
             $product = $this->foodRepository->create($productData);
             $product->customFieldsValues()->createMany(getCustomFieldsValues($customFields, request()));
@@ -295,6 +298,6 @@ class SupermarketController extends Controller
             Flash::error($e->getMessage());
         }
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.product')]));
-        return redirect(route('operations.supermarket.products.create', $id));
+        return redirect(route('operations.supermarkets.products.create', $id));
     }
 }
