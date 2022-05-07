@@ -1491,5 +1491,7 @@ return [
     'expiry_date'=>'Expiry Date',
     'barcode'=>'Barcode',
     'supermarket_products'=>'Supermarket Products',
-    'product_edit'=>'Product edit'
+    'product_edit'=>'Product edit',
+    'open_all_restaurants'=>'Open All Restaurants',
+    'close_all_restaurants'=>'Close All Restaurants'
 ];

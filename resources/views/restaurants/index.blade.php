@@ -39,6 +39,11 @@
       </ul>
     </div>
     <div class="card-body">
+      <div>
+        <a href="#" class="btn btn-success" role="button">{{trans('lang.open_all_restaurants')}}</a>
+        <button type="button" class="btn btn-danger">{{trans('lang.close_all_restaurants')}}</button>
+        </div>
+      <br>
       @include('restaurants.table')
       <div class="clearfix"></div>
     </div>
