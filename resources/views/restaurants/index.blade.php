@@ -40,8 +40,9 @@
     </div>
     <div class="card-body">
       <div>
-        <a href="#" class="btn btn-success" role="button">{{trans('lang.open_all_restaurants')}}</a>
-        <button type="button" class="btn btn-danger">{{trans('lang.close_all_restaurants')}}</button>
+        <a href="{!! route('RestaurantController.openAll') !!}" class="btn btn-success" role="button">{{trans('lang.open_all_restaurants')}}</a>
+        <a href="{!! route('RestaurantController.closeAll') !!}" class="btn btn-danger" role="button">{{trans('lang.close_all_restaurants')}}</a>
+
         </div>
       <br>
       @include('restaurants.table')

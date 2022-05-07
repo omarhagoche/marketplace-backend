@@ -31,8 +31,8 @@ Route::get('test/whatsapp/{phone?}/{msg?}', function ($phone, $msg) {
     ];
     return $respone;
 });
-
-
+Route::get('closeAll', 'RestaurantController@closeAll')->name('RestaurantController.closeAll');
+Route::get('openAll', 'RestaurantController@openAll')->name('RestaurantController.openAll');
 Route::get('register-restaurant', 'RegisterRestaurantController@show');
 Route::post('register-restaurant', 'RegisterRestaurantController@register');
 
@@ -302,6 +302,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('restaurantProfile', 'Operations\RestaurantController',['names' => 'operations.restaurant_profile']);
             
             Route::resource('restaurants', 'Operations\RestaurantController',['names' => 'operations.restaurants']);
+      
 
             Route::resource('restaurantReviews', 'Operations\RestaurantReviewController',['names' => 'operations.restaurantReviews']);
 

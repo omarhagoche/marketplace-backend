@@ -485,4 +485,26 @@ class RestaurantController extends Controller
             return redirect(route('operations.restaurant_profile.users', $id));
         }
     }
+    public function openAll(){
+      
+        $restaurants = DB::table('users')->select('name')->get();
+        DB::table('restaurants')
+            ->where('closed', 1)
+            ->update(['closed' => 0]);
+            Flash::success('All restaurants are open');
+            return redirect()->back();
+     
+     
+    }
+    public function closeAll(){
+      
+        $restaurants = DB::table('users')->select('name')->get();
+        DB::table('restaurants')
+            ->where('closed', 0)
+            ->update(['closed' => 1]);
+            Flash::success('All restaurants are closed');
+            return redirect()->back();
+     
+     
+    }
 }
