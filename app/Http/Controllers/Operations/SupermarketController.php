@@ -14,6 +14,7 @@ use App\Repositories\{DayRepository, FoodRepository, NoteRepository, RoleReposit
 use App\Repositories\{UploadRepository, CategoryRepository, ExtraGroupRepository, RestaurantRepository, CustomFieldRepository};
 use App\DataTables\Operations\SupermarketDataTable;
 use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
+use App\Enums\MerchantType;
 use Illuminate\Support\Facades\DB;
 
 class SupermarketController extends Controller
@@ -119,7 +120,7 @@ class SupermarketController extends Controller
 
         $input = $request->all();
         $input = array_merge($input, [
-            'merchant_type' => 'SUPERMARKET',
+            'merchant_type' => MerchantType::SUPERMARKET,
             'is_restaurant' => 0
         ]);
         
