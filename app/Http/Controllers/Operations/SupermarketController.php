@@ -118,11 +118,15 @@ class SupermarketController extends Controller
         ]);
 
         $input = $request->all();
-        $request->merge(['merchant_type' => 'SUPERMARKET', 'is_restaurant' => 0]);
+        $input = array_merge($input, [
+            'merchant_type' => 'SUPERMARKET',
+            'is_restaurant' => 0
+        ]);
         
         if (auth()->user()->hasRole(['manager', 'client'])) {
             $input['users'] = [auth()->id()];
         }
+        
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $supermarket = $this->restaurantRepository->create($input);
