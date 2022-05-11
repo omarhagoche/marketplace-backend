@@ -80,6 +80,7 @@ class SupermarketController extends Controller
      */
     public function create()
     {
+      
         $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $usersSelected = [];
@@ -253,6 +254,23 @@ class SupermarketController extends Controller
      */
     public function destroy($id)
     {
+        if (!env('APP_DEMO', false)) {
+            $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
+            $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
+            if (empty($restaurant)) {
+                Flash::error('supermarkets not found');
+
+                return redirect(route('supermarkets.index'));
+            }
+
+            $this->restaurantRepository->delete($id);
+
+            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.restaurant')]));
+        } else {
+            Flash::warning('This is only demo app you can\'t change this section ');
+        }
+        return redirect()->back();
     }
 
     /* Get associate products form */

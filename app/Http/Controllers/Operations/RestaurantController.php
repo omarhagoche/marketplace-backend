@@ -366,6 +366,7 @@ class RestaurantController extends Controller
             Flash::warning('This is only demo app you can\'t change this section ');
         }
         return redirect(route('operations.restaurant_profile.index'));
+        
     }
 
     /**
