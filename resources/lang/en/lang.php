@@ -1493,5 +1493,12 @@ return [
     'supermarket_products'=>'Supermarket Products',
     'product_edit'=>'Product edit',
     'open_all_restaurants'=>'Open All Restaurants',
-    'close_all_restaurants'=>'Close All Restaurants'
+    'close_all_restaurants'=>'Close All Restaurants',
+    'advertisement_managment'=>'Advertisement Managment',
+    'advertisement_plural' =>'Advertisement',
+    'advertisement_edit' =>'Edit advertisement',
+    'advertisement_table'=>'Advertisement List',
+    'advertisement_create'=>'Open new Advertisement',
+    'advertisement_name' =>'Advertisement Name',
+    
 ];

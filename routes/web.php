@@ -336,6 +336,9 @@ Route::middleware('auth')->group(function () {
             Route::get('supermarkets/{id}/products/create', 'Operations\SupermarketController@productCreate')->name('operations.supermarkets.products.create');
             Route::post('supermarkets/{id}/products', 'Operations\SupermarketController@productStore')->name('operations.supermarkets.products.store');
 
+            /**Advertisment  routes */
+            Route::resource('advertisement', 'Operations\AdvertisementController',['as' => 'operations']);
+
             
         });
 
