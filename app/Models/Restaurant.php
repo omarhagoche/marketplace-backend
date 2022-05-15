@@ -346,29 +346,22 @@ class Restaurant extends Model implements HasMedia
         return $this->users;
     }
 
-    public function getclosedAttribute()
+    public function getClosedAttribute()
     {
-
         $now = Carbon::now();
 
         $closed = 1;
         if ($this->days && $this->days->count() > 0) {
             $working_hours = $this->days->where('name', $now->dayOfWeek);
 
-
             foreach ($working_hours as $day) {
-                $opening_hour =  new Carbon($day->pivot->open_at);
-                $closing_hour =  new Carbon($day->pivot->close_at);
-
-
-                if ($now->between($opening_hour, $closing_hour)) {
+                if ($now->between(new Carbon($day->pivot->open_at), new Carbon($day->pivot->close_at))) {
                     $closed = 0;
+                    break;
                 }
             }
-        } else {
-            if ($now->between(new Carbon($this->open_at), new Carbon($this->close_at))) {
-                $closed = 0;
-            }
+        } elseif ($now->between(new Carbon($this->open_at), new Carbon($this->close_at))) {
+            $closed = 0;
         }
 
         return   $closed;
