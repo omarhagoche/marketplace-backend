@@ -158,7 +158,8 @@ class Restaurant extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media',
-        'rate'
+        'rate',
+        'closed',
 
     ];
 
@@ -310,7 +311,7 @@ class Restaurant extends Model implements HasMedia
      */
     public function days(): BelongsToMany
     {
-        return $this->belongsToMany(Day::class, 'day_restaurants', 'restaurant_id', 'day_id')->withPivot('open_at','close_at');
+        return $this->belongsToMany(Day::class, 'day_restaurants', 'restaurant_id', 'day_id')->withPivot('open_at', 'close_at');
     }
     /**
      * Get Types of delivery prices 
@@ -343,5 +344,33 @@ class Restaurant extends Model implements HasMedia
             $this->load('users');
         }
         return $this->users;
+    }
+
+    public function getclosedAttribute()
+    {
+
+        $now = Carbon::now();
+
+        $closed = 1;
+        if ($this->days && $this->days->count() > 0) {
+            $working_hours = $this->days->where('name', $now->dayOfWeek);
+
+
+            foreach ($working_hours as $day) {
+                $opening_hour =  new Carbon($day->pivot->open_at);
+                $closing_hour =  new Carbon($day->pivot->close_at);
+
+
+                if ($now->between($opening_hour, $closing_hour)) {
+                    $closed = 0;
+                }
+            }
+        } else {
+            if ($now->between(new Carbon($this->open_at), new Carbon($this->close_at))) {
+                $closed = 0;
+            }
+        }
+
+        return   $closed;
     }
 }
