@@ -5,19 +5,17 @@
         <a class="nav-link {{ request()->routeIs('operations.supermarkets.index') ? 'active' : '' }}" href="{!! route('operations.supermarkets.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.supermarket_table')}}</a>
       </li>
       @endcan
-      @can('operations.supermarkets.create')
+      @can('operations.advertisement.create')
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('operations.supermarkets.create') ? 'active' : '' }}" href="{!! route('operations.supermarkets.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.supermarket_create')}}</a>
+          <a class="nav-link {{ request()->routeIs('operations.advertisement.create') ? 'active' : '' }}" href="{!! route('operations.supermarkets.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.supermarket_create')}}</a>
         </li>
       @endcan
-      @can('operations.supermarkets.edit')
+      @can('operations.advertisement.edit')
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.supermarkets.edit') ? 'active' : '' }}" href="{!!  route('operations.supermarkets.edit',$supermarket->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.supermarket_edit')}}</a>
+        <a class="nav-link {{ request()->routeIs('operations.advertisement.edit') ? 'active' : '' }}" href="{!!  route('operations.advertisement.edit',$advertisement->id) !!}"><i class="fa fa-pencil mr-2"></i>{{trans('lang.supermarket_edit')}}</a>
       </li>
       @endcan
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('operations.supermarkets.products.index') ? 'active' : '' }}" href="{!! route('operations.supermarkets.products.index',$supermarket->id) !!}"><i class="fa fa-shopping-basket mr-2"></i>{{trans('lang.product_table')}}</a>
-      </li>
+    
       {{-- @can('operations.restaurant_profile.users')
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('operations.restaurant_profile.users') ? 'active' : '' }}" href="{!! route('operations.restaurant_profile.users',$restaurant->id) !!}"><i class="fa fa-users mr-2"></i>{{trans('lang.user')}}</a>

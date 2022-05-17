@@ -29,7 +29,8 @@ class Cuisine extends Model implements HasMedia
 
     public $fillable = [
         'name',
-        'description'
+        'description',
+        
     ];
 
     /**

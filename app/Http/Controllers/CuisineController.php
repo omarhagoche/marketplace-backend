@@ -134,6 +134,7 @@ class CuisineController extends Controller
         $restaurant = $this->restaurantRepository->pluck('name', 'id');
         $restaurantsSelected = $cuisine->restaurants()->pluck('restaurants.id')->toArray();
 
+       
         if (empty($cuisine)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.cuisine')]));
 

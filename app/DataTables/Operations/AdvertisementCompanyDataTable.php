@@ -4,6 +4,7 @@ namespace App\DataTables\Operations;
 
 use App\Models\CustomField;
 use App\Models\Advertisement;
+use App\Models\AdvertisementCompany;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -11,7 +12,7 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Html\Editor\Editor;
 
-class AdvertisementDataTable extends DataTable
+class AdvertisementCompanyDataTable extends DataTable
 {
     /**
      * custom cuisines columns
@@ -30,12 +31,9 @@ class AdvertisementDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-          ->editColumn('Image', function ($image) {
-                return getMediaColumn($image, 'Image');
-            })
-   
+          
        
-            ->addColumn('action', 'operations.advertisement.datatables_actions')
+            ->addColumn('action', 'operations.advertisement.advertisement_company.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
         return $dataTable;
@@ -44,24 +42,24 @@ class AdvertisementDataTable extends DataTable
     {
         $columns = [
             [
-                'data' => 'Image',
-                'title' => 'Image',
-                'searchable' => false, 'orderable' => false, 'exportable' => false, 'printable' => false,
-            ],
-            [
-                'data' => 'title',
-                'title' => 'title',
-
-            ],
-          
-            [
-                'data' => 'description',
-                'title' => 'description',
-
+                'data' => 'name',
+                'title' => 'name',
+                
             ],
             [
                 'data' => 'link',
                 'title' => 'link',
+
+            ],
+          
+            [
+                'data' => 'logo',
+                'title' => 'logo',
+
+            ],
+            [
+                'data' => 'manager_user_id',
+                'title' => 'manager_user_id',
 
             ],
         
@@ -76,7 +74,7 @@ class AdvertisementDataTable extends DataTable
      * @param \App\Models\Post $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Advertisement $model)
+    public function query(AdvertisementCompany $model)
     {
         return $model->newQuery();
     }
@@ -119,6 +117,6 @@ class AdvertisementDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Advertisement_' . date('YmdHis');
+        return 'Advertisement_company_' . date('YmdHis');
     }
 }

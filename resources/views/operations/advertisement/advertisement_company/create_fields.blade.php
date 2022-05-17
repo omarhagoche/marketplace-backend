@@ -8,16 +8,18 @@
     
 
 
-  <!-- title Field -->
+  <!-- name Field -->
   <div class="form-group row ">
-    {!! Form::label('title', trans("lang.title"), ['class' => 'col-3 control-label text-right']) !!}
+    {!! Form::label('name', trans("lang.name"), ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {!! Form::text('title', null,  ['class' => 'form-control','placeholder'=>  trans("lang.title_placeholder")]) !!}
+        {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.name_placeholder")]) !!}
         <div class="form-text text-muted">
-            {{ trans("lang.title_help") }}
+            {{ trans("lang.name") }}
         </div>
     </div>
 </div>
+
+
 
   <!-- link Field -->
   <div class="form-group row ">
@@ -30,28 +32,17 @@
     </div>
 </div>
 
-  <!-- description Field -->
-  <div class="form-group row ">
-    {!! Form::label('description', trans("lang.description"), ['class' => 'col-3 control-label text-right']) !!}
-    <div class="col-9">
-        {!! Form::textarea('description', null,  ['class' => 'form-control','placeholder'=>  trans("lang.description")]) !!}
-        <div class="form-text text-muted">
-            {{ trans("lang.description") }}
-        </div>
-    </div>
-</div>
-
 
 
  
 
 
-  <!-- advertisement_company_id -->
+  <!-- manager_user_id -->
 <div class="form-group row ">
-    {!! Form::label('advertisement_company_id', trans("lang.adv_Company"),['class' => 'col-3 control-label text-right']) !!}
+    {!! Form::label('manager_user_id', trans("lang.manager_user_id"),['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-      {!! Form::select('advertisement_company_id', $adv_Company, $adv_CompanySelected, ['class' => 'select2 form-control' ]) !!}
-      <div class="form-text text-muted">{{ trans("lang.adv_company_help") }}</div>
+      {!! Form::select('manager_user_id', $manager_user_id, $manager_user_id_Selected, ['class' => 'select2 form-control' ]) !!}
+      <div class="form-text text-muted">{{ trans("lang.manager_user_id") }}</div>
     </div>
   </div>
  
@@ -75,10 +66,10 @@
 
     <!-- Image Field -->
     <div class="form-group row">
-        {!! Form::label('image', trans("lang.logo"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('logo', trans("lang.logo"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            <div style="width: 100%" class="dropzone image" id="image" data-field="image">
-                <input type="hidden" name="image">
+            <div style="width: 100%" class="dropzone image" id="logo" data-field="logo">
+                <input type="hidden" name="logo">
             </div>
             <a href="#loadMediaModal" data-dropzone="image" data-toggle="modal" data-target="#mediaModal" class="btn btn-outline-{{setting('theme_color','primary')}} btn-sm float-right mt-1">{{ trans('lang.media_select')}}</a>
             <div class="form-text text-muted w-50">
@@ -90,12 +81,12 @@
     @prepend('scripts')
         <script type="text/javascript">
             var var15671147011688676454ble = '';
-            @if(isset($supermarket) && $supermarket->hasMedia('image'))
+            @if(isset($supermarket) && $supermarket->hasMedia('logo'))
                 var15671147011688676454ble = {
-                name: "{!! $supermarket->getFirstMedia('image')->name !!}",
-                size: "{!! $supermarket->getFirstMedia('image')->size !!}",
-                type: "{!! $supermarket->getFirstMedia('image')->mime_type !!}",
-                collection_name: "{!! $supermarket->getFirstMedia('image')->collection_name !!}"
+                name: "{!! $supermarket->getFirstMedia('logo')->name !!}",
+                size: "{!! $supermarket->getFirstMedia('logo')->size !!}",
+                type: "{!! $supermarket->getFirstMedia('logo')->mime_type !!}",
+                collection_name: "{!! $supermarket->getFirstMedia('logo')->collection_name !!}"
             };
                     @endif
             var dz_var15671147011688676454ble = $(".dropzone.image").dropzone({
@@ -182,8 +173,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
-    <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.advertisement')}}</button>
-    <a href="{!! route('operations.advertisement.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
+    <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.advertisement_company')}}</button>
+    <a href="{!! route('operations.supermarkets.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>
 
 

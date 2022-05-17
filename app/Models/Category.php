@@ -63,7 +63,8 @@ class Category extends Model implements HasMedia
     public static $rules = [
         'name' => 'required',
         'description' => 'required',
-        'for_restaurants' => 'required'
+        'for_restaurants' => 'required',
+        
     ];
 
     /**

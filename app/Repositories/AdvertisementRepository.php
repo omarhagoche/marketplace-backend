@@ -2,47 +2,31 @@
 
 namespace App\Repositories;
 
-use App\Models\Restaurant;
-use InfyOm\Generator\Common\BaseRepository;
-use Prettus\Repository\Contracts\CacheableInterface;
-use Prettus\Repository\Traits\CacheableRepository;
+use Prettus\Repository\Eloquent\BaseRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
+
+use App\Models\Advertisement;
+
+use App\Validators\AdvertisementValidator;
 
 /**
- * 
- * Class RestaurantRepository
+ * Class AdvertisementRepository
  * @package App\Repositories
- * @version August 29, 2019, 9:38 pm UTC
+ * @version April 11, 2020, 1:57 pm UTC
  *
- * @method Restaurant findWithoutFail($id, $columns = ['*'])
- * @method Restaurant find($id, $columns = ['*'])
- * @method Restaurant first($columns = ['*'])
+ * @method Advertisement findWithoutFail($id, $columns = ['*'])
+ * @method Advertisement find($id, $columns = ['*'])
+ * @method Advertisement first($columns = ['*'])
  */
-class AdvertismentRepository extends BaseRepository implements CacheableInterface
+class AdvertisementRepository extends BaseRepository
 {
-
-    use CacheableRepository;
-    /**
+ /**
      * @var array
      */
     protected $fieldSearchable = [
-        'name',
-        'description',
-        'address',
-        'latitude',
-        'longitude',
-        'phone',
-        'mobile',
-        'information',
-        'delivery_fee',
-        'default_tax',
-        'delivery_range',
-        'available_for_delivery',
-        'closed',
-        'active',
-        'featured',
-        'admin_commission',
-        'featured',
-        'is_restaurant',
+        'food_id',
+        'user_id',
+        'quantity'
     ];
 
     /**
@@ -50,31 +34,8 @@ class AdvertismentRepository extends BaseRepository implements CacheableInterfac
      **/
     public function model()
     {
-        return Restaurant::class;
+        return Advertisement::class;
     }
 
-   
-    /**
-     * Get supermarket and its products and product infos
-     */
-    public function supermarketWithProducts($id){
-
-        return Restaurant::whereId($id)->with('foods.productInfo')->first();
-    }
-
-     /**
-     * get my restaurants
-     */
-    public function myRestaurants()
-    {
-        return Restaurant::join("user_restaurants", "restaurant_id", "=", "restaurants.id")
-            ->where('user_restaurants.user_id', auth()->id())->get();
-    }
-
-    public function myActiveRestaurants()
-    {
-        return Restaurant::join("user_restaurants", "restaurant_id", "=", "restaurants.id")
-            ->where('user_restaurants.user_id', auth()->id())
-            ->where('restaurants.active', '=', '1')->get();
-    }
+    
 }

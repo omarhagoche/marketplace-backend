@@ -1494,11 +1494,35 @@ return [
     'product_edit'=>'Product edit',
     'open_all_restaurants'=>'Open All Restaurants',
     'close_all_restaurants'=>'Close All Restaurants',
+    'advertisement' =>'Advertisement',
     'advertisement_managment'=>'Advertisement Managment',
     'advertisement_plural' =>'Advertisement',
     'advertisement_edit' =>'Edit advertisement',
     'advertisement_table'=>'Advertisement List',
     'advertisement_create'=>'Open new Advertisement',
     'advertisement_name' =>'Advertisement Name',
+    'advertisement_desc' =>'Advertisement  Management',
+    'advertisement_company_create' =>'Open new Advertisement Company',
+    'advertisement_company_table' =>'Company List',
+    'advertisement_company' =>'Advertisement Company ',
+    'advertisement_company_plural' =>'Advertisement Company ',
+    'advertisement_company_managment'=>'Advertisement Company Managment',
+    'advertisement_company_edit' => 'Edit Advertisement Company',
+    'advertisement_company_desc' => 'Advertisement Company Management',
+    'link'=>'link',
+    'manager_user_id'=>'Manager User',
+    'title'=>'Title',
+    'title_placeholder'=>'Insert Title',
+    'adv_Company'=>'Company',
+    'title_help' => 'Insert Title',
+    'adv_company_help' => 'Insert Company',
+   
+
+    
+   
+ 
+    
+  
+    
     
 ];

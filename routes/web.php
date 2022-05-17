@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use App\Models\Day;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 /**
  * File name: web.php
@@ -338,6 +339,7 @@ Route::middleware('auth')->group(function () {
 
             /**Advertisment  routes */
             Route::resource('advertisement', 'Operations\AdvertisementController',['as' => 'operations']);
+            Route::resource('advertisement_company', 'Operations\AdvertisementCompanyController',['as' => 'operations']);
 
             
         });

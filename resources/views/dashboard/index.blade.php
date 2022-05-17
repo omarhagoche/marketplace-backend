@@ -68,6 +68,7 @@
                     </div>
                     <a href="{!! route('restaurants.index') !!}" class="small-box-footer">{{trans('lang.dashboard_more_info')}} <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
+                
             </div>
             <!-- ./col -->
             <div class="col-lg-3 col-6">

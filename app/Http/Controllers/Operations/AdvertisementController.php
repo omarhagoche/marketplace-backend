@@ -2,119 +2,83 @@
 
 namespace App\Http\Controllers\Operations;
 
-
-use Flash;
-use App\Models\{Advertisement, Day, Food, User, Restaurant};
-use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
-use App\Criteria\Users\{DriversCriteria, ManagersCriteria};
-use App\Criteria\Foods\DistinctSupermarketProductsCriteria;
-use App\Http\Requests\{CreateAdvertisementRequest, UpdateRestaurantRequest};
-use App\Events\RestaurantChangedEvent;
-use App\Repositories\{DayRepository, FoodRepository, NoteRepository, RoleRepository, UserRepository, ExtraRepository};
-use App\Repositories\{UploadRepository, CategoryRepository, ExtraGroupRepository, RestaurantRepository, CustomFieldRepository,AdvertismentRepository};
-use App\DataTables\Operations\SupermarketDataTable;
-use App\Criteria\Restaurants\RestaurantsOfUserCriteria;
-use App\Enums\MerchantType;
-use Illuminate\Support\Facades\DB;
 use App\DataTables\Operations\AdvertisementDataTable;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateAdvertisementRequest;
+use App\Http\Requests\UpdateAdvertisementRequest;
+use Illuminate\Http\Request;
+use Flash;
+use App\Models\Advertisement;
+use App\Models\AdvertisementCompany;
+use App\Repositories\AdvertisementCompanyRepository;
+use App\Repositories\AdvertisementRepository;
+use App\Repositories\CustomFieldRepository;
+use App\Repositories\UploadRepository;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 use Prettus\Validator\Exceptions\ValidatorException;
-use Yajra\DataTables\DataTables;
+
+
 class AdvertisementController extends Controller
 {
-    /** @var  RestaurantRepository */
-    private $advertismentRepository;
-
-    /**
+        /** @var  AdvertisementRepository */
+        private $advertismentRepository ;
+          /**
      * @var CustomFieldRepository
      */
     private $customFieldRepository;
-
-    /**
+ /**
      * @var UploadRepository
      */
     private $uploadRepository;
-    /**
-     * @var UserRepository
+        /**
+     * @var AdvertisementCompanyRepository
      */
-    private $userRepository;
+    private $advertisementcompanyRepository;
+        public function __construct(AdvertisementRepository $advertismentRepo , CustomFieldRepository $customFieldRepo , UploadRepository $uploadRepo,
+        AdvertisementCompanyRepository $advertisementcompanyRepo )
+        {
+            parent::__construct();
+            $this->advertismentRepository = $advertismentRepo;
+            $this->customFieldRepository = $customFieldRepo;
+            $this->uploadRepository = $uploadRepo;
+            $this->advertisementcompanyRepository = $advertisementcompanyRepo;
+          
+        }
 
-    /**
-     * @var FoodRepository
-     */
-    private $foodRepository;
-
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
-
-
-
-    public function __construct(DayRepository $dayRepo, NoteRepository $noteRepo, ExtraRepository $extraRepository, ExtraGroupRepository $extraGroupRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository, RoleRepository $roleRepository, RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo)
-    {
-        parent::__construct();
-        $this->roleRepository = $roleRepository;
-        $this->restaurantRepository = $restaurantRepo;
-        $this->customFieldRepository = $customFieldRepo;
-        $this->uploadRepository = $uploadRepo;
-        $this->userRepository = $userRepo;
-        $this->foodRepository = $foodRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->extraGroupRepository = $extraGroupRepository;
-        $this->extraRepository = $extraRepository;
-        $this->noteRepository = $noteRepo;
-        $this->dayRepository = $dayRepo;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(AdvertisementDataTable $advertisementDataTable)
     {
         return $advertisementDataTable->render('operations.advertisement.index');
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
       
-        $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
-        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
-        $usersSelected = [];
-        $driversSelected = [];
-        $deliveryPriceType = [];
-        $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        $adv_Company = $this->advertisementcompanyRepository->pluck('name', 'id');
+        $adv_CompanySelected = [];
+   
+        $hasCustomField = in_array($this->advertismentRepository->model(), setting('custom_field_models', []));
+       
         if ($hasCustomField) {
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+         
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->advertismentRepositoryeloquent->model());
             $html = generateCustomField($customFields);
         }
-        return view(
-            'operations.advertisement.create',
-            compact(
-                'deliveryPriceType',
-                'user',
-                'drivers',
-                'usersSelected',
-                'driversSelected'
-            )
-        )->with("customFields", isset($html) ? $html : false);
-    }
+        return view('operations.advertisement.create')->with("customFields", isset($html) ? $html : false)->with("adv_Company", $adv_Company)->with("adv_CompanySelected", $adv_CompanySelected);
 
-    /**
-     * Store a newly created resource in storage.
+    }
+     /**
+     * Store a newly created Category in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateAdvertisementRequest $request
+     *
+     * @return FacadesResponse
      */
     public function store(CreateAdvertisementRequest $request)
     {
+      
         $input = $request->all();
+        
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->advertismentRepository->model());
         try {
             $adv = $this->advertismentRepository->create($input);
@@ -122,173 +86,108 @@ class AdvertisementController extends Controller
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
-                $mediaItem->copy($category, 'image');
+                $mediaItem->copy($adv, 'image');
             }
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.category')]));
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.advertisement')]));
 
-        return redirect(route('categories.index'));
+        return redirect(route('operations.advertisement.index'));
     }
-
-    /**
-     * Display the specified resource.
+     /**
+     * Show the form for editing the specified Restaurant.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     *
+     * @return Response
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
-        $supermarket = $this->restaurantRepository->find($id);
 
-        if (empty($supermarket)) {
-            Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
-            return redirect(route('restaurants.index'));
+        $advertisement = $this->advertismentRepository->findorFail($id);
+        $adv_Company = $this->advertisementcompanyRepository->pluck('name', 'id');
+        $adv_CompanySelected  = DB::table('advertisement')->where('id', $id)->value('advertisement_company_id');
+    
+   
+        
+  
+        if (empty($advertisement)) {
+            Flash::error(__('lang.not_found', ['operator' => __('lang.advertisement')]));
+            return redirect(route('operations.advertisement.index'));
         }
-        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
-        $driversSelected = $supermarket->drivers()->pluck('users.id')->toArray();
-        $users = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
-        $usersSelected = $supermarket->users()->pluck('users.id')->toArray();
-
-        $customFieldsValues = $supermarket->customFieldsValues()->with('customField')->get();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
-        $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        $customFieldsValues = $advertisement->customFieldsValues()->with('customField')->get();
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->advertismentRepository->model());
+        $hasCustomField = in_array($this->advertismentRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-        return view('operations.supermarkets.edit')
-            ->with('driversSelected', $driversSelected)
-            ->with('usersSelected', $usersSelected)
-            ->with('id', $id)
-            ->with('drivers', $drivers)
-            ->with('users', $users)
-            ->with('supermarket', $supermarket)
-            ->with("customFields", isset($html) ? $html : false);
+
+        return view('operations.advertisement.edit2')
+        ->with('advertisement', $advertisement)
+        ->with('adv_Company', $adv_Company)
+        ->with('adv_CompanySelected', $adv_CompanySelected)
+        ->with("customFields", isset($html) ? $html : false);
     }
-    /**
-     * Update the specified resource in storage.
+     /**
+     * Update the specified Category in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @param UpdateAdvertisementRequest $request
+     *
+     * @return Response
      */
-    public function update(UpdateRestaurantRequest $request, $id)
+    public function update($id, UpdateAdvertisementRequest $request)
     {
-        $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
-        $oldSupermarket = $this->restaurantRepository->findWithoutFail($id);
-        if (empty($oldSupermarket)) {
-            Flash::error('Restaurant not found');
-            return redirect(route('restaurants.index'));
+        $advertisement = $this->advertismentRepository->findorFail($id);
+
+        if (empty($advertisement)) {
+            Flash::error('Advertisment not found');
+            return redirect(route('operations.advertisement.index'));
         }
         $input = $request->all();
-        array_push($input['users'], ...$input['drivers']); //this line for push drivers ids with users 
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+      
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->advertismentRepository->model());
         try {
+            $advertisement = $this->advertismentRepository->update($input, $id);
 
-            $supermarket = $this->restaurantRepository->update($input, $id);
-            $input['users'] ? $supermarket->users()->sync($input['users']) : ''; //Assigning users to the restaurant
             if (isset($input['image']) && $input['image']) {
+                return ('a');
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 $mediaItem = $cacheUpload->getMedia('image')->first();
-                $mediaItem->copy($supermarket, 'image');
+                $mediaItem->copy($advertisement, 'image');
+            
             }
+        
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
-                $supermarket->customFieldsValues()
+                $advertisement->customFieldsValues()
                     ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
             }
-            event(new RestaurantChangedEvent($supermarket, $oldSupermarket));
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.supermarket')]));
+        Flash::success(__('lang.updated_successfully', ['operator' => __('lang.advertisement')]));
 
-        return redirect(route('operations.supermarkets.edit', $id));
+        return redirect(route('operations.advertisement.index'));
     }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        if (!env('APP_DEMO', false)) {
-            $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
-            $restaurant = $this->restaurantRepository->findWithoutFail($id);
+        $advertisement = $this->advertismentRepository->find($id);
 
-            if (empty($restaurant)) {
-                Flash::error('supermarkets not found');
+        if (empty($advertisement)) {
+            Flash::error('advertisement not found');
 
-                return redirect(route('supermarkets.index'));
-            }
-
-            $this->restaurantRepository->delete($id);
-
-            Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.restaurant')]));
-        } else {
-            Flash::warning('This is only demo app you can\'t change this section ');
+            return redirect(route('operations.advertisement.index'));
         }
-        return redirect()->back();
+
+        $this->advertismentRepository->delete($id);
+
+        Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.advertisement')]));
+
+        return redirect(route('operations.advertisement.index'));
     }
 
-    /* Get associate products form */
-    public function associateProductsForm()
-    {
-        $products = $this->foodRepository->pushCriteria(new DistinctSupermarketProductsCriteria())->all();
-        $supermaket = $this->restaurantRepository->all();
-    }
-
-    /* associate products to the supermarket */
-    public function associateProducts()
-    {
-    }
-
-    public function productIndex($id)
-    {
-        $supermarket = $this->restaurantRepository->supermarketWithProducts($id);
-        $categories = $this->categoryRepository->pluck('name', 'id');
-        return view('operations.supermarkets.products.index', compact('id', 'supermarket', 'categories'));
-    }
-
-    public function productCreate($id)
-    {
-        $category = $this->categoryRepository->pluck('name', 'id');
-        $supermarket = $this->restaurantRepository->findWithoutFail($id);
-        return view('operations.supermarkets.products.create', compact('id', 'supermarket', 'category'));
-    }
-
-    public function productStore(int $id)
-    {
-        $supermarket = $this->restaurantRepository->findWithoutFail($id);
-        
-        try {
-            DB::beginTransaction();
-            $productData = request()->all();
-            $productData['restaurant_id'] = $supermarket->id;
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
-            $product = $this->foodRepository->create($productData);
-            $product->customFieldsValues()->createMany(getCustomFieldsValues($customFields, request()));
-            if (isset($productData['image']) && $productData['image']) {
-                $cacheUpload = $this->uploadRepository->getByUuid($productData['image']);
-                $mediaItem = $cacheUpload->getMedia('image')->first();
-                $mediaItem->copy($product, 'image');
-            }
-            DB::commit();
-        } catch (ValidatorException $e) {
-            DB::rollback();
-            Flash::error($e->getMessage());
-        }
-        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.product')]));
-        return redirect(route('operations.supermarkets.products.create', $id));
-    }
 }

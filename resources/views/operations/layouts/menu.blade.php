@@ -147,3 +147,39 @@
         </ul>
     </li>
 @endcan
+
+
+@can('operations.advertisement.index')
+    <li class="nav-item has-treeview {{ Request::is('advertisement*') ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ Request::is('advertisement*') ? 'active' : '' }}">
+            @if ($icons)
+                <i class="nav-icon fa fa-rss"></i>
+            @endif
+            <p>{{ trans('lang.advertisement_plural') }} <i class="right fa fa-angle-left"></i></p>
+        </a>
+        <ul class="nav nav-treeview">
+            @can('operations.advertisement.index')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('advertisement*') ? 'active' : '' }}" href="{!! route('operations.advertisement.index') !!}">
+                        @if ($icons)
+                            <i class="nav-icon fa fa-rss"></i>
+                        @endif
+                        <p>
+                            {{ trans('lang.advertisement_plural') }} </p>
+                    </a>
+                </li>
+            @endcan
+
+            @can('operations.advertisement_company.index')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('advertisement_company*') ? 'active' : '' }}" href="{!! route('operations.advertisement_company.index') !!}">
+                        @if ($icons)
+                            <i class="nav-icon fa fa-building"></i>
+                        @endif
+                        <p>{{ trans('lang.advertisement_company') }} </p>
+                    </a>
+                </li>
+            @endcan
+        </ul>
+    </li>
+@endcan

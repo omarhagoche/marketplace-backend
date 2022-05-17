@@ -25,12 +25,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">{{trans('lang.supermarket')}}<small class="ml-3 mr-3"> {{ $supermarket->name }} </small></h1>
+                <h1 class="m-0 text-dark">{{trans('lang.supermarket')}}<small class="ml-3 mr-3"> {{ $advertisement->name }} </small></h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> {{trans('lang.dashboard')}}</a></li>
-                    <li class="breadcrumb-item"><a href="{!! route('operations.supermarkets.index') !!}">{{trans('lang.supermarket_plural')}}</a>
+                    <li class="breadcrumb-item"><a href="{!! route('operations.advertisement.index') !!}">{{trans('lang.supermarket_plural')}}</a>
                     </li>
                     <li class="breadcrumb-item active">{{trans('lang.supermarket_edit')}}</li>
                 </ol>
@@ -48,8 +48,8 @@
     <div class="row">
         <div class="col-md-4 col-12">
             <div class="card ">
-                {!! Form::model($supermarket, ['route' => ['operations.supermarkets.update', $supermarket->id], 'method' => 'patch']) !!}
-                @include('operations.supermarkets.form_fields.edit_fields')
+                {!! Form::model($advertisement, ['route' => ['operations.advertisement.update', $advertisement->id], 'method' => 'patch']) !!}
+                @include('operations.advertisement.form_fields.edit_fields')
                 {!! Form::close() !!}
                 <div class="clearfix"></div>
             </div>

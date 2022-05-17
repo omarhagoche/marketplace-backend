@@ -128,7 +128,7 @@ class RestaurantDataTable extends DataTable
             ],
             [
                 'data' => 'name',
-                'title' => trans('lang.restaurant_name'),z
+                'title' => trans('lang.restaurant_name'),
 
             ],
             [
