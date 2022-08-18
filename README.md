@@ -1,5 +1,10 @@
 # WCOS Marketplace Backend
 
+While the project is still in its early stages, we understand that it still lacks a lot of functionalities and upgrades that could be done, also, currently no proper documentation is available.
+We open-sourced it with the hope that developers can collaborate and take full advantage of the features it may have, and build upon it... Help and get helped! 
+
+The whole project is completely open-source, and anyone is free and welcome to use, collaborate, build upon.
+
 ### Quick introduction: (WIP)
 The backend consists of 4 core components:
 - Firebase real-time database for real-time ordering and tracking.
@@ -149,6 +154,4 @@ Instead of inserting permissions manually , you can load all permissions to syst
 php artisan db:seed --class=PermissionsTableSeeder
 ```
 
-While the project is still in its early stages, we understand that it still lacks a lot of functionalities and upgrades that we could 
-and currently no proper documentation is available, we open-sourced it with the hope that developers can collaborate and take the system from its current 
-The whole project is completely open-source, and anyone is free to use, collaborate, build upon.
+More documentation and enhacements are being worked upon and will be updated regularly.
