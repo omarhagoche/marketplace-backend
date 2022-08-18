@@ -3,7 +3,7 @@
 While the project is still in its early stages, we understand that it still lacks a lot of functionalities and upgrades that could be done, also, currently no proper documentation is available.
 We open-sourced it with the hope that developers can collaborate and take full advantage of the features it may have, and build upon it... Help and get helped! 
 
-The whole project is completely open-source, and anyone is free and welcome to use, collaborate, build upon.
+The whole project is completely open-source, and anyone is free and welcome to use, collaborate, and build on.
 
 ### Quick introduction: (WIP)
 The backend consists of 4 core components:
