@@ -1,139 +1,155 @@
+  
 
-# Sabek Laravel System
+# WCOS Marketplace Backend
 
-# Requirements
+The backend consists of 4 core components:
+- Firebase real-time database for real-time ordering and tracking.
+- Mysql database to host any non-real-time data... Orders will start their cycle with firebase and once order is fulfilled data is copied to Mysql and deleted from firebase.
+- Laravel backend orchestrating the databases and business logic.
+- Rest api's to connect the backend package to any frontend client.
 
-- PHP <= 7.3
+### Features List: (Coming soon)
 
-# Usage
+## Docker Deployment (recommended)
+#### Requirements:
+- Docker and docker-compose installed locally. Ref: https://docs.docker.com/compose/install/compose-desktop/
 
-- infyom generator (https://infyom.com/open-source/laravelgenerator/docs/8.0/introduction).
+#### 1. Quick Fire-up using script:
+Rename `env.docker.example` file to `.env` , no need to fill in firebase credintials now to get started... change environmental variables as per your need. 
+```
+cp .env.docker.template .env
+```
 
-# 1. Docker Deployment
+Run deployment script:
+```
+./deploy-docker.sh
+```
 
-## List of commands to get the system up and running:
+#### 2. Manually:
 
-i. Rename `env.docker.example` file to `.env` and if needed insert api tokens (provided by backend team).
+Deploy containers
+```
+docker-compose up -d && docker-compose logs -f
+```
 
-    cp .env.docker.example .env
+Fix `storage` folder permissions:
+```
+docker-compose exec sabek-app chmod -R 777 /var/www/storage
+```
 
-ii. Navigate to the docker directory:
+Composer install:
+```
+docker-compose exec sabek-app composer install
+```
 
-    cd docker
+Artisan:
+```
+docker-compose exec wcos-backend chmod -R 777 storage
+docker-compose exec wcos-backend php artisan key:generate
+docker-compose exec wcos-backend php artisan db:seed --class=PermissionsTableSeeder
+```  
 
-iii. Build the image:
+Done. system may be accesses at `http://localhost:2222/` (or the specified port in docker-compose.yml file [if modified])
 
-    docker-compose build
-
-iv. Get the container up:
-
-    docker-compose up -d
-
- v. Fix `storage` folder permissions:
- 
-    docker-compose exec sabek-app chmod -R 777 /var/www/storage
-
-vi. Composer install:
-
-    docker-compose exec sabek-app composer install
-vii. Artisan:
-
-    docker-compose exec sabek-app php artisan key:generate
-    docker-compose exec sabek-app php artisan serve
-
-## System Access
-
-You can access the system via the specified port in docker-compose.yml (defaulted at 2222):
-
-    http://localhost:2222/
-If you need it to be `http://localhost/` change `2222` port to `80`
+#### System Access
 
 Login information for admin user:
+```
+username : admin@demo.com
 
-     username : admin@demo.com
-     password : 123456
+password : 123456
+```
 
-## Extra commands:
+
+#### Extra commands:
 
 For any commands inside the laravel container:
-
-    docker-compose exec sabek-app #command#
+```
+docker-compose exec sabek-app #command#
+```
+  
 
 Or SSH directly inside the container:
-
-    docker-compose exec sabek-app /bin/bash/
+```
+docker-compose exec sabek-app /bin/bash/
+```
 
 For any commands inside the database container:
+```
+docker-compose exec sabek-db #command#
 
-    docker-compose exec sabek-db #command#
-    docker-compose exec sabek-app /bin/bash/
+docker-compose exec sabek-app /bin/bash/
+```
+
+### Docker Strategy:
+The deployment strategy was done in a way to comfort developers wether in production or development environments.
+
+The container is used as an out-of-the-box server that has all the dependencies and compatibility issues pre-built and fixed, allowing the container to be like a server to the project, while allowing developers to modify source-code and see changes in real-time without the need of any expertise in docker systems.
+
+The root directory is mapped to the docker-container, so any change you make in the files will immediately be reflected inside the container... making the container practically just an engine running your code with all of its required dependencies and server enhancements, in any platform you may have, and without the need to make any changes in your local computer environments. 
+
+If you have a development environment already installed, you can still pass Laravel commands in the code directory itlsef and changes will be reflected inside the container immediately.
+
+The images are pre-build and uploaded in the docker-registry, so develoepers can download them directly without the need to build them themselves.
 
 # 2. Standard Deployment:
 
-1- Clone repository
+#### Requirements
+- PHP = 7.3
+- GRPC installed locally. Ref: https://cloud.google.com/php/grpc
 
+Clone repository
 ```code
- https://github.com/SabekLY/sabek.git
-
+https://github.com/we-code-open-source/marketplace-backend.git
 ```
 
-2- Import database
-
+Import database dump into your local Mysql
 ```code
- dump-foods_test-202202021853.sql
+./deploy/wcos-dump.sql
 ```
 
-3- Rename .env.example to .env
-
-4- Edit databse configuration in .env file
-
-```code
- DB_DATABASE=name_of_database
- DB_USERNAME=user_of_database
- DB_PASSWORD=password_of_database
+Rename .env.template to .env
+``` code
+cp .env.template .env
 ```
 
-5- Install composer dependencies
+Edit databse configuration in .env file
+``` code
+DB_DATABASE=name_of_database
 
-```code
- composer install
+DB_USERNAME=user_of_database
+
+DB_PASSWORD=password_of_database
 ```
 
-- before doing command composer install make sure you Install or enable PHP's grpc extension
-
-6- generate a key for your application
-
+Install composer dependencies
 ```code
- php artisan key:generate
+composer install
+```
+note: make sure php's grpc extension is already installed before running `composer install`.
+ 
+Generate an application key
+```code
+php artisan key:generate
 ```
 
-7- Finally run the server
-
+Finally run the server
 ```code
- php artisan serve
+php artisan serve
 ```
 
-8- login information for admin user
-
+Login information for admin user
 ```code
- username : admin@demo.com
- password : 123456
-
- * Note : make sure you did step number 2
+username : admin@demo.com
+password : 123456
 ```
+note : make sure you did step number 2
 
-# Notes
-
-Instead of insert permissions manually , you can load all permissions to system (Database) depends on routes names by executing the command below
-
-```code
+Instead of inserting permissions manually , you can load all permissions to system (Database) depending on routes names by executing the command below
+``` code
 php artisan db:seed --class=PermissionsTableSeeder
 ```
 
-## Important Links
-
-[Server Requirements](https://support.smartersvision.com/help-center/articles/3/4/3/introduction).
-
-[How to Update to last version?](https://support.smartersvision.com/help-center/articles/3/4/9/update).
-
-[FAQ](https://support.smartersvision.com/help-center/categories/6/laravel-application-faq).
+While the project is still in its early stages, we understand that it still lacks a lot of functionalities and upgrades that we could 
+and currently no proper documentation is available, we open-sourced it with the hope that developers can collaborate and take the system from its current 
+The whole project is completely open-source, and anyone is free to use, collaborate, build upon and 
