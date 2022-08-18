@@ -1,14 +1,13 @@
-  
-
 # WCOS Marketplace Backend
 
+### Quick introduction: (WIP)
 The backend consists of 4 core components:
 - Firebase real-time database for real-time ordering and tracking.
 - Mysql database to host any non-real-time data... Orders will start their cycle with firebase and once order is fulfilled data is copied to Mysql and deleted from firebase.
 - Laravel backend orchestrating the databases and business logic.
 - Rest api's to connect the backend package to any frontend client.
 
-### Features List: (Coming soon)
+### Features List: (WIP)
 
 ## Docker Deployment (recommended)
 #### Requirements:
@@ -34,12 +33,12 @@ docker-compose up -d && docker-compose logs -f
 
 Fix `storage` folder permissions:
 ```
-docker-compose exec sabek-app chmod -R 777 /var/www/storage
+docker-compose exec wcos-backend chmod -R 777 /var/www/storage
 ```
 
 Composer install:
 ```
-docker-compose exec sabek-app composer install
+docker-compose exec wcos-backend composer install
 ```
 
 Artisan:
@@ -65,20 +64,20 @@ password : 123456
 
 For any commands inside the laravel container:
 ```
-docker-compose exec sabek-app #command#
+docker-compose exec wcos-backend #command#
 ```
   
 
 Or SSH directly inside the container:
 ```
-docker-compose exec sabek-app /bin/bash/
+docker-compose exec wcos-backend bash
 ```
 
 For any commands inside the database container:
 ```
-docker-compose exec sabek-db #command#
+docker-compose exec wcos-db #command#
 
-docker-compose exec sabek-app /bin/bash/
+docker-compose exec wcos-backend bash
 ```
 
 ### Docker Strategy:
@@ -152,4 +151,4 @@ php artisan db:seed --class=PermissionsTableSeeder
 
 While the project is still in its early stages, we understand that it still lacks a lot of functionalities and upgrades that we could 
 and currently no proper documentation is available, we open-sourced it with the hope that developers can collaborate and take the system from its current 
-The whole project is completely open-source, and anyone is free to use, collaborate, build upon and 
+The whole project is completely open-source, and anyone is free to use, collaborate, build upon.
