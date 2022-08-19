@@ -159,4 +159,4 @@ More documentation and enhacements are being worked upon and will be updated reg
 ## Road Map (initial - open to suggessions and contributions)
 - Upgrade Laravel version to 9.x.
 - Plug-in System.
-- Migrating DB to Appwrite.io instead of Firebase/Mysql. This will allow for a single high performance real-time database/document-based db with all the features firebase offers, and better yet, for free, making the project completely free to use and deploy in production. (Could be coded as a plugin).
+- Migrate to Appwrite.io instead of Firebase/Mysql. This will allow for a single high performance real-time database/document-based db with all the features firebase offers, and better yet, for free, making the project completely free to use and deploy in production. (Could be coded as a plugin).
