@@ -1,8 +1,8 @@
 * text=auto
-
+*.blade.php diff=php
 *.css diff=css
 *.html diff=html
-*.md diff=markdown
+*.md export-ignore
 *.php diff=php
 /tests export-ignore
 .editorconfig export-ignore
