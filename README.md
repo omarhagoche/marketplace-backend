@@ -90,7 +90,7 @@ The deployment strategy was done in a way to comfort developers wether in produc
 
 The container is used as an out-of-the-box server that has all the dependencies and compatibility issues pre-built and fixed, allowing the container to be like a server to the project, while allowing developers to modify source-code and see changes in real-time without the need of any expertise in docker systems.
 
-The root directory is mapped to the docker-container, so any change you make in the files will immediately be reflected inside the container... making the container practically just an engine running your code with all of its required dependencies and server enhancements, in any platform you may have, and without the need to make any changes in your local computer environments. 
+The code directory is mapped to the docker-container, so any change you make in the files will immediately be reflected inside the container... making the container practically just an engine running your code with all of its required dependencies and server enhancements, in any platform you may have, and without the need to make any changes in your local computer environments. 
 
 If you have a development environment already installed, you can still pass Laravel commands in the code directory itlsef and changes will be reflected inside the container immediately.
 
@@ -155,3 +155,8 @@ php artisan db:seed --class=PermissionsTableSeeder
 ```
 
 More documentation and enhacements are being worked upon and will be updated regularly.
+
+## Road Map (initial - open to suggessions and contributions)
+- Upgrade Laravel version to 9.x.
+- Plug-in System.
+- Migrating DB to Appwrite.io instead of Firebase/Mysql. This will allow for a single high performance real-time database/document-based db with all the features firebase offers, and better yet, for free, making the project completely free to use and deploy in production. (Could be coded as a plugin).
