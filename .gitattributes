@@ -5,4 +5,3 @@ tests/* linguist-vendored
 .editorconfig linguist-vendored
 .gitattributes linguist-vendored
 .gitignore linguist-vendored
-*.blade.php linguist-language=php
