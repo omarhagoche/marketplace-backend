@@ -1,7 +1,7 @@
 * text=auto
 *.blade.php diff=php
 *.css diff=css
-*.html diff=html
+*.html export-ignore
 *.md export-ignore
 *.php diff=php
 /tests export-ignore
